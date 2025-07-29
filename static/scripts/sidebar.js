@@ -20,11 +20,11 @@ function showNotes(notes) {
   const orderedNotes = notes.sort((a, b) => a.name.localeCompare(b.name));
   const $container = $('#notes-container')
   _clearNotes()
+  _showResultCount(notes.length)
 
   for (const note of orderedNotes) {
     const $noteItem = _buildNoteItem(note)
     _hookEvents($noteItem)
-    _showResultCount(notes.length)
     _showLoader(false)
 
     $container.append($noteItem)
