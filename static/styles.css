@@ -1,0 +1,188 @@
+:root {
+  --sidebar-background-color: rgb(33, 29, 43);
+  --main-background-color: rgb(30, 27, 37);
+}
+
+* {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  position: fixed;
+  display: grid;
+  grid-template-columns: 20vw auto;
+  grid-template-rows: 1fr;
+  inset: 0;
+}
+
+.left-menu {
+  background-color: var(--sidebar-background-color);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: stretch;
+  padding: 1vw;
+  padding-bottom: 0;
+  flex-direction: column;
+}
+
+.menu-upper-controls {
+  display: flex;
+  flex-direction: column;
+}
+
+#search-input {
+  height: 30px;
+  background-color: rgba(0, 0, 0, 0.2);
+  outline: none;
+  border: 0.3vw solid rgba(0, 0, 0, 0.2);
+  padding-left: 8px;
+  color: rgb(158, 158, 158);
+  border-radius: 0.4em;
+  transition: border-color 0.3s;
+}
+
+#search-input:focus {
+  border-color: rgb(75, 53, 129);
+}
+
+.menu-divider {
+  margin: 1vw 0;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.menu-lower-items {
+  position: relative;
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+  height: 100%;
+}
+
+#search-result-count {
+  margin-top: 0;
+  color: rgb(90, 90, 90);
+  font-size: 0.8em;
+  margin-bottom: 1vw;
+}
+
+.note-item {
+  display: flex;
+  align-items: center;
+  padding-left: 0.8em;
+  padding-right: 0.8em;
+  font-size: 0.9em;
+  box-sizing: border-box;
+  background-color: rgb(19, 17, 25);
+  border-radius: 0.5em;
+  height: 45px;
+  width: 100%;
+  color: rgb(173, 173, 173);
+  box-shadow: 0.2em 0.2em 10px rgba(0, 0, 0, 0.125);
+  user-select: none;
+  z-index: 2;
+  transition:
+    scale 0.3s,
+    background-color 0.3s,
+    width 0.3s ease;
+}
+
+.note-item-title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.note-item:hover {
+  scale: 103%;
+  cursor: pointer;
+  background-color: rgb(15, 14, 20);
+  z-index: 100;
+}
+
+.note-item:active {
+  scale: 97%;
+}
+
+.legal-disclaimer {
+  color: rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  font-size: 0.7vw;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.5);
+  inset: auto 0 0 auto;
+  padding: 0.18vh 0.4vh;
+  height: 1.8vh;
+  border-top-left-radius: 0.2em;
+  pointer-events: none;
+  user-select: none;
+}
+
+.sidebar-loader-container {
+  position: absolute;
+  display: flex;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+#sidebar-loader {
+  scale: 0.5;
+}
+
+/* Scroll bar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  cursor: default !important;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(136, 136, 136);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(136, 136, 136, 0.5);
+}
+
+/* Loaders */
+.loader {
+  pointer-events: none;
+  width: 50px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 8px solid rgba(255, 255, 255, 0.5);
+  animation:
+    l20-1 0.8s infinite linear alternate,
+    l20-2 1.6s infinite linear;
+}
+@keyframes l20-1{
+   0%    {clip-path: polygon(50% 50%,0       0,  50%   0%,  50%    0%, 50%    0%, 50%    0%, 50%    0% )}
+   12.5% {clip-path: polygon(50% 50%,0       0,  50%   0%,  100%   0%, 100%   0%, 100%   0%, 100%   0% )}
+   25%   {clip-path: polygon(50% 50%,0       0,  50%   0%,  100%   0%, 100% 100%, 100% 100%, 100% 100% )}
+   50%   {clip-path: polygon(50% 50%,0       0,  50%   0%,  100%   0%, 100% 100%, 50%  100%, 0%   100% )}
+   62.5% {clip-path: polygon(50% 50%,100%    0, 100%   0%,  100%   0%, 100% 100%, 50%  100%, 0%   100% )}
+   75%   {clip-path: polygon(50% 50%,100% 100%, 100% 100%,  100% 100%, 100% 100%, 50%  100%, 0%   100% )}
+   100%  {clip-path: polygon(50% 50%,50%  100%,  50% 100%,   50% 100%,  50% 100%, 50%  100%, 0%   100% )}
+}
+@keyframes l20-2{ 
+  0%    {transform:scaleY(1)  rotate(0deg)}
+  49.99%{transform:scaleY(1)  rotate(135deg)}
+  50%   {transform:scaleY(-1) rotate(0deg)}
+  100%  {transform:scaleY(-1) rotate(-135deg)}
+}

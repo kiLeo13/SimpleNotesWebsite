@@ -1,0 +1,62 @@
+.main-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  background-color: var(--main-background-color);
+}
+
+.empty-content-box {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+.empty-content-box img {
+  height: 20%;
+  filter: grayscale(100%);
+  opacity: 0.2;
+  aspect-ratio: 1;
+}
+
+/* Customization for each note type */
+.note-frame-image {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.note-frame-text {
+  height: 100%;
+  width: 100%;
+  resize: none;
+  border: none;
+  outline: none;
+  background-color: rgba(0, 0, 0, 0.1);
+  color: rgb(163, 163, 163);
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.note-frame-pdf {
+  height: 100%;
+  width: 100%;
+  border: none;
+}
+
+.note-frame-audio {
+  width: 70%;
+}
+
+.note-frame-video {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  border: none;
+  outline: none;
+}
