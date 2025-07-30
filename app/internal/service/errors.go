@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"net/http"
 )
 
 type APIError struct {
@@ -14,6 +15,8 @@ var (
 	ErrorInternalServer = NewError(500, "Internal server error")
 
 	ErrorNotFound = NewError(404, "Resource not found")
+
+	ErrorDuplicateAlias = NewError(400, "Cannot have duplicate aliases")
 )
 
 func NewError(status int, msg string, args ...any) *APIError {
@@ -21,4 +24,9 @@ func NewError(status int, msg string, args ...any) *APIError {
 		msg = fmt.Sprintf(msg, args...)
 	}
 	return &APIError{Status: status, Message: msg}
+}
+
+func NewAliasLengthError(alias string, min, max int) *APIError {
+	return NewError(http.StatusBadRequest, "Notes aliases must be in range of [%d - %d], provided (%d): %s",
+		min, max, len(alias), alias)
 }
