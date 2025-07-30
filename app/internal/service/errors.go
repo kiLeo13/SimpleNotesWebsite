@@ -4,6 +4,11 @@ import (
 	"fmt"
 )
 
+type APIError struct {
+	Message string `json:"message"`
+	Status  int    `json:"status"`
+}
+
 var (
 	ErrorMalformedJSON  = NewError(400, "Malformed JSON body")
 	ErrorInternalServer = NewError(500, "Internal server error")
@@ -16,9 +21,4 @@ func NewError(status int, msg string, args ...any) *APIError {
 		msg = fmt.Sprintf(msg, args...)
 	}
 	return &APIError{Status: status, Message: msg}
-}
-
-type APIError struct {
-	Message string `json:"message"`
-	Status  int    `json:"status"`
 }
