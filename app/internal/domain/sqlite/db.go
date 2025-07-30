@@ -18,7 +18,7 @@ func Init() error {
 		return err
 	}
 
-	err = db.AutoMigrate(&entity.Note{})
+	err = db.AutoMigrate(&entity.Note{}, &entity.NoteAlias{})
 	if err != nil {
 		return err
 	}
