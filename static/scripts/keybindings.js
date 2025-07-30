@@ -1,3 +1,4 @@
+import board from "./board.js"
 import sidebar from "./sidebar.js"
 
 const keyBindings = {
@@ -7,7 +8,8 @@ const keyBindings = {
   },
   "t": runSearchBarFocus,
   "/": runSearchBarFocus,
-  ";": runSearchBarFocus
+  ";": runSearchBarFocus,
+  'escape': handleEscape,
 }
 
 function handleKeyDown(e) {
@@ -31,6 +33,17 @@ function getKeyCombo(e) {
   keys.push(e.key.toLowerCase())
 
   return keys.join('+').toLowerCase()
+}
+
+function handleEscape(_) {
+  const $search = $('#search-input')
+
+  if ($search.is(':focus')) {
+    $search.trigger('blur') // Removes focus
+    return
+  }
+
+  board.removeItem()
 }
 
 function runSearchBarFocus(e) {

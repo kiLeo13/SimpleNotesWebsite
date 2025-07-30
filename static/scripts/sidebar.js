@@ -21,11 +21,11 @@ function showNotes(notes) {
   const $container = $('#notes-container')
   _clearNotes()
   _showResultCount(notes.length)
+  _showLoader(false)
 
   for (const note of orderedNotes) {
     const $noteItem = _buildNoteItem(note)
     _hookEvents($noteItem)
-    _showLoader(false)
 
     $container.append($noteItem)
   }
@@ -50,7 +50,10 @@ function initSearchBar() {
     _clearNotes()
 
     const filtered = notes.filter(note => {
-      return note.name.toLowerCase().includes(search)
+      const name = note.name.toLowerCase()
+      const aliases = note.aliases
+
+      return name.includes(search) || _findsByAliases(aliases, search)
     })
     showNotes(filtered)
   })
@@ -59,6 +62,12 @@ function initSearchBar() {
 function _clearNotes() {
   const $notes = $('.note-item')
   $notes.remove()
+}
+
+function _findsByAliases(search) {
+  if (!aliases || aliases.length === 0) return false
+
+  return aliases.some(alias => alias.toLowerCase().includes(search))
 }
 
 function _hookEvents($note) {

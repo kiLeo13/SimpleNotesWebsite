@@ -15,19 +15,31 @@ body {
 .container {
   position: fixed;
   display: grid;
-  grid-template-columns: 20vw auto;
+  grid-template-columns: 270px auto;
   grid-template-rows: 1fr;
   inset: 0;
+}
+
+@media (min-width: 1600px) {
+  .container {
+    grid-template-columns: 320px auto;
+  }
+}
+
+@media (max-width: 800px) {
+  .container {
+    grid-template-columns: 230px auto;
+  }
 }
 
 .left-menu {
   background-color: var(--sidebar-background-color);
   border-right: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
-  align-items: stretch;
-  padding: 1vw;
-  padding-bottom: 0;
   flex-direction: column;
+  align-items: stretch;
+  padding: 13px;
+  padding-bottom: 0;
 }
 
 .menu-upper-controls {
@@ -39,7 +51,7 @@ body {
   height: 30px;
   background-color: rgba(0, 0, 0, 0.2);
   outline: none;
-  border: 0.3vw solid rgba(0, 0, 0, 0.2);
+  border: 0.3em solid rgba(0, 0, 0, 0.2);
   padding-left: 8px;
   color: rgb(158, 158, 158);
   border-radius: 0.4em;
@@ -51,7 +63,7 @@ body {
 }
 
 .menu-divider {
-  margin: 1vw 0;
+  margin: 15px 0;
   height: 1px;
   background-color: rgba(255, 255, 255, 0.1);
 }
@@ -114,15 +126,15 @@ body {
   display: flex;
   align-items: center;
   justify-content: end;
-  font-size: 0.7vw;
+  font-size: 1.3vh;
   position: fixed;
   background-color: rgba(0, 0, 0, 0.5);
   inset: auto 0 0 auto;
   padding: 0.18vh 0.4vh;
   height: 1.8vh;
   border-top-left-radius: 0.2em;
-  pointer-events: none;
   user-select: none;
+  cursor: pointer;
 }
 
 .sidebar-loader-container {

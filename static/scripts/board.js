@@ -14,8 +14,8 @@ function openNote(noteId) {
   }
   
   const $el = _createElement(note.type, note.content)
-  showEmptyIcon(false)
   removeItem()
+  showEmptyIcon(false)
   _hookEvents($el)
 
   $board.append($el)
@@ -33,6 +33,7 @@ function showEmptyIcon(show) {
 
 function removeItem() {
   $(`#${DEFAULT_DISPLAY_ID}`).remove()
+  showEmptyIcon(true)
 }
 
 function _createElement(type, value) {
