@@ -153,7 +153,6 @@ body {
   height: 1.8vh;
   border-top-left-radius: 0.2em;
   user-select: none;
-  cursor: pointer;
 }
 
 .sidebar-loader-container {
