@@ -23,6 +23,7 @@ body {
 }
 
 .left-menu {
+  position: relative;
   background-color: var(--sidebar-background-color);
   border-right: 1px solid rgba(255, 255, 255, 0.1);
   display: grid;
