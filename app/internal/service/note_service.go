@@ -24,7 +24,7 @@ type NoteResponse struct {
 }
 
 type NoteRequest struct {
-	Name    string   `json:"name" validate:"required,min=2,max=50"`
+	Name    string   `json:"name" validate:"required,min=2,max=80"`
 	Type    string   `json:"type" validate:"required,oneof=PDF IMAGE TEXT VIDEO AUDIO"`
 	Aliases []string `json:"aliases" validate:"required,max=50"`
 	Content string   `json:"content" validate:"required"`
@@ -44,13 +44,13 @@ func GetAllNotes() ([]*NoteResponse, *APIError) {
 
 	err := sqlite.DB.Find(&notes).Error
 	if err != nil {
-		log.Error("failed to fetch notes: %v", err)
+		log.Errorf("failed to fetch notes: %v", err)
 		return nil, ErrorInternalServer
 	}
 
 	err = sqlite.DB.Find(&aliases).Error
 	if err != nil {
-		log.Error("failed to fetch aliases: %v", err)
+		log.Errorf("failed to fetch aliases: %v", err)
 		return nil, ErrorInternalServer
 	}
 
@@ -86,7 +86,7 @@ func CreateNote(req *NoteRequest) (*NoteResponse, *APIError) {
 	})
 
 	if err != nil {
-		log.Error("failed to create note: %v", err)
+		log.Errorf("failed to create note: %v", err)
 		return nil, ErrorInternalServer
 	}
 
@@ -99,7 +99,7 @@ func DeleteNote(noteId int) *APIError {
 	err := sqlite.DB.First(&note, noteId).Error
 	isMissing := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !isMissing {
-		log.Error("failed to fetch note: %v", err)
+		log.Errorf("failed to fetch note: %v", err)
 		return ErrorInternalServer
 	}
 
@@ -109,7 +109,7 @@ func DeleteNote(noteId int) *APIError {
 
 	err = sqlite.DB.Delete(note, noteId).Error
 	if err != nil {
-		log.Error("failed to delete note: %v", err)
+		log.Errorf("failed to delete note: %v", err)
 		return ErrorInternalServer
 	}
 	return nil
