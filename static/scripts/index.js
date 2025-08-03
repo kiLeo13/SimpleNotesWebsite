@@ -5,7 +5,7 @@ $(async () => {
   const notes = await requests.fetchNotes(false)
   sidebar.showNotes(notes)
   
-  sidebar.initSearchBar()
+  sidebar.initSidebar()
   initEasterEgg()
 })
 

@@ -3,6 +3,8 @@ import entity from './entity.js'
 import requests from './requests.js'
 // Every function with a leading underscore is private
 
+const BASE_SIDEBAR_PADDING_PX = 13
+
 function focusSearch() {
   $('#search-input').trigger('focus')
 }
@@ -25,7 +27,7 @@ function showNotes(notes) {
 
   for (const note of orderedNotes) {
     const $noteItem = _buildNoteItem(note)
-    _hookEvents($noteItem)
+    _hookNoteEvents($noteItem)
 
     $container.append($noteItem)
   }
@@ -39,6 +41,11 @@ function removeNote(noteId) {
       $note.remove()
     }
   })
+}
+
+function initSidebar() {
+  initSearchBar()
+  initHoverActions()
 }
 
 function initSearchBar() {
@@ -59,6 +66,29 @@ function initSearchBar() {
   })
 }
 
+function initHoverActions() {
+  /*  
+   * This makes sure the content doesn't shift when the scrollbar appears.
+   * We reduce the padding when it's visible to keep everything
+   * in the same place and avoid that "jump" effect.
+   */
+  const $sidebar = $('.menu-lower-items')
+
+  $sidebar.on('mouseenter', function ()  {
+    const overflows = this.scrollHeight > this.clientHeight
+    
+    if (overflows) {
+      const scrollbarWidth = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--scrollbar-width'))
+      
+      $sidebar.css('padding-right', `${BASE_SIDEBAR_PADDING_PX - scrollbarWidth}px`)
+    }
+  })
+
+  $sidebar.on('mouseleave', () => {
+    $sidebar.css('padding-right', '')
+  })
+}
+
 function _clearNotes() {
   const $notes = $('.note-item')
   $notes.remove()
@@ -70,18 +100,23 @@ function _findsByAliases(search) {
   return aliases.some(alias => alias.toLowerCase().includes(search))
 }
 
-function _hookEvents($note) {
+function _hookNoteEvents($note) {
+  const fullSize = _resolveFitContentWidth($note)
+  const $sidebar = $('.left-menu')
+
   $($note).on('mouseenter', () => {
-    const fullSize = _resolveFitContentWidth($note)
+    const noteOuterWidth = $note.outerWidth()
 
     // If the new size is smaller than the default, don't resize
-    if (fullSize < $note.outerWidth()) return
+    if (fullSize < noteOuterWidth) return
 
-    $note.css('width', `${fullSize}px`)
+    const diff = fullSize - noteOuterWidth
+    const newSize = $sidebar.outerWidth() + diff
+    $sidebar.css('width', `${newSize}px`)
   })
   
   $($note).on('mouseleave', () => {
-    $note.css('width', '100%')
+    $sidebar.css('width', '')
   })
 
   $($note).on('click', () => {
@@ -134,5 +169,5 @@ export default {
   focusSearch,
   showNotes,
   removeNote,
-  initSearchBar
+  initSidebar
 }

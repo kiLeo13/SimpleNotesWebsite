@@ -9,7 +9,8 @@ const keyBindings = {
   "t": runSearchBarFocus,
   "/": runSearchBarFocus,
   ";": runSearchBarFocus,
-  'escape': handleEscape,
+  "ctrl+space": runSearchBarFocus,
+  "escape": handleEscape,
 }
 
 function handleKeyDown(e) {
@@ -26,11 +27,14 @@ function onDomReady() {
 
 function getKeyCombo(e) {
   const keys = []
+  const pressed = e.key.toLowerCase()
   if (e.ctrlKey) keys.push('ctrl')
   if (e.altKey) keys.push('alt')
+  if (e.spaceBar) keys.push('space')
   if (e.shiftKey) keys.push('shift')
   if (e.metaKey) keys.push('meta')
-  keys.push(e.key.toLowerCase())
+
+  keys.push(pressed === ' ' ? 'space' : pressed)
 
   return keys.join('+').toLowerCase()
 }

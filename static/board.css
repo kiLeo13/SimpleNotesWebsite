@@ -18,7 +18,7 @@
 }
 
 .empty-content-box img {
-  height: 20%;
+  height: 15%;
   filter: grayscale(100%);
   opacity: 0.2;
   aspect-ratio: 1;
