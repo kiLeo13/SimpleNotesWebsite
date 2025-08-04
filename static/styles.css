@@ -69,6 +69,10 @@ body {
   border-color: rgb(75, 53, 129);
 }
 
+#search-input::placeholder {
+  color: rgb(82, 82, 82);
+}
+
 .menu-divider {
   margin: 15px 0;
   height: 1px;
@@ -134,10 +138,14 @@ body {
 }
 
 .menu-footer-controls {
-  height: 50px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  box-sizing: border-box;
   margin-left: calc(var(--sidebar-padding) * -1);
   margin-right: calc(var(--sidebar-padding) * -1);
-  background-color: red;
+  background-color: var(--sidebar-item-background-color);
 }
 
 .legal-disclaimer {
