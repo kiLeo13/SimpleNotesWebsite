@@ -55,6 +55,10 @@ function createVideoDisplay(value, noteId) {
     .attr('src', value)
 }
 
+function getBlackBackground() {
+  return $('<div>').addClass('black-background-container')
+}
+
 export default {
   buildNoteItem,
   createImageDisplay,

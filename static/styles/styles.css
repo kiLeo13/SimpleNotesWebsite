@@ -5,6 +5,7 @@
   --sidebar-item-background-color: rgb(19, 17, 25);
   --sidebar-item-hover-background-color: rgb(15, 14, 20);
   --sidebar-padding: 13px;
+  --black-background-container-zindex: 10;
 }
 
 * {
@@ -19,6 +20,14 @@
 body {
   margin: 0;
   padding: 0;
+}
+
+.black-background-container {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  user-select: none;
+  z-index: var(--black-background-container-zindex);
 }
 
 .container {
@@ -166,6 +175,7 @@ body {
   color: rgba(0, 0, 0, 0.6);
   font-weight: 700;
   cursor: pointer;
+  user-select: none;
   transition: scale 0.3s;
 }
 
