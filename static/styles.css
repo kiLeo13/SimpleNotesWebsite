@@ -141,11 +141,35 @@ body {
   height: 60px;
   display: flex;
   align-items: center;
-  padding: 15px;
+  padding: 10px;
   box-sizing: border-box;
   margin-left: calc(var(--sidebar-padding) * -1);
   margin-right: calc(var(--sidebar-padding) * -1);
   background-color: var(--sidebar-item-background-color);
+}
+
+.footer-control-button {
+  height: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(104, 93, 133);
+  border: none;
+  border-radius: 8px;
+  font-size: 35px;
+  color: rgba(0, 0, 0, 0.6);
+  font-weight: 700;
+  cursor: pointer;
+  transition: scale 0.3s;
+}
+
+.footer-control-button:hover {
+  scale: 105%;
+}
+
+.footer-control-button:active {
+  scale: 97%;
 }
 
 .legal-disclaimer {
