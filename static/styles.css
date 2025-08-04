@@ -11,6 +11,11 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
+*:disabled {
+  opacity: 20% !important;
+  cursor: not-allowed !important;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -164,11 +169,11 @@ body {
   transition: scale 0.3s;
 }
 
-.footer-control-button:hover {
+.footer-control-button:hover:not(:disabled) {
   scale: 105%;
 }
 
-.footer-control-button:active {
+.footer-control-button:active:not(:disabled) {
   scale: 97%;
 }
 
