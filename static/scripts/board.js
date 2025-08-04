@@ -1,3 +1,4 @@
+import entity from './entity.js'
 import requests from './requests.js'
 import sidebar from './sidebar.js'
 
@@ -61,11 +62,11 @@ function _createElement(note) {
   let $el
 
   switch (type) {
-    case 'IMAGE': $el = _createImage(value, noteId); break
-    case 'TEXT':  $el = _createText(value, noteId); break
-    case 'PDF':   $el = _createPdf(value, noteId); break
-    case 'AUDIO': $el = _createAudio(value, noteId); break
-    case 'VIDEO': $el = _createVideo(value, noteId); break
+    case 'IMAGE': $el = entity.createImageDisplay(value, noteId); break
+    case 'TEXT':  $el = entity.createTextDisplay(value, noteId); break
+    case 'PDF':   $el = entity.createPdfDisplay(value, noteId); break
+    case 'AUDIO': $el = entity.createAudioDisplay(value, noteId); break
+    case 'VIDEO': $el = entity.createVideoDisplay(value, noteId); break
 
     default: {
       alert(`Não foi possível abrir a anotação. Tipo desconhecido: ${type}.`)
@@ -82,50 +83,6 @@ function _hookEvents($el) {
       showEmptyIcon(true)
     }
   })
-}
-
-function _createImage(value, noteId) {
-  return $('<img>')
-    .attr('id', DEFAULT_DISPLAY_ID)
-    .attr('itemid', noteId)
-    .addClass('note-frame-image')
-    .attr('src', value)
-}
-
-function _createText(value, noteId) {
-  return $('<textarea>')
-    .attr('id', DEFAULT_DISPLAY_ID)
-    .attr('itemid', noteId)
-    .attr('readonly', true)
-    .addClass('note-frame-text')
-    .text(value)
-}
-
-function _createPdf(value, noteId) {
-  return $('<iframe>')
-    .attr('id', DEFAULT_DISPLAY_ID)
-    .attr('itemid', noteId)
-    .addClass('note-frame-pdf')
-    .attr('src', value)
-    .attr('type', 'application/pdf')
-}
-
-function _createAudio(value, noteId) {
-  return $('<audio>')
-    .attr('id', DEFAULT_DISPLAY_ID)
-    .attr('itemid', noteId)
-    .addClass('note-frame-audio')
-    .attr('controls', true)
-    .attr('src', value)
-}
-
-function _createVideo(value, noteId) {
-  return $('<video>')
-    .attr('id', DEFAULT_DISPLAY_ID)
-    .attr('itemid', noteId)
-    .addClass('note-frame-video')
-    .attr('controls', true)
-    .attr('src', value)
 }
 
 export default { openNote, showEmptyIcon, removeItem }
