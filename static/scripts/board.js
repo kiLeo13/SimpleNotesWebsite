@@ -85,4 +85,9 @@ function _hookEvents($el) {
   })
 }
 
-export default { openNote, showEmptyIcon, removeItem }
+export default {
+  DEFAULT_DISPLAY_ID,
+  openNote,
+  showEmptyIcon,
+  removeItem
+}

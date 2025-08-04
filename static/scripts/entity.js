@@ -1,3 +1,5 @@
+import board from './board.js'
+
 function buildNoteItem(data) {
   return $('<div>')
     .addClass('note-item')
@@ -11,7 +13,7 @@ function buildNoteItem(data) {
 
 function createImageDisplay(value, noteId) {
   return $('<img>')
-    .attr('id', DEFAULT_DISPLAY_ID)
+    .attr('id', board.DEFAULT_DISPLAY_ID)
     .attr('itemid', noteId)
     .addClass('note-frame-image')
     .attr('src', value)
@@ -19,7 +21,7 @@ function createImageDisplay(value, noteId) {
 
 function createTextDisplay(value, noteId) {
   return $('<textarea>')
-    .attr('id', DEFAULT_DISPLAY_ID)
+    .attr('id', board.DEFAULT_DISPLAY_ID)
     .attr('itemid', noteId)
     .attr('readonly', true)
     .addClass('note-frame-text')
@@ -28,7 +30,7 @@ function createTextDisplay(value, noteId) {
 
 function createPdfDisplay(value, noteId) {
   return $('<iframe>')
-    .attr('id', DEFAULT_DISPLAY_ID)
+    .attr('id', board.DEFAULT_DISPLAY_ID)
     .attr('itemid', noteId)
     .addClass('note-frame-pdf')
     .attr('src', value)
@@ -37,7 +39,7 @@ function createPdfDisplay(value, noteId) {
 
 function createAudioDisplay(value, noteId) {
   return $('<audio>')
-    .attr('id', DEFAULT_DISPLAY_ID)
+    .attr('id', board.DEFAULT_DISPLAY_ID)
     .attr('itemid', noteId)
     .addClass('note-frame-audio')
     .attr('controls', true)
@@ -46,7 +48,7 @@ function createAudioDisplay(value, noteId) {
 
 function createVideoDisplay(value, noteId) {
   return $('<video>')
-    .attr('id', DEFAULT_DISPLAY_ID)
+    .attr('id', board.DEFAULT_DISPLAY_ID)
     .attr('itemid', noteId)
     .addClass('note-frame-video')
     .attr('controls', true)
