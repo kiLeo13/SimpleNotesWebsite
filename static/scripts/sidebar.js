@@ -130,13 +130,18 @@ function _buildNoteItem(note) {
 }
 
 function _showResultCount(count) {
-  const $item = $('#search-result-count')
+  if (typeof count !== 'number')
+    throw new TypeError(`Result Count is expected to be a number, but a ${typeof count} was provided: ${count}`)
 
-  if (count === 1) {
-    $item.text('1 resultado encontrado')
-  } else {
-    $item.text(`${count} resultados encontrados`)
-  }
+  const $item = $('#search-result-count')
+  $item.empty()
+
+  const label = count === 1 ? 'resultado encontrado' : 'resultados encontrados'
+  const $bold = $('<span>')
+    .text(count)
+    .css('font-weight', 600)
+
+  $item.append($bold).append(` ${label}`)
 }
 
 function _showLoader(show) {
