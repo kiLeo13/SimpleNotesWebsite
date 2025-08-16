@@ -1,4 +1,24 @@
 import board from './board.js'
+import { Modal, ActionRow, TextInputComponent, DropdownComponent, FileInputComponent } from './modals/modals.js'
+import utils from './utils.js'
+
+const MIN_NOTE_ALIAS_LENGTH = 2
+const MAX_NOTE_ALIAS_LENGTH = 30
+const MAX_NOTE_ALIASES = 50
+const MAX_NOTE_FILE_SIZE_BYTES = 100 * 1024 * 1024
+const MIN_NOTE_NAME_LENGTH = 2
+const MAX_NOTE_NAME_LENGTH = 80
+const VISIBLITY_OPTIONS = [
+  { value: 'PUBLIC', text: 'Pública' },
+  { value: 'CONFIDENTIAL', text: 'Confidencial' }
+]
+const NOTE_TYPES = [
+  { value: "AUDIO", text: "Áudio" },
+  { value: "IMAGE", text: "Imagem" },
+  { value: "PDF", text: "PDF" },
+  { value: "TEXT", text: "Texto", defaultOption: true },
+  { value: "VIDEO", text: "Vídeo" }
+]
 
 function buildNoteItem(data) {
   return $('<div>')
@@ -55,8 +75,68 @@ function createVideoDisplay(value, noteId) {
     .attr('src', value)
 }
 
-function getBlackBackground() {
-  return $('<div>').addClass('black-background-container')
+function buildNoteUploadScreen() {
+  const $title = new TextInputComponent(true)
+    .setLabel('Nome', true)
+    .setMaxLength(MAX_NOTE_NAME_LENGTH)
+    .setMinLength(MIN_NOTE_NAME_LENGTH)
+
+  const $type = new DropdownComponent()
+    .setLabel('Tipo', true)
+    .addOptions(NOTE_TYPES)
+  const $visibility = new DropdownComponent()
+    .setHelpText('A visibilidade de uma nota é apenas para fins de organização e ' +
+      'não afeta a privacidade a nível de permissões de visualização do arquivo.')
+    .setLabel('Visibilidade', true)
+    .addOptions(VISIBLITY_OPTIONS)
+
+  const $aliases = new TextInputComponent()
+    .setLabel('Apelidos')
+    .setPlaceholder('Separe os apelidos por espaço')
+    .setMinLength(MIN_NOTE_ALIAS_LENGTH)
+    .setMaxLength(MAX_NOTE_ALIAS_LENGTH * MAX_NOTE_ALIASES)
+
+  const $content = new FileInputComponent()
+    .setValidator((e) => modalFileValidator(e, $content))
+    .setHelpText(`Arquivo máximo: ${utils.getPrettySize(MAX_NOTE_FILE_SIZE_BYTES)}.`)
+    .setLabel('Conteúdo', true)
+
+  return new Modal('Criar Nota')
+    .addRow(new ActionRow().addItem($title))
+    .addRow(new ActionRow().addItem($type, $visibility))
+    .addRow(new ActionRow().addItem($aliases))
+    .addRow(new ActionRow().addItem($content))
+    .render()
+}
+
+/**
+ * @param {JQuery.TriggeredEvent<HTMLElement, undefined, HTMLElement, HTMLElement>} e The event triggered.
+ */
+function modalFileValidator(e, $component) {
+  const $parent = $(e.target).parent()
+  const file = e.target.files?.[0]
+  
+  // Maybe the array is empty? Better safe than sorry?
+  if (!file) return null
+
+  const fileTooBig = file.size > MAX_NOTE_FILE_SIZE_BYTES
+  Modal.setValid($parent, !fileTooBig)
+
+  return fileTooBig ? getFileTooBigErrorMessage(file.size) : null
+}
+
+function getFileTooBigErrorMessage(size) {
+  return `Arquivo grande demais: ${utils.getPrettySize(size)}, máx.: ${utils.getPrettySize(MAX_NOTE_FILE_SIZE_BYTES)}`
+}
+
+function getBlackBackground(centered = true) {
+  const $el = $('<div>').addClass('black-background-container')
+
+  if (centered) {
+    $el.addClass('centered-screen')
+  }
+  
+  return $el
 }
 
 export default {
@@ -65,5 +145,7 @@ export default {
   createTextDisplay,
   createPdfDisplay,
   createAudioDisplay,
-  createVideoDisplay
+  createVideoDisplay,
+  buildNoteUploadScreen,
+  getBlackBackground
 }
