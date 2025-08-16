@@ -33,8 +33,13 @@ function openNote(noteId) {
 }
 
 function isNoteOpen(noteId) {
+  const openId = getOpenNoteId() 
+  return openId && openId == noteId
+}
+
+function getOpenNoteId() {
   const $el = $(`#${DEFAULT_DISPLAY_ID}`)
-  return $el.length > 0 && $el.attr('itemid') == noteId
+  return $el.length > 0 ? $el.attr('itemid') : null
 }
 
 function showEmptyIcon(show) {
@@ -89,5 +94,7 @@ export default {
   DEFAULT_DISPLAY_ID,
   openNote,
   showEmptyIcon,
+  isNoteOpen,
+  getOpenNoteId,
   removeItem
 }
