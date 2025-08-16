@@ -1,4 +1,5 @@
 import board from "./board.js"
+import modals from "./modals/modals.js"
 import sidebar from "./sidebar.js"
 
 const keyBindings = {
@@ -6,7 +7,6 @@ const keyBindings = {
     e.preventDefault()
     sidebar.reloadNotes()
   },
-  "t": runSearchBarFocus,
   "/": runSearchBarFocus,
   ";": runSearchBarFocus,
   "ctrl+space": runSearchBarFocus,
@@ -39,11 +39,11 @@ function getKeyCombo(e) {
   return keys.join('+').toLowerCase()
 }
 
-function handleEscape(_) {
-  const $search = $('#search-input')
+function handleEscape() {
+  const $input = $('input')
 
-  if ($search.is(':focus')) {
-    $search.trigger('blur') // Removes focus
+  if ($input.is(':focus')) {
+    $input.trigger('blur') // Removes focus
     return
   }
 
@@ -51,9 +51,9 @@ function handleEscape(_) {
 }
 
 function runSearchBarFocus(e) {
-  const $search = $('#search-input')
+  const $input = $('input')
 
-  if (!$search.is(':focus')) {
+  if (!$input.is(':focus') && !modals.isModalDisplayed()) {
     e.preventDefault()
     sidebar.focusSearch()
   }
