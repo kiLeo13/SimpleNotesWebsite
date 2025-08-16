@@ -1,5 +1,6 @@
 import board from './board.js'
 import entity from './entity.js'
+import modals from './modals/modals.js'
 import requests from './requests.js'
 // Every function with a leading underscore is private
 
@@ -46,11 +47,42 @@ function removeNote(noteId) {
 function initSidebar() {
   initSearchBar()
   initHoverActions()
+  initUploadButtonListener()
+}
+
+function toggleSearchBar(enable = true) {
+  const $bar = $('#search-input')
+  const isDisabled = $bar.is(':disabled')
+
+  if (enable && isDisabled) {
+    $bar.removeAttr('disabled')
+  }
+
+  if (!enable && !isDisabled) {
+    $bar.attr('disabled', 'true')
+  }
+}
+
+function initUploadButtonListener() {
+  $('#create-note-button').on('click', () => {
+    const $blackscreen = entity.getBlackBackground(true)
+    const $uploadscreen = entity.buildNoteUploadScreen()
+
+    $uploadscreen.on('submit', (e) => {
+      e.preventDefault()
+
+      $blackscreen.remove()
+    })
+
+    $blackscreen.append($uploadscreen)
+    $blackscreen.appendTo('body')
+  })
 }
 
 function initSearchBar() {
   const $bar = $('#search-input')
-  
+
+  toggleSearchBar(true)
   $bar.on('input', async () => {
     const search = $bar.val().toLowerCase()
     const notes = await requests.fetchNotes()
