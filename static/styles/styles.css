@@ -189,15 +189,11 @@ body {
   font-weight: 700;
   cursor: pointer;
   user-select: none;
-  transition: scale 0.3s;
+  transition: background-color 0.3s;
 }
 
 .footer-control-button:hover:not(:disabled) {
-  scale: 105%;
-}
-
-.footer-control-button:active:not(:disabled) {
-  scale: 97%;
+  background-color: rgb(130, 118, 161);
 }
 
 .legal-disclaimer {
