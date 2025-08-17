@@ -68,11 +68,12 @@ function createAudioDisplay(value, noteId) {
 
 function createVideoDisplay(value, noteId) {
   return $('<video>')
+    .addClass('note-frame-video')
     .attr('id', board.DEFAULT_DISPLAY_ID)
     .attr('itemid', noteId)
-    .addClass('note-frame-video')
     .attr('controls', true)
     .attr('src', value)
+    .prop('muted', true)
 }
 
 function buildNoteUploadScreen() {
@@ -93,6 +94,7 @@ function buildNoteUploadScreen() {
   const $aliases = new TextInputComponent()
     .setLabel('Apelidos')
     .setPlaceholder('Separe os apelidos por espaço')
+    .setValidator(handleAliasesValidation)
     .setMinLength(MIN_NOTE_ALIAS_LENGTH)
     .setMaxLength(MAX_NOTE_ALIAS_LENGTH * MAX_NOTE_ALIASES)
 
@@ -107,6 +109,39 @@ function buildNoteUploadScreen() {
     .addRow(new ActionRow().addItem($aliases))
     .addRow(new ActionRow().addItem($content))
     .render()
+}
+
+function handleAliasesValidation(e) {
+  const $el = $(e.target)
+  const val = $el.val()
+
+  if (!val || val.trim() === '') {
+    return null
+  }
+
+  const words = val.split(' ')  
+  if (words.length > 50) {
+    return `Máximo de apelidos: ${MAX_NOTE_ALIASES}, fornecido: ${words.length}`
+  }
+  
+  for (const alias of words) {
+    const errMsg = checkAlias(alias)
+    if (errMsg) {
+      return errMsg
+    }
+  }
+
+  $el.val(val.toLowerCase())
+  return null
+}
+
+function checkAlias(val) {
+  if (val.trim() === '') return 'Apelido fornecido aparenta estar vazio'
+
+  const length = val.length
+  if (length < MIN_NOTE_ALIAS_LENGTH) return `Apelidos precisam ter pelo menos ${MIN_NOTE_ALIAS_LENGTH} caracteres`
+  if (length > MAX_NOTE_ALIAS_LENGTH) return `Apelidos podem ter, no máximo, ${MAX_NOTE_ALIAS_LENGTH} caracteres`
+  return null
 }
 
 /**
