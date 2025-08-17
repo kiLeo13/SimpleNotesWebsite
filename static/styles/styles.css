@@ -3,6 +3,7 @@
   --main-background-color: rgb(30, 27, 37);
   --scrollbar-width: 4px;
   --sidebar-item-background-color: rgb(19, 17, 25);
+  --sidebar-bottom-background-color: rgb(13, 12, 17);
   --sidebar-item-hover-border-color: rgb(56, 51, 70);
   --sidebar-item-hover-background-color: rgb(15, 14, 20);
   --sidebar-padding: 13px;
@@ -161,7 +162,6 @@ body {
 }
 
 .menu-footer-controls {
-  margin-bottom: -30px;
   height: 60px;
   display: flex;
   align-items: center;
@@ -169,14 +169,10 @@ body {
   box-sizing: border-box;
   margin-left: calc(var(--sidebar-padding) * -1);
   margin-right: calc(var(--sidebar-padding) * -1);
-  background-color: var(--sidebar-item-background-color);
+  background-color: var(--sidebar-bottom-background-color);
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
   transition: margin-bottom 0.5s;
-}
-
-.menu-footer-controls:hover {
-  margin-bottom: 0px;
 }
 
 .footer-control-button {
