@@ -1,6 +1,13 @@
 import checks from '../checks.js'
 import utils from '../utils.js'
 
+/**
+ * This class name is not used for any style purposes, its purely to be easily
+ * iterable and faster lookups.
+ */
+const MODAL_FORM_VALIDATOR_CLASS = 'modal-form-input'
+const MODAL_FORM_INVALID_INPUT = 'invalid-modal-input'
+
 function getModals() {
   return $('.modal-screen-container')
 }
@@ -23,16 +30,8 @@ class Modal {
     this.title = title
   }
 
-  /**
-   * Sets the given field with a valid/invalid style.
-   * 
-   * This method **DOES NOT** change any browser/button submission behavior.
-   * 
-   * @param {JQuery<HTMLElement>} $field The field to have its appearance changed.
-   * @param {boolean} value Whether the field is valid (`true`) or not (`false`).
-   */
-  static setValid($field, value) {
-    setValidField($field, value)
+  isAvailableForSubmission() {
+    return !$(`#${MODAL_FORM_VALIDATOR_CLASS}`).hasClass(MODAL_FORM_INVALID_INPUT)
   }
   
   addRow(row) {
@@ -117,6 +116,9 @@ class ActionRow {
       const $component = item.buildInput()
       const $errorField = item.getErrorField()
 
+      // Adding required class for validation
+      $component.addClass(MODAL_FORM_VALIDATOR_CLASS)
+
       $container.append($label, $component, $errorField)
       $row.append($container)
     }
@@ -195,14 +197,12 @@ class AbstractComponent {
    * 
    * This method changes ONLY the style of the input, NOT its behavior.
    * 
-   * @param {boolean} valid Defines if its valid (`true`) or invalid (`false`).
-   * @param {string|undefined|null} reason The reason of the invalidity of this field.
-   * @throws {Error} If `true` is provided for the `valid` param and a message is provided or vice versa, that is,
-   * if the field is INVALID and no message is provided.
+   * @param {string} reason Defines the reaon of the error,
+   * if this parameter is `null`, then the field is considered as VALID.
    */
-  setValid(valid, reason) {
+  setValid(reason) {
     const $field = this.getJQueryField()
-    Modal.setValid($field, valid)
+    setFieldValidStyle($field, !reason)
     setErrorMessage(this.$errorField, reason)
   }
 
@@ -222,10 +222,7 @@ class AbstractComponent {
     if (this.validator && defaultEvent) {
       $el.on(defaultEvent, (e) => {
         const msg = this.validator(e)
-        const isValid = !msg
-
-        setValidField($el, isValid)
-        setErrorMessage(this.$errorField, msg)
+        this.setValid(msg)
       })
     }
 
@@ -267,10 +264,6 @@ class DropdownComponent extends AbstractComponent {
   
   getDefaultEvent() {
     return 'change'
-  }
-
-  setValid(valid) {
-    Modal.setValid($(`#${this.id}`), valid)
   }
 
   buildInput() {
@@ -356,16 +349,17 @@ class TextInputComponent extends AbstractComponent {
 class FileInputComponent extends AbstractComponent {
   constructor() {
     super(`file-input-${randomId()}`)
-    this.$chosenFiles = []
   }
 
   getDefaultEvent() {
     return 'change'
   }
 
-  // setValid(flag) {
-    
-  // }
+  setValid(reason) {
+    const $field = this.getJQueryField().parent()
+    setFieldValidStyle($field, !reason)
+    setErrorMessage(this.$errorField, reason)
+  }
 
   buildInput() {
     const $label = $('<label>')
@@ -509,13 +503,11 @@ function setErrorMessage($field, value) {
   $field.text(value || '')
 }
 
-function setValidField($el, valid) {
-  const className = 'invalid-modal-input'
-  
+function setFieldValidStyle($el, valid) {
   if (valid) {
-    $el.removeClass(className)
+    $el.removeClass(MODAL_FORM_INVALID_INPUT)
   } else {
-    $el.addClass(className)
+    $el.addClass(MODAL_FORM_INVALID_INPUT)
   }
 }
 

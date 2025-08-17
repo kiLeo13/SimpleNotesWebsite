@@ -148,15 +148,12 @@ function checkAlias(val) {
  * @param {JQuery.TriggeredEvent<HTMLElement, undefined, HTMLElement, HTMLElement>} e The event triggered.
  */
 function modalFileValidator(e, $component) {
-  const $parent = $(e.target).parent()
   const file = e.target.files?.[0]
   
   // Maybe the array is empty? Better safe than sorry?
   if (!file) return null
 
   const fileTooBig = file.size > MAX_NOTE_FILE_SIZE_BYTES
-  Modal.setValid($parent, !fileTooBig)
-
   return fileTooBig ? getFileTooBigErrorMessage(file.size) : null
 }
 
