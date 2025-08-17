@@ -84,7 +84,7 @@ function initSearchBar() {
 
   toggleSearchBar(true)
   $bar.on('input', async () => {
-    const search = $bar.val().toLowerCase()
+    const search = $bar.val().trim().toLowerCase()
     const notes = await requests.fetchNotes()
     _clearNotes()
 
@@ -126,8 +126,10 @@ function _clearNotes() {
   $notes.remove()
 }
 
-function _findsByAliases(search) {
+function _findsByAliases(aliases, search) {
   if (!aliases || aliases.length === 0) return false
+
+  if (!search || search === '') return true
 
   return aliases.some(alias => alias.toLowerCase().includes(search))
 }
