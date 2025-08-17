@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +15,8 @@
     "jquery": "^3.7.1"
   },
   "devDependencies": {
-    "@types/jquery": "^3.5.32"
+    "@types/jquery": "^3.5.32",
+    "terser": "^5.43.1",
+    "vite": "^7.1.2"
   }
 }
