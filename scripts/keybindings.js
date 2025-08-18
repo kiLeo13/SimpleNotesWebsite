@@ -1,3 +1,4 @@
+import $ from "jquery"
 import board from "./board.js"
 import modals from "./modals/modals.js"
 import sidebar from "./sidebar.js"

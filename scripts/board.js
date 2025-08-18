@@ -1,3 +1,4 @@
+import $ from "jquery"
 import entity from './entity.js'
 import requests from './requests.js'
 import sidebar from './sidebar.js'

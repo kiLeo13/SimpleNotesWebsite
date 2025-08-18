@@ -1,3 +1,4 @@
+import $ from "jquery"
 import checks from '../checks.js'
 import utils from '../utils.js'
 

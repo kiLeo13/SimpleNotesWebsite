@@ -1,3 +1,4 @@
+import $ from "jquery"
 import board from './board.js'
 import { Modal, ActionRow, TextInputComponent, DropdownComponent, FileInputComponent } from './modals/modals.js'
 import utils from './utils.js'

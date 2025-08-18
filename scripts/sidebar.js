@@ -1,8 +1,7 @@
+import $ from "jquery"
 import board from './board.js'
 import entity from './entity.js'
-import modals from './modals/modals.js'
 import requests from './requests.js'
-// Every function with a leading underscore is private
 
 const BASE_SIDEBAR_PADDING_PX = 13
 
