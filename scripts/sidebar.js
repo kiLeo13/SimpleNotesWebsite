@@ -134,24 +134,6 @@ function _findsByAliases(aliases, search) {
 }
 
 function _hookNoteEvents($note) {
-  const fullSize = _resolveFitContentWidth($note)
-  const $sidebar = $('.left-menu')
-
-  $($note).on('mouseenter', () => {
-    const noteOuterWidth = $note.outerWidth()
-
-    // If the new size is smaller than the default, don't resize
-    if (fullSize < noteOuterWidth) return
-
-    const diff = fullSize - noteOuterWidth
-    const newSize = $sidebar.outerWidth() + diff
-    $sidebar.css('width', `${newSize}px`)
-  })
-  
-  $($note).on('mouseleave', () => {
-    $sidebar.css('width', '')
-  })
-
   $($note).on('click', () => {
     const noteId = $note.attr('itemid')
     board.openNote(noteId)
