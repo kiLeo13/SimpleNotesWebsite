@@ -1,7 +1,7 @@
 import $ from "jquery"
-import board from './board.js'
-import entity from './entity.js'
-import requests from './requests.js'
+import board from "./board.js"
+import entity from "./entity.js"
+import requests from "./requests.js"
 
 const BASE_SIDEBAR_PADDING_PX = 13
 

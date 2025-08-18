@@ -1,4 +1,4 @@
-import checks from './checks.js'
+import checks from "./checks.js"
 
 const BASE_URL = 'https://qrbe2ko4o5.execute-api.us-east-2.amazonaws.com/v1'
 const noteCache = {}

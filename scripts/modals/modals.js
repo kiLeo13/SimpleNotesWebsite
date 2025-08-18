@@ -1,6 +1,6 @@
 import $ from "jquery"
-import checks from '../checks.js'
-import utils from '../utils.js'
+import checks from "../checks.js"
+import utils from "../utils.js"
 
 /**
  * This class name is not used for any style purposes, its purely to be easily

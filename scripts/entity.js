@@ -1,7 +1,7 @@
 import $ from "jquery"
-import board from './board.js'
-import { Modal, ActionRow, TextInputComponent, DropdownComponent, FileInputComponent } from './modals/modals.js'
-import utils from './utils.js'
+import board from "./board.js"
+import { Modal, ActionRow, TextInputComponent, DropdownComponent, FileInputComponent } from "./modals/modals.js"
+import utils from "./utils.js"
 
 const MIN_NOTE_ALIAS_LENGTH = 2
 const MAX_NOTE_ALIAS_LENGTH = 30

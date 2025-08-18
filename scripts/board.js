@@ -1,7 +1,7 @@
 import $ from "jquery"
-import entity from './entity.js'
-import requests from './requests.js'
-import sidebar from './sidebar.js'
+import entity from "./entity.js"
+import requests from "./requests.js"
+import sidebar from "./sidebar.js"
 
 const DEFAULT_DISPLAY_ID = 'display-box'
 const DEFAULT_BACKGROUND_COLOR = 'rgb(30, 27, 37)'

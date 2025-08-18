@@ -1,8 +1,8 @@
-import $ from 'jquery'
+import $ from "jquery"
 
-import board from './board.js'
-import requests from './requests.js'
-import sidebar from './sidebar.js'
+import board from "./board.js"
+import requests from "./requests.js"
+import sidebar from "./sidebar.js"
 
 const DOCUMENT_TITLE = 'Consórcio Magalu - Anotações'
 
