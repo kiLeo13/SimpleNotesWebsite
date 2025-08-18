@@ -15,7 +15,7 @@ const noteCache = {}
  * sent to the server, an empty array will be returned.
  * 
  * @param {boolean} useCache Whether this method should use the cache to return the values or not.
- * @returns {Array<Note>} The notes given the provided params.
+ * @returns {Promise<Array<Note>>} The notes given the provided params.
  */
 async function fetchNotes(useCache = true) {
   if (useCache) return Object.values(noteCache)
