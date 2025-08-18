@@ -137,6 +137,7 @@ body {
   color: rgb(173, 173, 173);
   box-shadow: 0.2em 0.2em 10px rgba(0, 0, 0, 0.125);
   user-select: none;
+  line-height: 130%;
   z-index: 2;
   transition:
     scale 0.3s,
