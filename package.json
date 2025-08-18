@@ -12,7 +12,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "jquery": "^3.7.1"
+    "jquery": "^3.7.1",
+    "marked": "^16.2.0"
   },
   "devDependencies": {
     "@types/jquery": "^3.5.32",
