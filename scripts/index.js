@@ -1,6 +1,7 @@
 import $ from "jquery"
 
 import board from "./board.js"
+import keybindings from "./keybindings.js"
 import requests from "./requests.js"
 import sidebar from "./sidebar.js"
 
@@ -11,6 +12,8 @@ $(async () => {
   sidebar.showNotes(notes)
   
   sidebar.initSidebar()
+  keybindings.initKeybindings()
+
   initEasterEgg()
   runCyclicDocumentTitle()
 })

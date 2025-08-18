@@ -22,7 +22,7 @@ function handleKeyDown(e) {
   }
 }
 
-function onDomReady() {
+function initKeybindings() {
   $(document).on('keydown', handleKeyDown)
 }
 
@@ -60,4 +60,4 @@ function runSearchBarFocus(e) {
   }
 }
 
-$(onDomReady)
+export default { initKeybindings }
