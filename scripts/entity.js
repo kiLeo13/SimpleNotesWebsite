@@ -2,6 +2,8 @@ import $ from "jquery"
 import board from "./board.js"
 import { Modal, ActionRow, TextInputComponent, DropdownComponent, FileInputComponent } from "./modals/modals.js"
 import utils from "./utils.js"
+import { marked } from "marked"
+import DOMPurify from "dompurify"
 
 const MIN_NOTE_ALIAS_LENGTH = 2
 const MAX_NOTE_ALIAS_LENGTH = 30
@@ -41,12 +43,14 @@ function createImageDisplay(value, noteId) {
 }
 
 function createTextDisplay(value, noteId) {
-  return $('<textarea>')
+  const raw = marked.parse(value)
+  const clean = DOMPurify.sanitize(raw)
+
+  return $('<div>')
     .attr('id', board.DEFAULT_DISPLAY_ID)
     .attr('itemid', noteId)
-    .attr('readonly', true)
     .addClass('note-frame-text')
-    .text(value)
+    .html(clean)
 }
 
 function createPdfDisplay(value, noteId) {
