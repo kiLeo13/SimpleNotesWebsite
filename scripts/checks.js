@@ -42,6 +42,24 @@ function positive(value, name) {
 }
 
 /**
+ * Assures the `value` is a valid choice (defined by the `choices` parameter).
+ * 
+ * @template T
+ * @param {T} value The value to be checked if it is present in the list of choices.
+ * @param  {...T} choices The valid choices.
+ */
+function checkCase(value, ...choices) {
+  notNull(value, 'Value')
+  notNull(choices, 'Choices')
+
+  if (choices.length === 0) return false
+
+  if (!choices.includes(value)) {
+    throw new Error(`Invalid choice/option: "${value}" IS NOT present in: ${choices.join(', ')}`)
+  }
+}
+
+/**
  * Assures the `expression` evaluates to `true`, otherwise this method fails.
  * 
  * @param {boolean} expression The expression to be checked.
@@ -53,4 +71,4 @@ function check(expression, message) {
   }
 }
 
-export default { notNull, notEmpty, positive, check }
+export default { notNull, notEmpty, positive, checkCase, check }
