@@ -17,11 +17,10 @@
   user-select: none;
 }
 
-.empty-content-box img {
-  height: 15%;
-  filter: grayscale(100%);
-  opacity: 0.2;
-  aspect-ratio: 1;
+.empty-content-box > span {
+  color: rgba(180, 180, 180, 0.5);
+  font-size: 30px;
+  letter-spacing: 2px;
 }
 
 /* Customization for each note type */
