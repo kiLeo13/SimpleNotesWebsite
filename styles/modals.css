@@ -14,6 +14,7 @@
   background-color: rgb(36, 33, 46);
   border-radius: 10px;
   box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+  animation: smoothToggleModal 300ms cubic-bezier(0.25, 0.1, 0.25, 1.5) forwards;
 }
 
 .modal-screen-contents {
@@ -293,4 +294,17 @@ textarea#modal-content-in {
   color: rgb(136, 136, 136);
   font-size: 2rem;
   transform: rotate(45deg);
+}
+
+/* My animations for modals */
+@keyframes smoothToggleModal {
+  from {
+    opacity: 0;
+    scale: 70%;
+  }
+  
+  to {
+    opacity: 1;
+    scale: 100%;
+  }
 }

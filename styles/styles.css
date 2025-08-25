@@ -57,6 +57,7 @@ body {
   user-select: none;
   backdrop-filter: blur(3px);
   z-index: var(--black-background-container-zindex);
+  animation: smoothBackgroundLoad 200ms ease-in forwards;
 }
 
 .centered-screen {
@@ -382,5 +383,15 @@ body {
   }
   100% {
     transform: translate(-50%, 0);
+  }
+}
+
+@keyframes smoothBackgroundLoad {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
   }
 }
