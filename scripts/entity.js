@@ -12,7 +12,7 @@ const MAX_NOTE_FILE_SIZE_BYTES = 100 * 1024 * 1024
 const MIN_NOTE_NAME_LENGTH = 2
 const MAX_NOTE_NAME_LENGTH = 80
 const VISIBLITY_OPTIONS = [
-  { value: 'PUBLIC', text: 'Pública' },
+  { value: 'PUBLIC', text: 'Público' },
   { value: 'CONFIDENTIAL', text: 'Confidencial' }
 ]
 
@@ -121,6 +121,7 @@ function buildNoteUploadScreen() {
     .setLabel('Conteúdo', true)
 
   return new Modal('Criar Nota')
+    .setSubmitStyle('Criar', 'rgba(168, 153, 204, 1)')
     .addRow(new ActionRow().addItem($title))
     .addRow(new ActionRow().addItem($visibility))
     .addRow(new ActionRow().addItem($aliases))
