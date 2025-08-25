@@ -32,7 +32,10 @@ class Modal {
   }
 
   isAvailableForSubmission() {
-    return !$(`#${MODAL_FORM_VALIDATOR_CLASS}`).hasClass(MODAL_FORM_INVALID_INPUT)
+    const $els = $(`.${MODAL_FORM_VALIDATOR_CLASS}`)
+    const allValid = $els.toArray().every($e => $e.checkValidity())
+
+    return !$els.hasClass(MODAL_FORM_INVALID_INPUT) && allValid
   }
   
   addRow(row) {
@@ -40,8 +43,33 @@ class Modal {
     return this
   }
 
-  setSubmitButtonText(text) {
+  setCancelButtonVisible(flag = true) {
+    this.cancelButtonVisible = flag
+    return this
+  }
+
+  /**
+   * Sets the style of the submit button of the modal/form.
+   * 
+   * @param {string} text The text to be displayed in it
+   * @param {string} color The CSS color of the background.
+   * @returns This modal instance, for chaining convenience.
+   */
+  setSubmitStyle(text, color = '') {
     this.sendButtonText = text
+    this.sendButtonColor = color
+    return this
+  }
+
+  /**
+   * Defines the handler of when submitting the form
+   * 
+   * @param {(event: JQuery.ClickEvent<HTMLElement>) => void} handler The event handler function.
+   * @returns {Modal} This same instance, for chaining convenience.
+   */
+  onSubmit(handler) {
+    checks.check(typeof handler === 'function', `Submit "handler" parameter is not a function, its type is ${typeof handler}, which is disallowed`)
+    this.submitHandler = handler
     return this
   }
   
@@ -52,11 +80,22 @@ class Modal {
       .attr('id', this.id)
 
     const $title = $('<h1>').addClass('modal-title').text(this.title)
-    const $closeButton = newCloseTabButton()
+    const $topCloseButton = newTopCloseTabButton()
     const $form = newBaseForm(this.title)
-    const $cancelButton = newBottomCancelButton()
-    const $bottom = newModalBottom().append($cancelButton, newBottomSubmitButton(this.sendButtonText))
+    const $cancelButton = this.cancelButtonVisible ? newBottomCancelButton() : null
+    const $submitButton = newBottomSubmitButton(this.sendButtonText, this.sendButtonColor)
+    const $bottom = newModalBottom()
 
+    // Appending buttons at the bottom
+    if ($cancelButton) {
+      $bottom.append($cancelButton)
+      handleCloseModal($topCloseButton, $cancelButton)
+    } else {
+      handleCloseModal($topCloseButton)
+    }
+    $bottom.append($submitButton)
+
+    // Appending form
     $form.append($title)
     for (const row of this.rows) {
       try {
@@ -66,10 +105,13 @@ class Modal {
       }
     }
 
-    handleCloseModal($closeButton, $cancelButton)
+    // Register submit event handler
+    if (this.submitHandler) {
+      $submitButton.on('submit', this.submitHandler)
+    }
 
     $form.append($bottom)
-    $container.append($closeButton, $form)
+    $container.append($topCloseButton, $form)
     return $container
   }
 }
@@ -135,7 +177,7 @@ class AbstractComponent {
     this.label = ''
     this.helpText = null
     this.attributes = {}
-    this.validator = null
+    this.validator = (_) => null
     this.eventMap = new Map()
     this.id = id || `input-${randomId()}`
     this.$errorField = newErrorInput(this.id)
@@ -220,7 +262,7 @@ class AbstractComponent {
   }
 
   bindEvents($el, defaultEvent) {
-    if (this.validator && defaultEvent) {
+    if (defaultEvent) {
       $el.on(defaultEvent, (e) => {
         const msg = this.validator(e)
         this.setValid(msg)
@@ -319,13 +361,28 @@ class TextInputComponent extends AbstractComponent {
     this.setAttribute('maxlength', length)
     return this
   }
-  
+
+  /**
+   * Defines the type of this input, like `text`, `email` or `password`.
+   * 
+   * While this method does not prevent you from setting a type like `file`,
+   * it is advised that this will not work properly; for such cases, you should use the proper
+   * implementation, for instance, {@link FileInputComponent}.
+   * 
+   * @param {string} type The type of this input element.
+   */
+  setType(type = 'text') {
+    checks.notEmpty(type, 'Input Type')
+    this.attributes['type'] = type
+    return this
+  }
+
   buildInput() {
     let $input
     if (this.isShort) {
       $input = $('<input>')
         .attr('id', this.id)
-        .attr('type', 'text')
+        .attr('type', 'text') // Can be overidden at the for-loop below if needed
         .addClass('modal-std-in')
         .val(this.defaultValue)
     } else {
@@ -370,9 +427,9 @@ class FileInputComponent extends AbstractComponent {
     const $spanSelect = $('<span>').text('Selecione um arquivo')
     const $spanChosen = $('<span>').addClass('modal-chosen-file')
     const $input = $('<input>')
+      .addClass('hidden-styled-file-input') 
       .attr('type', 'file')
       .attr('id', this.id)
-      .hide()
 
     for (const [key, value] of Object.entries(this.attributes)) {
       $input.attr(key, value)
@@ -394,7 +451,7 @@ function newActionRow() {
   return $('<div>').addClass('modal-action-row')
 }
 
-function newCloseTabButton() {
+function newTopCloseTabButton() {
   return $('<button>')
     .addClass('close-tab-container')
     .append($('<span>')
@@ -476,9 +533,10 @@ function newBottomCancelButton() {
     .text('Cancelar')
 }
 
-function newBottomSubmitButton(text = 'Salvar') {
+function newBottomSubmitButton(text = 'Salvar', color) {
   return $('<button>')
     .addClass('modal-bottom modal-submit-button')
+    .css('background-color', color)
     .attr('type', 'submit')
     .append($('<span>').text(text))
     .append(

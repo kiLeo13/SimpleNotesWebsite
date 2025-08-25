@@ -64,16 +64,19 @@ function toggleSearchBar(enable = true) {
 
 function initUploadButtonListener() {
   $('#create-note-button').on('click', () => {
+    const modal = entity.buildNoteUploadScreen()
     const $blackscreen = entity.getBlackBackground(true)
-    const $uploadscreen = entity.buildNoteUploadScreen()
-
-    $uploadscreen.on('submit', (e) => {
+    
+    modal.onSubmit((e) => {
       e.preventDefault()
-
+      
+      // Soon
+      
       $blackscreen.remove()
     })
-
-    $blackscreen.append($uploadscreen)
+    
+    const $modal = modal.render()
+    $blackscreen.append($modal)
     $blackscreen.appendTo('body')
   })
 }

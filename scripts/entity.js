@@ -15,13 +15,6 @@ const VISIBLITY_OPTIONS = [
   { value: 'PUBLIC', text: 'Pública' },
   { value: 'CONFIDENTIAL', text: 'Confidencial' }
 ]
-const NOTE_TYPES = [
-  { value: "AUDIO", text: "Áudio" },
-  { value: "IMAGE", text: "Imagem" },
-  { value: "PDF", text: "PDF" },
-  { value: "TEXT", text: "Texto", defaultOption: true },
-  { value: "VIDEO", text: "Vídeo" }
-]
 
 function buildNoteItem(data) {
   return $('<div>')
@@ -81,15 +74,34 @@ function createVideoDisplay(value, noteId) {
     .prop('muted', true)
 }
 
+/**
+ * Creates a new {@link Modal} instance for note uploads.
+ * 
+ * Unlike other methods in this module, this one DOES NOT return an appendable jQuery object. 
+ * Instead, you **must** call {@link Modal#render} on the returned Modal instance to generate and 
+ * append the corresponding HTML element to the DOM.
+ * 
+ * This is because the `Modal` class includes utility methods and component logic
+ * that may be needed for validation, display handling, or interaction with other parts of the system. 
+ * By using the `render()` method explicitly, the HTML element is constructed only when required..
+ * 
+ * Usage example:
+ * ```javascript
+ * const modal = createNoteUploadModal()
+ * const $el = modal.render() // Builds the HTML element
+ * 
+ * $el.appendTo(anotherElement)
+ * ```
+ * 
+ * @returns {Modal} A new instance of the Modal class configured for note uploads, which must be rendered 
+ *                  manually using {@link Modal#render}.
+ */
 function buildNoteUploadScreen() {
   const $title = new TextInputComponent(true)
     .setLabel('Nome', true)
     .setMaxLength(MAX_NOTE_NAME_LENGTH)
     .setMinLength(MIN_NOTE_NAME_LENGTH)
 
-  const $type = new DropdownComponent()
-    .setLabel('Tipo', true)
-    .addOptions(NOTE_TYPES)
   const $visibility = new DropdownComponent()
     .setHelpText('A visibilidade de uma nota é apenas para fins de organização e ' +
       'não afeta a privacidade a nível de permissões de visualização do arquivo.')
@@ -104,16 +116,15 @@ function buildNoteUploadScreen() {
     .setMaxLength(MAX_NOTE_ALIAS_LENGTH * MAX_NOTE_ALIASES)
 
   const $content = new FileInputComponent()
-    .setValidator((e) => modalFileValidator(e, $content))
+    .setValidator(modalFileValidator)
     .setHelpText(`Arquivo máximo: ${utils.getPrettySize(MAX_NOTE_FILE_SIZE_BYTES)}.`)
     .setLabel('Conteúdo', true)
 
   return new Modal('Criar Nota')
     .addRow(new ActionRow().addItem($title))
-    .addRow(new ActionRow().addItem($type, $visibility))
+    .addRow(new ActionRow().addItem($visibility))
     .addRow(new ActionRow().addItem($aliases))
     .addRow(new ActionRow().addItem($content))
-    .render()
 }
 
 function handleAliasesValidation(e) {
@@ -152,7 +163,7 @@ function checkAlias(val) {
 /**
  * @param {JQuery.TriggeredEvent<HTMLElement, undefined, HTMLElement, HTMLElement>} e The event triggered.
  */
-function modalFileValidator(e, $component) {
+function modalFileValidator(e) {
   const file = e.target.files?.[0]
   
   // Maybe the array is empty? Better safe than sorry?

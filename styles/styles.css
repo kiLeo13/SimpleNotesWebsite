@@ -19,9 +19,35 @@
   cursor: not-allowed !important;
 }
 
+/*
+ * I am creating a new rule instead of using the above one
+ * because 20% of opacity feels too low for inputs
+ */
+input:read-only {
+  opacity: 45%;
+  cursor: not-allowed;
+}
+
 body {
   margin: 0;
   padding: 0;
+}
+
+/* 
+ * We cannot use `hidden` or `display:none` on required inputs 
+ * because the browser must be able to "focus" them if the validation fails.
+ * Instead, we visually hide the input while keeping it accessible 
+ * and focusable for the browser and screen readers.
+ */
+.hidden-styled-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
 }
 
 .black-background-container {
