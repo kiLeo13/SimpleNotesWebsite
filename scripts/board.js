@@ -44,7 +44,7 @@ function getOpenNoteId() {
 }
 
 function showEmptyIcon(show) {
-  const $icon = $('#empty-icon')
+  const $icon = $('.empty-content-box')
 
   if (show) {
     $icon.show()
