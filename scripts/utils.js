@@ -14,7 +14,7 @@ const GB = MB * 1024
  * @param {MessageLevel} level The level of the alert.
  * @param {number} [period=3000] The period the alert should stay on screen (in millis).
  */
-function showMessage(message, level, period = 5000) {
+function showMessage(message, level, period = 3000) {
   checks.notEmpty(message, 'Message')
   checks.notNull(level, 'Alert Level')
   checks.positive(period, 'Period')
