@@ -64,7 +64,7 @@ class Modal {
   /**
    * Defines the handler of when submitting the form
    * 
-   * @param {(event: JQuery.ClickEvent<HTMLElement>) => void} handler The event handler function.
+   * @param {(event: JQuery.SubmitEvent<HTMLElement>) => void} handler The event handler function.
    * @returns {Modal} This same instance, for chaining convenience.
    */
   onSubmit(handler) {
