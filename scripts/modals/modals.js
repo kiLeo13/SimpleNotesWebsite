@@ -31,11 +31,10 @@ class Modal {
     this.title = title
   }
 
-  isAvailableForSubmission() {
+  static isAvailableForSubmission() {
     const $els = $(`.${MODAL_FORM_VALIDATOR_CLASS}`)
-    const allValid = $els.toArray().every($e => $e.checkValidity())
 
-    return !$els.hasClass(MODAL_FORM_INVALID_INPUT) && allValid
+    return !$els.hasClass(MODAL_FORM_INVALID_INPUT)
   }
   
   addRow(row) {
@@ -83,7 +82,7 @@ class Modal {
     const $topCloseButton = newTopCloseTabButton()
     const $form = newBaseForm(this.title)
     const $cancelButton = this.cancelButtonVisible ? newBottomCancelButton() : null
-    const $submitButton = newBottomSubmitButton(this.sendButtonText, this.sendButtonColor)
+    const $submitButton = newBottomSubmitButton(this.sendButtonText, this.sendButtonColor, true)
     const $bottom = newModalBottom()
 
     // Appending buttons at the bottom
@@ -266,6 +265,9 @@ class AbstractComponent {
       $el.on(defaultEvent, (e) => {
         const msg = this.validator(e)
         this.setValid(msg)
+
+        // Ticks the button whether it should be clickable or not
+        tickSendButton()
       })
     }
 
@@ -428,6 +430,7 @@ class FileInputComponent extends AbstractComponent {
     const $spanChosen = $('<span>').addClass('modal-chosen-file')
     const $input = $('<input>')
       .addClass('hidden-styled-file-input') 
+      .addClass(MODAL_FORM_VALIDATOR_CLASS)
       .attr('type', 'file')
       .attr('id', this.id)
 
@@ -514,6 +517,17 @@ function newFileSizeSpan(bytes) {
     .text(utils.getPrettySize(bytes))
 }
 
+function tickSendButton() {
+  const $btn = $('.modal-submit-button')
+  const isOk = Modal.isAvailableForSubmission()
+
+  if (isOk) {
+    $btn.removeAttr('disabled')
+  } else {
+    $btn.attr('disabled', true)
+  }
+}
+
 /**
  * Builds only the container of the bottom of the `Modal`.
  * 
@@ -533,12 +547,21 @@ function newBottomCancelButton() {
     .text('Cancelar')
 }
 
-function newBottomSubmitButton(text = 'Salvar', color) {
+/**
+ * Creates a new Submit Button as jQuery element.
+ * 
+ * @param {string} [text='Salvar'] The text to be shown in the button.
+ * @param {string} [color=''] The color of the background of the button.
+ * @param {boolean} [disabled=false] Whether the button should be created disabled by default or not.
+ * @returns {JQuery<HTMLElement>} A new button element.
+ */
+function newBottomSubmitButton(text, color, disabled) {
   return $('<button>')
     .addClass('modal-bottom modal-submit-button')
-    .css('background-color', color)
+    .css('background-color', color || '')
     .attr('type', 'submit')
-    .append($('<span>').text(text))
+    .attr('disabled', disabled || false)
+    .append($('<span>').text(text || 'Salvar'))
     .append(
       $('<div>')
         .addClass('loader modal-button-loader')
