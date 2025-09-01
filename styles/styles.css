@@ -198,6 +198,7 @@ body {
 .menu-footer-controls {
   height: 60px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
   padding: 10px;
   box-sizing: border-box;
@@ -210,9 +211,9 @@ body {
 }
 
 .footer-control-button {
+  display: flex;
   height: 100%;
   aspect-ratio: 1;
-  display: flex;
   align-items: center;
   justify-content: center;
   background-color: rgb(104, 93, 133);
@@ -228,6 +229,22 @@ body {
 
 .footer-control-button:hover:not(:disabled) {
   background-color: rgb(130, 118, 161);
+}
+
+.sidebar-pfp {
+  display: flex;
+  height: 100%;
+  aspect-ratio: 1;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
+  color: rgb(145, 145, 145);
+  background-color: rgb(50, 50, 238);
+  user-select: none;
+}
+
+.sidebar-pfp:hover {
+  cursor: pointer;
 }
 
 .legal-disclaimer {
