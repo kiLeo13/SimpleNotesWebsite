@@ -2,6 +2,7 @@ import $ from "jquery"
 import entity from "./entity.js"
 import requests from "./requests.js"
 import sidebar from "./sidebar.js"
+import utils from "./utils.js"
 
 const DEFAULT_DISPLAY_ID = 'display-box'
 const DEFAULT_BACKGROUND_COLOR = 'rgb(30, 27, 37)'
@@ -18,7 +19,7 @@ function openNote(noteId) {
   const note = requests.getNoteById(noteId)
 
   if (!note) {
-    alert('Anotação não encontrada! Pedimos desculpas :/')
+    utils.showMessage('Anotação não encontrada! Pedimos desculpas :/', 'error')
     sidebar.removeNote(noteId)
     return
   }
@@ -75,7 +76,7 @@ function _createElement(note) {
     case 'VIDEO': $el = entity.createVideoDisplay(value, noteId); break
 
     default: {
-      alert(`Não foi possível abrir a anotação. Tipo desconhecido: ${type}.`)
+      utils.showMessage(`Não foi possível abrir a anotação. Tipo desconhecido: ${type}.`, 'error')
       throw new Error(`Unknown note type: ${type}`)
     }
   }

@@ -4,14 +4,27 @@ interface Note {
   name: string
   content: string
   visibility: "PUBLIC" | "CONFIDENTIAL"
-  aliases: string[]
+  type: "REFERENCE" | "CONTENT"
+  tags: string[]
   created_by_id: number
   created_at: string
   updated_at: string
 }
 
-interface CreateNote {
+type NoteVisibility = "PUBLIC" | "CONFIDENTIAL"
+
+interface NoteFile {
+  fileName: string
+  file: File
+}
+
+interface NotePart {
   name: string
-  data: Blob
-  aliases: string[]
+  visibvility: NoteVisibility
+  tags: string[]
+}
+
+interface CreateNote {
+  note: NotePart
+  file: NoteFile
 }

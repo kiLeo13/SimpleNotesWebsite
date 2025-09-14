@@ -42,6 +42,12 @@
   flex-shrink: 0;
 }
 
+.modal-row-section {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
 .modal-input-section {
   display: flex;
   flex-direction: column;
@@ -59,7 +65,7 @@
   font-size: 17px;
 }
 
-.modal-std-in {
+.note-modal-std-in {
   color: rgb(180, 180, 180);
   padding: 10px 8px;
   font-size: 14px;
@@ -70,17 +76,12 @@
   transition: border-color 0.3s;
 }
 
-.modal-std-in::placeholder {
+.note-modal-std-in::placeholder {
   opacity: 40%;
 }
 
-.modal-std-in:focus {
+.note-modal-std-in:focus {
   border-color: rgb(92, 71, 145);
-}
-
-textarea.modal-std-in {
-  resize: vertical;
-  min-height: 30px;
 }
 
 .modal-dropdown-input:hover:not(:focus) {
@@ -219,7 +220,7 @@ textarea#modal-content-in {
   opacity: 50%;
 }
 
-.invalid-modal-input {
+.invalid-note-modal-input {
   border-color: rgb(238, 54, 54) !important;
   background-color: rgba(238, 54, 54, 0.05) !important;
   border-width: 2px;

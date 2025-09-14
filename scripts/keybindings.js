@@ -1,6 +1,6 @@
 import $ from "jquery"
 import board from "./board.js"
-import modals from "./modals/modals.js"
+import notesModals from "./modals/notes-modals.js"
 import sidebar from "./sidebar.js"
 
 const keyBindings = {
@@ -54,7 +54,7 @@ function handleEscape() {
 function runSearchBarFocus(e) {
   const $input = $('input')
 
-  if (!$input.is(':focus') && !modals.isModalDisplayed()) {
+  if (!$input.is(':focus') && !notesModals.isModalDisplayed()) {
     e.preventDefault()
     sidebar.focusSearch()
   }

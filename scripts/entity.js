@@ -1,8 +1,6 @@
 import $ from "jquery"
 import board from "./board.js"
-import { Modal, ActionRow, TextInputComponent, DropdownComponent, FileInputComponent } from "./modals/modals.js"
-import utils from "./utils.js"
-import validators from "./modals/validators.js"
+import notesModals from "./modals/notes-modals.js"
 import { marked } from "marked"
 import DOMPurify from "dompurify"
 
@@ -64,59 +62,8 @@ function createVideoDisplay(value, noteId) {
     .prop('muted', true)
 }
 
-/**
- * Creates a new {@link Modal} instance for note uploads.
- * 
- * Unlike other methods in this module, this one DOES NOT return an appendable jQuery object. 
- * Instead, you **must** call {@link Modal#render} on the returned Modal instance to generate and 
- * append the corresponding HTML element to the DOM.
- * 
- * This is because the `Modal` class includes utility methods and component logic
- * that may be needed for validation, display handling, or interaction with other parts of the system. 
- * By using the `render()` method explicitly, the HTML element is constructed only when required..
- * 
- * Usage example:
- * ```javascript
- * const modal = createNoteUploadModal()
- * const $el = modal.render() // Builds the HTML element
- * 
- * $el.appendTo(anotherElement)
- * ```
- * 
- * @returns {Modal} A new instance of the Modal class configured for note uploads, which must be rendered 
- *                  manually using {@link Modal#render}.
- */
-function buildNoteUploadScreen() {
-  const $title = new TextInputComponent(true)
-    .setLabel('Nome', true)
-    .setValidator(validators.modalNameValidator)
-    .setMaxLength(validators.MAX_NOTE_NAME_LENGTH)
-    .setMinLength(validators.MIN_NOTE_NAME_LENGTH)
-
-  const $visibility = new DropdownComponent()
-    .setHelpText('A visibilidade de uma nota é apenas para fins de organização e ' +
-      'não afeta a privacidade a nível de permissões de visualização do arquivo.')
-    .setLabel('Visibilidade', true)
-    .addOptions(validators.VISIBLITY_OPTIONS)
-
-  const $aliases = new TextInputComponent()
-    .setLabel('Apelidos')
-    .setPlaceholder('Separe os apelidos por espaço')
-    .setValidator(validators.modalAliasesValidator)
-    .setMinLength(validators.MIN_NOTE_ALIAS_LENGTH)
-    .setMaxLength(validators.MAX_NOTE_ALIAS_LENGTH * validators.MAX_NOTE_ALIASES)
-
-  const $content = new FileInputComponent()
-    .setValidator(validators.modalFileValidator)
-    .setHelpText(`Arquivo máximo: ${utils.getPrettySize(validators.MAX_NOTE_FILE_SIZE_BYTES)}.`)
-    .setLabel('Conteúdo', true)
-
-  return new Modal('Criar Nota')
-    .setSubmitStyle('Criar', 'rgba(168, 153, 204, 1)')
-    .addRow(new ActionRow().addItem($title))
-    .addRow(new ActionRow().addItem($visibility))
-    .addRow(new ActionRow().addItem($aliases))
-    .addRow(new ActionRow().addItem($content))
+function buildNoteUploadScreen(onSubmit) {
+  return notesModals.showNoteUploadModal(onSubmit)
 }
 
 function getBlackBackground(centered = true) {
@@ -129,6 +76,16 @@ function getBlackBackground(centered = true) {
   return $el
 }
 
+/**
+ * Displays the login screen modal.
+ */
+function showLoginScreen() {
+  const $background = getBlackBackground()
+
+
+  $background.appendTo('body')
+}
+
 export default {
   buildNoteItem,
   createImageDisplay,
@@ -137,5 +94,6 @@ export default {
   createAudioDisplay,
   createVideoDisplay,
   buildNoteUploadScreen,
-  getBlackBackground
+  getBlackBackground,
+  showLoginScreen
 }

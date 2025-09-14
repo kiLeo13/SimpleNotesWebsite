@@ -1,5 +1,6 @@
 import $ from "jquery"
 import checks from "./checks.js"
+import { jwtDecode } from "jwt-decode"
 
 /** @type {import("../types/general")} */
 
@@ -22,7 +23,7 @@ function showMessage(message, level, period = 3000) {
   checks.checkCase(level, 'success', 'info', 'warn', 'error')
 
   const $el = createAlertMessage(message, level)
-  $el.addClass('show').appendTo('body')
+  $el.appendTo('body')
 
   setTimeout(() => {
     $el.fadeOut(100, () => $el.remove())
@@ -37,11 +38,33 @@ function getPrettySize(size) {
   return `${formatNumber(size / GB)} GB`
 }
 
+function isSignedIn() {
+  const accessToken = localStorage.getItem('access_token')
+  const idToken = localStorage.getItem('id_token')
+
+  return isTokenValid(accessToken) && isTokenValid(idToken)
+}
+
+function isTokenValid(jwt) {
+  if (!jwt || jwt.trim() === '') return false
+  const now = Date.now()
+  const { exp } = jwtDecode(jwt)
+
+  return now < exp * 1000
+}
+
 function createAlertMessage(message, level) {
-  return $('<div>')
+  const $wrapper = createAlertWrapper()
+  const $warning = $('<div>')
     .addClass('page-alert-container')
     .addClass(`alert-level-${level}`)
     .append($('<span>').text(message))
+
+  return $wrapper.append($warning)
+}
+
+function createAlertWrapper() {
+  return $('<div>').addClass('page-alert-wrapper')
 }
 
 function formatNumber(num) {
@@ -50,4 +73,4 @@ function formatNumber(num) {
     .replace(/(\.\d)0$/, '$1')
 }
 
-export default { getPrettySize, showMessage }
+export default { getPrettySize, showMessage, isSignedIn, isTokenValid }

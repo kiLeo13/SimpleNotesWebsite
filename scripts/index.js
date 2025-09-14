@@ -4,12 +4,18 @@ import board from "./board.js"
 import keybindings from "./keybindings.js"
 import requests from "./requests.js"
 import sidebar from "./sidebar.js"
+import utils from "./utils.js"
+import entity from "./entity.js"
 
 const DOCUMENT_TITLE = 'Consórcio Magalu - Anotações'
 
 $(async () => {
-  const notes = await requests.fetchNotes(false)
-  sidebar.showNotes(notes)
+  if (!utils.isSignedIn()) {
+    const notes = await requests.fetchNotes(false)
+    sidebar.showNotes(notes) 
+  } else {
+    entity.showLoginScreen()
+  }
   
   sidebar.initSidebar()
   keybindings.initKeybindings()

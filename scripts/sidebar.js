@@ -2,6 +2,7 @@ import $ from "jquery"
 import board from "./board.js"
 import entity from "./entity.js"
 import requests from "./requests.js"
+import utils from "./utils.js"
 
 const BASE_SIDEBAR_PADDING_PX = 13
 
@@ -64,21 +65,57 @@ function toggleSearchBar(enable = true) {
 
 function initUploadButtonListener() {
   $('#create-note-button').on('click', () => {
-    const modal = entity.buildNoteUploadScreen()
     const $blackscreen = entity.getBlackBackground(true)
+    const closeModal = () => $blackscreen.remove()
+    const $modal = entity.buildNoteUploadScreen((e) => onNoteCreateSubmit(e, $modal, closeModal))
     
-    modal.onSubmit((e) => {
-      e.preventDefault()
-      
-      // Soon
-      
-      $blackscreen.remove()
-    })
-    
-    const $modal = modal.render()
     $blackscreen.append($modal)
     $blackscreen.appendTo('body')
   })
+}
+
+/**
+ * @param {JQuery.SubmitEvent} e The event triggered by the form submission.
+ * @param {JQuery<HTMLElement>} $modal The modal element itself.
+ * @param {Function} closeModal A function that closes the modal when called.
+ */
+async function onNoteCreateSubmit(e, $modal, closeModal) {
+  e.preventDefault()
+
+  const name = $('.create-note-name-input-field').val().trim()
+  const visibility = $('.create-note-visibility-input-field').val()
+  const tagsRaw = $('.create-note-tags-input-field').val().trim()
+  const tags = tagsRaw === '' ? [] : tagsRaw.split(' ').map(a => a.trim().toLowerCase())
+  const fileInput = $('.create-note-file-input-field')[0]
+  const file = fileInput?.files?.[0]
+  
+  if (!file) {
+    utils.showMessage('Por favor, forneça um arquivo para a nota.', 'error')
+    return
+  }
+
+  $modal.css('animation', 'shake 0.2s linear infinite')
+  const resp = await requests.createNote({
+    note: {
+      name: name,
+      visibility: visibility,
+      tags: tags
+    },
+    file: {
+      file: file,
+      fileName: file?.name
+    }
+  })
+  $modal.css('animation', '')
+
+  // We failed and the method itself has already shown an error message.
+  if (!resp) return
+
+  closeModal()
+  utils.showMessage(`Nota "${resp.name}" criada com sucesso!`, 'success')
+
+  await reloadNotes()
+  board.openNote(resp.id)
 }
 
 function initSearchBar() {
@@ -92,7 +129,7 @@ function initSearchBar() {
 
     const filtered = notes.filter(note => {
       const name = note.name.toLowerCase()
-      const aliases = note.aliases
+      const aliases = note.tags
 
       return name.includes(search) || _findsByAliases(aliases, search)
     })
@@ -154,12 +191,8 @@ function _showResultCount(count) {
   const $item = $('#search-result-count')
   $item.empty()
 
-  const label = count === 1 ? 'resultado encontrado' : 'resultados encontrados'
-  const $bold = $('<span>')
-    .text(count)
-    .css('font-weight', 600)
-
-  $item.append($bold).append(` ${label}`)
+  const label = count === 1 ? '1 resultado encontrado' : `${count} resultados encontrados`
+  $item.append(`${label}`)
 }
 
 function _showLoader(show) {
@@ -170,21 +203,6 @@ function _showLoader(show) {
   } else {
     $item.hide()
   }
-}
-
-function _resolveFitContentWidth($el) {
-  const $clone = $el.clone()
-    .css({
-      position: 'absolute',
-      visibility: 'hidden',
-      width: 'fit-content',
-      whiteSpace: 'nowrap'
-    })
-    .appendTo('body')
-
-    const fitContentWidth = $clone.outerWidth()
-    $clone.remove()
-    return fitContentWidth
 }
 
 export default {
