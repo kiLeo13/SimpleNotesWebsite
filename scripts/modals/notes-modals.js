@@ -7,7 +7,7 @@ const MODAL_FORM_INVALID_INPUT = 'invalid-note-modal-input'
 
 function showNoteUploadModal(onSubmit) {
   const $container = $('<div>')
-    .addClass('modal-screen-container')
+    .addClass('app-modal modal-screen-container')
     .attr('id', this.id)
 
   const $title = buildModalTitle()

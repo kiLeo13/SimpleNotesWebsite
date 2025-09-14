@@ -30,6 +30,15 @@ function showMessage(message, level, period = 3000) {
   }, period)
 }
 
+/**
+ * Checks if there are any modals being shown on screen.
+ * 
+ * @returns {boolean} `true` if there are any modals being shown, `false` otherwise.
+ */
+function isModalShown() {
+  return $('.app-modal').length > 0
+}
+
 function getPrettySize(size) {
   if (size < KB) return `${size} Bytes`
   if (size < MB) return `${formatNumber(size / KB)} KB`
@@ -73,4 +82,4 @@ function formatNumber(num) {
     .replace(/(\.\d)0$/, '$1')
 }
 
-export default { getPrettySize, showMessage, isSignedIn, isTokenValid }
+export default { getPrettySize, isModalShown, showMessage, isSignedIn, isTokenValid }
