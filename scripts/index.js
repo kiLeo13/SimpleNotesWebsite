@@ -10,10 +10,11 @@ import entity from "./entity.js"
 const DOCUMENT_TITLE = 'Consórcio Magalu - Anotações'
 
 $(async () => {
-  if (!utils.isSignedIn()) {
+  if (utils.isSignedIn()) {
     const notes = await requests.fetchNotes(false)
     sidebar.showNotes(notes) 
   } else {
+    sidebar.showNotes([]) // Shows empty results just for a better UI experience XD
     entity.showLoginScreen()
   }
   

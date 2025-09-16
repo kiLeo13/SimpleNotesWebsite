@@ -27,7 +27,7 @@ async function fetchNotes(useCache = true) {
     authType: 'id'
   })
 
-  if (!resp) return []
+  if (!resp) return null
   
   if (resp.ok) {
     const notes = (await resp.json()).notes
@@ -37,6 +37,59 @@ async function fetchNotes(useCache = true) {
   }
 
   return Object.values(noteCache)
+}
+
+/**
+ * Checks if a given user e-mail exists on the server's database.
+ * 
+ * @param {string} email The e-mail to be checked.
+ * @returns {Promise<boolean | null>} 
+ *          Resolves to `true` if the email exists, `false` if it does not. 
+ *          Resolves to `null` (and shows an error message) if the request fails.
+ */
+async function checkEmail(email) {
+  const resp = await makeRequest({
+    url: `${BASE_URL}/users/check-email`,
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      "email": email
+    })
+  })
+
+  const text = await resp.json()
+
+  if (resp.ok) {
+    return text["exists"]
+  } else {
+    utils.showMessage(`Não conseguimos verificar a existência de uma conta. Tente novamente mais tarde:\n${JSON.stringify(text)}`, 'error')
+    return null
+  }
+}
+
+async function login(email, password) {
+  const resp = await makeRequest({
+    url: `${BASE_URL}/users/login`,
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      "email": email,
+      "password": password
+    })
+  })
+
+  const text = await resp.json()
+
+  if (resp.ok) {
+    return text
+  } else {
+    utils.showMessage(`Erro: ${JSON.stringify(text)}`, 'error')
+    return null
+  }
 }
 
 /**
@@ -112,9 +165,9 @@ async function makeRequest(req) {
 }
 
 function finalizeRequest(req) {
-  if (!req.authType) {
-    req.authType = 'access'
-  }
+  if (!req.headers) req.headers = {}
+
+  if (req.authType === 'none' || !req.authType) return true
 
   const token = localStorage.getItem(`${req.authType}_token`)
   const hasSession = !!token && utils.isSignedIn()
@@ -124,9 +177,8 @@ function finalizeRequest(req) {
     return false
   }
 
-  if (!req.headers) req.headers = {}
   req.headers['Authorization'] = `Bearer ${token}`
   return true
 }
 
-export default { fetchNotes, createNote, getNoteById }
+export default { fetchNotes, checkEmail, login, createNote, getNoteById }

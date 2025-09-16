@@ -15,6 +15,13 @@ async function reloadNotes() {
   _showLoader(true)
 
   const notes = await requests.fetchNotes(false)
+
+  // Auth failed
+  if (notes === null) {
+    entity.showLoginScreen()
+    return
+  }
+
   showNotes(notes)
   _showLoader(false)
 }

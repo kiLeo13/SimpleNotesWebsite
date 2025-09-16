@@ -1,8 +1,12 @@
 import $ from "jquery"
+
 import board from "./board.js"
+import sidebar from "./sidebar.js"
 import notesModals from "./modals/notes-modals.js"
 import { marked } from "marked"
 import DOMPurify from "dompurify"
+import authModal from "./modals/auth-modal.js"
+import utils from "./utils.js"
 
 function buildNoteItem(data) {
   return $('<div>')
@@ -80,10 +84,17 @@ function getBlackBackground(centered = true) {
  * Displays the login screen modal.
  */
 function showLoginScreen() {
+  if (utils.isModalShown()) return
+  
   const $background = getBlackBackground()
+  const $modal = authModal.getAuthScreen(handlePostLogin)
 
-
+  $background.append($modal)
   $background.appendTo('body')
+}
+
+function handlePostLogin() {
+  sidebar.reloadNotes()
 }
 
 export default {
