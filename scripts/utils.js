@@ -31,6 +31,30 @@ function showMessage(message, level, period = 3000) {
 }
 
 /**
+ * Checks if a given number is between `start` and `end`.
+ * 
+ * **All values are inclusive**.
+ * 
+ * @param {number} n The value to be checked.
+ * @param {number} start The initial/anchor position to check.
+ * @param {number} end The final position to check the range.
+ * @returns {boolean} `true` if `n` is between `start` and `end` (inclusive), `false` otherwise.
+ * @throws {TypeError} If the parameters are not of type `number`.
+ */
+function isBetween(n, start, end) {
+  checks.check(typeof n === 'number', `"n" should be a number, not ${typeof n}`)
+  checks.check(typeof start === 'number', `"start" should be a number, not ${typeof start}`)
+  checks.check(typeof end === 'number', `"end" should be a number, not ${typeof end}`)
+  return n >= start && n <= end
+}
+
+function randomId(len = 16) {
+  return Math.random()
+    .toString(36)
+    .substring(2, len + 2)
+}
+
+/**
  * Checks if there are any modals being shown on screen.
  * 
  * @returns {boolean} `true` if there are any modals being shown, `false` otherwise.
@@ -82,4 +106,4 @@ function formatNumber(num) {
     .replace(/(\.\d)0$/, '$1')
 }
 
-export default { getPrettySize, isModalShown, showMessage, isSignedIn, isTokenValid }
+export default { getPrettySize, isModalShown, showMessage, isBetween, randomId, isSignedIn, isTokenValid }
