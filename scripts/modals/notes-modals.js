@@ -279,16 +279,25 @@ function newFileSizeSpan(bytes) {
     .text(utils.getPrettySize(bytes))
 }
 
+function buildLoader() {
+  return $('<div>')
+    .addClass('create-note-loader-container')
+    .append(
+      $('<div>').addClass('loader')
+    )
+}
+
 function applyNewNoteButtons($container, $form) {
   const $closeButton = newTopCloseTabButton()
   const $submitButton = newBottomSubmitButton('Criar', 'rgba(168, 153, 204, 1)')
+  const $loader = buildLoader().hide()
   const $row = newActionRow()
   const $bottom = $('<div>')
     .addClass('modal-bottom-container')
-    .append($submitButton)
+    .append($loader, $submitButton)
   
   // Add the close button to the container
-  $container.append($closeButton)
+  $container.append( $closeButton)
 
   // Handle modal close
   handleCloseModal($closeButton, $container)

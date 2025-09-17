@@ -10,6 +10,17 @@ const BACKGROUND_COLORS = {
   "IMAGE": 'rgba(16, 15, 20, 1)',
   "VIDEO": '#000000'
 }
+const types = {
+  pdf:  'PDF',
+  mp4:  'VIDEO',
+  mp3:  'AUDIO',
+  png:  'IMAGE',
+  jpg:  'IMAGE',
+  jpeg: 'IMAGE',
+  jfif: 'IMAGE',
+  webp: 'IMAGE',
+  gif:  'IMAGE',
+}
 
 function openNote(noteId) {
   // If this note is already open, do nothing
@@ -63,24 +74,36 @@ function removeItem() {
 }
 
 function _createElement(note) {
-  const type = note.type
-  const value = note.content
+  const type = note.note_type
+  const value = note.content.trim()
+  const elementType = _resolveType(type, value)
   const noteId = note.id
   let $el
 
-  switch (type) {
+  switch (elementType) {
     case 'IMAGE': $el = entity.createImageDisplay(value, noteId); break
     case 'TEXT':  $el = entity.createTextDisplay(value, noteId); break
     case 'PDF':   $el = entity.createPdfDisplay(value, noteId); break
     case 'AUDIO': $el = entity.createAudioDisplay(value, noteId); break
     case 'VIDEO': $el = entity.createVideoDisplay(value, noteId); break
 
+    // ???
     default: {
       utils.showMessage(`Não foi possível abrir a anotação. Tipo desconhecido: ${type}.`, 'error')
       throw new Error(`Unknown note type: ${type}`)
     }
   }
   return $el
+}
+
+function _resolveType(type, content) {
+  if (type === 'CONTENT') {
+    return 'TEXT'
+  }
+
+  const extIdx = content.lastIndexOf('.')
+  const ext = content.substring(extIdx + 1).toLowerCase()
+  return types[ext] || null
 }
 
 function _hookEvents($el) {

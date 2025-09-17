@@ -166,8 +166,23 @@ textarea#modal-content-in {
 
 .modal-bottom-container {
   display: flex;
+  align-items: center;
+  gap: 3px;
   justify-content: end;
-  gap: 10px;
+}
+
+.create-note-loader-container {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  height: 35px;
+  width: 35px;
+  gap: 3px;
+  overflow: hidden;
+}
+
+.create-note-loader-container > .loader {
+  scale: 0.5;
 }
 
 .modal-bottom {
@@ -179,30 +194,12 @@ textarea#modal-content-in {
   border-radius: 8px;
   border: none;
   cursor: pointer;
-}
-
-.modal-submit-button {
-  display: flex;
-  justify-content: center;
-  overflow: hidden;
-  height: 40px;
-  gap: 5px;
-  align-items: center;
-  background-color: rgb(45, 190, 94);
+  background-color: rgb(168, 153, 204);
   transition: background-color 0.3s;
 }
 
 .modal-submit-button:hover {
-  background-color: rgb(36, 160, 78);
-}
-
-.modal-cancel-button {
-  background-color: rgba(117, 117, 117, 0.7);
-  transition: background-color 0.3s;
-}
-
-.modal-cancel-button:hover {
-  background-color: rgba(117, 117, 117, 0.5);
+  background-color: rgb(197, 185, 223);
 }
 
 .modal-button-loader {

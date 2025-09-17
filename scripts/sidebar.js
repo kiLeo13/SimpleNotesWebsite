@@ -95,6 +95,19 @@ async function initUploadButtonListener() {
   })
 }
 
+function setNoteCreateLoading(flag) {
+  const $loader = $('.create-note-loader-container')
+  const $btn = $('.modal-submit-button')
+
+  if (flag) {
+    $loader.show()
+    $btn.attr('disabled', true)
+  } else {
+    $loader.hide()
+    $btn.removeAttr('disabled')
+  }
+}
+
 /**
  * @param {JQuery.SubmitEvent} e The event triggered by the form submission.
  * @param {JQuery<HTMLElement>} $modal The modal element itself.
@@ -115,7 +128,8 @@ async function onNoteCreateSubmit(e, $modal, closeModal) {
     return
   }
 
-  $modal.css('animation', 'shake 0.2s linear infinite')
+  //$modal.css('animation', 'shake 0.2s linear infinite')
+  setNoteCreateLoading(true)
   const resp = await requests.createNote({
     note: {
       name: name,
@@ -127,7 +141,8 @@ async function onNoteCreateSubmit(e, $modal, closeModal) {
       fileName: file?.name
     }
   })
-  $modal.css('animation', '')
+  //$modal.css('animation', '')
+  setNoteCreateLoading(false)
 
   // We failed and the method itself has already shown an error message.
   if (!resp) return

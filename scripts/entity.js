@@ -9,6 +9,8 @@ import authModal from "./modals/auth-modal.js"
 import utils from "./utils.js"
 import requests from "./requests.js"
 
+const CDN_BASE_URL = 'https://d26143aouxq3ma.cloudfront.net'
+
 function buildNoteItem(data) {
   return $('<div>')
     .addClass('note-item')
@@ -25,7 +27,7 @@ function createImageDisplay(value, noteId) {
     .attr('id', board.DEFAULT_DISPLAY_ID)
     .attr('itemid', noteId)
     .addClass('note-frame-image')
-    .attr('src', value)
+    .attr('src', `${CDN_BASE_URL}/${value}`)
 }
 
 function createTextDisplay(value, noteId) {
@@ -44,7 +46,7 @@ function createPdfDisplay(value, noteId) {
     .attr('id', board.DEFAULT_DISPLAY_ID)
     .attr('itemid', noteId)
     .addClass('note-frame-pdf')
-    .attr('src', value)
+    .attr('src', `${CDN_BASE_URL}/${value}`)
     .attr('type', 'application/pdf')
 }
 
@@ -54,7 +56,7 @@ function createAudioDisplay(value, noteId) {
     .attr('itemid', noteId)
     .addClass('note-frame-audio')
     .attr('controls', true)
-    .attr('src', value)
+    .attr('src', `${CDN_BASE_URL}/${value}`)
 }
 
 function createVideoDisplay(value, noteId) {
@@ -63,7 +65,7 @@ function createVideoDisplay(value, noteId) {
     .attr('id', board.DEFAULT_DISPLAY_ID)
     .attr('itemid', noteId)
     .attr('controls', true)
-    .attr('src', value)
+    .attr('src', `${CDN_BASE_URL}/${value}`)
     .prop('muted', true)
 }
 
