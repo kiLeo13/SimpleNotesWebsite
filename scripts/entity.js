@@ -7,6 +7,7 @@ import { marked } from "marked"
 import DOMPurify from "dompurify"
 import authModal from "./modals/auth-modal.js"
 import utils from "./utils.js"
+import requests from "./requests.js"
 
 function buildNoteItem(data) {
   return $('<div>')
@@ -93,7 +94,8 @@ function showLoginScreen() {
   $background.appendTo('body')
 }
 
-function handlePostLogin() {
+async function handlePostLogin() {
+  sidebar.initSidebar()
   sidebar.reloadNotes()
 }
 

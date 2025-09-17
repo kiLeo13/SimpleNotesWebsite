@@ -3,6 +3,7 @@ import utils from "./utils.js"
 
 const BASE_URL = 'https://qrbe2ko4o5.execute-api.us-east-2.amazonaws.com/v1'
 const noteCache = {}
+let selfCache = null
 
 /** @type {import("../types/note")} */
 
@@ -39,6 +40,27 @@ async function fetchNotes(useCache = true) {
   return Object.values(noteCache)
 }
 
+async function verifyEmail(email, code) {
+  const resp = await makeRequest({
+    url: `${BASE_URL}/users/confirms`,
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      "code": code,
+      "email": email
+    })
+  })
+
+  if (resp.ok) {
+    return true
+  } else {
+    utils.showMessage(`Erro: ${await resp.text()}`, 'error')
+    return false
+  }
+}
+
 /**
  * Checks if a given user e-mail exists on the server's database.
  * 
@@ -69,6 +91,28 @@ async function checkEmail(email) {
   }
 }
 
+async function register(username, email, password) {
+  const resp = await makeRequest({
+    url: `${BASE_URL}/users`,
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      "username": username,
+      "email": email,
+      "password": password
+    })
+  })
+
+  if (resp.ok) {
+    return true
+  } else {
+    utils.showMessage(`Erro: ${await resp.text()}`, 'error')
+    return false
+  }
+}
+
 async function login(email, password) {
   const resp = await makeRequest({
     url: `${BASE_URL}/users/login`,
@@ -88,6 +132,28 @@ async function login(email, password) {
     return text
   } else {
     utils.showMessage(`Erro: ${JSON.stringify(text)}`, 'error')
+    return null
+  }
+}
+
+async function retrieveSelf() {
+  if (selfCache) {
+    return selfCache
+  }
+
+  const resp = await makeRequest({
+    url: `${BASE_URL}/users/@me`,
+    method: "GET",
+    authType: 'id'
+  })
+
+  const text = await resp.json()
+
+  if (resp.ok) {
+    selfCache = text
+    return text
+  } else {
+    utils.showMessage(`Erro: ${await resp.text()}`, 'error')
     return null
   }
 }
@@ -181,4 +247,13 @@ function finalizeRequest(req) {
   return true
 }
 
-export default { fetchNotes, checkEmail, login, createNote, getNoteById }
+export default {
+  fetchNotes,
+  verifyEmail,
+  checkEmail,
+  fetchSelf: retrieveSelf,
+  register,
+  login,
+  createNote,
+  getNoteById
+}

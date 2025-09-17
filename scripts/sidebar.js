@@ -5,6 +5,7 @@ import requests from "./requests.js"
 import utils from "./utils.js"
 
 const BASE_SIDEBAR_PADDING_PX = 13
+let hasSidebarInit = false
 
 function focusSearch() {
   $('#search-input').trigger('focus')
@@ -52,9 +53,13 @@ function removeNote(noteId) {
 }
 
 function initSidebar() {
+  if (hasSidebarInit) return
+  
   initSearchBar()
   initHoverActions()
   initUploadButtonListener()
+
+  hasSidebarInit = true
 }
 
 function toggleSearchBar(enable = true) {
@@ -70,8 +75,17 @@ function toggleSearchBar(enable = true) {
   }
 }
 
-function initUploadButtonListener() {
-  $('#create-note-button').on('click', () => {
+async function initUploadButtonListener() {
+  const $upload = $('#create-note-button')
+  const self = await requests.fetchSelf()
+
+  if (!self || !self["is_admin"]) {
+    $upload.hide()
+    return
+  }
+
+  $upload.show()
+  $upload.on('click', () => {
     const $blackscreen = entity.getBlackBackground(true)
     const closeModal = () => $blackscreen.remove()
     const $modal = entity.buildNoteUploadScreen((e) => onNoteCreateSubmit(e, $modal, closeModal))

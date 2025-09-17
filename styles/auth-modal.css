@@ -67,6 +67,7 @@
   color: rgb(148, 148, 148);
   font-size: 14px;
   background-color: var(--background-auth-modal-input-color);
+  transition: outline-color 200ms;
 }
 
 .auth-form-input:focus {
@@ -79,7 +80,22 @@
 
 .auth-modal-footer {
   display: flex;
+  align-items: center;
+  gap: 3px;
   justify-content: end;
+}
+
+.auth-footer-loader-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 35px;
+  width: 35px;
+  overflow: hidden;
+}
+
+.auth-footer-loader-container > .loader {
+  scale: 0.5;
 }
 
 .auth-proceed-btn {

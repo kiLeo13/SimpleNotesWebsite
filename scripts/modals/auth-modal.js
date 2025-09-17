@@ -31,8 +31,7 @@ function buildBaseForm() {
 
 function buildFormMain() {
   const $body = $('<div>').addClass('auth-modal-body')
-  const $email = buildInput('Email', 'email', true, {}, ['auth-email-field-input'])
-  // Soon: {"pattern": "^[a-z0-9]+(?:[._%+\\-][a-z0-9]+)*@consorciomagalu\\.com\\.br$"}
+  const $email = buildInput('Email', 'email', true, {"pattern": "^[a-z0-9]+(?:[._%+\\-][a-z0-9]+)*@consorciomagalu\\.com\\.br$"}, ['auth-email-field-input'])
 
   $body.append($email.wrapper)
   return $('<div>')
@@ -41,13 +40,14 @@ function buildFormMain() {
 }
 
 function buildFormBottom() {
+  const $loader = buildLoader().hide()
   const $proceedButton = $('<button>')
     .addClass('auth-proceed-btn')
     .text('Próximo')
 
   return $('<div>')
     .addClass('auth-modal-footer')
-    .append($proceedButton)
+    .append($loader, $proceedButton)
 }
 
 /**
@@ -98,8 +98,37 @@ function getRuleHint(required) {
   }
 }
 
+function setLoading(flag) {
+  const $loader = $('.auth-footer-loader-container')
+  const $btn = $('.auth-proceed-btn')
+
+  if (flag) {
+    $loader.show()
+    $btn.attr('disabled', true)
+  } else {
+    $loader.hide()
+    $btn.removeAttr('disabled')
+  }
+}
+
 function newContainer() {
   return $('<div>').addClass('app-modal auth-modal-container')
+}
+
+function lock(...$els) {
+  for (const $el of $els) {
+    $el.attr('disabled', true)
+  }
+}
+
+function unlock(...$els) {
+  for (const $el of $els) {
+    $el.removeAttr('disabled')
+  }
+}
+
+function allDigits(str) {
+  return /^\d+$/.test(str)
 }
 
 function newModalHeader() {
@@ -121,6 +150,14 @@ function resolveHeaderMessage() {
   return 'Boa noite'
 }
 
+function buildLoader() {
+  return $('<div>')
+    .addClass('auth-footer-loader-container')
+    .append(
+      $('<div>').addClass('loader')
+    )
+}
+
 // Helper Handlers
 // Note: Parameter types are mostly annotated for IntelliSense/autocomplete,
 // not as complete documentation.
@@ -134,7 +171,10 @@ async function handleSubmit(e, onLogin, $form) {
   e.preventDefault()
 
   const $email = $('.auth-email-field-input')
+
+  setLoading(true)
   const exists = await requests.checkEmail($email.val().trim())
+  setLoading(false)
 
   // Already handled by the `requests` module.
   // I know I know, this violates SRP, but I will change whenever I have more time.
@@ -158,43 +198,133 @@ function handleSignup(onLogin, $form, $email) {
   const $btn = $('.auth-proceed-btn')
   const $headerTitle = $('.auth-modal-header-title')
   const $username = buildInput('Nome Completo', 'text', true, {"minlength": 2, "maxlength": 80})
-  const $password = buildInput('Senha', 'password', true, {"minlength": 8, "maxlength": 64})
+  const $password = buildInput('Nova Senha', 'password', true, {"minlength": 8, "maxlength": 64})
   
-  $headerTitle?.text('Basta inserir os dados abaixo')
+  $headerTitle?.text('Siga com o registro')
   $btn?.text('Enviar Código')
   
   $email.attr('disabled', true)
   
   $anchor.prepend($username.wrapper)
   $anchor.append($password.wrapper)
+  $username.input.trigger('focus')
+  
+  $form.on('submit', async (e) => {
+    e.preventDefault()
 
-  $username.trigger('focus')
+    const username = $username.input.val().trim()
+    const email = $email.val().trim()
+    const password = $password.input.val().trim()
+
+    setLoading(true)
+    lock($username.input, $password.input)
+    const ok = await requests.register(username, email, password)
+    setLoading(false)
+
+    if (!ok) {
+      unlock($username.input, $password.input)
+      return
+    }
+
+    $btn?.text('Registrar')
+    $form.off()
+    handleCodeConfirmation(onLogin, $form, $email, $password.input)
+  })
 }
 
 /**
  * @param {Function} onLogin The callback function.
  * @param {JQuery<HTMLElement>} $form The form.
  * @param {JQuery<HTMLElement>} $email The email input.
- */
+*/
 function handleLogin(onLogin, $form, $email) {
   const $container = $('.auth-modal-container')
   const $anchor = $('.auth-modal-body')
   const $btn = $('.auth-proceed-btn')
+  const $headerTitle = $('.auth-modal-header-title')
   const $password = buildInput('Senha', 'password', true, {"minlength": 8, "maxlength": 64}, ['auth-password-field-input'])
-  
+
   $email.attr('disabled', true)
   $btn?.text('Entrar')
-
+  $headerTitle?.text('Siga com o login')
+  
   $anchor.append($password.wrapper)
   $password.input.trigger('focus')
-
+  
   $form.on('submit', async (e) => {
     e.preventDefault()
     const password = $password.input.val().trim()
     const email = $email.val().trim()
+
+    setLoading(true)
+    lock($password.input)
+    const resp = await requests.login(email, password)
+    setLoading(false)
+
+    if (!resp) {
+      unlock($password.input)
+      return
+    }
+
+    const accessToken = resp["access_token"]
+    const idToken = resp["id_token"]
+
+    if (!accessToken || !idToken) {
+      utils.showMessage('Missing necessary tokens? What?', 'warn')
+    }
+
+    localStorage.setItem('access_token', accessToken)
+    localStorage.setItem('id_token', idToken)
+
+    $container.parent().remove()
+    onLogin()
+  })
+}
+
+/**
+ * @param {Function} onLogin The callback function.
+ * @param {JQuery<HTMLElement>} $form The form.
+ * @param {JQuery<HTMLElement>} $email The email input.
+ * @param {JQuery<HTMLElement>} $password The password input.
+ */
+function handleCodeConfirmation(onLogin, $form, $email, $password) {
+  const $container = $('.auth-modal-container')
+  const $anchor = $('.auth-modal-body')
+  const $code = buildInput('Código', 'text', true, {"minlength": 6, "maxlength": 6}, ['auth-code-field-input'])
+
+  $anchor.append($code.wrapper)
+  $code.input.trigger('focus')
+
+  $form.on('submit', async (e) => {
+    e.preventDefault()
+    const email = $email.val().trim()
+    const password = $password.val().trim()
+    const code = $code.input.val().trim()
+
+    if (!allDigits(code)) {
+      $code.text('')
+      utils.showMessage('Apenas números são aceitos no código.', 'warn')
+      return
+    }
+
+    lock($code.input)
+    setLoading(true)
+    const ok = await requests.verifyEmail(email, code)
+    
+    if (!ok) {
+      setLoading(false)
+      unlock($code.input)
+      return
+    }
+
+    // Now we try to also sign the user in XD
     const resp = await requests.login(email, password)
 
-    if (!resp) return
+    // What? There isn't much I can do, to be very honest, unless unlocking all fields back
+    if (!resp) {
+      utils.showMessage('Isso definitivamente não deveria acontecer... favor entrar em contato com o desenvolvedor', 'warn', 30000)
+      return
+    }
 
     const accessToken = resp["access_token"]
     const idToken = resp["id_token"]
