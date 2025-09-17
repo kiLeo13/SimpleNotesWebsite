@@ -21,7 +21,6 @@ $(async () => {
   sidebar.initSidebar()
   keybindings.initKeybindings()
 
-  initEasterEgg()
   runCyclicDocumentTitle()
 })
 
@@ -46,22 +45,4 @@ function runCyclicDocumentTitle() {
 
     showNoteTitle = !showNoteTitle
   }, 5000);
-}
-
-function initEasterEgg() {
-  const $el = $('.legal-disclaimer')
-  let clicks = []
-
-  $el.on('click', () => {
-    console.log(clicks.length)
-    const now = Date.now()
-    clicks.push(now)
-
-    if (clicks.length > 3) clicks.shift()
-
-    if (clicks.length === 3 && (clicks[2] - clicks[0]) <= 1500) {
-      window.open('https://www.magazineluiza.com.br', '_blank')
-      clicks = []
-    }
-  })
 }
