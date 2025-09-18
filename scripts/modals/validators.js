@@ -1,5 +1,3 @@
-import $ from "jquery"
-
 import utils from "../utils.js"
 
 const MIN_NOTE_ALIAS_LENGTH = 2
@@ -8,7 +6,7 @@ const MAX_NOTE_ALIASES = 50
 const MAX_NOTE_FILE_SIZE_BYTES = 30 * 1024 * 1024
 const MIN_NOTE_NAME_LENGTH = 2
 const MAX_NOTE_NAME_LENGTH = 80
-const NOTE_FILE_TYPES = ["txt", "pdf", "png", "jpg", "jpeg", "jfif", "webp", "gif", "mp4", "mp3"]
+const NOTE_FILE_TYPES = ["txt", "md", "pdf", "png", "jpg", "jpeg", "jfif", "webp", "gif", "mp4", "mp3"]
 const VISIBLITY_OPTIONS = [
   { value: 'PUBLIC', text: 'Público' },
   { value: 'CONFIDENTIAL', text: 'Confidencial' }
