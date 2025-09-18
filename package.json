@@ -15,7 +15,8 @@
     "dompurify": "^3.2.6",
     "jquery": "^3.7.1",
     "jwt-decode": "^4.0.0",
-    "marked": "^16.2.0"
+    "marked": "^16.2.0",
+    "memory-cache": "^0.2.0"
   },
   "devDependencies": {
     "@types/jquery": "^3.5.32",
