@@ -4,7 +4,6 @@ interface Note {
   name: string
   content: string
   visibility: "PUBLIC" | "CONFIDENTIAL"
-  type: "REFERENCE" | "CONTENT"
   tags: string[]
   created_by_id: number
   created_at: string
