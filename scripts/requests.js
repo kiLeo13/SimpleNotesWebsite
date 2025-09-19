@@ -170,9 +170,8 @@ async function retrieveSelf() {
     authType: 'id'
   })
 
-  const text = await resp.json()
-
   if (resp.ok) {
+    const text = await resp.json()
     selfCache = text
     return text
   } else {
