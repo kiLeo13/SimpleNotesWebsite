@@ -26,6 +26,8 @@
 }
 
 .modal-title {
+  font-size: 2em;
+  font-weight: bold;
   margin: 0;
   margin-top: 10px;
   color: rgb(146, 146, 146);

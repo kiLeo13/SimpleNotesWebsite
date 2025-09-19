@@ -7,9 +7,8 @@ import { marked } from "marked"
 import DOMPurify from "dompurify"
 import authModal from "./modals/auth-modal.js"
 import utils from "./utils.js"
-import requests from "./requests.js"
 
-const CDN_BASE_URL = 'https://d26143aouxq3ma.cloudfront.net'
+const CDN_BASE_URL = 'https://d26143aouxq3ma.cloudfront.net/attachments'
 
 function buildNoteItem(data) {
   return $('<div>')

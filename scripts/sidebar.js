@@ -88,7 +88,7 @@ async function initUploadButtonListener() {
   $upload.on('click', () => {
     const $blackscreen = entity.getBlackBackground(true)
     const closeModal = () => $blackscreen.remove()
-    const $modal = entity.buildNoteUploadScreen((e) => onNoteCreateSubmit(e, $modal, closeModal))
+    const $modal = entity.buildNoteUploadScreen((e) => onNoteCreateSubmit(e, closeModal))
     
     $blackscreen.append($modal)
     $blackscreen.appendTo('body')
@@ -110,10 +110,9 @@ function setNoteCreateLoading(flag) {
 
 /**
  * @param {JQuery.SubmitEvent} e The event triggered by the form submission.
- * @param {JQuery<HTMLElement>} $modal The modal element itself.
  * @param {Function} closeModal A function that closes the modal when called.
  */
-async function onNoteCreateSubmit(e, $modal, closeModal) {
+async function onNoteCreateSubmit(e, closeModal) {
   e.preventDefault()
 
   const name = $('.create-note-name-input-field').val().trim()

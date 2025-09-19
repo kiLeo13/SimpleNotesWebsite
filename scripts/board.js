@@ -4,6 +4,8 @@ import requests from "./requests.js"
 import sidebar from "./sidebar.js"
 import utils from "./utils.js"
 
+/** @type {import("../types/note")} */
+
 const DEFAULT_DISPLAY_ID = 'display-box'
 const DEFAULT_BACKGROUND_COLOR = 'rgb(30, 27, 37)'
 const BACKGROUND_COLORS = {
@@ -11,6 +13,8 @@ const BACKGROUND_COLORS = {
   "VIDEO": '#000000'
 }
 const types = {
+  txt:  'TEXT',
+  md:   'TEXT',
   pdf:  'PDF',
   mp4:  'VIDEO',
   mp3:  'AUDIO',
@@ -22,7 +26,7 @@ const types = {
   gif:  'IMAGE',
 }
 
-function openNote(noteId) {
+async function openNote(noteId) {
   // If this note is already open, do nothing
   if (!noteId || isNoteOpen(noteId)) return
 
@@ -35,8 +39,9 @@ function openNote(noteId) {
     return
   }
   
-  const backgroundColor = BACKGROUND_COLORS[note.type] || DEFAULT_BACKGROUND_COLOR
-  const $el = _createElement(note)
+  const noteType = resolveType(note)
+  const backgroundColor = BACKGROUND_COLORS[noteType] || DEFAULT_BACKGROUND_COLOR
+  const $el = await createElement(note)
   removeItem()
   showEmptyIcon(false)
   _hookEvents($el)
@@ -73,10 +78,13 @@ function removeItem() {
   showEmptyIcon(true)
 }
 
-function _createElement(note) {
-  const type = note.note_type
-  const value = note.content.trim()
-  const elementType = _resolveType(type, value)
+/**
+ * @param {Note} note 
+ * @returns {Promise<JQuery<HTMLElement>>}
+ */
+async function createElement(note) {
+  const value = await resolveContent(note)
+  const elementType = resolveType(note)
   const noteId = note.id
   let $el
 
@@ -89,20 +97,28 @@ function _createElement(note) {
 
     // ???
     default: {
-      utils.showMessage(`Não foi possível abrir a anotação. Tipo desconhecido: ${type}.`, 'error')
-      throw new Error(`Unknown note type: ${type}`)
+      utils.showMessage(`Não foi possível abrir a anotação. Tipo desconhecido: ${elementType}.`, 'error')
+      throw new Error(`Unknown note type: ${elementType}`)
     }
   }
   return $el
 }
 
-function _resolveType(type, content) {
-  if (type === 'CONTENT') {
-    return 'TEXT'
+async function resolveContent(note) {
+  const resp = await requests.fetchNote(note.id)
+  return resp.content
+}
+
+function resolveType(note) {
+  const type = note.note_type
+  if (type === "TEXT") {
+    return "TEXT"
   }
 
+  const content = note.content
   const extIdx = content.lastIndexOf('.')
   const ext = content.substring(extIdx + 1).toLowerCase()
+  
   return types[ext] || null
 }
 

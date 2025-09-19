@@ -1,8 +1,9 @@
 import checks from "./checks.js"
 import utils from "./utils.js"
+import cache from "memory-cache"
 
 const BASE_URL = 'https://qrbe2ko4o5.execute-api.us-east-2.amazonaws.com/v1'
-const noteCache = {}
+const noteCache = {} // Mapping NoteID -> Note
 let selfCache = null
 
 /** @type {import("../types/note")} */
@@ -38,6 +39,28 @@ async function fetchNotes(useCache = true) {
   }
 
   return Object.values(noteCache)
+}
+
+async function fetchNoteData(noteId, url) {
+  const cacheKey = `note_data_${noteId}`
+  const cached = cache.get(cacheKey)
+  if (cached) return cached
+
+  const resp = await makeRequest({
+    url: url,
+    method: "GET"
+  })
+
+  if (!resp.ok) {
+    utils.showMessage(`Failed to fetch note data, returning null: ${await resp.text()}`)
+    return null
+  }
+
+  const MINUTE = 60 * 1000
+  const blob = await resp.blob()
+  cache.put(cacheKey, blob, 5 * MINUTE)
+
+  return blob
 }
 
 async function verifyEmail(email, code) {
@@ -158,6 +181,26 @@ async function retrieveSelf() {
   }
 }
 
+async function fetchNote(noteId) {
+  const cached = noteCache[noteId]
+  if (cached.content) return cached
+
+  const resp = await makeRequest({
+    url: `${BASE_URL}/notes/${noteId}`,
+    method: "GET",
+    authType: 'id'
+  })
+
+  if (!resp.ok) {
+    utils.showMessage(await resp.text())
+    return null
+  }
+
+  const body = await resp.json()
+  noteCache[noteId] = body
+  return body
+}
+
 /**
  * Creates a new note and returns the Note object the server has created.
  * 
@@ -178,14 +221,12 @@ async function createNote(note) {
     authType: 'id'
   })
 
-  if (!resp) return null
-
-  if (resp.ok) {
-    return await resp.json()
-  } else {
+  if (!resp) {
     utils.showMessage(`Failed to create note (${resp.status}):\n${await resp.text()}`, 'error')
     return null
   }
+
+  return await resp.json()
 }
 
 function getNoteById(id) {
@@ -254,6 +295,7 @@ export default {
   fetchSelf: retrieveSelf,
   register,
   login,
+  fetchNote,
   createNote,
   getNoteById
 }

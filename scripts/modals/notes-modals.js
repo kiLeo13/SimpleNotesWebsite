@@ -10,15 +10,14 @@ function showNoteUploadModal(onSubmit) {
     .addClass('app-modal modal-screen-container')
     .attr('id', this.id)
 
-  const $title = buildModalTitle()
-  const $form = buildBaseForm(this.title)
+  const $form = buildBaseForm()
   const $nameField = buildNoteNameField()
   const $visibility = buildVisibilityField()
   const $aliases = buildNoteAliasesField()
   const $content = buildFileInputField()
 
   // Appending all fields to the form
-  $form.append($title, $nameField, $visibility, $aliases, $content)
+  $form.append($nameField, $visibility, $aliases, $content)
 
   // Applying submit handler
   if (onSubmit) {
@@ -218,9 +217,7 @@ function buildActionRow(...$appends) {
 function buildBaseForm(title) {
   return $('<form>')
     .addClass('modal-screen-contents')
-    .append($('h1')
-      .addClass('modal-title')
-      .text(title))
+    .append(buildModalTitle())
 }
 
 function buildLabelElement(forId, text, required = false, helpText = null) {
@@ -238,7 +235,7 @@ function buildLabelElement(forId, text, required = false, helpText = null) {
 }
 
 function buildModalTitle() {
-  return $('<h1>')
+  return $('<div>')
     .addClass('modal-title')
     .text('Criar Nota')
 }
