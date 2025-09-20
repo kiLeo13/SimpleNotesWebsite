@@ -13,7 +13,7 @@ $(async () => {
   if (utils.isSignedIn()) {
     const notes = await requests.fetchNotes(false)
     sidebar.initSidebar()
-    sidebar.showNotes(notes) 
+    sidebar.showNotes(notes)
   } else {
     sidebar.showNotes([]) // Shows empty results just for a better UI experience XD
     entity.showLoginScreen()
