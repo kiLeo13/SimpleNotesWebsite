@@ -39,6 +39,7 @@ async function openNote(noteId) {
     return
   }
   
+  const isPrivate = (note.visibility || "PUBLIC") === "CONFIDENTIAL"
   const noteType = resolveType(note)
   const backgroundColor = BACKGROUND_COLORS[noteType] || DEFAULT_BACKGROUND_COLOR
   const $el = await createElement(note)
@@ -48,6 +49,10 @@ async function openNote(noteId) {
 
   $board.append($el)
   $board.css('background-color', backgroundColor)
+
+  if (isPrivate) {
+    entity.getPrivateNoteWarning()
+  }
 }
 
 function isNoteOpen(noteId) {
