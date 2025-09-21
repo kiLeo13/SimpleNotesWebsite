@@ -232,6 +232,7 @@ body {
 }
 
 .sidebar-pfp {
+  position: relative;
   display: flex;
   height: 100%;
   aspect-ratio: 1;
@@ -241,10 +242,28 @@ body {
   color: rgb(145, 145, 145);
   background-color: rgb(50, 50, 238);
   user-select: none;
+  overflow: hidden;
+  cursor: pointer;
 }
 
-.sidebar-pfp:hover {
-  cursor: pointer;
+.sidebar-pfp:hover .edit-profile-container {
+  opacity: 1;
+}
+
+.edit-profile-container {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 100ms;
+}
+
+.edit-profile-icon {
+  height: 60%;
 }
 
 .legal-disclaimer {
