@@ -39,11 +39,17 @@ async function openNote(noteId) {
     return
   }
   
+  // As of 2025-09-21, `createElement()` is now asynchronous and may take a few seconds 
+  // to complete while fetching content from the server. To avoid showing users a 
+  // seemingly laggy/unresponsive interface during this delay, we call `removeItem()` first, 
+  // before waiting on `createElement()`.
+  // This way, we make sure that the old note is removed immediately,
+  // giving instant visual feedback that their action was registered.
+  removeItem()
   const isPrivate = (note.visibility || "PUBLIC") === "CONFIDENTIAL"
   const noteType = resolveType(note)
   const backgroundColor = BACKGROUND_COLORS[noteType] || DEFAULT_BACKGROUND_COLOR
   const $el = await createElement(note)
-  removeItem()
   showEmptyIcon(false)
   _hookEvents($el)
 
