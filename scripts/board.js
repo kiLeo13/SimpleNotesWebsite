@@ -45,7 +45,7 @@ async function openNote(noteId) {
   // before waiting on `createElement()`.
   // This way, we make sure that the old note is removed immediately,
   // giving instant visual feedback that their action was registered.
-  removeItem()
+  closeCurrentNote()
   const isPrivate = (note.visibility || "PUBLIC") === "CONFIDENTIAL"
   const noteType = resolveType(note)
   const backgroundColor = BACKGROUND_COLORS[noteType] || DEFAULT_BACKGROUND_COLOR
@@ -81,7 +81,7 @@ function showEmptyIcon(show) {
   }
 }
 
-function removeItem() {
+function closeCurrentNote() {
   const $board = $('#content-board')
   $board.css('background-color', DEFAULT_BACKGROUND_COLOR)
 
@@ -136,7 +136,7 @@ function resolveType(note) {
 function _hookEvents($el) {
   $el.on('keydown', (e) => {
     if (e.key === 'Escape') {
-      removeItem()
+      closeCurrentNote()
       showEmptyIcon(true)
     }
   })
@@ -148,5 +148,5 @@ export default {
   showEmptyIcon,
   isNoteOpen,
   getOpenNoteId,
-  removeItem
+  removeItem: closeCurrentNote
 }
