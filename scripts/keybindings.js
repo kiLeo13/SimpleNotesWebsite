@@ -1,6 +1,5 @@
 import $ from "jquery"
 import board from "./board.js"
-import notesModals from "./modals/notes-modals.js"
 import sidebar from "./sidebar.js"
 import utils from "./utils.js"
 
