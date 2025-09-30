@@ -1,4 +1,4 @@
-# OnnyC - A Fast and Intuitive Note-Taking Application
+# 🪄 OnnyC
 
 OnnyC is a lightweight, high-performance web application designed to streamline note-taking and file management, inspired by the clean and responsive UI of ChatGPT.
 
