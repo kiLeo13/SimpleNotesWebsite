@@ -1,3 +1,5 @@
+Read the Portuguese (Brazilian) version here: [README.pt-BR.md](https://github.com/kiLeo13/SimpleNotesWebsite/blob/master/README.pt-BR.md).
+
 # ✨ OnnyC
 
 OnnyC is a lightweight, high-performance web application designed to streamline note-taking and file management, inspired by the clean and responsive UI of ChatGPT.
@@ -43,7 +45,8 @@ The project is built on a modern, cloud-native architecture designed for scalabi
     docker build -t onnyc .
     ```
 
-> **Note:** Due to the project's deep integration with AWS services (Cognito, S3, SSM), it will not function correctly out-of-the-box in a local environment without extensive AWS configuration and credential setup.
+> [!Note]
+> Due to the project's deep integration with AWS services (Cognito, S3, SSM), it will not function correctly out-of-the-box in a local environment without extensive AWS configuration and credential setup.
 
 ### Deployment
 
