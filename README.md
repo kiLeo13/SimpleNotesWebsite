@@ -1,20 +1,20 @@
-# 🪄 OnnyC
+# ✨ OnnyC
 
 OnnyC is a lightweight, high-performance web application designed to streamline note-taking and file management, inspired by the clean and responsive UI of ChatGPT.
 
 -----
 
-## The Problem
+## ❓ The Problem
 
 Traditional cloud storage services, while powerful, can become slow and cumbersome when dealing with deeply nested folder structures. This complexity often leads to a decrease in productivity when all you need is quick access to your notes and files.
 
-## The Solution
+## 💡 The Solution
 
 OnnyC provides a simple, single-page application (SPA) where your notes are immediately accessible from a left-side navigation bar. This design eliminates the need to click through multiple folders, allowing you to create, view, and manage your content with exceptional speed. While initially built for internal company use to boost productivity, it's designed to be useful for anyone.
 
 -----
 
-## Architecture Overview
+## ⚙ Architecture Overview
 
 The project is built on a modern, cloud-native architecture designed for scalability, security, and low cost, primarily leveraging AWS and Cloudflare services.
 
@@ -33,7 +33,7 @@ The project is built on a modern, cloud-native architecture designed for scalabi
 
 -----
 
-## How To Run & Deploy
+## 🖥 How To Run & Deploy
 
 ### Local Setup
 
@@ -55,7 +55,7 @@ The backend deployment is automated using **Docker** and **WatchTower**.
 
 -----
 
-## Technology Stack
+## 🔬 Technology Stack
 
 ### Cloud & AWS Services
 
@@ -99,7 +99,7 @@ The backend deployment is automated using **Docker** and **WatchTower**.
 
 -----
 
-## Limitations & Security Notes
+## 🤔 Limitations & Security Notes
 
 This project was designed to fit within free-tier cloud service limits. This has led to certain architectural decisions and limitations.
 
