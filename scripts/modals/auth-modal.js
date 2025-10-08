@@ -32,7 +32,6 @@ function buildBaseForm() {
 function buildFormMain() {
   const $body = $('<div>').addClass('auth-modal-body')
   const $email = buildInput('Email', 'email', true, {}, ['auth-email-field-input'])
-  // Soon {"pattern": "^[a-z0-9]+(?:[._%+\\-][a-z0-9]+)*@consorciomagalu\\.com\\.br$"}
 
   $body.append($email.wrapper)
   return $('<div>')

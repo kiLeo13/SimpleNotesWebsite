@@ -7,7 +7,7 @@ import sidebar from "./sidebar.js"
 import utils from "./utils.js"
 import entity from "./entity.js"
 
-const DOCUMENT_TITLE = 'Consórcio Magalu - Anotações'
+const DOCUMENT_TITLE = 'Onnyx - Anotações'
 
 $(async () => {
   if (utils.isSignedIn()) {
