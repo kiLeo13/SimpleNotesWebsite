@@ -1,0 +1,28 @@
+.container {
+  position: fixed;
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  inset: 0;
+  user-select: none;
+  background-color: rgb(20, 18, 22);
+  transition: grid-template-columns 600ms ease-in-out;
+}
+
+.authContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.presentContainer {
+  height: 100%;
+  transition: opacity 600ms ease-in-out;
+}
+
+.presentContainer > img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  object-position: 60%;
+  mask-image: linear-gradient(to right, transparent, black 100%);
+}

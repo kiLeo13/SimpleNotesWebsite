@@ -1,0 +1,138 @@
+.authModalContainer {
+  background-color: rgb(35, 32, 39);
+  border-radius: 15px;
+  min-width: 450px;
+  max-width: 500px;
+  max-height: 95vh;
+  padding: 40px;
+  box-sizing: border-box;
+  box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.125);
+  animation: cascade-loading 500ms ease-out forwards;
+}
+
+.authForm {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.authFormControl {
+  display: flex;
+  flex-direction: column;
+  color: rgb(155, 155, 155);
+  font-size: 1.2em;
+  gap: 5px;
+}
+
+.authFormLabel {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.authFormInput {
+  padding: 10px 8px;
+  font-size: 0.85em;
+  color: rgb(140, 140, 140);
+  background-color: rgba(0, 0, 0, 0.2);
+  outline: 1px solid rgb(46, 38, 54);
+  border-radius: 8px;
+  border: none;
+  transition: outline 100ms;
+}
+
+.authFormInput:focus {
+  outline-color: rgb(117, 89, 148);
+}
+
+.authFormInput::placeholder {
+  color: rgb(69, 62, 77);
+}
+
+.authInputError {
+  font-size: 0.7em;
+  color: rgb(255, 60, 60);
+  user-select: text;
+}
+
+.authFormFooterContainer {
+  display: flex;
+  word-break: break-word;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.authFooterContents {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.submitButton {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  border-radius: 100px;
+  padding: 14px 40px;
+  color: rgb(51, 27, 90);
+  font-size: 1.2em;
+  font-weight: 500;
+  border: none;
+  background-color: rgb(144, 92, 192);
+  cursor: pointer;
+  transition: background-color 300ms;
+}
+
+.submitButton:hover {
+  background-color: rgb(162, 114, 207);
+}
+
+.submitButton:disabled {
+  color: rgb(40, 22, 68);
+  background-color: rgb(65, 44, 85);
+}
+
+.modalSwitcher {
+  display: flex;
+  align-items: center;
+  font-size: 0.9em;
+  font-weight: 500;
+  background-color: rgb(42, 38, 49);
+  color: rgb(98, 86, 121);
+  border-radius: 8px;
+  padding: 8px;
+  gap: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background-color 300ms,
+    color 300ms;
+}
+
+.modalSwitcher:hover {
+  background-color: rgb(56, 49, 70);
+  color: rgb(130, 114, 160);
+}
+
+.loaderContainer {
+  position: absolute;
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  align-items: center;
+  opacity: 1 !important;
+}
+
+@keyframes cascade-loading {
+  from {
+    opacity: 0%;
+    scale: 40%;
+  }
+  
+  to {
+    opacity: 100%;
+    scale: 100%;
+  }
+}

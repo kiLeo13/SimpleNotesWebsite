@@ -1,0 +1,93 @@
+.modalWrapper {
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(24, 22, 27);
+  width: 300px;
+  padding: 25px;
+  border-radius: 15px;
+  box-sizing: content-box;
+  gap: 18px;
+  border: 1px solid rgb(43, 41, 48);
+  user-select: text;
+}
+
+.verifyHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.verifyTitle {
+  color: rgb(142, 139, 145);
+  font-size: 1.4em;
+  font-weight: 600;
+  margin: 0;
+}
+
+.verifySubtitle {
+  color: rgb(81, 77, 85);
+  font-size: 0.8em;
+  font-weight: 450;
+  margin: 0;
+}
+
+.verifyForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.verifyFormControl {
+  display: flex;
+  flex-direction: column;
+  color: rgb(155, 155, 155);
+  font-size: 1.2em;
+  gap: 5px;
+}
+
+.verifyFormLabel {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.verifyFormInput {
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.1);
+  color: rgb(155, 155, 155);
+  border: none;
+  outline: 1px solid rgb(46, 38, 54);
+  padding: 8px;
+  transition: outline 200ms;
+}
+
+.verifyFormInput:focus {
+  outline-color: rgb(117, 89, 148);
+}
+
+.verifyFooter {
+  display: flex;
+  justify-content: end;
+}
+
+.division {
+  border-top: 1px solid rgb(58, 52, 70);
+}
+
+.verifyConfirm {
+  font-size: 1em;
+  font-weight: 450;
+  padding: 10px 14px;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  background-color: rgb(156, 77, 209);
+  color: rgb(63, 26, 97);
+  user-select: none;
+  transition: background-color 200ms;
+}
+
+.verifyConfirm:hover {
+  background-color: rgb(158, 92, 202);
+}

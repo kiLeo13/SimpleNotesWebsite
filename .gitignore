@@ -1,23 +1,28 @@
-node_modules/
-dist/
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# IDE files
-.vscode/
+node_modules
+dist
+dist-ssr
+*.local
 
-# Binaries for programs and plugins
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
-
-# Workspace files
-go.work
-go.work.sum
-note_modules/
-
+# Environment variables
 .env
-.vscode/
+.env.*
 
-# Database files
-*.db
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

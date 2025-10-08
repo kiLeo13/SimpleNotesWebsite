@@ -1,0 +1,33 @@
+:root {
+  --sidebar-background-color: rgb(33, 29, 43);
+  --main-background-color: rgb(30, 27, 37);
+  --scrollbar-width: 4px;
+  --sidebar-item-background-color: rgb(19, 17, 25);
+  --sidebar-bottom-background-color: rgb(12, 11, 15);
+  --sidebar-item-hover-border-color: rgb(56, 51, 70);
+  --sidebar-item-hover-background-color: rgb(15, 14, 20);
+  --sidebar-padding: 13px;
+  --black-background-container-zindex: 10;
+}
+
+* {
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+}
+
+*:disabled {
+  cursor: not-allowed !important;
+}
+
+/*
+ * I am creating a new rule instead of using the above one
+ * because 20% of opacity feels too low for inputs
+ */
+input:read-only {
+  opacity: 45%;
+  cursor: not-allowed;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
