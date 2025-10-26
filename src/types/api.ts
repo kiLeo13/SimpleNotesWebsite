@@ -60,7 +60,7 @@ export const SignupResponseSchema = z.object({})
 export const ConfirmResponseSchema = z.object({})
 
 export const CheckUserStatusSchema = z.object({
-  status: z.string()
+  status: z.enum(['AVAILABLE', 'TAKEN', 'VERIFYING'])
 })
 
 // Exported zod response schemas
