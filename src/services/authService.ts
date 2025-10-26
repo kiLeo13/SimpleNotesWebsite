@@ -1,9 +1,12 @@
 import {
+  CheckUserStatusSchema,
   ConfirmResponseSchema,
   LoginResponseSchema,
   SignupResponseSchema,
-
+  
   type ApiResponse,
+  type CheckUserStatusData,
+  type CheckUserStatusPayload,
   type ConfirmRequestPayload,
   type ConfirmResponseData,
   type LoginRequestPayload,
@@ -53,6 +56,19 @@ export const authService = {
     return safeApiCall(
       () => apiClient.post('/users/confirms', payload),
       ConfirmResponseSchema
+    )
+  },
+
+  /**
+   * Checks the status of a user by email.
+   * 
+   * @param payload The email of the user to check the status.
+   * @returns The API response. If successful, it contains the user's status.
+   */
+  getUserStatus: async (payload: CheckUserStatusPayload): Promise<ApiResponse<CheckUserStatusData>> => {
+    return safeApiCall(
+      () => apiClient.post('/users/check-email', payload),
+      CheckUserStatusSchema
     )
   }
 }
