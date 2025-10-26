@@ -3,10 +3,73 @@ import type { ApiErrorResponse } from '../types/api'
 import { isAxiosError } from 'axios'
 
 /**
- * Transforms an error from an API call into a standardized ApiErrorResponse format.
- * 
- * @param error - The error caught from a try/catch block.
- * @returns An `ApiErrorResponse` object.
+ * Transforms an API error into a standardized `ApiErrorResponse` format.
+ *
+ * This helper ensures that all API errors follow a consistent shape for UI components
+ * (especially React Hook Form) to easily consume.
+ *
+ * ---
+ * ### Behavior
+ * - **Structured field errors:**  
+ *   When the API returns validation errors for specific fields, they are preserved
+ *   as a `Record<string, string[]>` under the `errors` property.
+ *
+ *   **Example input:**
+ *   ```json
+ *   {
+ *     "errors": {
+ *       "email": ["This field is required"],
+ *       "password": [
+ *         "Value must be at least 8 characters long",
+ *         "Value must contain at least one number"
+ *       ]
+ *     }
+ *   }
+ *   ```
+ *   **Returned:**
+ *   ```ts
+ *   {
+ *     success: false,
+ *     errors: {
+ *       email: ["This field is required"],
+ *       password: [
+ *         "Value must be at least 8 characters long",
+ *         "Value must contain at least one number"
+ *       ]
+ *     }
+ *   }
+ *   ```
+ *
+ * - **General error messages:**  
+ *   When the API returns only a message (no field-specific errors), it is normalized
+ *   into a `root` field so that it can be used as a drop-in value for form-level errors.
+ *
+ *   **Example input:**
+ *   ```json
+ *   {"message": "Resource not found"}
+ *   ```
+ *   **Returned:**
+ *   ```ts
+ *   {
+ *     success: false,
+ *     errors: {
+ *       root: ["Resource not found"]
+ *     }
+ *   }
+ *   ```
+ *
+ * - **Unexpected or unknown errors:**  
+ *   If the error doesn’t match either of the above formats, a fallback message is returned:
+ *   ```ts
+ *   {
+ *     success: false,
+ *     errors: { root: ["An unknown error occurred. Please try again."] }
+ *   }
+ *   ```
+ *
+ * ---
+ * @param error - The error caught from a try/catch block, possibly from an Axios request.
+ * @returns A normalized `ApiErrorResponse` object suitable for form error handling.
  */
 export function handleApiError(error: unknown): ApiErrorResponse {
   if (isAxiosError(error) && error.response) {
