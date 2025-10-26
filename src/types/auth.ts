@@ -11,5 +11,11 @@ export const signupSchema = z.object({
   password: z.string().min(8).max(64)
 })
 
+export const confirmSchema = z.object({
+  email: z.email(),
+  code: z.string().length(6)
+})
+
 export type LoginFormFields = z.infer<typeof loginSchema>
 export type SignupFormFields = z.infer<typeof signupSchema>
+export type ConfirmFormFields = z.infer<typeof confirmSchema>
