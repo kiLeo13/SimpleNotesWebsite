@@ -39,15 +39,15 @@ export interface ConfirmRequestPayload {
   code: string
 }
 
-// Raw API Responses
+export interface CheckUserStatusPayload {
+  email: string
+}
+
+// Raw API Responses (if transformation is needed)
 const RawLoginResponse = z.object({
   access_token: z.string().min(1),
   id_token: z.string().min(1)
 })
-
-const RawSignupResponse = z.object({})
-
-const RawConfirmResponse = z.object({})
 
 // API Response Data after transformation (schemas)
 export const LoginResponseSchema = RawLoginResponse.transform((data) => ({
@@ -55,11 +55,16 @@ export const LoginResponseSchema = RawLoginResponse.transform((data) => ({
   idToken: data.id_token
 }))
 
-export const SignupResponseSchema = RawSignupResponse.transform(() => {})
+export const SignupResponseSchema = z.object({})
 
-export const ConfirmResponseSchema = RawConfirmResponse.transform(() => {})
+export const ConfirmResponseSchema = z.object({})
+
+export const CheckUserStatusSchema = z.object({
+  status: z.string()
+})
 
 // Exported zod response schemas
 export type LoginResponseData = z.infer<typeof LoginResponseSchema>
 export type SignupResponseData = z.infer<typeof SignupResponseSchema>
 export type ConfirmResponseData = z.infer<typeof ConfirmResponseSchema>
+export type CheckUserStatusData = z.infer<typeof CheckUserStatusSchema>
