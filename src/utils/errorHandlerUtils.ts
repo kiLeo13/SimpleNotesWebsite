@@ -1,3 +1,4 @@
+import type { FieldValues, Path, UseFormSetError } from 'react-hook-form'
 import type { ApiErrorResponse } from '../types/api'
 
 import { isAxiosError } from 'axios'
@@ -99,5 +100,35 @@ export function handleApiError(error: unknown): ApiErrorResponse {
   return {
     success: false,
     errors: { root: ['An unknown error occurred. Please try again.'] },
+  }
+}
+
+/**
+ * Displays server-side validation errors in a React Hook Form.
+ *
+ * This helper takes a normalized error object (where each field maps to an array of messages)
+ * and calls `setError` for each entry, including the optional `root` form-level error.
+ *
+ * @example
+ * ```ts
+ * if (!response.success) {
+ *   displayFormErrors(response.errors, setError)
+ *   return
+ * }
+ * ```
+ *
+ * @param errors A record where keys are field names (or "root") and values are message arrays.
+ * @param setError The `setError` function from React Hook Form.
+ */
+export function displayFormsErrors<T extends FieldValues>(
+  errs: Record<string, string[]>,
+  setError: UseFormSetError<T>
+): void {
+  for (const [field, messages] of Object.entries(errs)) {
+    const fieldName = field === "root" ? "root" : (field as Path<T>)
+    setError(fieldName, {
+      type: "server",
+      message: messages.join(", ")
+    })
   }
 }
