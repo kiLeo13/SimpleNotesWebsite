@@ -14,11 +14,11 @@ import { handleApiError } from '../utils/errorHandlerUtils'
 export async function safeApiCall<T>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   apiCall: () => Promise<any>,
-  schema: z.ZodType<T>
+  schema?: z.ZodType<T>
 ): Promise<ApiResponse<T>> {
   try {
     const response = await apiCall()
-    const parsedData = schema.parse(response.data)
+    const parsedData = schema ? schema.parse(response.data) : response.data
     return {
       success: true,
       data: parsedData,
