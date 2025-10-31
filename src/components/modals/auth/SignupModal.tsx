@@ -1,6 +1,6 @@
 import { signupSchema, type SignupFormFields } from "../../../types/auth"
 import { useState, type JSX } from "react"
-import { useForm, type SubmitHandler } from "react-hook-form"
+import { useForm, type SubmitHandler, type UseFormSetError } from "react-hook-form"
 
 import RequiredHint from "../../hints/RequiredHint"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -9,13 +9,14 @@ import { FaArrowRight } from "react-icons/fa"
 import { Link } from "react-router-dom"
 import { useSignup } from "../../../hooks/useSignup"
 import { DarkWrapper } from "../../DarkWrapper"
+import { displayFormsErrors } from "../../../utils/errorHandlerUtils"
 
 import styles from "./AuthModal.module.css"
 
 export function SignupModal(): JSX.Element {
   const [isEmailVerifying, setIsEmailVerifying] = useState(false)
-  const [email, setEmail] = useState("leonardo.silvavieira@hotmail.com")
-  const { signup, isLoading } = useSignup()
+  const [email, setEmail] = useState('') // Used only to pass to VerificationModal
+  const { signup, getUserStatus, isLoading } = useSignup()
   const {
     register,
     handleSubmit,
@@ -26,27 +27,35 @@ export function SignupModal(): JSX.Element {
   })
 
   const onSubmit: SubmitHandler<SignupFormFields> = async (data) => {
-    const response = await signup(data)
-
-    if (!response.success) {
-      for (const [field, messages] of Object.entries(response.errors)) {
-        const fieldName = field as keyof SignupFormFields | "root"
-        setError(fieldName, {
-          type: "server",
-          message: messages.join(", ")
-        })
+    const userStatusResponse = await getUserStatus(data)
+    if (!userStatusResponse.success) {
+      displayFormsErrors(userStatusResponse.errors, setError)
+      return
+    }
+    
+    setEmail(data.email)
+    const status = userStatusResponse.data.status
+    switch (status) {
+      case 'TAKEN': handleEmailTaken(setError); return
+      case 'VERIFYING': {
+        setIsEmailVerifying(true)
+        return
       }
+    }
+
+    const response = await signup(data)
+    if (!response.success) {
+      displayFormsErrors(response.errors, setError)
       return
     }
 
     // Send user to e-mail confirmation/verification/validation/whatever you wanna call it
-    setEmail(data.email)
     setIsEmailVerifying(true)
   }
 
   return (
     <>
-      {!isEmailVerifying && (
+      {isEmailVerifying && (
         <DarkWrapper>
           <VerificationModal email={email} />
         </DarkWrapper>
@@ -105,4 +114,11 @@ export function SignupModal(): JSX.Element {
       </div>
     </>
   )
+}
+
+function handleEmailTaken(setError: UseFormSetError<SignupFormFields>): void {
+  setError('email', {
+    type: 'manual',
+    message: 'Já existe um usuário cadastrado com este e-mail.'
+  })
 }

@@ -7,7 +7,7 @@
   padding: 40px;
   box-sizing: border-box;
   box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.125);
-  animation: cascade-loading 500ms ease-out forwards;
+  animation: cascade-loading 400ms ease-out forwards;
 }
 
 .authForm {
@@ -128,7 +128,7 @@
 @keyframes cascade-loading {
   from {
     opacity: 0%;
-    scale: 40%;
+    scale: 60%;
   }
   
   to {

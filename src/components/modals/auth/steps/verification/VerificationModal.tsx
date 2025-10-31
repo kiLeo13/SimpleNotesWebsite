@@ -2,7 +2,10 @@ import { useEffect, useRef, useState, type JSX } from "react"
 
 import RequiredHint from "../../../../hints/RequiredHint"
 import { isOnlyDigit } from "../../../../../utils/utils"
+import { useConfirm } from "../../../../../hooks/useConfirm"
+import { useNavigate } from "react-router-dom"
 
+import authStyles from "../../AuthModal.module.css"
 import styles from "./VerificationModal.module.css"
 
 type VerificationModalProps = {
@@ -10,7 +13,10 @@ type VerificationModalProps = {
 }
 
 export function VerificationModal({ email }: VerificationModalProps): JSX.Element {
+  const navigate = useNavigate()
   const [code, setCode] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const { confirm, isLoading } = useConfirm()
   const codeInRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -26,8 +32,22 @@ export function VerificationModal({ email }: VerificationModalProps): JSX.Elemen
     }
   }
 
-  const verifyHandler = (e: React.FormEvent) => {
+  // We are not using React Hook form here, I mean, its just 1 field XD
+  const verifyHandler = async (e: React.FormEvent) => {
     e.preventDefault()
+    const response = await confirm({code: code, email: email})
+
+    console.log('Hit')
+    if (!response.success) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      for (const [_, messages] of Object.entries(response.errors)) {
+        setError(messages.join(", "))
+      }
+      console.log('Got an error')
+      return
+    }
+    console.log('Trying to redirect')
+    navigate('/login')
   }
 
   return (
@@ -45,9 +65,19 @@ export function VerificationModal({ email }: VerificationModalProps): JSX.Elemen
         <div className={styles.verifyFormControl}>
           <label className={styles.verifyFormLabel} htmlFor="code-input">Código<RequiredHint /></label>
           <input className={styles.verifyFormInput} ref={codeInRef} id="code-input" type="text" onChange={codeTypeHandler} value={code} />
+          {error && (
+            <span className={authStyles.authInputError}>{error}</span>
+          )}
         </div>
         <footer className={styles.verifyFooter}>
-          <button className={styles.verifyConfirm}>Verificar</button>
+          <button disabled={isLoading} className={authStyles.submitButton} type="submit">
+            Verificar
+            {isLoading && (
+              <div className={authStyles.loaderContainer}>
+                <div className={`loader ${authStyles.loader}`}></div>
+              </div>
+            )}
+          </button>
         </footer>
       </form>
     </div>
