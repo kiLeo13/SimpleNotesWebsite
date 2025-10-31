@@ -50,14 +50,12 @@ const RawLoginResponse = z.object({
 })
 
 // API Response Data after transformation (schemas)
+export const VoidSchema = z.undefined().or(z.null()).or(z.literal('')).transform(() => undefined)
+
 export const LoginResponseSchema = RawLoginResponse.transform((data) => ({
   accessToken: data.access_token,
   idToken: data.id_token
 }))
-
-export const SignupResponseSchema = z.object({})
-
-export const ConfirmResponseSchema = z.object({})
 
 export const CheckUserStatusSchema = z.object({
   status: z.enum(['AVAILABLE', 'TAKEN', 'VERIFYING'])
@@ -65,6 +63,4 @@ export const CheckUserStatusSchema = z.object({
 
 // Exported zod response schemas
 export type LoginResponseData = z.infer<typeof LoginResponseSchema>
-export type SignupResponseData = z.infer<typeof SignupResponseSchema>
-export type ConfirmResponseData = z.infer<typeof ConfirmResponseSchema>
 export type CheckUserStatusData = z.infer<typeof CheckUserStatusSchema>
