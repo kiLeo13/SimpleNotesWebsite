@@ -2,8 +2,6 @@ import {
   CheckUserStatusSchema,
   LoginResponseSchema,
   
-  VoidSchema,
-  
   type ApiResponse,
   type CheckUserStatusData,
   type CheckUserStatusPayload,
@@ -38,10 +36,7 @@ export const authService = {
    * @returns The API response. If successful, an empty response is returned.
    */
   signup: async (payload: SignupRequestPayload): Promise<ApiResponse<void>> => {
-    return safeApiCall(
-      () => apiClient.post('/users', payload),
-      VoidSchema
-    )
+    return safeApiCall(() => apiClient.post('/users', payload))
   },
 
   /**
@@ -51,10 +46,7 @@ export const authService = {
    * @returns The API response. If successful, an empty response is returned.
    */
   verifyEmail: async (payload: ConfirmRequestPayload): Promise<ApiResponse<void>> => {
-    return safeApiCall(
-      () => apiClient.post('/users/confirms', payload),
-      VoidSchema
-    )
+    return safeApiCall(() => apiClient.post('/users/confirms', payload))
   },
 
   /**
