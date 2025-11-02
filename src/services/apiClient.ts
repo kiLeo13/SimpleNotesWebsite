@@ -1,5 +1,7 @@
 import axios, { type InternalAxiosRequestConfig} from "axios"
 
+import { isTokenValid } from "../utils/authutils"
+
 const PATH_API_KEY: string = "id_token"
 
 const apiClient = axios.create({
@@ -16,7 +18,7 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token = localStorage.getItem(PATH_API_KEY)
 
-  if (token) {
+  if (token && isTokenValid(token)) {
     config.headers.Authorization = `Bearer ${token}`
   }
   return config
