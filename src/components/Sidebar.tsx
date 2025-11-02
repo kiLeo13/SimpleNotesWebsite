@@ -16,7 +16,9 @@ export function Sidebar({ isAdmin, notes, setNotes }: SidebarProps): JSX.Element
   const [isLoading, setIsLoading] = useState(false)
   const [search, setSearch] = useState('')
   const searchRef = useRef<HTMLInputElement>(null)
-  const filteredNotes = notes.filter((n) => filterNote(n, search))
+  const filteredNotes = notes
+    .filter((n) => filterNote(n, search))
+    .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
 
   const handleSearch: ChangeEventHandler<HTMLInputElement> = (e) => {
     const val = e.target.value
