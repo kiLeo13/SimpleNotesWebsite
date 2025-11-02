@@ -1,12 +1,12 @@
 import type { NoteResponseData } from "../types/api/notes"
 import type { UserResponseData } from "../types/api/users"
-import { useEffect, useRef, useState, type ChangeEventHandler, type JSX, type KeyboardEventHandler } from "react"
+import { useCallback, useEffect, useRef, useState, type ChangeEventHandler, type JSX, type KeyboardEventHandler } from "react"
 
 import { noteService } from "../services/noteService"
 import { SidebarNote } from "./notes/SidebarNote"
+import { FaCloudUploadAlt } from "react-icons/fa"
 
 import styles from "./Sidebar.module.css"
-import { FaCloudUploadAlt } from "react-icons/fa"
 
 type SidebarProps = {
   selfUser: UserResponseData | null
@@ -22,6 +22,16 @@ export function Sidebar({ selfUser, notes, setNotes }: SidebarProps): JSX.Elemen
     .filter((n) => filterNote(n, search))
     .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
 
+  const loadNotes = useCallback(async () => {
+    setIsLoading(true)
+    const resp = await noteService.listNotes()
+
+    if (resp.success) {
+      setNotes(resp.data.notes)
+    }
+    setIsLoading(false)
+  }, [setNotes])
+
   const handleSearch: ChangeEventHandler<HTMLInputElement> = (e) => {
     const val = e.target.value
     setSearch(val)
@@ -35,9 +45,15 @@ export function Sidebar({ selfUser, notes, setNotes }: SidebarProps): JSX.Elemen
 
   useEffect(() => {
     const handleGlobalKeydown = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.key === " ") {
+      const key = e.key.toLowerCase()
+      if (e.ctrlKey && key === " ") {
         searchRef?.current?.focus()
         e.preventDefault()
+      }
+
+      if (e.ctrlKey && key === "r") {
+        e.preventDefault()
+        loadNotes()
       }
     }
 
@@ -46,17 +62,8 @@ export function Sidebar({ selfUser, notes, setNotes }: SidebarProps): JSX.Elemen
   })
 
   useEffect(() => {
-    const loadNotes = async () => {
-      setIsLoading(true)
-      const resp = await noteService.listNotes()
-
-      if (resp.success) {
-        setNotes(resp.data.notes)
-      }
-      setIsLoading(false)
-    }
     loadNotes()
-  }, [setNotes])
+  }, [loadNotes])
 
   return (
     <nav className={styles.leftMenu}>
