@@ -4,12 +4,18 @@ import {
   CheckUserStatusSchema,
   LoginResponseSchema,
 
+  QueryUsersResponseSchema,
+
+  UserResponseSchema,
+
   type CheckUserStatusData,
   type CheckUserStatusPayload,
   type ConfirmRequestPayload,
   type LoginRequestPayload,
   type LoginResponseData,
+  type QueryUsersResponseData,
   type SignupRequestPayload,
+  type UserResponseData,
 } from "../types/api/auth"
 
 import apiClient from "./apiClient"
@@ -60,6 +66,20 @@ export const userService = {
     return safeApiCall(
       () => apiClient.post('/users/check-email', payload),
       CheckUserStatusSchema
+    )
+  },
+
+  queryUsers: async (...ids: number[]): Promise<ApiResponse<QueryUsersResponseData>> => {
+    return safeApiCall(
+      () => apiClient.post('/users/query', { ids: ids }),
+      QueryUsersResponseSchema
+    )
+  },
+
+  getSelfUser: async (): Promise<ApiResponse<UserResponseData>> => {
+    return safeApiCall(
+      () => apiClient.get('/users/@me'),
+      UserResponseSchema
     )
   }
 }
