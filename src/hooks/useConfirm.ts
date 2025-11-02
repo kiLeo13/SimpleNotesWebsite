@@ -2,7 +2,7 @@ import type { ConfirmFormFields } from "../types/schemas/auth"
 import type { ApiResponse } from "../types/api/api"
 
 import { useState } from "react"
-import { authService } from "../services/authService"
+import { userService } from "../services/userService"
 
 export function useConfirm() {
   const [isLoading, setIsLoading] = useState(false)
@@ -10,7 +10,7 @@ export function useConfirm() {
   const confirm = async (data: ConfirmFormFields): Promise<ApiResponse<void>> => {
     setIsLoading(true)
 
-    const result = await authService.verifyEmail(data)
+    const result = await userService.verifyEmail(data)
     setIsLoading(false)
     return result
   }

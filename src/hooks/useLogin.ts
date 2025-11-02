@@ -2,7 +2,7 @@ import type { LoginResponseData } from "../types/api/auth"
 import type { LoginFormFields } from "../types/schemas/auth"
 import type { ApiResponse } from "../types/api/api"
 
-import { authService } from "../services/authService"
+import { userService } from "../services/userService"
 import { useState } from "react"
 
 export function useLogin() {
@@ -11,7 +11,7 @@ export function useLogin() {
   const login = async (data: LoginFormFields): Promise<ApiResponse<LoginResponseData>> => {
     setIsLoading(true)
 
-    const result = await authService.login(data)
+    const result = await userService.login(data)
     setIsLoading(false)
     return result
   }

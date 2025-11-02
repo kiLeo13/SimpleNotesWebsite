@@ -3,7 +3,7 @@ import type { CheckUserStatusData } from "../types/api/auth"
 import type { ApiResponse } from "../types/api/api"
 
 import { useState } from "react"
-import { authService } from "../services/authService"
+import { userService } from "../services/userService"
 
 export function useSignup() {
   const [isLoading, setIsLoading] = useState(false)
@@ -11,7 +11,7 @@ export function useSignup() {
   const signup = async (data: SignupFormFields): Promise<ApiResponse<void>> => {
     setIsLoading(true)
 
-    const result = await authService.signup(data)
+    const result = await userService.signup(data)
     setIsLoading(false)
     return result
   }
@@ -19,7 +19,7 @@ export function useSignup() {
   const getUserStatus = async (data: CheckUserStatusFields): Promise<ApiResponse<CheckUserStatusData>> => {
     setIsLoading(true)
 
-    const result = await authService.getUserStatus(data)
+    const result = await userService.getUserStatus(data)
     setIsLoading(false)
     return result
   }

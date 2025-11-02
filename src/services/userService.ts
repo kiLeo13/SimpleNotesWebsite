@@ -16,7 +16,7 @@ import apiClient from "./apiClient"
 
 import { safeApiCall } from "./safeApiCall"
 
-export const authService = {
+export const userService = {
   /**
    * Logs a user in.
    * 
