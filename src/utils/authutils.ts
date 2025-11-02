@@ -26,7 +26,7 @@ export function getTokenRemainingSeconds(jwt: string): number {
   }
 }
 
-function isTokenValid(jwt: string | null): boolean {
+export function isTokenValid(jwt: string | null): boolean {
   if (!jwt || jwt.trim() === '') return false
   const now = Date.now()
 
