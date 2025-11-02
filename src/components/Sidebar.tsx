@@ -1,18 +1,20 @@
 import type { NoteResponseData } from "../types/api/notes"
+import type { UserResponseData } from "../types/api/auth"
 import { useEffect, useRef, useState, type ChangeEventHandler, type JSX, type KeyboardEventHandler } from "react"
 
 import { noteService } from "../services/noteService"
 import { SidebarNote } from "./notes/SidebarNote"
 
 import styles from "./Sidebar.module.css"
+import { FaCloudUploadAlt } from "react-icons/fa"
 
 type SidebarProps = {
-  isAdmin: boolean
+  selfUser: UserResponseData | null
   notes: NoteResponseData[]
   setNotes: (notes: NoteResponseData[]) => void
 }
 
-export function Sidebar({ isAdmin, notes, setNotes }: SidebarProps): JSX.Element {
+export function Sidebar({ selfUser, notes, setNotes }: SidebarProps): JSX.Element {
   const [isLoading, setIsLoading] = useState(false)
   const [search, setSearch] = useState('')
   const searchRef = useRef<HTMLInputElement>(null)
@@ -70,12 +72,12 @@ export function Sidebar({ isAdmin, notes, setNotes }: SidebarProps): JSX.Element
           onChange={handleSearch}
           value={search}
         />
-        <div className={styles.menuDivider}></div>
+        <div className={styles.menuDivider} />
         <span className={styles.searchResultCount}>{toPrettyResultCount(filteredNotes.length)}</span>
       </div>
       <div className={styles.menuLowerItems}>
         <div className={styles.sidebarLoaderContainer}>
-          {isLoading && <div className="loader"></div>}
+          {isLoading && <div className="loader" />}
         </div>
 
         {!isLoading && (
@@ -86,8 +88,10 @@ export function Sidebar({ isAdmin, notes, setNotes }: SidebarProps): JSX.Element
       </div>
       <div className={styles.menuFooterControls}>
         <div className={styles.sidebarPfp}>L</div>
-        {isAdmin && (
-          <button className={styles.footerControlButton}>+</button>
+        {selfUser?.isAdmin && (
+          <button className={styles.footerControlButton}>
+            <FaCloudUploadAlt size={"0.75em"} />
+          </button>
         )}
       </div>
     </nav>
@@ -98,7 +102,7 @@ function filterNote(note: NoteResponseData, search: string): boolean {
   const sanitizedSearch = search.trim().toLowerCase()
   const name = note.name.toLowerCase()
 
-  return name.includes(sanitizedSearch) || note.tags.some(tag => tag.toLowerCase().includes(sanitizedSearch))
+  return name.includes(sanitizedSearch) || note.tags.some(tag => tag.includes(sanitizedSearch))
 }
 
 function toPrettyResultCount(count: number): string {
