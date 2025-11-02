@@ -38,6 +38,7 @@
   color: rgb(158, 158, 158);
   border-radius: 0.4em;
   transition: border-color 0.3s;
+  user-select: none;
 }
 
 .searchInput:focus {
