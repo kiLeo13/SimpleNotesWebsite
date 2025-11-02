@@ -11,7 +11,6 @@ export const APP_NAME: string = "OnnyC"
 
 function App() {
   const [admin, /*setAdmin*/] = useState(false)
-  const [sidebarLoading, /*setSidebarLoading*/] = useState(true)
 
   return (
     <Routes>
@@ -24,7 +23,7 @@ function App() {
         index
         element={
           <ProtectedRoute>
-            <MainPage sidebarLoading={sidebarLoading} isAdmin={admin} />
+            <MainPage isAdmin={admin} />
           </ProtectedRoute>
         }
       />

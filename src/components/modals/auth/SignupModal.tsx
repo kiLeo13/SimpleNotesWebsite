@@ -1,4 +1,4 @@
-import { signupSchema, type SignupFormFields } from "../../../types/auth"
+import { signupSchema, type SignupFormFields } from "../../../types/schemas/auth"
 import { useState, type JSX } from "react"
 import { useForm, type SubmitHandler, type UseFormSetError } from "react-hook-form"
 
@@ -32,7 +32,7 @@ export function SignupModal(): JSX.Element {
       displayFormsErrors(userStatusResponse.errors, setError)
       return
     }
-    
+
     setEmail(data.email)
     const status = userStatusResponse.data.status
     switch (status) {

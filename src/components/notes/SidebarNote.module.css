@@ -1,0 +1,42 @@
+.noteItem {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  padding: 10px;
+  font-size: 14px;
+  box-sizing: border-box;
+  background-color: var(--sidebar-item-background-color);
+  border-radius: .5em;
+  min-height: 45px;
+  width: 100%;
+  color: #adadad;
+  box-shadow: .2em .2em 10px #00000020;
+  -webkit-user-select: none;
+  user-select: none;
+  line-height: 130%;
+  z-index: 2;
+  transition: scale .3s, background-color .3s
+}
+
+.noteItem:hover {
+  outline: 1px solid var(--sidebar-item-hover-border-color);
+  scale: 103%;
+  cursor: pointer;
+  height: max-content;
+  background-color: var(--sidebar-item-hover-background-color)
+}
+
+.noteItemTitle {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis
+}
+
+.noteItem:hover .noteItemTitle {
+  overflow: visible;
+  white-space: normal
+}
+
+.noteItem:active {
+  scale: 97%
+}

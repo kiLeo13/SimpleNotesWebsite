@@ -2,21 +2,22 @@ import type { JSX } from "react"
 import { Sidebar } from "../../components/Sidebar"
 import { APP_NAME } from "../../App"
 
+import styles from "./MainPage.module.css"
+
 type MainPageProps = {
-  sidebarLoading: boolean
   isAdmin: boolean
 }
 
-export function MainPage({ sidebarLoading, isAdmin }: MainPageProps): JSX.Element {
+export function MainPage({ isAdmin }: MainPageProps): JSX.Element {
   return (
     <>
       <title>{`${APP_NAME} - Anotações`}</title>
 
       <div className="container">
-        <Sidebar sidebarLoading={sidebarLoading} isAdmin={isAdmin} />
+        <Sidebar isAdmin={isAdmin} />
         
-        <main className="main-content" id="content-board">
-          <div className="empty-content-box">
+        <main className={styles.mainContent}>
+          <div className={styles.empty}>
             <span>:/</span>
           </div>
         </main>

@@ -1,15 +1,16 @@
+import type { ApiResponse } from "../types/api/api"
+
 import {
   CheckUserStatusSchema,
   LoginResponseSchema,
-  
-  type ApiResponse,
+
   type CheckUserStatusData,
   type CheckUserStatusPayload,
   type ConfirmRequestPayload,
   type LoginRequestPayload,
   type LoginResponseData,
   type SignupRequestPayload,
-} from "../types/api"
+} from "../types/api/auth"
 
 import apiClient from "./apiClient"
 

@@ -1,5 +1,6 @@
-import type { CheckUserStatusFields, SignupFormFields } from "../types/auth"
-import type { ApiResponse, CheckUserStatusData, SignupResponseData } from "../types/api"
+import type { CheckUserStatusFields, SignupFormFields } from "../types/schemas/auth"
+import type { CheckUserStatusData } from "../types/api/auth"
+import type { ApiResponse } from "../types/api/api"
 
 import { useState } from "react"
 import { authService } from "../services/authService"
@@ -7,7 +8,7 @@ import { authService } from "../services/authService"
 export function useSignup() {
   const [isLoading, setIsLoading] = useState(false)
 
-  const signup = async (data: SignupFormFields): Promise<ApiResponse<SignupResponseData>> => {
+  const signup = async (data: SignupFormFields): Promise<ApiResponse<void>> => {
     setIsLoading(true)
 
     const result = await authService.signup(data)

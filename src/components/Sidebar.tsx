@@ -1,28 +1,55 @@
-import type { JSX } from "react"
-import "./Sidebar.css"
+import type { NoteResponseData } from "../types/api/notes"
+import { useEffect, useState, type JSX } from "react"
+
+import { noteService } from "../services/noteService"
+import { SidebarNote } from "./notes/SidebarNote"
+
+import styles from "./Sidebar.module.css"
 
 type SidebarProps = {
-  sidebarLoading: boolean;
-  isAdmin: boolean;
+  isAdmin: boolean
 }
 
-export function Sidebar({ sidebarLoading, isAdmin }: SidebarProps): JSX.Element {
+export function Sidebar({ isAdmin }: SidebarProps): JSX.Element {
+  const [isLoading, setIsLoading] = useState(false)
+  const [notes, setNotes] = useState<NoteResponseData[]>([])
+
+  useEffect(() => {
+    const loadNotes = async () => {
+      setIsLoading(true)
+      const resp = await noteService.listNotes()
+
+      if (resp.success) {
+        setNotes(resp.data.notes)
+      }
+
+      setIsLoading(false)
+    }
+    loadNotes()
+  }, [])
+
   return (
-    <nav className="left-menu">
-      <div className="menu-upper-controls">
-        <input disabled={sidebarLoading} type="text" id="search-input" placeholder="Pesquisar" autoComplete="off" />
-        <div className="menu-divider"></div>
-        <span id="search-result-count">0 resultados encontrados</span>
+    <nav className={styles.leftMenu}>
+      <div className={styles.menuUpperControls}>
+        <input className={styles.searchInput} disabled={isLoading} type="text" placeholder="Pesquisar" autoComplete="off" />
+        <div className={styles.menuDivider}></div>
+        <span className={styles.searchResultCount}>0 resultados encontrados</span>
       </div>
-      <div id="notes-container" className="menu-lower-items">
-        <div className="sidebar-loader-container">
-          {sidebarLoading && <div className="loader" id="sidebar-loader"></div>}
+      <div className={styles.menuLowerItems}>
+        <div className={styles.sidebarLoaderContainer}>
+          {isLoading && <div className="loader"></div>}
         </div>
+
+        {!isLoading && (
+          notes.map((n) => {
+            return <SidebarNote key={n.id} name={n.name} />
+          })
+        )}
       </div>
-      <div className="menu-footer-controls">
-        <div className="sidebar-pfp">L</div>
+      <div className={styles.menuFooterControls}>
+        <div className={styles.sidebarPfp}>L</div>
         {isAdmin && (
-          <button className="footer-control-button" id="create-note-button">+</button>
+          <button className={styles.footerControlButton}>+</button>
         )}
       </div>
     </nav>

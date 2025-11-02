@@ -39,5 +39,10 @@ export const FullNoteResponseSchema = NoteBaseSchema.extend({
   content: z.string()
 })
 
+export const ListNoteResponseSchema = z.object({
+  notes: z.array(NoteResponseSchema)
+})
+
 export type NoteResponseData = z.infer<typeof NoteResponseSchema>
 export type FullNoteResponseData = z.infer<typeof FullNoteResponseSchema>
+export type ListNoteResponseData = z.infer<typeof ListNoteResponseSchema>

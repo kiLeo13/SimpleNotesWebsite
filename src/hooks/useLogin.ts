@@ -1,5 +1,6 @@
-import type { ApiResponse, LoginResponseData } from "../types/api"
-import type { LoginFormFields } from "../types/auth"
+import type { LoginResponseData } from "../types/api/auth"
+import type { LoginFormFields } from "../types/schemas/auth"
+import type { ApiResponse } from "../types/api/api"
 
 import { authService } from "../services/authService"
 import { useState } from "react"
