@@ -1,4 +1,4 @@
-import type { ConfirmFormFields } from "../types/schemas/auth"
+import type { ConfirmFormFields } from "../types/forms/users"
 import type { ApiResponse } from "../types/api/api"
 
 import { useState } from "react"

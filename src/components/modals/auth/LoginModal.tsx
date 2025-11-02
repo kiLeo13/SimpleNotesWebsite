@@ -1,6 +1,6 @@
 import { useState, type JSX } from "react"
 import { useForm, type SubmitHandler } from "react-hook-form"
-import { loginSchema, type LoginFormFields } from "../../../types/schemas/auth"
+import { loginSchema, type LoginFormFields } from "../../../types/forms/users"
 
 import RequiredHint from "../../hints/RequiredHint"
 import { hasSession } from "../../../utils/authutils"

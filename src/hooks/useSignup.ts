@@ -1,4 +1,4 @@
-import type { CheckUserStatusFields, SignupFormFields } from "../types/schemas/auth"
+import type { CheckUserStatusFields, SignupFormFields } from "../types/forms/users"
 import type { CheckUserStatusData } from "../types/api/users"
 import type { ApiResponse } from "../types/api/api"
 

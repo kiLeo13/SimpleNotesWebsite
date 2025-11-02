@@ -1,5 +1,5 @@
 import type { LoginResponseData } from "../types/api/users"
-import type { LoginFormFields } from "../types/schemas/auth"
+import type { LoginFormFields } from "../types/forms/users"
 import type { ApiResponse } from "../types/api/api"
 
 import { userService } from "../services/userService"

@@ -1,4 +1,4 @@
-import { signupSchema, type SignupFormFields } from "../../../types/schemas/auth"
+import { signupSchema, type SignupFormFields } from "../../../types/forms/users"
 import { useState, type JSX } from "react"
 import { useForm, type SubmitHandler, type UseFormSetError } from "react-hook-form"
 

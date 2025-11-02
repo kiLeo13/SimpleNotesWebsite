@@ -2,7 +2,7 @@ import type { ApiResponse } from "../types/api/api"
 import {
   FullNoteResponseSchema,
   ListNoteResponseSchema,
-  
+
   type FullNoteResponseData,
   type ListNoteResponseData,
   type NoteRequestPayload
@@ -10,7 +10,7 @@ import {
 
 import apiClient from "./apiClient"
 
-import { VoidSchema } from "../types/schemas/generals"
+import { VoidSchema } from "../types/api/api"
 import { safeApiCall } from "./safeApiCall"
 
 export const NOTE_EXTENSIONS = ["txt", "md", "pdf", "png", "jpg", "jpeg", "jfif", "webp", "gif", "mp4", "mp3"]
