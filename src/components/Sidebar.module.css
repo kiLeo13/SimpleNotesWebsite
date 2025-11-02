@@ -41,7 +41,7 @@
 }
 
 .searchInput:focus {
-  border-color: rgb(75, 53, 129);
+  border-color: rgb(107, 64, 156);
 }
 
 .searchInput::placeholder {
