@@ -41,6 +41,10 @@
   user-select: none;
 }
 
+.searchInput:hover {
+  border-color: rgb(45, 39, 61);
+}
+
 .searchInput:focus {
   border-color: rgb(107, 64, 156);
 }
