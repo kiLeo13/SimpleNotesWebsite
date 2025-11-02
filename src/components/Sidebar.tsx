@@ -1,5 +1,5 @@
 import type { NoteResponseData } from "../types/api/notes"
-import { useEffect, useState, type ChangeEventHandler, type JSX } from "react"
+import { useEffect, useRef, useState, type ChangeEventHandler, type JSX, type KeyboardEventHandler } from "react"
 
 import { noteService } from "../services/noteService"
 import { SidebarNote } from "./notes/SidebarNote"
@@ -14,6 +14,7 @@ export function Sidebar({ isAdmin }: SidebarProps): JSX.Element {
   const [isLoading, setIsLoading] = useState(false)
   const [notes, setNotes] = useState<NoteResponseData[]>([])
   const [search, setSearch] = useState('')
+  const searchRef = useRef<HTMLInputElement>(null)
   const filteredNotes = notes.filter((n) => filterNote(n, search))
 
   const handleSearch: ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -21,9 +22,23 @@ export function Sidebar({ isAdmin }: SidebarProps): JSX.Element {
     setSearch(val)
   }
 
-  // const handleLoseFocus: (e) => {
+  const handleKeyboard: KeyboardEventHandler<HTMLInputElement> = (e) => {
+    if (e.key.toLowerCase() === "escape") {
+      searchRef?.current?.blur()
+    }
+  }
 
-  // }
+  useEffect(() => {
+    const handleGlobalKeydown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === " ") {
+        searchRef?.current?.focus()
+        e.preventDefault()
+      }
+    }
+
+    window.addEventListener("keydown", handleGlobalKeydown)
+    return () => window.removeEventListener("keydown", handleGlobalKeydown)
+  })
 
   useEffect(() => {
     const loadNotes = async () => {
@@ -47,6 +62,8 @@ export function Sidebar({ isAdmin }: SidebarProps): JSX.Element {
           type="text"
           placeholder="Pesquisar"
           autoComplete="off"
+          ref={searchRef}
+          onKeyDown={handleKeyboard}
           onChange={handleSearch}
           value={search}
         />
