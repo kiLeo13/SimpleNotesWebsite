@@ -1,4 +1,4 @@
-import type { ApiResponse } from '../types/api'
+import type { ApiResponse } from '../types/api/api'
 
 import { z } from 'zod'
 import { ZodError } from 'zod'
@@ -32,7 +32,6 @@ export async function safeApiCall<T>(
         errors: { root: ['Failed to understand the server response.'] },
       }
     }
-    
     return handleApiError(error)
   }
 }

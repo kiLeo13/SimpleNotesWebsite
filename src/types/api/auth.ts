@@ -1,27 +1,5 @@
 import { z } from "zod"
 
-// =====================
-// API Response Wrappers
-// =====================
-
-export interface ApiSuccessResponse<T> {
-  success: true
-  data: T
-}
-
-export interface ApiErrorResponse {
-  success: false
-  errors: Record<string, string[]>
-}
-
-export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse
-
-// =========================
-// Route Specific Payloads & Data
-// =========================
-
-/* ---------- Auth ---------- */
-
 // Request Payloads
 export interface LoginRequestPayload {
   email: string
@@ -45,12 +23,9 @@ export interface CheckUserStatusPayload {
 
 // Raw API Responses (if transformation is needed)
 const RawLoginResponse = z.object({
-  access_token: z.string().min(1),
-  id_token: z.string().min(1)
+  access_token: z.string(),
+  id_token: z.string()
 })
-
-// API Response Data after transformation (schemas)
-export const VoidSchema = z.undefined().or(z.null()).or(z.literal('')).transform(() => undefined)
 
 export const LoginResponseSchema = RawLoginResponse.transform((data) => ({
   accessToken: data.access_token,

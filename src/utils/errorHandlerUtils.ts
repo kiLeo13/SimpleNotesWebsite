@@ -1,5 +1,5 @@
 import type { FieldValues, Path, UseFormSetError } from 'react-hook-form'
-import type { ApiErrorResponse } from '../types/api'
+import type { ApiErrorResponse } from '../types/api/api'
 
 import { isAxiosError } from 'axios'
 
