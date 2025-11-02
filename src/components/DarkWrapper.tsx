@@ -1,6 +1,6 @@
-import type { JSX, ReactNode } from "react";
+import type { JSX, ReactNode } from "react"
 
-import { clamp, inRange } from "../utils/utils";
+import { clamp, inRange } from "../utils/utils"
 
 import styles from "./DarkWrapper.module.css"
 

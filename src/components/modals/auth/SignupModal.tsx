@@ -36,7 +36,10 @@ export function SignupModal(): JSX.Element {
     setEmail(data.email)
     const status = userStatusResponse.data.status
     switch (status) {
-      case 'TAKEN': handleEmailTaken(setError); return
+      case 'TAKEN': {
+        handleEmailTaken(setError)
+        return
+      }
       case 'VERIFYING': {
         setIsEmailVerifying(true)
         return

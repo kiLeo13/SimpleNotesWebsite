@@ -25,7 +25,7 @@ export function AlreadyAuthWarn({ setShowWarn }: AlreadyAuthWarnProps): React.Re
 
     const intervalId = setInterval(() => {
       setRemainingSeconds(prev => prev - 1)
-    }, 1000);
+    }, 1000)
 
     return () => clearInterval(intervalId)
   }, [remainingSeconds])
