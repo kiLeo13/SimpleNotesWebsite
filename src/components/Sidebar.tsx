@@ -8,11 +8,12 @@ import styles from "./Sidebar.module.css"
 
 type SidebarProps = {
   isAdmin: boolean
+  notes: NoteResponseData[]
+  setNotes: (notes: NoteResponseData[]) => void
 }
 
-export function Sidebar({ isAdmin }: SidebarProps): JSX.Element {
+export function Sidebar({ isAdmin, notes, setNotes }: SidebarProps): JSX.Element {
   const [isLoading, setIsLoading] = useState(false)
-  const [notes, setNotes] = useState<NoteResponseData[]>([])
   const [search, setSearch] = useState('')
   const searchRef = useRef<HTMLInputElement>(null)
   const filteredNotes = notes.filter((n) => filterNote(n, search))
@@ -51,7 +52,7 @@ export function Sidebar({ isAdmin }: SidebarProps): JSX.Element {
       setIsLoading(false)
     }
     loadNotes()
-  }, [])
+  }, [setNotes])
 
   return (
     <nav className={styles.leftMenu}>

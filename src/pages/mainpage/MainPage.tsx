@@ -1,4 +1,5 @@
-import type { JSX } from "react"
+import type { NoteResponseData } from "../../types/api/notes"
+import { useState, type JSX } from "react"
 import { Sidebar } from "../../components/Sidebar"
 import { APP_NAME } from "../../App"
 
@@ -9,15 +10,17 @@ type MainPageProps = {
 }
 
 export function MainPage({ isAdmin }: MainPageProps): JSX.Element {
+  const [notes, setNotes] = useState<NoteResponseData[]>([])
+
   return (
     <>
       <title>{`${APP_NAME} - Anotações`}</title>
 
-      <div className="container">
-        <Sidebar isAdmin={isAdmin} />
+      <div className={styles.container}>
+        <Sidebar isAdmin={isAdmin} notes={notes} setNotes={setNotes} />
         
         <main className={styles.mainContent}>
-          <div className={styles.empty}>
+          <div className={styles.emptyBox}>
             <span>:/</span>
           </div>
         </main>
