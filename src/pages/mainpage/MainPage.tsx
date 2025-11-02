@@ -1,5 +1,5 @@
 import type { NoteResponseData } from "../../types/api/notes"
-import type { UserResponseData } from "../../types/api/auth"
+import type { UserResponseData } from "../../types/api/users"
 import { useEffect, useState, type JSX } from "react"
 
 import { userService } from "../../services/userService"
@@ -29,7 +29,7 @@ export function MainPage(): JSX.Element {
 
       <div className={styles.container}>
         <Sidebar selfUser={selfUser} notes={notes} setNotes={setNotes} />
-        
+
         <main className={styles.mainContent}>
           <div className={styles.emptyBox}>
             <span>:/</span>

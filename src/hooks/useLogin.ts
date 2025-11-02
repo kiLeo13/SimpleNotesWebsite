@@ -1,4 +1,4 @@
-import type { LoginResponseData } from "../types/api/auth"
+import type { LoginResponseData } from "../types/api/users"
 import type { LoginFormFields } from "../types/schemas/auth"
 import type { ApiResponse } from "../types/api/api"
 

@@ -1,5 +1,5 @@
 import type { CheckUserStatusFields, SignupFormFields } from "../types/schemas/auth"
-import type { CheckUserStatusData } from "../types/api/auth"
+import type { CheckUserStatusData } from "../types/api/users"
 import type { ApiResponse } from "../types/api/api"
 
 import { useState } from "react"

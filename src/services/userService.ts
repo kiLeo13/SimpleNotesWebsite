@@ -16,7 +16,7 @@ import {
   type QueryUsersResponseData,
   type SignupRequestPayload,
   type UserResponseData,
-} from "../types/api/auth"
+} from "../types/api/users"
 
 import apiClient from "./apiClient"
 

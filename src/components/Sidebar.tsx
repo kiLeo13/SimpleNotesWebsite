@@ -1,5 +1,5 @@
 import type { NoteResponseData } from "../types/api/notes"
-import type { UserResponseData } from "../types/api/auth"
+import type { UserResponseData } from "../types/api/users"
 import { useEffect, useRef, useState, type ChangeEventHandler, type JSX, type KeyboardEventHandler } from "react"
 
 import { noteService } from "../services/noteService"
