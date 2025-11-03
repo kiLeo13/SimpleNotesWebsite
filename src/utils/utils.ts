@@ -1,6 +1,10 @@
 import dayjs from "dayjs"
 import duration from 'dayjs/plugin/duration'
 
+const KB = 1024
+const MB = KB * 1024
+const GB = MB * 1024
+
 dayjs.extend(duration)
 
 export function inRange(value: number, a: number, b: number): boolean {
@@ -20,6 +24,20 @@ export function formatTimeSeconds(seconds: number): string {
 
   const timeDuration = dayjs.duration(seconds, 'seconds')
   return timeDuration.format('HH:mm:ss')
+}
+
+export function getPrettySize(size: number): string {
+  if (size < KB) return `${size} Bytes`
+  if (size < MB) return `${formatNumber(size / KB)} KB`
+  if (size < GB) return `${formatNumber(size / MB)} MB`
+  
+  return `${formatNumber(size / GB)} GB`
+}
+
+export function formatNumber(num: number): string {
+  return num.toFixed(2)
+    .replace(/\.00$/, '')
+    .replace(/(\.\d)0$/, '$1')
 }
 
 export function isOnlyDigit(s: string): boolean {
