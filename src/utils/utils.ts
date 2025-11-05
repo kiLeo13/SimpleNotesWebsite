@@ -26,6 +26,29 @@ export function formatTimeSeconds(seconds: number): string {
   return timeDuration.format('HH:mm:ss')
 }
 
+/**
+ * Resolves the extension of a given file.
+ * Returns `undefined` if none is provided (if the file does not have a `.` character).
+ * 
+ * **Example:**
+ * ```js
+ * const checks = ext("mynote.txt")
+ * const three = ext("this.is.a.test")
+ * const none = ext("onefile")
+ * 
+ * console.log(checks) // "txt"
+ * console.log(three)  // "test"
+ * console.log(none)   // undefined
+ * ```
+ * 
+ * @param fileName The name of the file to get the extension.
+ * @returns The extension of the file.
+ */
+export function ext(fileName: string): string | undefined {
+  const ext = fileName.split(".").pop()
+  return ext ? ext.toLowerCase() : undefined
+}
+
 export function getPrettySize(size: number): string {
   if (size < KB) return `${size} Bytes`
   if (size < MB) return `${formatNumber(size / KB)} KB`
