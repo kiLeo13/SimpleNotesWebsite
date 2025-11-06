@@ -1,10 +1,12 @@
 import { Route, Routes } from "react-router-dom"
 import { MainPage } from "./pages/mainpage/MainPage"
 import { LoginPage } from "./pages/auth/LoginPage"
-import { SignupPage } from './pages/auth/SignupPage'
+import { SignupPage } from "./pages/auth/SignupPage"
 
-import './App.css'
 import { ProtectedRoute } from "./pages/mainpage/ProtectedRoute"
+
+import "./services/i18n" // Init translations
+import "./App.css"
 
 export const APP_NAME: string = "OnnyC"
 
