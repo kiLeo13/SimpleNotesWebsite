@@ -1,0 +1,59 @@
+:root {
+  --sidebar-background-color: rgb(33, 29, 43);
+  --main-background-color: rgb(19, 17, 24);
+  --scrollbar-width: 4px;
+  --sidebar-item-background-color: rgb(19, 17, 25);
+  --sidebar-bottom-background-color: rgb(12, 11, 15);
+  --sidebar-item-hover-border-color: rgb(56, 51, 70);
+  --sidebar-item-hover-background-color: rgb(15, 14, 20);
+  --sidebar-padding: 13px;
+  --black-background-container-zindex: 10;
+}
+
+* {
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+}
+
+*:disabled {
+  cursor: not-allowed !important;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* 
+ * We cannot use `hidden` or `display:none` on required inputs 
+ * because the browser must be able to "focus" them if the validation fails.
+ * Instead, we visually hide the input while keeping it accessible 
+ * and focusable for the browser and screen readers.
+ */
+.hidden-styled-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* Scroll bar */
+::-webkit-scrollbar {
+  width: var(--scrollbar-width);
+}
+
+::-webkit-scrollbar-thumb {
+  cursor: default !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(136, 136, 136, 0.5);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(136, 136, 136, 0.3);
+}

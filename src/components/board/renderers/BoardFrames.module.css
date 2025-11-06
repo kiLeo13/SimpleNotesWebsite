@@ -1,0 +1,33 @@
+.audioFrame {
+  width: 70%;
+}
+
+.pdfFrame {
+  height: 100%;
+  width: 100%;
+  border: none;
+}
+
+.imageFrame {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.textFrame {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  background-color: #0000001a;
+  color: #b1b1b1;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.videoFrame {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  border: none;
+  outline: none;
+}

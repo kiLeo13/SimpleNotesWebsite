@@ -1,0 +1,122 @@
+:root {
+  --file-too-large-color: rgb(175, 45, 45);
+}
+
+/* Note Creation Modal */
+.container {
+  position: relative;
+  display: flex;
+  padding: 20px;
+  box-sizing: border-box;
+  height: max-content;
+  max-height: 98vh;
+  width: 400px;
+  background-color: rgb(36, 33, 46);
+  border-radius: 10px;
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+  animation: smoothToggleModal 300ms cubic-bezier(0.25, 0.1, 0.25, 1.5) forwards;
+}
+
+.closeTabContainer {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+  width: 30px;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  border-radius: 5px;
+  user-select: none;
+  inset: 6px 6px auto auto;
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+.closeTabContainer:hover {
+  opacity: 1;
+}
+
+.closeIcon {
+  color: rgb(136, 136, 136);
+  font-size: 2rem;
+  transform: rotate(45deg);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+  width: 100%;
+}
+
+.title {
+  font-size: 2em;
+  font-weight: bold;
+  margin: 0;
+  margin-top: 10px;
+  color: rgb(146, 146, 146);
+}
+
+.bottomContainer {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  justify-content: end;
+}
+
+.submitButton {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  color: rgba(0, 0, 0, 0.7);
+  font-size: 1.1em;
+  font-weight: 600;
+  padding: 12px 18px;
+  min-width: 100px;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  background-color: rgb(168, 153, 204);
+  user-select: none;
+  overflow: hidden;
+  transition: background-color 300ms;
+}
+
+.submitButton:hover {
+  background-color: rgb(185, 174, 209);
+}
+
+.submitButton:disabled {
+  background-color: rgb(64, 58, 80);
+}
+
+.buttonLoader {
+  scale: 50%;
+  border: 8px solid rgba(0, 0, 0, 0.6);
+}
+
+.loaderContainer {
+  position: absolute;
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  scale: 1.5;
+}
+
+/* My animations for modals */
+@keyframes smoothToggleModal {
+  from {
+    opacity: 0;
+    scale: 70%;
+  }
+  
+  to {
+    opacity: 1;
+    scale: 100%;
+  }
+}

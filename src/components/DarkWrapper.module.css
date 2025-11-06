@@ -1,0 +1,24 @@
+.wrapper {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  inset: 0;
+  z-index: 10;
+  backdrop-filter: blur(2px);
+  animation: smoothBackgroundLoad 200ms ease-in forwards;
+}
+
+.noAnimation {
+  animation: none;
+}
+
+@keyframes smoothBackgroundLoad {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

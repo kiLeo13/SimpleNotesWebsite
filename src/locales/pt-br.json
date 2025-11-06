@@ -1,0 +1,32 @@
+{
+  "createNoteModal": {
+    "title": "Criar Nota",
+    "name": "Nome",
+    "visibility": "Visibilidade",
+    "visibilityHint": "A visibilidade de uma nota é apenas para fins de organização...",
+    "tags": "Apelidos",
+    "tagsPlaceholder": "Separe os apelidos por espaço",
+    "content": "Conteúdo",
+    "contentHint": "Arquivo máximo: {{size}}.",
+    "selectFile": "Selecione um arquivo",
+    "submit": "Criar",
+    "visibilityOptions": {
+      "public": "Público",
+      "confidential": "Confidencial"
+    }
+  },
+  "errors": {
+    "enum": {
+      "invalid": "Selecione uma opção válida."
+    },
+    "string": {
+      "min": "O campo deve ter pelo menos {{count}} caracteres.",
+      "max": "O campo deve ter no máximo {{count}} caracteres."
+    },
+    "file": {
+      "required": "Arquivo obrigatório.",
+      "maxSize": "Arquivo muito grande (máx {{size}}).",
+      "invalidExtension": "Extensão inválida. Permitido: {{extensions}}"
+    }
+  }
+}

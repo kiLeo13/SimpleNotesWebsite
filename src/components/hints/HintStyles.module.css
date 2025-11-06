@@ -1,0 +1,8 @@
+.requiredHint {
+  color: rgb(255, 60, 60);
+}
+
+.optionalHint {
+  font-size: 11px;
+  opacity: 50%;
+}

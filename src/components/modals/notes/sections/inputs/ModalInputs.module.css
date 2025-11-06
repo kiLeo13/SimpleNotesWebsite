@@ -1,0 +1,71 @@
+.fileInputWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(29, 27, 37);
+  border-radius: 10px;
+  color: rgb(150, 150, 150);
+  border: 2px dashed rgb(102, 74, 146);
+  height: 100px;
+  cursor: pointer;
+}
+
+.chosenFile {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 6px;
+  background-color: rgb(38, 36, 49);
+  border-radius: 8px;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+  /* Doesn't change much here, but better safe than sorry? */
+  box-sizing: border-box;
+  max-width: 90%;
+  max-height: 60%;
+  overflow: hidden;
+}
+
+.chosenFile .fileName {
+  word-wrap: break-word;
+  word-break: break-all;
+  padding: 5px;
+  box-sizing: border-box;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+.chosenFile .fileSize {
+  padding-left: 5px;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  padding-right: 5px;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  background-color: rgb(84, 57, 102);
+}
+
+.input {
+  color: rgb(180, 180, 180);
+  padding: 10px 8px;
+  font-size: 14px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border: solid 1px rgb(50, 42, 70);
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.invalid {
+  border-color: rgb(238, 54, 54);
+  background-color: rgba(238, 54, 54, 0.05);
+  border-width: 2px;
+}
+
+.errorMessage {
+  color: rgb(238, 54, 54);
+  font-size: 11px;
+  margin-left: 5px;
+}

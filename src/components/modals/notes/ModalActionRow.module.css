@@ -1,0 +1,12 @@
+.modalActionRow {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  box-sizing: content-box;
+}
+
+.errorMessage {
+  color: rgb(238, 54, 54);
+  font-size: 11px;
+  margin-left: 5px;
+}

@@ -1,0 +1,96 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 25px;
+  width: 500px;
+  box-sizing: border-box;
+  user-select: text;
+  background-color: rgb(24, 22, 27);
+  border-radius: 12px;
+  border: 1px solid rgb(42, 35, 46);
+  animation: smoothToggleModal 300ms cubic-bezier(0.25, 0.1, 0.25, 1.5) forwards;
+}
+
+.warningTitle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  color: rgb(203, 204, 206);
+  background-color: rgba(96, 105, 10, 0.61);
+  border: 1px solid yellow;
+  padding: 8px;
+  box-sizing: border-box;
+  border-radius: 8px;
+}
+
+.warnIcon {
+  color: yellow;
+  font-size: 1.5em;
+}
+
+.warnMessageBox {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: 130%;
+  color: rgb(128, 122, 139);
+}
+
+.disclaimer {
+  font-size: 0.8em;
+  color: rgb(72, 67, 82);
+}
+
+.division {
+  border-top: 1px solid rgb(68, 61, 77);
+}
+
+.remainSession {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  padding: 3px 6px;
+}
+
+.warnFooter {
+  display: flex;
+  justify-content: end;
+  gap: 8px;
+}
+
+.button {
+  font-weight: 450;
+  padding: 10px 14px;
+  border-radius: 9999px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.loginButton {
+  background-color: rgb(57, 53, 65);
+  color: rgb(112, 104, 117);
+}
+
+.dropLoginButton {
+  background-color: rgb(155, 119, 216);
+  color: rgb(81, 24, 128);
+  text-decoration: none;
+  transition: background-color 300ms;
+}
+
+.dropLoginButton:hover {
+  background-color: rgb(169, 139, 223);
+}
+
+@keyframes smoothToggleModal {
+  from {
+    opacity: 0;
+    scale: 70%;
+  }
+  
+  to {
+    opacity: 1;
+    scale: 100%;
+  }
+}

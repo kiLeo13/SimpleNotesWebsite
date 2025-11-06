@@ -1,0 +1,17 @@
+.container {
+  position: fixed;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 100%;
+  inset: 0;
+}
+
+.mainContent {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+  width: auto;
+  background-color: var(--main-background-color);
+}
