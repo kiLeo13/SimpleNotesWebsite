@@ -1,14 +1,15 @@
-import type { JSX } from "react"
+import type { JSX, MouseEventHandler } from "react"
 
 import styles from "./SidebarNote.module.css"
 
 type SidebarNoteProps = {
   name: string
+  onClick?: MouseEventHandler<HTMLDivElement>
 }
 
-export function SidebarNote({ name }: SidebarNoteProps): JSX.Element {
+export function SidebarNote({ name, onClick }: SidebarNoteProps): JSX.Element {
   return (
-    <div className={styles.noteItem}>
+    <div onClick={onClick} className={styles.noteItem}>
       <span className={styles.noteItemTitle}>{name}</span>
     </div>
   )
