@@ -1,3 +1,4 @@
+import type { FullNoteResponseData } from "../../../types/api/notes"
 import { noteSchema, type NoteFormFields } from "../../../types/forms/notes"
 import { useState, type JSX, type MouseEventHandler } from "react"
 
@@ -16,10 +17,11 @@ import { ModalLabel } from "./sections/ModalLabel"
 import styles from "./CreateNoteModal.module.css"
 
 type CreateNoteModalFormProps = {
+  setShownNote: (note: FullNoteResponseData) => void
   setShowUploadModal: (show: boolean) => void
 }
 
-export function CreateNoteModalForm({ setShowUploadModal }: CreateNoteModalFormProps): JSX.Element {
+export function CreateNoteModalForm({ setShowUploadModal, setShownNote }: CreateNoteModalFormProps): JSX.Element {
   const [isLoading, setIsLoading] = useState(false)
   const methods = useForm<NoteFormFields>({
     resolver: zodResolver(noteSchema),
@@ -46,7 +48,10 @@ export function CreateNoteModalForm({ setShowUploadModal }: CreateNoteModalFormP
     setIsLoading(false)
 
     if (resp.success) {
-      alert(`Ok!\n${JSON.stringify(resp.data, null, 2)}`)
+      setShownNote(resp.data)
+      setShowUploadModal(false)
+    } else {
+      alert(`Erro:\n${JSON.stringify(resp.errors, null, 2)}`)
     }
   }
 
