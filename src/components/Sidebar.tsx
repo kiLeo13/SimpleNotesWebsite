@@ -77,7 +77,7 @@ export function Sidebar({
 
   useEffect(() => {
     const handleGlobalKeydown = (e: KeyboardEvent) => {
-      const key = e.key.toLowerCase()
+      const key = e.key?.toLowerCase()
       if (e.ctrlKey && key === " ") {
         searchRef?.current?.focus()
         e.preventDefault()
