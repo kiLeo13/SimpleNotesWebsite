@@ -71,7 +71,7 @@ export function CreateNoteModalForm({ setShowUploadModal, setShownNote }: Create
 
           <ModalActionRow
             label={<ModalLabel title="Nome" />}
-            input={<ModalTextInput name="name" />}
+            input={<ModalTextInput name="name" autoComplete="off" />}
           />
 
           <ModalActionRow
