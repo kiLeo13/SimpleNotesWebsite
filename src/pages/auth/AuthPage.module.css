@@ -23,6 +23,5 @@
   height: 100%;
   width: 100%;
   object-fit: cover;
-  object-position: 60%;
-  mask-image: linear-gradient(to right, transparent, black 100%);
+  mask-image: linear-gradient(to right, transparent, black 80%);
 }
