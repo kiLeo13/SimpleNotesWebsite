@@ -6,7 +6,7 @@ import clsx from "clsx"
 
 import { getPrettySize } from "../../../utils/utils"
 import { NOTE_EXTENSIONS, NOTE_MAX_SIZE_BYTES, noteService } from "../../../services/noteService"
-import { ModalActionRow } from "./ModalActionRow"
+import { ModalActionRow } from "./sections/ModalActionRow"
 import { ModalFileInput } from "./sections/inputs/ModalFileInput"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { FormProvider, useForm } from "react-hook-form"
