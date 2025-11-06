@@ -1,6 +1,6 @@
-import type { NoteResponseData } from "../types/api/notes"
+import type { FullNoteResponseData, NoteResponseData } from "../types/api/notes"
 import type { UserResponseData } from "../types/api/users"
-import { useCallback, useEffect, useRef, useState, type ChangeEventHandler, type JSX, type KeyboardEventHandler } from "react"
+import { useCallback, useEffect, useRef, useState, type ChangeEventHandler, type JSX, type KeyboardEventHandler, type MouseEventHandler } from "react"
 
 import { noteService } from "../services/noteService"
 import { SidebarNote } from "./notes/SidebarNote"
@@ -11,10 +11,22 @@ import styles from "./Sidebar.module.css"
 type SidebarProps = {
   selfUser: UserResponseData | null
   notes: NoteResponseData[]
+  showUploadModal: boolean
+  shownNote: NoteResponseData | null,
   setNotes: (notes: NoteResponseData[]) => void
+  setShowUploadModal: (show: boolean) => void
+  setShownNote: (note: FullNoteResponseData) => void
 }
 
-export function Sidebar({ selfUser, notes, setNotes }: SidebarProps): JSX.Element {
+export function Sidebar({
+  selfUser,
+  notes,
+  showUploadModal,
+  setNotes,
+  shownNote,
+  setShowUploadModal,
+  setShownNote
+}: SidebarProps): JSX.Element {
   const [isLoading, setIsLoading] = useState(false)
   const [search, setSearch] = useState('')
   const searchRef = useRef<HTMLInputElement>(null)
@@ -33,14 +45,34 @@ export function Sidebar({ selfUser, notes, setNotes }: SidebarProps): JSX.Elemen
   }, [setNotes])
 
   const handleSearch: ChangeEventHandler<HTMLInputElement> = (e) => {
-    const val = e.target.value
-    setSearch(val)
+    setSearch(e.target.value)
   }
 
   const handleKeyboard: KeyboardEventHandler<HTMLInputElement> = (e) => {
     if (e.key.toLowerCase() === "escape") {
       searchRef?.current?.blur()
     }
+  }
+
+  const handleOpenNote = async (n: NoteResponseData) => {
+    // Are trying to open the same note?
+    if (shownNote?.id === n.id) return
+
+    if (n.note_type === 'REFERENCE') {
+      setShownNote(n)
+    } else {
+      const resp = await noteService.fetchNote(n.id) 
+      
+      if (resp.success) {
+        setShownNote(resp.data)
+      } else {
+        alert(`Erro: ${JSON.stringify(resp.errors, null, 2)}`)
+      }
+    }
+  }
+
+  const handleShowUpload: MouseEventHandler<HTMLButtonElement> = () => {
+    setShowUploadModal(!showUploadModal)
   }
 
   useEffect(() => {
@@ -56,7 +88,6 @@ export function Sidebar({ selfUser, notes, setNotes }: SidebarProps): JSX.Elemen
         loadNotes()
       }
     }
-
     window.addEventListener("keydown", handleGlobalKeydown)
     return () => window.removeEventListener("keydown", handleGlobalKeydown)
   })
@@ -89,14 +120,14 @@ export function Sidebar({ selfUser, notes, setNotes }: SidebarProps): JSX.Elemen
 
         {!isLoading && (
           filteredNotes.map((n) => {
-            return <SidebarNote key={n.id} name={n.name} />
+            return <SidebarNote onClick={() => handleOpenNote(n)} key={n.id} name={n.name} />
           })
         )}
       </div>
       <div className={styles.menuFooterControls}>
         <div className={styles.sidebarPfp}>L</div>
         {selfUser?.isAdmin && (
-          <button className={styles.footerControlButton}>
+          <button onClick={handleShowUpload} className={styles.footerControlButton}>
             <FaCloudUploadAlt size={"0.75em"} />
           </button>
         )}
