@@ -31,7 +31,8 @@ export function MainPage(): JSX.Element {
 
   useEffect(() => {
     const handleGlobalClose = (e: KeyboardEvent) => {
-      if (e.key.toLowerCase() === 'escape') {
+      const key = e.key?.toLowerCase()
+      if (key && key === 'escape') {
         const target = e.target as HTMLElement
       
         // We don't want to close our note if we are typing
@@ -61,7 +62,7 @@ export function MainPage(): JSX.Element {
 
         {showUploadModal && (
           <DarkWrapper>
-            <CreateNoteModalForm setShowUploadModal={setShowUploadModal} />
+            <CreateNoteModalForm setShownNote={setShownNote} setShowUploadModal={setShowUploadModal} />
           </DarkWrapper>
         )}
 
