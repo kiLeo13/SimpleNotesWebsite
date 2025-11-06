@@ -20,7 +20,7 @@ The project is built on a modern, cloud-native architecture designed for scalabi
 
 ### Frontend
 
-  * **Hosting:** The frontend is a Single-Page Application (SPA) hosted on **Cloudflare Pages**. This provides global content distribution through its CDN for faster access times, DDoS protection, and managed TLS/SSL.
+  * **Hosting:** The frontend is a **React + TypeScript** Single-Page Application (SPA) hosted on **Cloudflare Pages**. This provides global content distribution through its CDN for faster access times, DDoS protection, and managed TLS/SSL.
   * **Deployment:** A CI/CD workflow is automatically triggered by Cloudflare whenever code is pushed to the `master` branch on GitHub.
 
 ### Backend
@@ -37,6 +37,8 @@ The project is built on a modern, cloud-native architecture designed for scalabi
 
 ### Local Setup
 
+#### Backend (Docker)
+
 1.  Clone the repository from GitHub.
 2.  Build the Docker image:
     ```bash
@@ -45,6 +47,18 @@ The project is built on a modern, cloud-native architecture designed for scalabi
 
 > [!Note]
 > Due to the project's deep integration with AWS services (Cognito, S3, SSM), it will not function correctly out-of-the-box in a local environment without extensive AWS configuration and credential setup.
+
+#### Frontend (React)
+
+1. Navigate to the frontend's directory.
+2. Install dependencies:
+    ```bash
+    npm install
+    ```
+3. Run the local development server:
+    ```bash
+    npm run dev
+    ```
 
 ### Deployment
 
@@ -60,43 +74,56 @@ The backend deployment is automated using **Docker** and **WatchTower**.
 
 ### Cloud & AWS Services
 
-  * **Compute:** AWS EC2
-  * **Storage:** AWS S3
-  * **CDN:** AWS CloudFront, Cloudflare Pages
-  * **Networking & API:** AWS API Gateway
-  * **Security & Identity:** AWS Cognito, AWS IAM
-  * **Configuration & Secrets:** AWS SSM Parameter Store
+* **Compute:** AWS EC2
+* **Storage:** AWS S3
+* **CDN:** AWS CloudFront, Cloudflare Pages
+* **Networking & API:** AWS API Gateway
+* **Security & Identity:** AWS Cognito, AWS IAM
+* **Configuration & Secrets:** AWS SSM Parameter Store
 
 ### Backend
 
-  * **Language:** **Golang**
-  * **Framework & Libraries:**
-      * [Echo v4](https://github.com/labstack/echo) - High-performance, extensible Go web framework.
-      * [Gorm](https://github.com/go-gorm/gorm) - The fantastic ORM library for Go.
-      * [AWS SDK for Go v2](https://github.com/aws/aws-sdk-go-v2) - Official AWS SDK for Go.
-      * [go-playground/validator](https://github.com/go-playground/validator) - For struct validation.
-      * [golang-jwt/jwt](https://github.com/golang-jwt/jwt) - For JWT parsing and validation.
+* **Language:** **Golang**
+* **Framework & Libraries:**
+    * [Echo v4](https://github.com/labstack/echo) - High-performance, extensible Go web framework.
+    * [Gorm](https://github.com/go-gorm/gorm) - The fantastic ORM library for Go.
+    * [AWS SDK for Go v2](https://github.com/aws/aws-sdk-go-v2) - Official AWS SDK for Go.
+    * [go-playground/validator](https://github.com/go-playground/validator) - For struct validation.
+    * [golang-jwt/jwt](https://github.com/golang-jwt/jwt) - For JWT parsing and validation.
 
 ### Frontend
 
-> The frontend is currently being rewritten in React to improve maintainability and performance. The current version uses jQuery.
+The frontend is a modern, responsive Single-Page Application built with **React** and **TypeScript**.
 
-  * **Frameworks/Libraries:**
-      * [jQuery](https://github.com/jquery/jquery)
-      * [DOMPurify](https://github.com/cure53/dompurify) - XSS sanitizer for HTML.
-      * [jwt-decode](https://github.com/auth0/jwt-decode) - For decoding JWTs on the client-side.
-      * [Marked](https://github.com/markedjs/marked) - A markdown parser.
-  * **Build Tools:**
-      * [Vite](https://github.com/vitejs/vite)
-      * [Terser](https://github.com/terser/terser)
+* **Core Library:** [React](https://github.com/facebook/react).
+* **Language:** **TypeScript**
+* **Build Tool:** [Vite](https://github.com/vitejs/vite).
+* **Routing:** [React Router](https://github.com/remix-run/react-router) - For client-side routing.
+* **Forms & Validation:**
+    * [React Hook Form](https://github.com/react-hook-form/react-hook-form) - Performant form state management.
+    * [Zod](https://github.com/colinhacks/zod) - Schema-based validation.
+    * [@hookform/resolvers](https://github.com/react-hook-form/resolvers) - To connect Zod with React Hook Form.
+* **API & Data:**
+    * [Axios](https://github.com/axios/axios) - Promise-based HTTP client.
+    * [jwt-decode](https://github.com/auth0/jwt-decode) - For decoding JWTs on the client-side.
+* **UI & Utilities:**
+    * [React Icons](https://github.com/react-icons/react-icons) - Icon library.
+    * [clsx](https://github.com/lukeed/clsx) - Utility for constructing class names.
+    * [Day.js](https://github.com/iamkun/dayjs) - Lightweight date/time manipulation and formatting.
+* **Content & Security:**
+    * [Marked](https://github.com/markedjs/marked) - A markdown parser.
+    * [DOMPurify](https://github.com/cure53/dompurify) - XSS sanitizer for HTML.
+* **Internationalization (i18n):**
+    * [i18next](https://github.com/i18next/i18next) - The internationalization framework.
+    * [react-i18next](https://github.com/i18next/react-i18next) - React bindings for i18next.
 
 ### Database
 
-  * **Database:** **SQLite** (mounted on a Docker volume for persistence).
+* **Database:** **SQLite** (mounted on a Docker volume for persistence).
 
 ### Containerization
 
-  * **Tool:** **Docker**.
+* **Tool:** **Docker**.
 
 -----
 
