@@ -24,7 +24,11 @@ export function DarkWrapper({ intensity = 0.7, animate = true, children }: DarkW
   const wrapperClassName = `${styles.wrapper} ${animate ? '' : styles.noAnimation}`.trim()
   const css = { backgroundColor: `rgba(0, 0, 0, ${clamp(intensity, 0, 1)})` }
   return createPortal(
-    <div className={wrapperClassName} style={css}>
+    <div
+      className={wrapperClassName}
+      style={css}
+      onClick={(e) => e.stopPropagation()} // Prevent clicks from bubbling up
+    >
       {children}
     </div>,
     root!
