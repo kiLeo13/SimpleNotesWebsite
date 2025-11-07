@@ -3,6 +3,9 @@ import type { JSX, ReactNode } from "react"
 import { clamp, inRange } from "../utils/utils"
 
 import styles from "./DarkWrapper.module.css"
+import { createPortal } from "react-dom"
+
+const root = document.getElementById('root')
 
 type DarkWrapperProps = {
   intensity?: number
@@ -20,9 +23,10 @@ export function DarkWrapper({ intensity = 0.7, animate = true, children }: DarkW
 
   const wrapperClassName = `${styles.wrapper} ${animate ? '' : styles.noAnimation}`.trim()
   const css = { backgroundColor: `rgba(0, 0, 0, ${clamp(intensity, 0, 1)})` }
-  return (
+  return createPortal(
     <div className={wrapperClassName} style={css}>
       {children}
-    </div>
+    </div>,
+    root!
   )
 }
