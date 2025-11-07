@@ -2,7 +2,9 @@
   display: flex;
   flex-shrink: 0;
   align-items: center;
-  padding: 10px;
+  justify-content: space-between;
+  padding: 8px;
+  gap: 8px;
   font-size: 14px;
   box-sizing: border-box;
   background-color: var(--sidebar-item-background-color);
@@ -10,12 +12,13 @@
   min-height: 45px;
   width: 100%;
   color: #adadad;
-  box-shadow: .2em .2em 10px #00000020;
-  -webkit-user-select: none;
+  box-shadow: .2em .2em 10px rgba(0, 0, 0, 0.125);
   user-select: none;
-  line-height: 130%;
+  line-height: 140%;
   z-index: 2;
-  transition: scale .3s, background-color .3s
+  transition:
+    background-color 300ms,
+    scale 300ms;
 }
 
 .noteItem:hover {
@@ -39,4 +42,40 @@
 
 .noteItem:active {
   scale: 97%
+}
+
+.noteItem:hover .patch {
+  display: flex;
+}
+
+.patch {
+  display: none;
+  height: 30px;
+  aspect-ratio: 1;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  border: none;
+  box-sizing: border-box;
+  border-radius: 5px;
+  background-color: transparent;
+  cursor: pointer;
+  transition:
+    background-color 300ms,
+    scale, 300ms;
+  animation: smoothToggleIcon 200ms ease-in-out forwards;
+}
+
+.patch:hover {
+  background-color: rgb(49, 45, 58);
+}
+
+@keyframes smoothToggleIcon {
+  from {
+    opacity: 0;
+  }
+  
+  to {
+    opacity: 1;
+  }
 }

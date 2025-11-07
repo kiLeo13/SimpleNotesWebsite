@@ -120,7 +120,12 @@ export function Sidebar({
 
         {!isLoading && (
           filteredNotes.map((n) => {
-            return <SidebarNote onClick={() => handleOpenNote(n)} key={n.id} name={n.name} />
+            return <SidebarNote
+              onClick={() => handleOpenNote(n)}
+              key={n.id}
+              name={n.name}
+              isAdmin={selfUser?.isAdmin || false}
+            />
           })
         )}
       </div>
