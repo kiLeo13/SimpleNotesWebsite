@@ -5,7 +5,7 @@
   display: grid;
   grid-template-rows: auto 1fr auto;
   height: 100vh;
-  width: 270px;
+  width: 300px;
   padding: var(--sidebar-padding);
   padding-bottom: 0;
   box-sizing: border-box;
@@ -14,7 +14,7 @@
 
 @media (min-width: 1600px) {
   .leftMenu {
-    width: 320px;
+    width: 360px;
   }
 }
 
