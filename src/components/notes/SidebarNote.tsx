@@ -3,7 +3,7 @@ import { useState, type JSX, type MouseEventHandler } from "react"
 
 import { DarkWrapper } from "../DarkWrapper"
 import { IoMdSettings } from "react-icons/io"
-import { UpdateNoteModalForm } from "../modals/notes/UpdateNoteModalForm"
+import { UpdateNoteModalForm } from "../modals/notes/updates/UpdateNoteModalForm"
 
 import styles from "./SidebarNote.module.css"
 

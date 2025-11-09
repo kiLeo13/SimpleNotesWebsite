@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState, type JSX } from "react"
 
 import { IoMdClose } from "react-icons/io"
-import { ModalActionRow } from "./creations/sections/ModalActionRow"
+import { ModalActionRow } from "../creations/sections/ModalActionRow"
 
 import { FaTrashAlt } from "react-icons/fa"
-import { ModalLabel } from "./creations/sections/ModalLabel"
-import type { FullNoteResponseData } from "../../../types/api/notes"
-import { noteService } from "../../../services/noteService"
-import { ModalTextInput } from "./creations/sections/inputs/ModalTextInput"
+import { ModalLabel } from "../creations/sections/ModalLabel"
+import type { FullNoteResponseData } from "../../../../types/api/notes"
+import { noteService } from "../../../../services/noteService"
+import { ModalTextInput } from "../creations/sections/inputs/ModalTextInput"
 
 import styles from "./UpdateNoteModalForm.module.css"
 
