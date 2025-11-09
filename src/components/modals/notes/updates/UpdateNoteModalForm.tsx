@@ -51,7 +51,7 @@ export function UpdateNoteModalForm({ noteId, setIsPatching }: UpdateNoteModalFo
   return (
     <div ref={modalRef} className={styles.container}>
       {isLoading && (
-        <DarkWrapper intensity={0.5} blurpx={0}>
+        <DarkWrapper portalContainer={modalRef.current} intensity={0.5} blurpx={0}>
           <div className="loader" />
         </DarkWrapper>
       )}
