@@ -1,13 +1,11 @@
+import type { FullNoteResponseData } from "../../../../types/api/notes"
 import { useEffect, useRef, useState, type JSX } from "react"
 
 import { IoMdClose } from "react-icons/io"
-import { ModalActionRow } from "../creations/sections/ModalActionRow"
-
-import { FaTrashAlt } from "react-icons/fa"
-import { ModalLabel } from "../creations/sections/ModalLabel"
-import type { FullNoteResponseData } from "../../../../types/api/notes"
 import { noteService } from "../../../../services/noteService"
-import { ModalTextInput } from "../creations/sections/inputs/ModalTextInput"
+import { ModalHeader } from "./sections/ModalHeader"
+import { DarkWrapper } from "../../../DarkWrapper"
+import { ModalFooter } from "./sections/ModalFooter"
 
 import styles from "./UpdateNoteModalForm.module.css"
 
@@ -18,6 +16,7 @@ type UpdateNoteModalFormProps = {
 
 export function UpdateNoteModalForm({ noteId, setIsPatching }: UpdateNoteModalFormProps): JSX.Element {
   const [note, setNote] = useState<FullNoteResponseData | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
   const modalRef = useRef<HTMLDivElement>(null)
   const handleCloseModal = () => setIsPatching(false)
 
@@ -35,7 +34,9 @@ export function UpdateNoteModalForm({ noteId, setIsPatching }: UpdateNoteModalFo
 
   useEffect(() => {
     const fetchNote = async () => {
+      setIsLoading(true)
       const resp = await noteService.fetchNote(noteId)
+      setIsLoading(false)
 
       if (resp.success) {
         setNote(resp.data)
@@ -49,22 +50,23 @@ export function UpdateNoteModalForm({ noteId, setIsPatching }: UpdateNoteModalFo
 
   return (
     <div ref={modalRef} className={styles.container}>
+      {isLoading && (
+        <DarkWrapper intensity={0.5} blurpx={0}>
+          <div className="loader" />
+        </DarkWrapper>
+      )}
+
       <div className={styles.close} onClick={handleCloseModal}>
         <IoMdClose color="rgba(94, 76, 121, 1)" size={"24px"} />
       </div>
 
-      <h2 className={styles.title}>{`Editar Nota n° ${noteId}`}</h2>
+      <ModalHeader noteId={noteId} note={note} />
 
       <div className={styles.form}>
 
       </div>
 
-      <footer className={styles.footer}>
-        <button className={styles.deleteButton}>
-          <FaTrashAlt size={"1.1em"} color="rgba(102, 34, 34, 1)" />
-        </button>
-        <button className={styles.saveButton}>Salvar</button>
-      </footer>
+      <ModalFooter />
     </div>
   )
 }
