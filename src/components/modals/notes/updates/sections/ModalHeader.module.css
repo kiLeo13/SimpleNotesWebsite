@@ -1,0 +1,43 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  margin-top: 12px;
+  gap: 6px;
+}
+
+.title {
+  color: rgb(147, 142, 153);
+  font-size: 1.8em;
+  margin: 0px;
+}
+
+.subtitle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  color: rgb(122, 117, 128);
+  font-weight: 450;
+  margin: 0;
+  margin-bottom: 100px;
+}
+
+.subtitle::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: rgb(72, 56, 92);
+  border-radius: 9999px;
+}
+
+.noteName {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  color: rgb(122, 117, 128);
+  font-size: 0.9em;
+  font-weight: 400;
+}
