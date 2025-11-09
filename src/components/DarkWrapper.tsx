@@ -1,19 +1,30 @@
-import type { JSX, ReactNode } from "react"
+import type { CSSProperties, JSX, ReactNode } from "react"
+
+import clsx from "clsx"
 
 import { clamp, inRange } from "../utils/utils"
+import { createPortal } from "react-dom"
 
 import styles from "./DarkWrapper.module.css"
-import { createPortal } from "react-dom"
 
 const root = document.getElementById('root')
 
 type DarkWrapperProps = {
   intensity?: number
+  blurpx?: number
   animate?: boolean
+  portalContainer?: Element | DocumentFragment | null
   children: ReactNode
 }
 
-export function DarkWrapper({ intensity = 0.7, animate = true, children }: DarkWrapperProps): JSX.Element {
+export function DarkWrapper({
+  intensity = 0.7,
+  blurpx = 2,
+  animate = true,
+  portalContainer,
+  children
+}: DarkWrapperProps): JSX.Element {
+
   if (!inRange(intensity, 0, 1)) {
     console.warn(
       `[DarkWrapper] Warning: 'intensity' must be between 0 and 1. ` +
@@ -21,16 +32,19 @@ export function DarkWrapper({ intensity = 0.7, animate = true, children }: DarkW
     )
   }
 
-  const wrapperClassName = `${styles.wrapper} ${animate ? '' : styles.noAnimation}`.trim()
-  const css = { backgroundColor: `rgba(0, 0, 0, ${clamp(intensity, 0, 1)})` }
+  const container = portalContainer ?? root!
+  const css: CSSProperties = {
+    backdropFilter: `blur(${blurpx}px)`,
+    backgroundColor: `rgba(0, 0, 0, ${clamp(intensity, 0, 1)})`
+  }
   return createPortal(
     <div
-      className={wrapperClassName}
+      className={clsx(styles.wrapper, !animate && styles.noAnimation)}
       style={css}
       onClick={(e) => e.stopPropagation()} // Prevent clicks from bubbling up
     >
       {children}
     </div>,
-    root!
+    container
   )
 }
