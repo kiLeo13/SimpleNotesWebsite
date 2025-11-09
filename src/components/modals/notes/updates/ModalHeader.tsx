@@ -1,10 +1,10 @@
 import type { JSX } from "react"
-import type { FullNoteResponseData } from "../../../../../types/api/notes"
+import type { FullNoteResponseData } from "../../../../types/api/notes"
 
 import { MdHeadphones, MdImage } from "react-icons/md"
 import { FaClapperboard } from "react-icons/fa6"
 import { RiFileGifLine } from "react-icons/ri"
-import { ext } from "../../../../../utils/utils"
+import { ext } from "../../../../utils/utils"
 import { FaFilePdf } from "react-icons/fa6"
 import { IoDocumentText } from "react-icons/io5"
 
@@ -19,7 +19,7 @@ export function ModalHeader({ noteId, note }: UpdateModalHeaderProps): JSX.Eleme
   return (
     <header className={styles.header}>
       <h2 className={styles.title}>{`Editar Nota #${noteId}`}</h2>
-      
+
       <h3 className={styles.subtitle}>
         <span className={styles.noteName}>
           {resolveIcon(note?.content, note?.note_type)}

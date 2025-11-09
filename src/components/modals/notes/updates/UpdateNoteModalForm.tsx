@@ -3,9 +3,9 @@ import { useEffect, useRef, useState, type JSX } from "react"
 
 import { IoMdClose } from "react-icons/io"
 import { noteService } from "../../../../services/noteService"
-import { ModalHeader } from "./sections/ModalHeader"
+import { ModalHeader } from "./ModalHeader"
 import { DarkWrapper } from "../../../DarkWrapper"
-import { ModalFooter } from "./sections/ModalFooter"
+import { ModalFooter } from "./ModalFooter"
 
 import styles from "./UpdateNoteModalForm.module.css"
 
