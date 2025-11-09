@@ -1,3 +1,4 @@
+import type { NoteResponseData } from "../../types/api/notes"
 import { useState, type JSX, type MouseEventHandler } from "react"
 
 import { DarkWrapper } from "../DarkWrapper"
@@ -7,22 +8,22 @@ import { UpdateNoteModalForm } from "../modals/notes/UpdateNoteModalForm"
 import styles from "./SidebarNote.module.css"
 
 type SidebarNoteProps = {
-  name: string
+  note: NoteResponseData
   onClick?: MouseEventHandler<HTMLDivElement>
   isAdmin: boolean
 }
 
-export function SidebarNote({ name, onClick, isAdmin }: SidebarNoteProps): JSX.Element {
+export function SidebarNote({ note, onClick, isAdmin }: SidebarNoteProps): JSX.Element {
   const [isPatching, setIsPatching] = useState(false)
 
-  const handleClick: MouseEventHandler<HTMLButtonElement> = (e) => {
+  const handleClick: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.stopPropagation()
     setIsPatching(true)
   }
 
   return (
     <div onClick={onClick} className={styles.noteItem}>
-      <span className={styles.noteItemTitle}>{name}</span>
+      <span className={styles.noteItemTitle}>{note.name}</span>
 
       {isAdmin && (
         <button onClick={handleClick} className={styles.patch}>
@@ -32,7 +33,7 @@ export function SidebarNote({ name, onClick, isAdmin }: SidebarNoteProps): JSX.E
 
       {isPatching && (
         <DarkWrapper>
-          <UpdateNoteModalForm />
+          <UpdateNoteModalForm noteId={note.id} setIsPatching={setIsPatching} />
         </DarkWrapper>
       )}
     </div>

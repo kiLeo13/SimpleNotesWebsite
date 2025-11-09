@@ -1,0 +1,77 @@
+.container {
+  position: relative;
+  background-color: rgb(30, 25, 37);
+  border: 1px solid rgb(42, 36, 51);
+  border-radius: 15px;
+  padding: 25px;
+  box-sizing: border-box;
+  height: 550px;
+  max-height: 90vh;
+  width: 500px;
+  animation: smoothToggleModal 300ms ease-in-out forwards;
+}
+
+.close {
+  position: absolute;
+  display: flex;
+  cursor: pointer;
+  top: 10px;
+  padding: 3px;
+  border-radius: 8px;
+  right: 10px;
+  transition: background-color 300ms;
+}
+
+.close:hover {
+  background-color: rgb(51, 42, 63);
+}
+
+.title {
+  color: rgb(146, 139, 155);
+}
+
+.form {
+
+}
+
+.footer {
+  display: flex;
+  gap: 8px;
+}
+
+.footer > button {
+  cursor: pointer;
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: none;
+  font-size: 1em;
+  font-weight: 450;
+  transition: opacity 300ms;
+}
+
+.footer > button:hover {
+  opacity: 0.8;
+}
+
+.saveButton {
+  background-color: rgb(152, 107, 179);
+}
+
+.deleteButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(255, 72, 72);
+}
+
+@keyframes smoothToggleModal {
+  from {
+    opacity: 0;
+    scale: 70%;
+  }
+  
+  to {
+    opacity: 1;
+    scale: 100%;
+  }
+}

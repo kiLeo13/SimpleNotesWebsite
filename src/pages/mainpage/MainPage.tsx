@@ -4,7 +4,7 @@ import { useEffect, useState, type JSX } from "react"
 
 import { userService } from "../../services/userService"
 import { Sidebar } from "../../components/Sidebar"
-import { CreateNoteModalForm } from "../../components/modals/notes/CreateNoteModalForm"
+import { CreateNoteModalForm } from "../../components/modals/notes/creations/CreateNoteModalForm"
 import { DarkWrapper } from "../../components/DarkWrapper"
 import { APP_NAME } from "../../App"
 import { EmptyDisplay } from "../../components/board/EmptyDisplay"
@@ -34,7 +34,7 @@ export function MainPage(): JSX.Element {
       const key = e.key?.toLowerCase()
       if (key && key === 'escape') {
         const target = e.target as HTMLElement
-      
+
         // We don't want to close our note if we are typing
         if (isInput(target)) return
 

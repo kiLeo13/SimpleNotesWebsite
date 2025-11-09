@@ -22,9 +22,9 @@ export function ModalSelectInput<T extends FieldValues>({ name, options }: Modal
 
   return (
     <>
-      <select {...field}  className={clsx(styles.input, styles.select, errorMessage && styles.invalid)}>
+      <select {...field} className={clsx(styles.input, styles.select, errorMessage && styles.invalid)}>
         {options.map((opt) => (
-          <option key={opt.value} value={opt.value}>
+          <option className={styles.selectOption} key={opt.value} value={opt.value}>
             {opt.label}
           </option>
         ))}

@@ -2,7 +2,7 @@ import { type JSX } from "react"
 
 import clsx from "clsx"
 
-import { getPrettySize } from "../../../../../utils/utils"
+import { getPrettySize } from "../../../../../../utils/utils"
 import { Controller, useFormContext, type FieldValues, type Path } from "react-hook-form"
 
 import styles from "./ModalInputs.module.css"

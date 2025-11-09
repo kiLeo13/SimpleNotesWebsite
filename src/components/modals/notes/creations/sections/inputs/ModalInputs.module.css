@@ -58,6 +58,16 @@
   transition: border-color 0.3s;
 }
 
+.select:hover:not(:focus) {
+  cursor: pointer;
+}
+
+.selectOption {
+  background-color: rgb(29, 27, 37);
+  outline: none;
+  padding: 50px;
+}
+
 .invalid {
   border-color: rgb(238, 54, 54);
   background-color: rgba(238, 54, 54, 0.05);

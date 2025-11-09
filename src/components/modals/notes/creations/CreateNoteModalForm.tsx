@@ -1,11 +1,11 @@
-import type { FullNoteResponseData } from "../../../types/api/notes"
-import { noteSchema, type NoteFormFields } from "../../../types/forms/notes"
+import type { FullNoteResponseData } from "../../../../types/api/notes"
+import { noteSchema, type NoteFormFields } from "../../../../types/forms/notes"
 import { useState, type JSX, type MouseEventHandler } from "react"
 
 import clsx from "clsx"
 
-import { getPrettySize } from "../../../utils/utils"
-import { NOTE_EXTENSIONS, NOTE_MAX_SIZE_BYTES, noteService } from "../../../services/noteService"
+import { getPrettySize } from "../../../../utils/utils"
+import { NOTE_EXTENSIONS, NOTE_MAX_SIZE_BYTES, noteService } from "../../../../services/noteService"
 import { ModalActionRow } from "./sections/ModalActionRow"
 import { ModalFileInput } from "./sections/inputs/ModalFileInput"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -94,7 +94,7 @@ export function CreateNoteModalForm({ setShowUploadModal, setShownNote }: Create
           />
 
           <ModalActionRow
-            label={<ModalLabel title="Conteúdo" hint={`Arquivo máximo: ${getPrettySize(NOTE_MAX_SIZE_BYTES)}.`}/>}
+            label={<ModalLabel title="Conteúdo" hint={`Arquivo máximo: ${getPrettySize(NOTE_MAX_SIZE_BYTES)}.`} />}
             input={<ModalFileInput name="file" allowedExtensions={NOTE_EXTENSIONS} />}
           />
 

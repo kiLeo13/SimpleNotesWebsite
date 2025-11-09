@@ -1,7 +1,8 @@
 import type { FullNoteResponseData, NoteResponseData } from "../types/api/notes"
 import type { UserResponseData } from "../types/api/users"
-import { useCallback, useEffect, useRef, useState, type ChangeEventHandler, type JSX, type KeyboardEventHandler, type MouseEventHandler } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEventHandler, type JSX, type KeyboardEventHandler, type MouseEventHandler } from "react"
 
+import { throttle } from "lodash"
 import { noteService } from "../services/noteService"
 import { SidebarNote } from "./notes/SidebarNote"
 import { FaCloudUploadAlt } from "react-icons/fa"
@@ -75,6 +76,11 @@ export function Sidebar({
     setShowUploadModal(!showUploadModal)
   }
 
+  const throttledLoadNotes = useMemo(
+    () => throttle(loadNotes, 5000, { leading: true, trailing: false }),
+    [loadNotes]
+  )
+  
   useEffect(() => {
     const handleGlobalKeydown = (e: KeyboardEvent) => {
       const key = e.key?.toLowerCase()
@@ -85,7 +91,7 @@ export function Sidebar({
 
       if (e.ctrlKey && key === "r") {
         e.preventDefault()
-        loadNotes()
+        throttledLoadNotes()
       }
     }
     window.addEventListener("keydown", handleGlobalKeydown)
@@ -123,7 +129,7 @@ export function Sidebar({
             return <SidebarNote
               onClick={() => handleOpenNote(n)}
               key={n.id}
-              name={n.name}
+              note={n}
               isAdmin={selfUser?.isAdmin || false}
             />
           })

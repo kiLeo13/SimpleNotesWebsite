@@ -1,7 +1,7 @@
 import type { JSX } from "react"
 
-import RequiredHint from "../../../hints/RequiredHint"
-import OptionalHint from "../../../hints/OptionalHint"
+import RequiredHint from "../../../../hints/RequiredHint"
+import OptionalHint from "../../../../hints/OptionalHint"
 
 import styles from "./ModalLabel.module.css"
 
