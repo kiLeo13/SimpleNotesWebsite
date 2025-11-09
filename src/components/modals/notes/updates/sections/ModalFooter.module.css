@@ -1,0 +1,30 @@
+.footer {
+  display: flex;
+  justify-content: end;
+  gap: 8px;
+}
+
+.footer > button {
+  cursor: pointer;
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: none;
+  font-size: 1em;
+  font-weight: 450;
+  transition: opacity 300ms;
+}
+
+.footer > button:hover {
+  opacity: 0.8;
+}
+
+.saveButton {
+  background-color: rgb(152, 107, 179);
+}
+
+.deleteButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(255, 72, 72);
+}
