@@ -1,3 +1,7 @@
+<img align="right" src="https://github.com/kiLeo13/SimpleNotesWebsite/blob/master/public/favicon.png?raw=true" height="100" width="100">
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/kiLeo13/SimpleNotesWebsite/blob/master/LICENSE)
+
 # ✨ Onnyx
 
 Onnyx is a lightweight, high-performance web application designed to streamline note-taking and file management, inspired by the clean and responsive UI of ChatGPT.
