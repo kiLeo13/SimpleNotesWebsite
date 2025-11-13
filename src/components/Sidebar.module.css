@@ -34,9 +34,9 @@
   background-color: rgba(0, 0, 0, 0.2);
   outline: none;
   border: 0.3em solid rgba(0, 0, 0, 0.2);
-  padding-left: 8px;
+  padding: 2px 0 2px 8px;
   color: rgb(158, 158, 158);
-  border-radius: 0.4em;
+  border-radius: 0.6em;
   transition: border-color 0.3s;
   user-select: none;
 }
@@ -50,7 +50,8 @@
 }
 
 .searchInput::placeholder {
-  color: rgb(82, 82, 82);
+  font-size: 1.05em;
+  color: rgb(69, 65, 73);
 }
 
 .menuDivider {
