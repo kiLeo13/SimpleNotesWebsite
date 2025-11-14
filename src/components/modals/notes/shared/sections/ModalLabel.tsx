@@ -11,11 +11,11 @@ type ModalLabelProps = {
   hint?: string
 }
 
-export function ModalLabel({ title, required = true, hint }: ModalLabelProps): JSX.Element {
+export function ModalLabel({ title, required, hint }: ModalLabelProps): JSX.Element {
   return (
     <label className={styles.inputLabel}>{title}
-      {required && <RequiredHint />}
-      {!required && <OptionalHint />}
+      {required === true && <RequiredHint />}
+      {required === false && <OptionalHint />}
 
       {hint && (
         <span className={styles.helpHint}>

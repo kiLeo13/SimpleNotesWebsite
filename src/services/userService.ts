@@ -76,6 +76,13 @@ export const userService = {
     )
   },
 
+  getUserById: async (id: number): Promise<ApiResponse<UserResponseData>> => {
+    return safeApiCall(
+      () => apiClient.get(`/users/${id}`),
+      UserResponseSchema
+    )
+  },
+
   getSelfUser: async (): Promise<ApiResponse<UserResponseData>> => {
     return safeApiCall(
       () => apiClient.get('/users/@me'),

@@ -1,8 +1,7 @@
 .modalActionRow {
   display: flex;
-  flex-direction: column;
-  gap: 3px;
-  box-sizing: content-box;
+  gap: 20px;
+  box-sizing: border-box;
 }
 
 .errorMessage {

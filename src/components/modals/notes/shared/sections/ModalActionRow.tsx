@@ -3,15 +3,13 @@ import type { JSX } from "react"
 import styles from "./ModalActionRow.module.css"
 
 type ModalActionRowProps = {
-  label: React.ReactNode
-  input: React.ReactNode
+  children: React.ReactElement[] | React.ReactElement
 }
 
-export function ModalActionRow({ label, input }: ModalActionRowProps): JSX.Element {
+export function ModalActionRow({ children: sections }: ModalActionRowProps): JSX.Element {
   return (
     <div className={styles.modalActionRow}>
-      {label}
-      {input}
+      {sections}
     </div>
   )
 }
