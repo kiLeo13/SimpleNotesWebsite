@@ -1,11 +1,44 @@
+import utc from "dayjs/plugin/utc"
 import dayjs from "dayjs"
-import duration from 'dayjs/plugin/duration'
+import isToday from "dayjs/plugin/isToday"
+import duration from "dayjs/plugin/duration"
+import timezone from "dayjs/plugin/timezone"
+import isYesterday from "dayjs/plugin/isYesterday"
+
+dayjs.extend(utc)
+dayjs.extend(isToday)
+dayjs.extend(duration)
+dayjs.extend(timezone)
+dayjs.extend(isYesterday)
 
 const KB = 1024
 const MB = KB * 1024
 const GB = MB * 1024
+const MONTHS = [
+  "Jan", "Fev", "Mar",
+  "Abr", "Mai", "Jun", "Jul",
+  "Ago", "Set", "Out",
+  "Nov", "Dez"
+]
 
-dayjs.extend(duration)
+export function formatLocalTimestamp(date: string): string {
+  const d = dayjs.utc(date).local()
+  const time = d.format("HH:mm")
+
+  if (d.isToday()) {
+    return `Hoje, às ${time}`
+  }
+
+  if (d.isYesterday()) {
+    return `Ontem, às ${time}`
+  }
+
+  const day = d.date()
+  const month = MONTHS[d.month()]
+  const year = d.year()
+
+  return `${day} de ${month}. de ${year}, às ${time}`
+}
 
 export function inRange(value: number, a: number, b: number): boolean {
   const [min, max] = checkAndGetBounds(a, b)
@@ -53,7 +86,7 @@ export function getPrettySize(size: number): string {
   if (size < KB) return `${size} Bytes`
   if (size < MB) return `${formatNumber(size / KB)} KB`
   if (size < GB) return `${formatNumber(size / MB)} MB`
-  
+
   return `${formatNumber(size / GB)} GB`
 }
 
