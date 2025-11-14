@@ -29,6 +29,12 @@
   background-color: rgb(51, 42, 63);
 }
 
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 @keyframes smoothToggleModal {
   from {
     opacity: 0;
