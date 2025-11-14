@@ -11,6 +11,7 @@
   height: max-content;
   max-height: 98vh;
   width: 400px;
+  border: 1px solid rgb(42, 36, 51);
   background-color: rgb(36, 33, 46);
   border-radius: 10px;
   box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
