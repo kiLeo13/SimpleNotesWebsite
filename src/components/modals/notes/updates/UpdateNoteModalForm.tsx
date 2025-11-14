@@ -15,6 +15,10 @@ import { userService } from "../../../../services/userService"
 import { IoMdClose } from "react-icons/io"
 import { ModalLabel } from "../shared/sections/ModalLabel"
 import { BaseModalTextInput } from "../shared/inputs/BaseModalTextInput"
+import { formatLocalTimestamp } from "../../../../utils/utils"
+import { PiCrownFill } from "react-icons/pi"
+import { FaCalendarAlt } from "react-icons/fa"
+import { FaEye } from "react-icons/fa"
 
 import styles from "./UpdateNoteModalForm.module.css"
 
@@ -32,7 +36,7 @@ export function UpdateNoteModalForm({ noteId, setIsPatching }: UpdateNoteModalFo
   const methods = useForm<NoteFormFields>({
     resolver: zodResolver(noteSchema)
   })
-  
+
   useEffect(() => {
     const globalEscapeHandler = (e: KeyboardEvent) => {
       e.stopPropagation()
@@ -90,19 +94,47 @@ export function UpdateNoteModalForm({ noteId, setIsPatching }: UpdateNoteModalFo
         <form className={styles.form}>
           <ModalActionRow>
             <ModalSection
-              label={<ModalLabel title="Autor" />}
+              label={<ModalLabel
+                icon={<PiCrownFill color="#ada96dff" />}
+                title="Autor"
+              />}
               input={<BaseModalTextInput disabled value={author?.username ?? "--"} />}
             />
             <ModalSection
-              label={<ModalLabel title="Criação" />}
-              input={<BaseModalTextInput disabled value={author?.username ?? "--"} />}
+              label={<ModalLabel icon={<FaCalendarAlt color="#8ca1b4ff" />} title="Criação" />}
+              input={<BaseModalTextInput disabled value={getCreation(note?.created_at)} />}
             />
           </ModalActionRow>
 
+          <ModalActionRow>
+            <ModalSection
+              label={<ModalLabel icon={<FaEye color="#a085b3ff" />} title="Visibilidade" />}
+              input={<BaseModalTextInput disabled value={prettyVisibility(note?.visibility)} />}
+            />
+            <ModalSection
+              label={<ModalLabel icon={<FaCalendarAlt color="#8ca1b4ff" />} title="Última Atualização" />}
+              input={<BaseModalTextInput disabled value={getUpdate(note?.created_at, note?.updated_at)} />}
+            />
+          </ModalActionRow>
         </form>
       </FormProvider>
 
       <ModalFooter />
     </div>
   )
+}
+
+function prettyVisibility(visibility?: string): string {
+  if (!visibility) return '-'
+  return visibility === "PUBLIC" ? "Público" : "Confidencial"
+}
+
+function getUpdate(creation?: string, date?: string): string {
+  // For a simpler user experience, if the note was never updated,
+  // we keep this field empty (shows "--").
+  return !date || creation === date ? '-' : formatLocalTimestamp(date)
+}
+
+function getCreation(date?: string): string {
+  return date ? formatLocalTimestamp(date) : '-'
 }
