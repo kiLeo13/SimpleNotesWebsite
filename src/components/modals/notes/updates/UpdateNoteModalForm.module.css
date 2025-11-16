@@ -5,10 +5,10 @@
   background-color: rgb(30, 25, 37);
   border: 1px solid rgb(42, 36, 51);
   border-radius: 15px;
-  padding: 25px;
+  padding: 30px;
+  padding-bottom: 0;
   box-sizing: border-box;
-  height: 550px;
-  max-height: 90vh;
+  max-height: 95vh;
   gap: 20px;
   width: 500px;
   /* animation: smoothToggleModal 300ms ease-in-out forwards; */
@@ -32,7 +32,19 @@
 .form {
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  padding-bottom: 30px;
   gap: 20px;
+}
+
+/* Ths scrollbar here has caused me nightmares */
+.form::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+
+.division {
+  width: 100%;
+  border-top: 2px solid rgb(63, 52, 80);
 }
 
 @keyframes smoothToggleModal {

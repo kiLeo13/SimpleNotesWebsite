@@ -29,7 +29,7 @@ export function CreateNoteModalForm({ setShowUploadModal, setShownNote }: Create
     defaultValues: {
       name: "",
       visibility: "PUBLIC",
-      tags: "",
+      tags: [],
       file: undefined
     }
   })
@@ -43,8 +43,7 @@ export function CreateNoteModalForm({ setShowUploadModal, setShownNote }: Create
     }
 
     setIsLoading(true)
-    const rawTags = data.tags?.trim()
-    const tags = !rawTags || rawTags === '' ? [] : rawTags.split(" ")
+    const tags = data.tags || []
     const resp = await noteService.createNote({ name: data.name, tags: tags, visibility: data.visibility }, file)
     setIsLoading(false)
 

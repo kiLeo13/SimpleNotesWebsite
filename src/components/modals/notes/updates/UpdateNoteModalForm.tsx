@@ -19,6 +19,9 @@ import { formatLocalTimestamp } from "../../../../utils/utils"
 import { PiCrownFill } from "react-icons/pi"
 import { FaCalendarAlt } from "react-icons/fa"
 import { FaEye } from "react-icons/fa"
+import { ModalArrayInput } from "../shared/inputs/ModalArrayInput"
+import { ModalTextInput } from "../shared/inputs/ModalTextInput"
+import { ModalNoteFileView } from "../shared/tiny/ModalNoteFileView"
 
 import styles from "./UpdateNoteModalForm.module.css"
 
@@ -36,6 +39,11 @@ export function UpdateNoteModalForm({ noteId, setIsPatching }: UpdateNoteModalFo
   const methods = useForm<NoteFormFields>({
     resolver: zodResolver(noteSchema)
   })
+  const { handleSubmit, reset } = methods
+
+  const onSubmit = async (data: NoteFormFields) => {
+    alert(JSON.stringify(data, null, 2))
+  }
 
   useEffect(() => {
     const globalEscapeHandler = (e: KeyboardEvent) => {
@@ -68,13 +76,18 @@ export function UpdateNoteModalForm({ noteId, setIsPatching }: UpdateNoteModalFo
       if (resp.success) {
         setNote(resp.data)
         fetchAuthor(resp.data)
+
+        reset({
+          name: resp.data.name,
+          tags: resp.data.tags || []
+        })
       } else {
         alert(`Failed to fetch full note and/or metrics:\n${JSON.stringify(resp.errors, null, 2)}`)
         setIsPatching(false)
       }
     }
     fetchNote()
-  }, [noteId, setIsPatching])
+  }, [noteId, setIsPatching, reset])
 
   return (
     <div ref={modalRef} className={styles.container}>
@@ -116,10 +129,34 @@ export function UpdateNoteModalForm({ noteId, setIsPatching }: UpdateNoteModalFo
               input={<BaseModalTextInput disabled value={getUpdate(note?.created_at, note?.updated_at)} />}
             />
           </ModalActionRow>
+
+          <ModalActionRow>
+            <ModalSection
+              label={<ModalLabel title="Conteúdo" required />}
+              input={<ModalNoteFileView note={note} />}
+            />
+          </ModalActionRow>
+
+          <div className={styles.division} />
+
+          <ModalActionRow>
+            <ModalSection
+              label={<ModalLabel title="Nome" required />}
+              input={<ModalTextInput name="name" />}
+            />
+          </ModalActionRow>
+
+          <ModalActionRow>
+            <ModalSection
+              label={<ModalLabel title="Tags" required={false} />}
+              input={<ModalArrayInput name="tags" minLength={2} maxLength={30} placeholder="Digite uma tag..." />}
+            />
+          </ModalActionRow>
+
+
+          <ModalFooter onClick={handleSubmit(onSubmit)} />
         </form>
       </FormProvider>
-
-      <ModalFooter />
     </div>
   )
 }

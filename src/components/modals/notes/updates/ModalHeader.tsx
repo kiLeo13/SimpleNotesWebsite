@@ -2,7 +2,7 @@ import type { JSX } from "react"
 import type { FullNoteResponseData } from "../../../../types/api/notes"
 
 import { MdHeadphones, MdImage } from "react-icons/md"
-import { FaClapperboard } from "react-icons/fa6"
+import { LuClapperboard } from "react-icons/lu"
 import { RiFileGifLine } from "react-icons/ri"
 import { ext } from "../../../../utils/utils"
 import { FaFilePdf } from "react-icons/fa6"
@@ -52,7 +52,7 @@ function resolveIcon(fileName: string | undefined, noteType: "TEXT" | "REFERENCE
       return <RiFileGifLine />
 
     case "mp4":
-      return <FaClapperboard />
+      return <LuClapperboard />
 
     case "mp3":
       return <MdHeadphones />
