@@ -43,17 +43,16 @@ body {
 /* Scroll bar */
 ::-webkit-scrollbar {
   width: var(--scrollbar-width);
+  transition: background-color 300ms;
 }
 
 ::-webkit-scrollbar-thumb {
   cursor: default !important;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(136, 136, 136, 0.5);
+  background-color: rgba(120, 105, 133, 0.5);
   border-radius: 4px;
+  transition: background-color 300ms;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(136, 136, 136, 0.3);
+  background-color: rgba(93, 81, 104, 0.5);
 }
