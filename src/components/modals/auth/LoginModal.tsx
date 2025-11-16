@@ -59,7 +59,7 @@ export function LoginModal(): JSX.Element {
             )}
           </div>
 
-          {/* Password input (STEP_ID = 2) */}
+          {/* Password input */}
           <div className={styles.authFormControl}>
             <label className={styles.authFormLabel}>Senha<RequiredHint /></label>
             <input className={styles.authFormInput} {...register("password")} type="password" />
