@@ -8,7 +8,7 @@ import { ProtectedRoute } from "./pages/mainpage/ProtectedRoute"
 import "./services/i18n" // Init translations
 import "./App.css"
 
-export const APP_NAME: string = "OnnyC"
+export const APP_NAME: string = "Onnyx"
 
 function App() {return (
     <Routes>
