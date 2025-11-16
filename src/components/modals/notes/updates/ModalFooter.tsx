@@ -1,4 +1,5 @@
 import type { JSX } from "react"
+
 import { FaTrashAlt } from "react-icons/fa"
 
 import styles from "./ModalFooter.module.css"

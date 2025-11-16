@@ -153,7 +153,6 @@ export function UpdateNoteModalForm({ noteId, setIsPatching }: UpdateNoteModalFo
             />
           </ModalActionRow>
 
-
           <ModalFooter onClick={handleSubmit(onSubmit)} />
         </form>
       </FormProvider>
