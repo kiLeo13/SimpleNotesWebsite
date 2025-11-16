@@ -16,6 +16,7 @@ import { ModalLabel } from "../shared/sections/ModalLabel"
 
 import styles from "./CreateNoteModal.module.css"
 import { ModalSection } from "../shared/sections/ModalSection"
+import { ModalArrayInput } from "../shared/inputs/ModalArrayInput"
 
 type CreateNoteModalFormProps = {
   setShownNote: (note: FullNoteResponseData) => void
@@ -96,7 +97,12 @@ export function CreateNoteModalForm({ setShowUploadModal, setShownNote }: Create
           <ModalActionRow>
             <ModalSection
               label={<ModalLabel title="Apelidos" required={false} />}
-              input={<ModalTextInput name="tags" placeholder="Separe os apelidos por espaço" />}
+              input={<ModalArrayInput
+                name="tags"
+                placeholder="Separe os apelidos por espaço"
+                minLength={2}
+                maxLength={30}
+              />}
             />
           </ModalActionRow>
 
