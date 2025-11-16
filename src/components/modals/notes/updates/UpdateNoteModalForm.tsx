@@ -111,7 +111,7 @@ export function UpdateNoteModalForm({ noteId, setIsPatching }: UpdateNoteModalFo
                 icon={<PiCrownFill color="#ada96dff" />}
                 title="Autor"
               />}
-              input={<BaseModalTextInput disabled value={author?.username ?? "--"} />}
+              input={<BaseModalTextInput disabled value={author?.username ?? "-"} />}
             />
             <ModalSection
               label={<ModalLabel icon={<FaCalendarAlt color="#8ca1b4ff" />} title="Criação" />}
@@ -168,7 +168,7 @@ function prettyVisibility(visibility?: string): string {
 
 function getUpdate(creation?: string, date?: string): string {
   // For a simpler user experience, if the note was never updated,
-  // we keep this field empty (shows "--").
+  // we keep this field empty (shows "-").
   return !date || creation === date ? '-' : formatLocalTimestamp(date)
 }
 
