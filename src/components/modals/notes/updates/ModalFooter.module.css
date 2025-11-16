@@ -6,8 +6,8 @@
 
 .footer > button {
   cursor: pointer;
-  padding: 10px 15px;
-  border-radius: 8px;
+  padding: 12px 25px;
+  border-radius: 9999px;
   border: none;
   font-size: 1em;
   font-weight: 450;
@@ -19,7 +19,7 @@
 }
 
 .saveButton {
-  background-color: rgb(152, 107, 179);
+  background-color: rgb(144, 92, 192);
 }
 
 .deleteButton {
