@@ -71,7 +71,7 @@ export function CreateNoteModalForm({ setShowUploadModal, setShownNote }: Create
 
           <ModalActionRow>
             <ModalSection
-              label={<ModalLabel title="Nome" />}
+              label={<ModalLabel title="Nome" required />}
               input={<ModalTextInput name="name" autoComplete="off" />}
             />
           </ModalActionRow>
@@ -83,6 +83,7 @@ export function CreateNoteModalForm({ setShowUploadModal, setShownNote }: Create
                   title="Visibilidade"
                   hint="A visibilidade de uma nota é apenas para fins de organização e não afeta
                       a privacidade a nível de permissões de visualização do arquivo."
+                  required
                 />
               }
               input={<ModalSelectInput name="visibility" options={[
@@ -101,7 +102,7 @@ export function CreateNoteModalForm({ setShowUploadModal, setShownNote }: Create
 
           <ModalActionRow>
             <ModalSection
-              label={<ModalLabel title="Conteúdo" hint={`Arquivo máximo: ${getPrettySize(NOTE_MAX_SIZE_BYTES)}.`} />}
+              label={<ModalLabel title="Conteúdo" hint={`Arquivo máximo: ${getPrettySize(NOTE_MAX_SIZE_BYTES)}.`} required />}
               input={<ModalFileInput name="file" allowedExtensions={NOTE_EXTENSIONS} />}
             />
           </ModalActionRow>
