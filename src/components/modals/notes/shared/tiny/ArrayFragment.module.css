@@ -1,0 +1,23 @@
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 5px;
+  border-radius: 5px;
+  font-size: 0.95em;
+  background-color: rgba(165, 144, 187, 0.144);
+  gap: 3px;
+}
+
+.removeItem {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  border-radius: 3px;
+  transition: background-color 300ms;
+}
+
+.removeItem:hover {
+  background-color: rgb(91, 77, 104);
+}
