@@ -99,7 +99,7 @@ export function CreateNoteModalForm({ setShowUploadModal, setShownNote }: Create
               label={<ModalLabel title="Apelidos" required={false} />}
               input={<ModalArrayInput
                 name="tags"
-                placeholder="Separe os apelidos por espaço"
+                placeholder="Adicione tags..."
                 minLength={2}
                 maxLength={30}
               />}
