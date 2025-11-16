@@ -20,7 +20,13 @@ export const noteSchema = z.object({
 
   visibility: z.enum(["PUBLIC", "CONFIDENTIAL"], t("errors.enum.invalid")),
 
-  tags: z.string().optional(),
+  tags: z.array(
+    z
+      .string()
+      .min(2)
+      .max(30)
+      .regex(/^[a-zA-Z0-9-]+$/)
+  ).optional(),
 
   file: z.instanceof(FileList, { error: t('errors.file.required') })
     .refine(files => files?.length === 1, t('errors.file.required'))
