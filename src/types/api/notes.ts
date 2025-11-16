@@ -16,6 +16,7 @@ const NoteBaseSchema = z.object({
   tags: z.array(z.string()),
   visibility: z.enum(["PUBLIC", "CONFIDENTIAL"]),
   created_by_id: z.number(),
+  content_size: z.number(),
   created_at: z.string(),
   updated_at: z.string()
 })
