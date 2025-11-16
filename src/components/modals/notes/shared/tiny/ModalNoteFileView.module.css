@@ -1,0 +1,30 @@
+.container {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  background-color: rgb(43, 37, 53);
+  padding: 8px 10px;
+  border: 1px solid rgb(64, 55, 85);
+  border-radius: 12px;
+  gap: 8px;
+}
+
+.iconContainer {
+  display: flex;
+  align-items: center;
+  background-color: rgb(57, 45, 75);
+  padding: 5px 8px;
+  gap: 5px;
+  color: rgb(141, 134, 155);
+  border-radius: 6px;
+}
+
+.name {
+  color: rgb(122, 117, 134);
+  font-size: 0.9em;
+}
+
+.textDisclaimer {
+  font-style: italic;
+  color: rgb(79, 71, 97);
+}
