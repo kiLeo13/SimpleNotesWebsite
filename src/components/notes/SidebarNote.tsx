@@ -3,7 +3,7 @@ import { useState, type JSX, type MouseEventHandler } from "react"
 
 import { DarkWrapper } from "../DarkWrapper"
 import { IoMdSettings } from "react-icons/io"
-import { UpdateNoteModalForm } from "../modals/notes/updates/UpdateNoteModalForm"
+import { UpdateNoteModal } from "../modals/notes/updates/UpdateNoteModal"
 
 import styles from "./SidebarNote.module.css"
 
@@ -33,7 +33,7 @@ export function SidebarNote({ note, onClick, isAdmin }: SidebarNoteProps): JSX.E
 
       {isPatching && (
         <DarkWrapper>
-          <UpdateNoteModalForm noteId={note.id} setIsPatching={setIsPatching} />
+          <UpdateNoteModal noteId={note.id} setIsPatching={setIsPatching} />
         </DarkWrapper>
       )}
     </div>

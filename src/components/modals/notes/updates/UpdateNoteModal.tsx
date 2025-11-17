@@ -23,14 +23,14 @@ import { ModalArrayInput } from "../shared/inputs/ModalArrayInput"
 import { ModalTextInput } from "../shared/inputs/ModalTextInput"
 import { ModalNoteFileView } from "../shared/tiny/ModalNoteFileView"
 
-import styles from "./UpdateNoteModalForm.module.css"
+import styles from "./UpdateNoteModal.module.css"
 
-type UpdateNoteModalFormProps = {
+type UpdateNoteModalProps = {
   noteId: number
   setIsPatching: (flag: boolean) => void
 }
 
-export function UpdateNoteModalForm({ noteId, setIsPatching }: UpdateNoteModalFormProps): JSX.Element {
+export function UpdateNoteModal({ noteId, setIsPatching }: UpdateNoteModalProps): JSX.Element {
   const [note, setNote] = useState<FullNoteResponseData | null>(null)
   const [author, setAuthor] = useState<UserResponseData | null>(null)
   const [isLoading, setIsLoading] = useState(false)
