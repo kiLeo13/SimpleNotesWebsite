@@ -19,8 +19,8 @@ export function ModalFooter({ exists, setShowDelete }: ModalFooterProps): JSX.El
   }
 
   return (
-    <footer className={styles.footer} onClick={handleDeleteClick}>
-      <button disabled={!exists} className={styles.deleteButton}>
+    <footer className={styles.footer}>
+      <button disabled={!exists} type="button" className={styles.deleteButton} onClick={handleDeleteClick}>
         <FaTrashAlt size={"1.1em"} color="rgba(102, 34, 34, 1)" />
       </button>
       
