@@ -58,7 +58,7 @@
   transition: border-color 0.3s;
 }
 
-.input:focus {
+.input:focus:not(.invalid) {
   border-color: #5c4791
 }
 
