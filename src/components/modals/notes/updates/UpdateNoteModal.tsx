@@ -79,7 +79,7 @@ export function UpdateNoteModal({ noteId, setIsPatching }: UpdateNoteModalProps)
       <ModalHeader noteId={noteId} note={note} />
 
       <FormProvider {...methods}>
-        <UpdateNoteForm note={note} handleSubmit={handleSubmit} />
+        <UpdateNoteForm note={note} handleSubmit={handleSubmit} setIsPatching={setIsPatching} />
       </FormProvider>
     </div>
   )

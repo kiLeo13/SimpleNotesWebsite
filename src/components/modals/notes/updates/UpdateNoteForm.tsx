@@ -17,16 +17,20 @@ import { ModalArrayInput } from "../shared/inputs/ModalArrayInput"
 import { ModalTextInput } from "../shared/inputs/ModalTextInput"
 import { ModalNoteFileView } from "../shared/tiny/ModalNoteFileView"
 import { FaEye } from "react-icons/fa6"
+import { DarkWrapper } from "../../../DarkWrapper"
+import { DeleteNoteModal } from "./DeleteNoteModal"
 
 import styles from "./UpdateNoteForm.module.css"
 
 type UpdateNoteFormProps = {
   note: FullNoteResponseData | null
   handleSubmit: UseFormHandleSubmit<UpdateNoteFormFields>
+  setIsPatching: (show: boolean) => void
 }
 
-export function UpdateNoteForm({ note, handleSubmit }: UpdateNoteFormProps): JSX.Element {
+export function UpdateNoteForm({ note, handleSubmit, setIsPatching }: UpdateNoteFormProps): JSX.Element {
   const [author, setAuthor] = useState<UserResponseData | null>(null)
+  const [showDelete, setShowDelete] = useState(false)
 
   const onSubmit = async (data: UpdateNoteFormFields) => {
     alert(JSON.stringify(data, null, 2))
@@ -96,7 +100,18 @@ export function UpdateNoteForm({ note, handleSubmit }: UpdateNoteFormProps): JSX
         />
       </ModalActionRow>
 
-      <ModalFooter />
+      <ModalFooter exists={!!note} setShowDelete={setShowDelete} />
+
+      {/* The delete confirmation modal */}
+      {showDelete && (
+        <DarkWrapper>
+          <DeleteNoteModal
+            note={note!}
+            setShowDelete={setShowDelete}
+            setIsPatching={setIsPatching}
+          />
+        </DarkWrapper>
+      )}
     </form>
   )
 }
