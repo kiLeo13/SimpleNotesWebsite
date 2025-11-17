@@ -12,7 +12,7 @@ const hasValidExtension = (fileName: string): boolean => {
 
 const t = i18n.t
 
-export const noteSchema = z.object({
+export const createNoteSchema = z.object({
   name: z
     .string()
     .min(2, t('errors.string.min', { count: 2 }))
@@ -44,4 +44,4 @@ export const noteSchema = z.object({
     )
 })
 
-export type NoteFormFields = z.infer<typeof noteSchema>
+export type NoteFormFields = z.infer<typeof createNoteSchema>

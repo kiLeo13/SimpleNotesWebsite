@@ -1,5 +1,5 @@
 import type { FullNoteResponseData } from "../../../../types/api/notes"
-import { noteSchema, type NoteFormFields } from "../../../../types/forms/notes"
+import { createNoteSchema, type NoteFormFields } from "../../../../types/forms/notes"
 import { useState, type JSX, type MouseEventHandler } from "react"
 
 import clsx from "clsx"
@@ -13,10 +13,10 @@ import { FormProvider, useForm } from "react-hook-form"
 import { ModalTextInput } from "../shared/inputs/ModalTextInput"
 import { ModalSelectInput } from "../shared/inputs/ModalSelectInput"
 import { ModalLabel } from "../shared/sections/ModalLabel"
-
-import styles from "./CreateNoteModal.module.css"
 import { ModalSection } from "../shared/sections/ModalSection"
 import { ModalArrayInput } from "../shared/inputs/ModalArrayInput"
+
+import styles from "./CreateNoteModal.module.css"
 
 type CreateNoteModalFormProps = {
   setShownNote: (note: FullNoteResponseData) => void
@@ -26,7 +26,7 @@ type CreateNoteModalFormProps = {
 export function CreateNoteModalForm({ setShowUploadModal, setShownNote }: CreateNoteModalFormProps): JSX.Element {
   const [isLoading, setIsLoading] = useState(false)
   const methods = useForm<NoteFormFields>({
-    resolver: zodResolver(noteSchema),
+    resolver: zodResolver(createNoteSchema),
     defaultValues: {
       name: "",
       visibility: "PUBLIC",
