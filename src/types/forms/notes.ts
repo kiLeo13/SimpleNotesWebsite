@@ -26,7 +26,7 @@ export const createNoteSchema = z.object({
       .min(2)
       .max(30)
       .regex(/^[a-zA-Z0-9-]+$/)
-  ).optional(),
+  ),
 
   file: z.instanceof(FileList, { error: t('errors.file.required') })
     .refine(files => files?.length === 1, t('errors.file.required'))
@@ -46,7 +46,8 @@ export const createNoteSchema = z.object({
 
 export const updateNoteSchema = createNoteSchema.pick({
   name: true,
-  tags: true
+  tags: true,
+  visibility: true
 })
 
 export type NoteFormFields = z.infer<typeof createNoteSchema>
