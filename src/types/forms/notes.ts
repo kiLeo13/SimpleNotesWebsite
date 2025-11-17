@@ -44,4 +44,10 @@ export const createNoteSchema = z.object({
     )
 })
 
+export const updateNoteSchema = createNoteSchema.pick({
+  name: true,
+  tags: true
+})
+
 export type NoteFormFields = z.infer<typeof createNoteSchema>
+export type UpdateNoteFormFields = z.infer<typeof updateNoteSchema>

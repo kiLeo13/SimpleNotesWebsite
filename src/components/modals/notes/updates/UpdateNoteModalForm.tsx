@@ -1,7 +1,7 @@
 import type { FullNoteResponseData } from "../../../../types/api/notes"
 import type { UserResponseData } from "../../../../types/api/users"
 import { useEffect, useRef, useState, type JSX } from "react"
-import { createNoteSchema, type NoteFormFields } from "../../../../types/forms/notes"
+import { updateNoteSchema, type UpdateNoteFormFields } from "../../../../types/forms/notes"
 
 import { FormProvider, useForm } from "react-hook-form"
 import { ModalActionRow } from "../shared/sections/ModalActionRow"
@@ -36,8 +36,8 @@ export function UpdateNoteModalForm({ noteId, setIsPatching }: UpdateNoteModalFo
   const [isLoading, setIsLoading] = useState(false)
   const modalRef = useRef<HTMLDivElement>(null)
   const handleCloseModal = () => setIsPatching(false)
-  const methods = useForm<NoteFormFields>({
-    resolver: zodResolver(createNoteSchema),
+  const methods = useForm<UpdateNoteFormFields>({
+    resolver: zodResolver(updateNoteSchema),
     defaultValues: {
       name: "",
       tags: []
@@ -45,7 +45,7 @@ export function UpdateNoteModalForm({ noteId, setIsPatching }: UpdateNoteModalFo
   })
   const { handleSubmit, reset } = methods
 
-  const onSubmit = async (data: NoteFormFields) => {
+  const onSubmit = async (data: UpdateNoteFormFields) => {
     alert(JSON.stringify(data, null, 2))
   }
 
