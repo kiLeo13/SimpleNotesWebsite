@@ -37,7 +37,11 @@ export function UpdateNoteModalForm({ noteId, setIsPatching }: UpdateNoteModalFo
   const modalRef = useRef<HTMLDivElement>(null)
   const handleCloseModal = () => setIsPatching(false)
   const methods = useForm<NoteFormFields>({
-    resolver: zodResolver(noteSchema)
+    resolver: zodResolver(noteSchema),
+    defaultValues: {
+      name: "",
+      tags: []
+    }
   })
   const { handleSubmit, reset } = methods
 
@@ -104,7 +108,7 @@ export function UpdateNoteModalForm({ noteId, setIsPatching }: UpdateNoteModalFo
       <ModalHeader noteId={noteId} note={note} />
 
       <FormProvider {...methods}>
-        <form className={styles.form}>
+        <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
           <ModalActionRow>
             <ModalSection
               label={<ModalLabel
@@ -153,7 +157,7 @@ export function UpdateNoteModalForm({ noteId, setIsPatching }: UpdateNoteModalFo
             />
           </ModalActionRow>
 
-          <ModalFooter onClick={handleSubmit(onSubmit)} />
+          <ModalFooter />
         </form>
       </FormProvider>
     </div>
