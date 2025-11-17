@@ -1,0 +1,17 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding-bottom: 30px;
+  gap: 20px;
+}
+
+/* Ths scrollbar here has caused me nightmares */
+.form::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+
+.division {
+  width: 100%;
+  border-top: 2px solid rgb(63, 52, 80);
+}
