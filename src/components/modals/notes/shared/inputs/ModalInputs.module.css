@@ -58,6 +58,10 @@
   transition: border-color 0.3s;
 }
 
+.input:focus {
+  border-color: #5c4791
+}
+
 .input:disabled {
   opacity: 0.5;
 }
