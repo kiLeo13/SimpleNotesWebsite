@@ -31,3 +31,29 @@
   border: none;
   outline: none;
 }
+
+/* Just some enhancements for Markdown formattings */
+.textFrame a {
+  color: rgb(21, 130, 255);
+}
+
+.textFrame table {
+  min-width: 70%;
+  max-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.textFrame table > thead > tr {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.textFrame table > tbody > tr {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.textFrame table th,
+.textFrame table td {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px; 
+}
