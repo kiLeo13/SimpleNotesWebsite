@@ -3,9 +3,12 @@ import {
   FullNoteResponseSchema,
   ListNoteResponseSchema,
 
+  NoteResponseSchema,
+
   type FullNoteResponseData,
   type ListNoteResponseData,
-  type NoteRequestPayload
+  type NoteRequestPayload,
+  type NoteResponseData
 } from "../types/api/notes"
 
 import apiClient from "./apiClient"
@@ -41,6 +44,13 @@ export const noteService = {
     form.append('content', file, file.name)
 
     return safeApiCall(() => apiClient.postForm('/notes', form))
+  },
+
+  updateNote: async (id: number, payload: NoteRequestPayload): Promise<ApiResponse<NoteResponseData>> => {
+    return safeApiCall(
+      () => apiClient.patch(`/notes/${id}`, payload),
+      NoteResponseSchema
+    )
   },
 
   fetchNote: async (id: number): Promise<ApiResponse<FullNoteResponseData>> => {
