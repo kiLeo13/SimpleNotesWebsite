@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEventHand
 import { throttle } from "lodash"
 import { noteService } from "../services/noteService"
 import { SidebarNote } from "./notes/SidebarNote"
-import { FaCloudUploadAlt } from "react-icons/fa"
+import { MdOutlineFileUpload } from "react-icons/md"
 
 import styles from "./Sidebar.module.css"
 
@@ -139,7 +139,7 @@ export function Sidebar({
         <div className={styles.sidebarPfp}>L</div>
         {selfUser?.isAdmin && (
           <button onClick={handleShowUpload} className={styles.footerControlButton}>
-            <FaCloudUploadAlt size={"0.75em"} />
+            <MdOutlineFileUpload size={"0.8em"} />
           </button>
         )}
       </div>
