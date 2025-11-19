@@ -24,6 +24,7 @@ export function UpdateNoteModal({ noteId, setIsPatching }: UpdateNoteModalProps)
   const handleCloseModal = () => setIsPatching(false)
   const methods = useForm<UpdateNoteFormFields>({
     resolver: zodResolver(updateNoteSchema),
+    mode: 'onChange',
     defaultValues: {
       name: "",
       visibility: 'PUBLIC',
