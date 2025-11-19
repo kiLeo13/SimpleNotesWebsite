@@ -4,7 +4,20 @@
   gap: 8px;
 }
 
+.loaderContainer {
+  position: absolute;
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  align-items: center;
+}
+
+.buttonLoader {
+  scale: 0.7;
+}
+
 .footer > button {
+  position: relative;
   cursor: pointer;
   padding: 12px 25px;
   border-radius: 9999px;
@@ -19,7 +32,8 @@
 }
 
 .footer > button:disabled {
-  opacity: 0.3;
+  background-color: rgb(69, 46, 90);
+  color: rgb(41, 25, 56);
 }
 
 .saveButton {

@@ -2,6 +2,8 @@ import type { JSX } from "react"
 
 import { FaTrashAlt } from "react-icons/fa"
 
+import clsx from "clsx"
+
 import styles from "./ModalFooter.module.css"
 
 type ModalFooterProps = {
@@ -14,11 +16,12 @@ type ModalFooterProps = {
    * Tracks whether the user has changed some data in the modal.
    */
   isDirty: boolean
+  isLoading: boolean
   setShowDelete: (show: boolean) => void
 }
 
-export function ModalFooter({ exists, isDirty, setShowDelete }: ModalFooterProps): JSX.Element {
-  const canSubmit = exists && isDirty
+export function ModalFooter({ exists, isDirty, isLoading, setShowDelete }: ModalFooterProps): JSX.Element {
+  const canSubmit = exists && isDirty && !isLoading
   const handleDeleteClick = () => {
     setShowDelete(true)
   }
@@ -28,8 +31,15 @@ export function ModalFooter({ exists, isDirty, setShowDelete }: ModalFooterProps
       <button disabled={!exists} type="button" className={styles.deleteButton} onClick={handleDeleteClick}>
         <FaTrashAlt size={"1.1em"} color="rgba(102, 34, 34, 1)" />
       </button>
-      
-      <button disabled={!canSubmit} type="submit" className={styles.saveButton}>Salvar</button>
+
+      <button disabled={!canSubmit} type="submit" className={styles.saveButton}>
+        Salvar
+        {isLoading && (
+          <div className={styles.loaderContainer}>
+            <div className={clsx("loader", styles.buttonLoader)}></div>
+          </div>
+        )}
+      </button>
     </footer>
   )
 }

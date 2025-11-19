@@ -21,6 +21,7 @@ import { DarkWrapper } from "../../../DarkWrapper"
 import { DeleteNoteModal } from "./DeleteNoteModal"
 import { noteService } from "../../../../services/noteService"
 import { ModalSelectInput } from "../shared/inputs/ModalSelectInput"
+import { useAsync } from "../../../../hooks/useAsync"
 
 import _ from "lodash"
 
@@ -36,6 +37,7 @@ export function UpdateNoteForm({ note, handleSubmit, setIsPatching }: UpdateNote
   const { formState: { isDirty, dirtyFields } } = useFormContext<UpdateNoteFormFields>()
   const [author, setAuthor] = useState<UserResponseData | null>(null)
   const [showDelete, setShowDelete] = useState(false)
+  const [update, isLoading] = useAsync(noteService.updateNote)
 
   const onSubmit = async (data: UpdateNoteFormFields) => {
     const payload = getDirtyValues(dirtyFields, data)
@@ -44,7 +46,7 @@ export function UpdateNoteForm({ note, handleSubmit, setIsPatching }: UpdateNote
       return
     }
 
-    const resp = await noteService.updateNote(note!.id, payload)
+    const resp = await update(note!.id, payload)
 
     if (!resp.success) {
       alert(`Error:\n${JSON.stringify(resp.errors, null, 2)}`)
@@ -119,7 +121,12 @@ export function UpdateNoteForm({ note, handleSubmit, setIsPatching }: UpdateNote
         />
       </ModalActionRow>
 
-      <ModalFooter exists={!!note} setShowDelete={setShowDelete} isDirty={isDirty} />
+      <ModalFooter
+        exists={!!note}
+        setShowDelete={setShowDelete}
+        isDirty={isDirty}
+        isLoading={isLoading}
+      />
 
       {/* The delete confirmation modal */}
       {showDelete && (
