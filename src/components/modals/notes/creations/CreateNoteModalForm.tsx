@@ -1,5 +1,5 @@
 import type { FullNoteResponseData } from "../../../../types/api/notes"
-import { createNoteSchema, type NoteFormFields } from "../../../../types/forms/notes"
+import { createNoteSchema, VISIBILITY_OPTIONS, type NoteFormFields } from "../../../../types/forms/notes"
 import { useState, type JSX, type MouseEventHandler } from "react"
 
 import clsx from "clsx"
@@ -87,10 +87,7 @@ export function CreateNoteModalForm({ setShowUploadModal, setShownNote }: Create
                   required
                 />
               }
-              input={<ModalSelectInput name="visibility" options={[
-                { label: "Público", value: "PUBLIC" },
-                { label: "Confidencial", value: "CONFIDENTIAL" }
-              ]} />}
+              input={<ModalSelectInput name="visibility" options={VISIBILITY_OPTIONS} />}
             />
           </ModalActionRow>
 
