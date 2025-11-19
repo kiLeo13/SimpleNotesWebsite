@@ -12,6 +12,11 @@ const hasValidExtension = (fileName: string): boolean => {
 
 const t = i18n.t
 
+export const VISIBILITY_OPTIONS = [
+  { label: "Público", value: "PUBLIC" },
+  { label: "Confidencial", value: "CONFIDENTIAL" }
+]
+
 export const createNoteSchema = z.object({
   name: z
     .string()
