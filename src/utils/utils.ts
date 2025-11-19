@@ -100,6 +100,23 @@ export function isOnlyDigit(s: string): boolean {
   return /^\d+$/.test(s)
 }
 
+/**
+ * Extracts only the fields that have been modified (marked as dirty) 
+ * from the React Hook Form data.
+ */
+export function getDirtyValues<T extends Record<string, unknown>>(
+  dirtyFields: Record<string, unknown>,
+  allValues: T
+): Partial<T> {
+  const dirtyValues: Partial<T> = {}
+
+  Object.keys(dirtyFields).forEach((key) => {
+    const typedKey = key as keyof T
+    dirtyValues[typedKey] = allValues[typedKey]
+  })
+  return dirtyValues
+}
+
 // Helpers
 function checkAndGetBounds(a: number, b: number): [number, number] {
   if (a > b) {
