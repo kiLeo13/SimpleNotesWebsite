@@ -26,6 +26,7 @@ export function UpdateNoteModal({ noteId, setIsPatching }: UpdateNoteModalProps)
     resolver: zodResolver(updateNoteSchema),
     defaultValues: {
       name: "",
+      visibility: 'PUBLIC',
       tags: []
     }
   })
@@ -54,6 +55,7 @@ export function UpdateNoteModal({ noteId, setIsPatching }: UpdateNoteModalProps)
 
         reset({
           name: resp.data.name,
+          visibility: resp.data.visibility,
           tags: resp.data.tags || []
         })
       } else {

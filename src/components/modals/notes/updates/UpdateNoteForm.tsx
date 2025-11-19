@@ -1,8 +1,8 @@
-import { useEffect, useState, type JSX } from "react"
 import type { FullNoteResponseData } from "../../../../types/api/notes"
 import type { UserResponseData } from "../../../../types/api/users"
-import type { UpdateNoteFormFields } from "../../../../types/forms/notes"
-import type { UseFormHandleSubmit } from "react-hook-form"
+import { useFormContext, type UseFormHandleSubmit } from "react-hook-form"
+import { useEffect, useState, type JSX } from "react"
+import { VISIBILITY_OPTIONS, type UpdateNoteFormFields } from "../../../../types/forms/notes"
 
 import { userService } from "../../../../services/userService"
 import { ModalSection } from "../shared/sections/ModalSection"
@@ -11,7 +11,7 @@ import { ModalLabel } from "../shared/sections/ModalLabel"
 import { PiCrownFill } from "react-icons/pi"
 import { BaseModalTextInput } from "../shared/inputs/BaseModalTextInput"
 import { FaCalendarAlt } from "react-icons/fa"
-import { formatLocalTimestamp } from "../../../../utils/utils"
+import { formatLocalTimestamp, getDirtyValues } from "../../../../utils/utils"
 import { ModalFooter } from "./ModalFooter"
 import { ModalArrayInput } from "../shared/inputs/ModalArrayInput"
 import { ModalTextInput } from "../shared/inputs/ModalTextInput"
@@ -19,6 +19,10 @@ import { ModalNoteFileView } from "../shared/tiny/ModalNoteFileView"
 import { FaEye } from "react-icons/fa6"
 import { DarkWrapper } from "../../../DarkWrapper"
 import { DeleteNoteModal } from "./DeleteNoteModal"
+import { noteService } from "../../../../services/noteService"
+import { ModalSelectInput } from "../shared/inputs/ModalSelectInput"
+
+import _ from "lodash"
 
 import styles from "./UpdateNoteForm.module.css"
 
@@ -29,17 +33,30 @@ type UpdateNoteFormProps = {
 }
 
 export function UpdateNoteForm({ note, handleSubmit, setIsPatching }: UpdateNoteFormProps): JSX.Element {
+  const { formState: { isDirty, dirtyFields } } = useFormContext<UpdateNoteFormFields>()
   const [author, setAuthor] = useState<UserResponseData | null>(null)
   const [showDelete, setShowDelete] = useState(false)
 
   const onSubmit = async (data: UpdateNoteFormFields) => {
-    alert(JSON.stringify(data, null, 2))
+    const payload = getDirtyValues(dirtyFields, data)
+    if (_.isEmpty(payload)) {
+      setIsPatching(false)
+      return
+    }
+
+    const resp = await noteService.updateNote(note!.id, payload)
+
+    if (!resp.success) {
+      alert(`Error:\n${JSON.stringify(resp.errors, null, 2)}`)
+      return
+    }
+    setIsPatching(false)
   }
 
   useEffect(() => {
     const fetchAuthor = async (note: FullNoteResponseData) => {
       const resp = await userService.getUserById(note.created_by_id)
-  
+
       if (resp.success) {
         setAuthor(resp.data)
       } else {
@@ -66,10 +83,12 @@ export function UpdateNoteForm({ note, handleSubmit, setIsPatching }: UpdateNote
         />
       </ModalActionRow>
 
+      {/* The issue is at not declaring the `visibility` as editable */}
+
       <ModalActionRow>
         <ModalSection
           label={<ModalLabel icon={<FaEye color="#a085b3ff" />} title="Visibilidade" />}
-          input={<BaseModalTextInput disabled value={prettyVisibility(note?.visibility)} />}
+          input={<ModalSelectInput name="visibility" options={VISIBILITY_OPTIONS} />}
         />
         <ModalSection
           label={<ModalLabel icon={<FaCalendarAlt color="#8ca1b4ff" />} title="Última Atualização" />}
@@ -100,7 +119,7 @@ export function UpdateNoteForm({ note, handleSubmit, setIsPatching }: UpdateNote
         />
       </ModalActionRow>
 
-      <ModalFooter exists={!!note} setShowDelete={setShowDelete} />
+      <ModalFooter exists={!!note} setShowDelete={setShowDelete} isDirty={isDirty} />
 
       {/* The delete confirmation modal */}
       {showDelete && (
@@ -114,11 +133,6 @@ export function UpdateNoteForm({ note, handleSubmit, setIsPatching }: UpdateNote
       )}
     </form>
   )
-}
-
-function prettyVisibility(visibility?: string): string {
-  if (!visibility) return '-'
-  return visibility === "PUBLIC" ? "Público" : "Confidencial"
 }
 
 function getUpdate(creation?: string, date?: string): string {
