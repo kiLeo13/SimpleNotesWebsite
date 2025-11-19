@@ -3,6 +3,10 @@ import type { JSX, ReactNode } from "react"
 import RequiredHint from "../../../../hints/RequiredHint"
 import OptionalHint from "../../../../hints/OptionalHint"
 
+import { MdOutlineQuestionAnswer } from "react-icons/md"
+import { MdQuestionAnswer } from "react-icons/md"
+import { useHover } from "../../../../../hooks/useHover"
+
 import styles from "./ModalLabel.module.css"
 
 type ModalLabelProps = {
@@ -13,6 +17,8 @@ type ModalLabelProps = {
 }
 
 export function ModalLabel({ title, icon, required, hint }: ModalLabelProps): JSX.Element {
+  const [hoverRef, isHovering] = useHover()
+
   return (
     <label className={styles.inputLabel}>
       {icon && icon}
@@ -23,8 +29,8 @@ export function ModalLabel({ title, icon, required, hint }: ModalLabelProps): JS
       {required === false && <OptionalHint />}
 
       {hint && (
-        <span className={styles.helpHint}>
-          <span>?</span>
+        <span ref={hoverRef} className={styles.helpHint}>
+          {isHovering ? <MdQuestionAnswer /> : <MdOutlineQuestionAnswer />}
           <span className={styles.modalHelpHintText}>{hint}</span>
         </span>
       )}
