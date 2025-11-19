@@ -7,6 +7,12 @@ export interface NoteRequestPayload {
   visibility: "PUBLIC" | "CONFIDENTIAL"
 }
 
+export interface UpdateNoteRequestPayload {
+  name?: string
+  tags?: string[]
+  visibility?: "PUBLIC" | "CONFIDENTIAL"
+}
+
 // Raw API Responses (if transformation is needed)
 // ---
 // I am also defining building blocks for discriminated unions.
