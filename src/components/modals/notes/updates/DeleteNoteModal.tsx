@@ -3,9 +3,9 @@ import type { FullNoteResponseData } from "../../../../types/api/notes"
 
 import { IoIosWarning } from "react-icons/io"
 import { BaseModalTextInput } from "../shared/inputs/BaseModalTextInput"
+import { noteService } from "../../../../services/noteService"
 
 import styles from "./DeleteNoteModal.module.css"
-import { noteService } from "../../../../services/noteService"
 
 type DeleteNoteModalProps = {
   note: FullNoteResponseData
