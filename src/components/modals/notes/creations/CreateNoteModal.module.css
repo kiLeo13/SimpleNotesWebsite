@@ -95,8 +95,7 @@
 }
 
 .buttonLoader {
-  scale: 50%;
-  border: 8px solid rgba(0, 0, 0, 0.6);
+  scale: 70%;
 }
 
 .loaderContainer {
@@ -105,8 +104,6 @@
   inset: 0;
   justify-content: center;
   align-items: center;
-  opacity: 1;
-  scale: 1.5;
 }
 
 /* My animations for modals */
