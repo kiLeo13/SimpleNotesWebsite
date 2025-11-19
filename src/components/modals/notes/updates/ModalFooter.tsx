@@ -16,12 +16,13 @@ type ModalFooterProps = {
    * Tracks whether the user has changed some data in the modal.
    */
   isDirty: boolean
+  isValid: boolean
   isLoading: boolean
   setShowDelete: (show: boolean) => void
 }
 
-export function ModalFooter({ exists, isDirty, isLoading, setShowDelete }: ModalFooterProps): JSX.Element {
-  const canSubmit = exists && isDirty && !isLoading
+export function ModalFooter({ exists, isDirty, isValid, isLoading, setShowDelete }: ModalFooterProps): JSX.Element {
+  const canSubmit = exists && isDirty && isValid && !isLoading
   const handleDeleteClick = () => {
     setShowDelete(true)
   }

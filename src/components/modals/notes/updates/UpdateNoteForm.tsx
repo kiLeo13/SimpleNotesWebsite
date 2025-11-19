@@ -34,7 +34,7 @@ type UpdateNoteFormProps = {
 }
 
 export function UpdateNoteForm({ note, handleSubmit, setIsPatching }: UpdateNoteFormProps): JSX.Element {
-  const { formState: { isDirty, dirtyFields } } = useFormContext<UpdateNoteFormFields>()
+  const { formState: { isDirty, isValid, dirtyFields } } = useFormContext<UpdateNoteFormFields>()
   const [author, setAuthor] = useState<UserResponseData | null>(null)
   const [showDelete, setShowDelete] = useState(false)
   const [update, isLoading] = useAsync(noteService.updateNote)
@@ -125,6 +125,7 @@ export function UpdateNoteForm({ note, handleSubmit, setIsPatching }: UpdateNote
         exists={!!note}
         setShowDelete={setShowDelete}
         isDirty={isDirty}
+        isValid={isValid}
         isLoading={isLoading}
       />
 
