@@ -10,10 +10,15 @@ type ModalFooterProps = {
    * If this value is `false`, then we are likely still waiting for a server response.
    */
   exists: boolean
+  /**
+   * Tracks whether the user has changed some data in the modal.
+   */
+  isDirty: boolean
   setShowDelete: (show: boolean) => void
 }
 
-export function ModalFooter({ exists, setShowDelete }: ModalFooterProps): JSX.Element {
+export function ModalFooter({ exists, isDirty, setShowDelete }: ModalFooterProps): JSX.Element {
+  const canSubmit = exists && isDirty
   const handleDeleteClick = () => {
     setShowDelete(true)
   }
@@ -24,7 +29,7 @@ export function ModalFooter({ exists, setShowDelete }: ModalFooterProps): JSX.El
         <FaTrashAlt size={"1.1em"} color="rgba(102, 34, 34, 1)" />
       </button>
       
-      <button disabled={!exists} type="submit" className={styles.saveButton}>Salvar</button>
+      <button disabled={!canSubmit} type="submit" className={styles.saveButton}>Salvar</button>
     </footer>
   )
 }
