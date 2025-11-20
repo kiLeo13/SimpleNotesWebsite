@@ -9,6 +9,11 @@
   gap: 3px;
 }
 
+.itemError {
+  border: 2px solid rgb(238, 54, 54);
+  background-color: rgba(241, 95, 95, 0.2);
+}
+
 .removeItem {
   cursor: pointer;
   display: flex;
