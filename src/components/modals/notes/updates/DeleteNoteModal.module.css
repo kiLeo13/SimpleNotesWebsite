@@ -8,6 +8,7 @@
   border: 1px solid rgb(65, 55, 80);
   border-radius: 20px;
   width: 500px;
+  animation: smoothToggleModal 300ms ease-in-out forwards;
 }
 
 .heading {
@@ -89,4 +90,16 @@
 
 .confirm:disabled {
   opacity: 0.4;
+}
+
+@keyframes smoothToggleModal {
+  from {
+    opacity: 0;
+    scale: 70%;
+  }
+  
+  to {
+    opacity: 1;
+    scale: 100%;
+  }
 }
