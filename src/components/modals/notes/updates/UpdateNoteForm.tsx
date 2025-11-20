@@ -85,8 +85,6 @@ export function UpdateNoteForm({ note, handleSubmit, setIsPatching }: UpdateNote
         />
       </ModalActionRow>
 
-      {/* The issue is at not declaring the `visibility` as editable */}
-
       <ModalActionRow>
         <ModalSection
           label={<ModalLabel icon={<FaEye color="#a085b3ff" />} title="Visibilidade" />}

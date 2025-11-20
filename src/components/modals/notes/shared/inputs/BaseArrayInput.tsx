@@ -10,6 +10,7 @@ type BaseArrayInputProps = {
   items: string[]
   onAdd: (item: string) => void
   onRemove: (item: string) => void
+  invalidItems?: string[]
   errorMessage?: string
   placeholder?: string
   disabled?: boolean
@@ -22,6 +23,7 @@ export function BaseArrayInput({
   items,
   onAdd,
   onRemove,
+  invalidItems,
   errorMessage,
   placeholder,
   disabled,
@@ -63,7 +65,13 @@ export function BaseArrayInput({
         onClick={handleContainerClick}
       >
         {items.map((item) => (
-          <ArrayFragment key={item} item={item} onRemove={onRemove} disabled={disabled} />
+          <ArrayFragment
+            key={item}
+            item={item}
+            onRemove={onRemove}
+            disabled={disabled}
+            hasError={invalidItems?.includes(item)}
+          />
         ))}
 
         <input
