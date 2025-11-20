@@ -40,9 +40,9 @@ export function formatLocalTimestamp(date: string): string {
   return `${day} de ${month}. de ${year}, às ${time}`
 }
 
-export function inRange(value: number, a: number, b: number): boolean {
-  const [min, max] = checkAndGetBounds(a, b)
-  return value >= min && value <= max
+export function inRange(value: number, min: number, max: number): boolean {
+  const [_min, _max] = checkAndGetBounds(min, max)
+  return value >= _min && value <= _max
 }
 
 export function clamp(value: number, floor: number, roof: number): number {
