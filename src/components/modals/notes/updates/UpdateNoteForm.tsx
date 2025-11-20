@@ -114,8 +114,8 @@ export function UpdateNoteForm({ note, handleSubmit, setIsPatching }: UpdateNote
 
       <ModalActionRow>
         <ModalSection
-          label={<ModalLabel title="Tags" required={false} />}
-          input={<ModalArrayInput name="tags" minLength={2} maxLength={30} placeholder="Digite uma tag..." />}
+          label={<ModalLabel title="Palavras-chave" required={false} />}
+          input={<ModalArrayInput name="tags" minLength={2} maxLength={30} placeholder="Digite apelidos..." />}
         />
       </ModalActionRow>
 

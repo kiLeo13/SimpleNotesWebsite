@@ -93,10 +93,10 @@ export function CreateNoteModalForm({ setShowUploadModal, setShownNote }: Create
 
           <ModalActionRow>
             <ModalSection
-              label={<ModalLabel title="Apelidos" required={false} />}
+              label={<ModalLabel title="Palavras-chave" required={false} />}
               input={<ModalArrayInput
                 name="tags"
-                placeholder="Adicione tags..."
+                placeholder="Adicione apelidos..."
                 minLength={2}
                 maxLength={30}
               />}
