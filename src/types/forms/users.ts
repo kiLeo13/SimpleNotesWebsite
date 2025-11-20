@@ -1,5 +1,10 @@
 import { z } from "zod"
 
+export const passwords = {
+  minLength: 8,
+  maxLength: 64
+}
+
 export const loginSchema = z.object({
   email: z.email(),
   password: z.string().min(8).max(64)
