@@ -12,11 +12,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 5;
 }
 
 .presentContainer {
   height: 100%;
   transition: opacity 600ms ease-in-out;
+  z-index: 1;
 }
 
 .presentContainer > img {
