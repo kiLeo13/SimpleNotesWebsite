@@ -80,6 +80,7 @@
 }
 
 .confirm {
+  position: relative;
   background-color: rgb(255, 87, 87);
   color: rgb(99, 22, 22);
 }
@@ -89,7 +90,8 @@
 }
 
 .confirm:disabled {
-  opacity: 0.4;
+  background-color: rgba(255, 87, 87, 0.3);
+  color: rgb(59, 20, 20);
 }
 
 @keyframes smoothToggleModal {

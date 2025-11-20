@@ -4,6 +4,8 @@ import type { FullNoteResponseData } from "../../../../types/api/notes"
 import { IoIosWarning } from "react-icons/io"
 import { BaseModalTextInput } from "../shared/inputs/BaseModalTextInput"
 import { noteService } from "../../../../services/noteService"
+import { LoaderContainer } from "../../../LoaderContainer"
+import { useAsync } from "../../../../hooks/useAsync"
 
 import styles from "./DeleteNoteModal.module.css"
 
@@ -15,7 +17,9 @@ type DeleteNoteModalProps = {
 
 export function DeleteNoteModal({ note, setShowDelete, setIsPatching }: DeleteNoteModalProps): JSX.Element {
   const [answer, setAnswer] = useState("")
+  const [delNote, isLoading] = useAsync(noteService.deleteNote)
   const answerMatches = answer == note.name
+  const canConfirm = answerMatches && !isLoading
 
   const handleAnswer = (e: ChangeEvent<HTMLInputElement>) => {
     setAnswer(e.target.value)
@@ -26,7 +30,7 @@ export function DeleteNoteModal({ note, setShowDelete, setIsPatching }: DeleteNo
   }
 
   const handleDeletion = async () => {
-    const resp = await noteService.deleteNote(note.id)
+    const resp = await delNote(note.id)
 
     if (!resp.success) {
       alert(`Error:\n${JSON.stringify(resp.errors, null, 2)}`)
@@ -54,11 +58,10 @@ export function DeleteNoteModal({ note, setShowDelete, setIsPatching }: DeleteNo
 
         <div className={styles.footer}>
           <button className={styles.cancel} onClick={handleClose}>Cancelar</button>
-          <button
-            className={styles.confirm}
-            disabled={!answerMatches}
-            onClick={handleDeletion}
-          >Excluir</button>
+          <button className={styles.confirm} disabled={!canConfirm} onClick={handleDeletion}>
+            Excluir
+            {isLoading && <LoaderContainer scale="0.7" />}
+          </button>
         </div>
       </div>
     </div>
