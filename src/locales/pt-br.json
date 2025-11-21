@@ -7,7 +7,7 @@
     "tags": "Apelidos",
     "tagsPlaceholder": "Separe os apelidos por espaço",
     "content": "Conteúdo",
-    "contentHint": "Arquivo máximo: {{size}}.",
+    "contentHint": "Arquivo máximo: {{size}}",
     "selectFile": "Selecione um arquivo",
     "submit": "Criar",
     "visibilityOptions": {
@@ -16,16 +16,21 @@
     }
   },
   "errors": {
+    "required": "Campo obrigatório",
+    "email": {
+      "invalid": "E-mail inválido"
+    },
     "enum": {
-      "invalid": "Selecione uma opção válida."
+      "invalid": "Opção inválida."
     },
     "string": {
-      "min": "O campo deve ter pelo menos {{count}} caracteres.",
-      "max": "O campo deve ter no máximo {{count}} caracteres."
+      "min": "O campo deve ter pelo menos {{count}} caracteres",
+      "max": "O campo deve ter no máximo {{count}} caracteres",
+      "fixed": "Este campo precisa de {{val}} caracteres"
     },
     "file": {
-      "required": "Arquivo obrigatório.",
-      "maxSize": "Arquivo muito grande (máx {{size}}).",
+      "required": "Arquivo obrigatório",
+      "maxSize": "Arquivo muito grande (máx {{size}})",
       "invalidExtension": "Extensão inválida. Permitido: {{extensions}}"
     }
   }
