@@ -28,10 +28,10 @@ export const createNoteSchema = z.object({
   tags: z.array(
     z
       .string()
-      .min(2)
-      .max(30)
-      .regex(/^[a-zA-Z0-9-]+$/)
-  ),
+      .min(2, t('errors.tags.min', {val: 2}))
+      .max(30, t('errors.tags.max', {val: 30}))
+      .regex(/^[a-zA-Z0-9-]+$/, t('errors.tags.pattern'))
+  ).max(50, t('errors.tags.array.max', {val: 50})),
 
   file: z.instanceof(FileList, { error: t('errors.file.required') })
     .refine(files => files?.length === 1, t('errors.file.required'))

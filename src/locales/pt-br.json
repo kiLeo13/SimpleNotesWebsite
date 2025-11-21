@@ -16,6 +16,14 @@
     }
   },
   "errors": {
+    "tags": {
+      "min": "Cada item precisa ter pelo menos {{val}} caracteres",
+      "max": "Cada item pode ter no máximo {{val}} caracteres",
+      "pattern": "Palavras-chave precisam ser letras ou números",
+      "array": {
+        "max": "Cada anotação só pode ter até {{val}} palavras-chave"
+      }
+    },
     "required": "Campo obrigatório",
     "email": {
       "invalid": "E-mail inválido"
