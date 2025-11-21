@@ -3,6 +3,7 @@ import { useState, type JSX } from "react"
 import { useForm, type SubmitHandler, type UseFormSetError } from "react-hook-form"
 
 import RequiredHint from "../../hints/RequiredHint"
+
 import { zodResolver } from "@hookform/resolvers/zod"
 import { VerificationModal } from "./steps/verification/VerificationModal"
 import { FaArrowRight } from "react-icons/fa"
@@ -10,32 +11,35 @@ import { Link } from "react-router-dom"
 import { useSignup } from "../../../hooks/useSignup"
 import { DarkWrapper } from "../../DarkWrapper"
 import { displayFormsErrors } from "../../../utils/errorHandlerUtils"
+import { PasswordRules } from "./PasswordRules"
 
 import styles from "./AuthModal.module.css"
 
 export function SignupModal(): JSX.Element {
   const [isEmailVerifying, setIsEmailVerifying] = useState(false)
-  const [email, setEmail] = useState('') // Used only to pass to VerificationModal
+  const [showPwdChecks, setShowPwdChecks] = useState(false)
   const { signup, getUserStatus, isLoading } = useSignup()
   const {
     register,
     handleSubmit,
     setError,
+    control,
+    getValues,
     formState: { errors }
   } = useForm<SignupFormFields>({
+    mode: "onChange",
     resolver: zodResolver(signupSchema)
   })
+  const { onBlur, ...passwordRest } = register('password')
 
   const onSubmit: SubmitHandler<SignupFormFields> = async (data) => {
-    const userStatusResponse = await getUserStatus(data)
-    if (!userStatusResponse.success) {
-      displayFormsErrors(userStatusResponse.errors, setError)
+    const statusResp = await getUserStatus(data)
+    if (!statusResp.success) {
+      displayFormsErrors(statusResp.errors, setError)
       return
     }
 
-    setEmail(data.email)
-    const status = userStatusResponse.data.status
-    switch (status) {
+    switch (statusResp.data.status) {
       case 'TAKEN': {
         handleEmailTaken(setError)
         return
@@ -46,9 +50,9 @@ export function SignupModal(): JSX.Element {
       }
     }
 
-    const response = await signup(data)
-    if (!response.success) {
-      displayFormsErrors(response.errors, setError)
+    const resp = await signup(data)
+    if (!resp.success) {
+      displayFormsErrors(resp.errors, setError)
       return
     }
 
@@ -60,7 +64,7 @@ export function SignupModal(): JSX.Element {
     <>
       {isEmailVerifying && (
         <DarkWrapper>
-          <VerificationModal email={email} />
+          <VerificationModal email={getValues('email')} />
         </DarkWrapper>
       )}
 
@@ -87,7 +91,23 @@ export function SignupModal(): JSX.Element {
           {/* Password input */}
           <div className={styles.authFormControl}>
             <label className={styles.authFormLabel}>Nova Senha<RequiredHint /></label>
-            <input className={styles.authFormInput} {...register("password")} type="password" />
+            <div className={styles.passwordContainer}>
+              <input
+                className={styles.authFormInput}
+                {...passwordRest}
+                onFocus={() => setShowPwdChecks(true)}
+                onBlur={(e) => {
+                  onBlur(e) // Let RHF do its validations
+                  setShowPwdChecks(false)
+                }}
+                type="password"
+              />
+              {showPwdChecks && (
+                <div className={styles.passwordConstraintsWrapper}>
+                  <PasswordRules control={control} />
+                </div>
+              )}
+            </div>
             {!!errors.password && (
               <span className={styles.authInputError}>{errors.password.message}</span>
             )}

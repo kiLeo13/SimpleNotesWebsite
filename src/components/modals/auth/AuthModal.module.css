@@ -24,6 +24,24 @@
   gap: 5px;
 }
 
+.passwordContainer {
+  position: relative;
+  display: flex;
+}
+
+.passwordConstraintsWrapper {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  pointer-events: none;
+  inset: 0 auto 0 400px;
+}
+
+.passwordContainer > input {
+  width: 100%;
+}
+
 .authFormLabel {
   display: flex;
   align-items: center;
