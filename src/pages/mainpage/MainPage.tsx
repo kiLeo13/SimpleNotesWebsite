@@ -3,7 +3,7 @@ import type { UserResponseData } from "../../types/api/users"
 import { useEffect, useState, type JSX } from "react"
 
 import { userService } from "../../services/userService"
-import { Sidebar } from "../../components/Sidebar"
+import { Sidebar } from "../../components/sidebar/Sidebar"
 import { CreateNoteModalForm } from "../../components/modals/notes/creations/CreateNoteModalForm"
 import { DarkWrapper } from "../../components/DarkWrapper"
 import { APP_NAME } from "../../App"

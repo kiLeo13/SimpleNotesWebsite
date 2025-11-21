@@ -1,10 +1,10 @@
-import type { FullNoteResponseData, NoteResponseData } from "../types/api/notes"
-import type { UserResponseData } from "../types/api/users"
+import type { FullNoteResponseData, NoteResponseData } from "../../types/api/notes"
+import type { UserResponseData } from "../../types/api/users"
 import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEventHandler, type JSX, type KeyboardEventHandler, type MouseEventHandler } from "react"
 
 import { throttle } from "lodash"
-import { noteService } from "../services/noteService"
-import { SidebarNote } from "./notes/SidebarNote"
+import { noteService } from "../../services/noteService"
+import { SidebarNote } from "../notes/SidebarNote"
 import { MdOutlineFileUpload } from "react-icons/md"
 
 import styles from "./Sidebar.module.css"
@@ -62,8 +62,8 @@ export function Sidebar({
     if (n.note_type === 'REFERENCE') {
       setShownNote(n)
     } else {
-      const resp = await noteService.fetchNote(n.id) 
-      
+      const resp = await noteService.fetchNote(n.id)
+
       if (resp.success) {
         setShownNote(resp.data)
       } else {
@@ -80,7 +80,7 @@ export function Sidebar({
     () => throttle(loadNotes, 5000, { leading: true, trailing: false }),
     [loadNotes]
   )
-  
+
   useEffect(() => {
     const handleGlobalKeydown = (e: KeyboardEvent) => {
       const key = e.key?.toLowerCase()
@@ -136,7 +136,10 @@ export function Sidebar({
         )}
       </div>
       <div className={styles.menuFooterControls}>
-        <div className={styles.sidebarPfp}>L</div>
+        <div className={styles.profile}>
+          <div className={styles.sidebarPfp}>L</div>
+          <span className={styles.username}>{selfUser?.username}</span>
+        </div>
         {selfUser?.isAdmin && (
           <button onClick={handleShowUpload} className={styles.footerControlButton}>
             <MdOutlineFileUpload size={"0.8em"} />
