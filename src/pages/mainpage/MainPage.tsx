@@ -11,10 +11,12 @@ import { EmptyDisplay } from "../../components/board/EmptyDisplay"
 import { ContentBoard } from "../../components/board/ContentBoard"
 
 import styles from "./MainPage.module.css"
+import { LoaderContainer } from "../../components/LoaderContainer"
 
 export function MainPage(): JSX.Element {
   const [notes, setNotes] = useState<NoteResponseData[]>([])
   const [showUploadModal, setShowUploadModal] = useState(false)
+  const [isNoteLoading, setIsNoteLoading] = useState(false)
   const [shownNote, setShownNote] = useState<FullNoteResponseData | null>(null)
   const [selfUser, setSelfUser] = useState<UserResponseData | null>(null)
 
@@ -58,6 +60,7 @@ export function MainPage(): JSX.Element {
           setNotes={setNotes}
           setShowUploadModal={setShowUploadModal}
           setShownNote={setShownNote}
+          setIsNoteLoading={setIsNoteLoading}
         />
 
         {showUploadModal && (
@@ -67,11 +70,11 @@ export function MainPage(): JSX.Element {
         )}
 
         <main className={styles.mainContent}>
-          {!shownNote ? (
-            <EmptyDisplay />
-          ) : (
-            <ContentBoard note={shownNote} />
-          )}
+          {shownNote ? (
+            <ContentBoard note={shownNote} setIsNoteLoading={setIsNoteLoading} />
+          ) : <EmptyDisplay />}
+
+          {isNoteLoading && <LoaderContainer />}
         </main>
       </div>
     </>

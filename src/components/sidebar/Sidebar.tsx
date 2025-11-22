@@ -18,6 +18,7 @@ type SidebarProps = {
   setNotes: (notes: NoteResponseData[]) => void
   setShowUploadModal: (show: boolean) => void
   setShownNote: (note: FullNoteResponseData) => void
+  setIsNoteLoading: (flag: boolean) => void
 }
 
 export function Sidebar({
@@ -27,7 +28,8 @@ export function Sidebar({
   setNotes,
   shownNote,
   setShowUploadModal,
-  setShownNote
+  setShownNote,
+  setIsNoteLoading
 }: SidebarProps): JSX.Element {
   const [isLoading, setIsLoading] = useState(false)
   const [search, setSearch] = useState('')
@@ -61,9 +63,13 @@ export function Sidebar({
     if (shownNote?.id === n.id) return
 
     if (n.note_type === 'REFERENCE') {
+      setIsNoteLoading(true)
+      console.log('Set to TRUE')
       setShownNote(n)
     } else {
+      setIsNoteLoading(true)
       const resp = await noteService.fetchNote(n.id)
+      setIsNoteLoading(false)
 
       if (resp.success) {
         setShownNote(resp.data)
