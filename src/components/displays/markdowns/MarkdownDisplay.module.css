@@ -22,3 +22,7 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 8px; 
 }
+
+.md > ul {
+  padding-left: 25px;
+}
