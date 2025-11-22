@@ -1,5 +1,4 @@
 import type { JSX } from "react"
-import type { UserResponseData } from "../../types/api/users"
 
 import { MdOutlineAutoFixHigh } from "react-icons/md"
 
@@ -7,11 +6,7 @@ import clsx from "clsx"
 
 import styles from "./SidebarProfile.module.css"
 
-type SidebarProfileProps = {
-  selfUser: UserResponseData | null
-}
-
-export function SidebarProfile({ selfUser }: SidebarProfileProps): JSX.Element {
+export function SidebarProfile(): JSX.Element {
   return (
     <div className={styles.profile}>
       <div className={styles.avatarWrapper}>

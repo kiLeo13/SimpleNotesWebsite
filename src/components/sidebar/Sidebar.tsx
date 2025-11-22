@@ -143,7 +143,7 @@ export function Sidebar({
         )}
       </div>
       <div className={styles.menuFooterControls}>
-        <SidebarProfile selfUser={selfUser} />
+        <SidebarProfile />
         {selfUser?.isAdmin && (
           <button onClick={handleShowUpload} className={styles.footerControlButton}>
             <MdOutlineFileUpload size={"0.8em"} />
