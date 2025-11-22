@@ -8,6 +8,7 @@ import { SidebarNote } from "../notes/SidebarNote"
 import { MdOutlineFileUpload } from "react-icons/md"
 
 import styles from "./Sidebar.module.css"
+import { SidebarProfile } from "./SidebarProfile"
 
 type SidebarProps = {
   selfUser: UserResponseData | null
@@ -136,10 +137,7 @@ export function Sidebar({
         )}
       </div>
       <div className={styles.menuFooterControls}>
-        <div className={styles.profile}>
-          <div className={styles.sidebarPfp}>L</div>
-          <span className={styles.username}>{selfUser?.username}</span>
-        </div>
+        <SidebarProfile selfUser={selfUser} />
         {selfUser?.isAdmin && (
           <button onClick={handleShowUpload} className={styles.footerControlButton}>
             <MdOutlineFileUpload size={"0.8em"} />

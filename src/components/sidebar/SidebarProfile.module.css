@@ -1,0 +1,52 @@
+.profile {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: 100%;
+  align-items: end;
+  height: 100%;
+  gap: 8px;
+}
+
+.avatarWrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  aspect-ratio: 1;
+  background-color: rgb(22, 21, 26);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.avatar {
+  height: 100%;
+  filter: grayscale(100%);
+  user-select: none;
+}
+
+.avatar.empty {
+  height: 70%;
+}
+
+.editIcon {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  transition: opacity 200ms;
+  cursor: pointer;
+}
+
+.editIcon:hover {
+  opacity: 1;
+}
+
+.username {
+  font-size: 0.9em;
+  font-weight: 450;
+  color: rgb(103, 98, 110);
+}
