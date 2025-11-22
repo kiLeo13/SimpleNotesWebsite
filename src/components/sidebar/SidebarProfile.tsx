@@ -20,7 +20,6 @@ export function SidebarProfile({ selfUser }: SidebarProfileProps): JSX.Element {
           <MdOutlineAutoFixHigh color="#ab87ffff" size={"1.3em"} />
         </div>
       </div>
-      <span className={styles.username}>{selfUser?.username}</span>
     </div>
   )
 }

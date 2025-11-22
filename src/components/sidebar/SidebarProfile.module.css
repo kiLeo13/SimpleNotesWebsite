@@ -44,9 +44,3 @@
 .editIcon:hover {
   opacity: 1;
 }
-
-.username {
-  font-size: 0.9em;
-  font-weight: 450;
-  color: rgb(103, 98, 110);
-}
