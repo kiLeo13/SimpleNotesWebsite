@@ -34,7 +34,11 @@
     "string": {
       "min": "O campo deve ter pelo menos {{count}} caracteres",
       "max": "O campo deve ter no máximo {{count}} caracteres",
-      "fixed": "Este campo precisa de {{val}} caracteres"
+      "fixed": "Este campo precisa de {{val}} caracteres",
+      "hasLower": "É necessário pelo menos uma letra minúscula",
+      "hasUpper": "É necessário pelo menos uma letra maiúscula",
+      "hasDigits": "É necessário ter pelo menos um dígito",
+      "hasSpecial": "É necessário ter pelo menos um caracter especial"
     },
     "file": {
       "required": "Arquivo obrigatório",

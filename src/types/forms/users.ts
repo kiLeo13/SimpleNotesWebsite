@@ -1,6 +1,7 @@
 import i18n from "../../services/i18n"
 
 import { z } from "zod"
+import { hasCustom, hasDigits, hasLower, hasUpper } from "../../utils/pwdUtils"
 
 const t = i18n.t
 
@@ -8,15 +9,6 @@ export const passwords = {
   minLength: 8,
   maxLength: 64
 }
-
-export const loginSchema = z.object({
-  email: z.email(t('errors.email.invalid')),
-
-  password: z
-    .string()
-    .min(8, t('errors.string.min', { count: 8 }))
-    .max(64, t('errors.string.max', { count: 64 }))
-})
 
 export const signupSchema = z.object({
   username: z
@@ -30,6 +22,15 @@ export const signupSchema = z.object({
     .string()
     .min(8, t('errors.string.min', { count: 8 }))
     .max(64, t('errors.string.max', { count: 64 }))
+    .refine((e) => hasLower(e), t('errors.string.hasLower'))
+    .refine((e) => hasUpper(e), t('errors.string.hasUpper'))
+    .refine((e) => hasDigits(e), t('errors.string.hasDigits'))
+    .refine((e) => hasCustom(e), t('errors.string.hasSpecial'))
+})
+
+export const loginSchema = signupSchema.pick({
+  email: true,
+  password: true
 })
 
 export const confirmSchema = z.object({
