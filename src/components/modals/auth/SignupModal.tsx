@@ -1,29 +1,34 @@
 import { signupSchema, type SignupFormFields } from "../../../types/forms/users"
-import { useState, type JSX } from "react"
+import { useCallback, useMemo, useState, type JSX } from "react"
 import { useForm, type SubmitHandler, type UseFormSetError } from "react-hook-form"
 
 import RequiredHint from "../../hints/RequiredHint"
 
-import { zodResolver } from "@hookform/resolvers/zod"
 import { VerificationModal } from "./steps/verification/VerificationModal"
 import { FaArrowRight } from "react-icons/fa"
 import { Link } from "react-router-dom"
-import { useSignup } from "../../../hooks/useSignup"
 import { DarkWrapper } from "../../DarkWrapper"
-import { displayFormsErrors } from "../../../utils/errorHandlerUtils"
 import { PasswordRules } from "./PasswordRules"
+import { displayFormsErrors } from "../../../utils/errorHandlerUtils"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useAsync } from "../../../hooks/useAsync"
+import { userService } from "../../../services/userService"
+import { debounce } from "lodash"
 
 import styles from "./AuthModal.module.css"
 
 export function SignupModal(): JSX.Element {
   const [isEmailVerifying, setIsEmailVerifying] = useState(false)
   const [showPwdChecks, setShowPwdChecks] = useState(false)
-  const { signup, getUserStatus, isLoading } = useSignup()
+  const [signup, signupLoading] = useAsync(userService.signup)
+  const [status, statusLoading] = useAsync(userService.getUserStatus)
+  const isLoading = signupLoading || statusLoading
   const {
     register,
     handleSubmit,
     setError,
     control,
+    getFieldState,
     getValues,
     formState: { errors }
   } = useForm<SignupFormFields>({
@@ -31,23 +36,36 @@ export function SignupModal(): JSX.Element {
     resolver: zodResolver(signupSchema)
   })
   const { onBlur, ...passwordRest } = register('password')
+  const { onChange, ...emailRest } = register('email')
+
+  const handleEmailCheck = useCallback(async () => {
+    const val = getValues('email')
+    
+    if (getFieldState('email').invalid) return
+
+    // We don't reuse the `status` function because we don't want the loading
+    // icon to show on screen. This operation should be handled "silently".
+    const resp = await userService.getUserStatus({ email: val })
+    if (resp.success && resp.data.status === 'TAKEN') {
+      handleEmailTaken(setError)
+    }
+  }, [getFieldState, getValues, setError])
+
+  const debouncedEmailCheck = useMemo(
+    () => debounce(handleEmailCheck, 500),
+    [handleEmailCheck]
+  )
 
   const onSubmit: SubmitHandler<SignupFormFields> = async (data) => {
-    const statusResp = await getUserStatus(data)
+    const statusResp = await status(data)
     if (!statusResp.success) {
       displayFormsErrors(statusResp.errors, setError)
       return
     }
 
-    switch (statusResp.data.status) {
-      case 'TAKEN': {
-        handleEmailTaken(setError)
-        return
-      }
-      case 'VERIFYING': {
-        setIsEmailVerifying(true)
-        return
-      }
+    if (statusResp.data.status === 'VERIFYING') {
+      setIsEmailVerifying(true)
+      return
     }
 
     const resp = await signup(data)
@@ -55,8 +73,6 @@ export function SignupModal(): JSX.Element {
       displayFormsErrors(resp.errors, setError)
       return
     }
-
-    // Send user to e-mail confirmation/verification/validation/whatever you wanna call it
     setIsEmailVerifying(true)
   }
 
@@ -82,7 +98,17 @@ export function SignupModal(): JSX.Element {
           {/* Email address */}
           <div className={styles.authFormControl}>
             <label className={styles.authFormLabel}>Email<RequiredHint /></label>
-            <input className={styles.authFormInput} {...register("email")} type="email" autoComplete="email" placeholder="example@company.com" />
+            <input
+              className={styles.authFormInput}
+              {...emailRest}
+              onChange={(e) => {
+                onChange(e)
+                debouncedEmailCheck()
+              }}
+              type="email"
+              autoComplete="email"
+              placeholder="example@company.com"
+            />
             {!!errors.email && (
               <span className={styles.authInputError}>{errors.email.message}</span>
             )}
@@ -142,6 +168,6 @@ export function SignupModal(): JSX.Element {
 function handleEmailTaken(setError: UseFormSetError<SignupFormFields>): void {
   setError('email', {
     type: 'manual',
-    message: 'Já existe um usuário cadastrado com este e-mail.'
+    message: 'Já existe um usuário cadastrado com este e-mail'
   })
 }

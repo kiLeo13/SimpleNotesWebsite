@@ -4,19 +4,21 @@ import { loginSchema, type LoginFormFields } from "../../../types/forms/users"
 
 import RequiredHint from "../../hints/RequiredHint"
 
-import { hasSession } from "../../../utils/authutils"
 import { AlreadyAuthWarn } from "../../warns/AlreadyAuthWarn"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { FaArrowRight } from "react-icons/fa"
-import { useLogin } from "../../../hooks/useLogin"
 import { Link, useNavigate } from "react-router-dom"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useAsync } from "../../../hooks/useAsync"
+import { hasSession } from "../../../utils/authutils"
+import { userService } from "../../../services/userService"
+import { displayFormsErrors } from "../../../utils/errorHandlerUtils"
 
 import styles from "./AuthModal.module.css"
 
 export function LoginModal(): JSX.Element {
   const navigate = useNavigate()
   const [showWarn, setShowWarn] = useState(hasSession)
-  const { login, isLoading } = useLogin()
+  const [login, isLoading] = useAsync(userService.login)
   const {
     register,
     handleSubmit,
@@ -27,21 +29,15 @@ export function LoginModal(): JSX.Element {
   })
 
   const onSubmit: SubmitHandler<LoginFormFields> = async (data) => {
-    const response = await login(data)
+    const resp = await login(data)
 
-    if (!response.success) {
-      for (const [field, messages] of Object.entries(response.errors)) {
-        const fieldName = field as keyof LoginFormFields | "root"
-        setError(fieldName, {
-          type: "server",
-          message: messages.join(", ")
-        })
-      }
+    if (!resp.success) {
+      displayFormsErrors(resp.errors, setError)
       return
     }
 
-    localStorage.setItem('access_token', response.data.accessToken)
-    localStorage.setItem('id_token', response.data.idToken)
+    localStorage.setItem('access_token', resp.data.accessToken)
+    localStorage.setItem('id_token', resp.data.idToken)
     navigate('/')
   }
 

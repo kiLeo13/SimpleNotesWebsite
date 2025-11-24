@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState, type JSX } from "react"
 
 import RequiredHint from "../../../../hints/RequiredHint"
+
 import { isOnlyDigit } from "../../../../../utils/utils"
-import { useConfirm } from "../../../../../hooks/useConfirm"
 import { useNavigate } from "react-router-dom"
+import { useAsync } from "../../../../../hooks/useAsync"
+import { userService } from "../../../../../services/userService"
 
 import authStyles from "../../AuthModal.module.css"
 import styles from "./VerificationModal.module.css"
@@ -16,7 +18,7 @@ export function VerificationModal({ email }: VerificationModalProps): JSX.Elemen
   const navigate = useNavigate()
   const [code, setCode] = useState('')
   const [error, setError] = useState<string | null>(null)
-  const { confirm, isLoading } = useConfirm()
+  const [verify, isLoading] = useAsync(userService.verifyEmail)
   const codeInRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -25,9 +27,7 @@ export function VerificationModal({ email }: VerificationModalProps): JSX.Elemen
 
   const codeTypeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value.trim()
-    if (val.length > 6) return
-
-    if (val === '' || isOnlyDigit(val)) {
+    if (val.length < 6 || isOnlyDigit(val)) {
       setCode(val)
     }
   }
@@ -35,7 +35,7 @@ export function VerificationModal({ email }: VerificationModalProps): JSX.Elemen
   // We are not using React Hook form here, I mean, its just 1 field XD
   const verifyHandler = async (e: React.FormEvent) => {
     e.preventDefault()
-    const response = await confirm({code: code, email: email})
+    const response = await verify({code: code, email: email})
 
     console.log('Hit')
     if (!response.success) {
