@@ -121,10 +121,10 @@ export function handleApiError(error: unknown): ApiErrorResponse {
  * @param setError The `setError` function from React Hook Form.
  */
 export function displayFormsErrors<T extends FieldValues>(
-  errs: Record<string, string[]>,
+  errors: Record<string, string[]>,
   setError: UseFormSetError<T>
 ): void {
-  for (const [field, messages] of Object.entries(errs)) {
+  for (const [field, messages] of Object.entries(errors)) {
     const fieldName = field === "root" ? "root" : (field as Path<T>)
     setError(fieldName, {
       type: "server",
