@@ -1,12 +1,12 @@
 import type { JSX } from "react"
 import { useWatch, type Control } from "react-hook-form"
-import { passwords, type SignupFormFields } from "../../../types/forms/users"
+import { passwords, type SignupFormFields } from "@/types/forms/users"
 
 import React from "react"
 
 import { PasswordRuleItem } from "./PasswordRuleItem"
-import { hasCustom, hasDigits, hasLower, hasUpper } from "../../../utils/pwdUtils"
-import { inRange } from "../../../utils/utils"
+import { hasCustom, hasDigits, hasLower, hasUpper } from "@/utils/pwdUtils"
+import { inRange } from "@/utils/utils"
 
 import styles from "./PasswordRules.module.css"
 

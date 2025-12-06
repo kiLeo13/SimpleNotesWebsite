@@ -2,7 +2,7 @@ import { type JSX } from "react"
 import { Controller, useFormContext, type FieldValues, type Path } from "react-hook-form"
 
 import { BaseModalFileInput } from "./BaseModalFileInput"
-import { getPrettySize } from "../../../../../utils/utils"
+import { getPrettySize } from "@/utils/utils"
 
 type ModalFileInputProps<T extends FieldValues> = {
   name: Path<T>

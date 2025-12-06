@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState, type JSX } from "react"
 
-import RequiredHint from "../../../../hints/RequiredHint"
+import RequiredHint from "@/components/hints/RequiredHint"
 
-import { isOnlyDigit } from "../../../../../utils/utils"
+import { isOnlyDigit } from "@/utils/utils"
 import { useNavigate } from "react-router-dom"
-import { useAsync } from "../../../../../hooks/useAsync"
-import { userService } from "../../../../../services/userService"
+import { useAsync } from "@/hooks/useAsync"
+import { userService } from "@/services/userService"
 
-import authStyles from "../../AuthModal.module.css"
+import authStyles from "@AuthModal.module.css"
 import styles from "./VerificationModal.module.css"
 
 type VerificationModalProps = {
@@ -35,7 +35,7 @@ export function VerificationModal({ email }: VerificationModalProps): JSX.Elemen
   // We are not using React Hook form here, I mean, its just 1 field XD
   const verifyHandler = async (e: React.FormEvent) => {
     e.preventDefault()
-    const response = await verify({code: code, email: email})
+    const response = await verify({ code: code, email: email })
 
     console.log('Hit')
     if (!response.success) {

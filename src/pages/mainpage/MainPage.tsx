@@ -1,17 +1,17 @@
-import type { FullNoteResponseData, NoteResponseData } from "../../types/api/notes"
-import type { UserResponseData } from "../../types/api/users"
+import type { FullNoteResponseData, NoteResponseData } from "@/types/api/notes"
+import type { UserResponseData } from "@/types/api/users"
 import { useEffect, useState, type JSX } from "react"
 
-import { userService } from "../../services/userService"
-import { Sidebar } from "../../components/sidebar/Sidebar"
-import { CreateNoteModalForm } from "../../components/modals/notes/creations/CreateNoteModalForm"
-import { DarkWrapper } from "../../components/DarkWrapper"
-import { APP_NAME } from "../../App"
-import { EmptyDisplay } from "../../components/board/EmptyDisplay"
-import { ContentBoard } from "../../components/board/ContentBoard"
+import { userService } from "@/services/userService"
+import { Sidebar } from "@/components/sidebar/Sidebar"
+import { CreateNoteModalForm } from "@/components/modals/notes/creations/CreateNoteModalForm"
+import { DarkWrapper } from "@/components/DarkWrapper"
+import { APP_NAME } from "@/App"
+import { EmptyDisplay } from "@/components/board/EmptyDisplay"
+import { ContentBoard } from "@/components/board/ContentBoard"
 
 import styles from "./MainPage.module.css"
-import { LoaderContainer } from "../../components/LoaderContainer"
+import { LoaderContainer } from "@/components/LoaderContainer"
 
 export function MainPage(): JSX.Element {
   const [notes, setNotes] = useState<NoteResponseData[]>([])

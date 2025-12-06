@@ -1,9 +1,9 @@
 import z from "zod"
 
-import i18n from "../../services/i18n"
+import i18n from "@/services/i18n"
 
-import { NOTE_EXTENSIONS, NOTE_MAX_SIZE_BYTES } from "../../services/noteService"
-import { getPrettySize } from "../../utils/utils"
+import { NOTE_EXTENSIONS, NOTE_MAX_SIZE_BYTES } from "@/services/noteService"
+import { getPrettySize } from "@/utils/utils"
 
 const hasValidExtension = (fileName: string): boolean => {
   const ext = (fileName.split(".").pop() || "").toLowerCase()
@@ -28,10 +28,10 @@ export const createNoteSchema = z.object({
   tags: z.array(
     z
       .string()
-      .min(2, t('errors.tags.min', {val: 2}))
-      .max(30, t('errors.tags.max', {val: 30}))
+      .min(2, t('errors.tags.min', { val: 2 }))
+      .max(30, t('errors.tags.max', { val: 30 }))
       .regex(/^[a-zA-Z0-9-]+$/, t('errors.tags.pattern'))
-  ).max(50, t('errors.tags.array.max', {val: 50})),
+  ).max(50, t('errors.tags.array.max', { val: 50 })),
 
   file: z.instanceof(FileList, { error: t('errors.file.required') })
     .refine(files => files?.length === 1, t('errors.file.required'))

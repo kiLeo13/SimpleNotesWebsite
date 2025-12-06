@@ -1,7 +1,7 @@
 import type { JSX } from "react"
 
-import { LoginModal } from "../../components/modals/auth/LoginModal"
-import { APP_NAME } from "../../App"
+import { LoginModal } from "@/components/modals/auth/LoginModal"
+import { APP_NAME } from "@/App"
 
 import styles from "./AuthPage.module.css"
 

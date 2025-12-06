@@ -1,6 +1,6 @@
 import type { JSX } from "react"
 
-import { MarkdownDisplay } from "../../displays/markdowns/MarkdownDisplay"
+import { MarkdownDisplay } from "@/components/displays/markdowns/MarkdownDisplay"
 
 import styles from "./BoardFrames.module.css"
 

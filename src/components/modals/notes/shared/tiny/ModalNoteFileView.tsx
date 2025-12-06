@@ -1,8 +1,8 @@
 import type { JSX } from "react"
-import type { FullNoteResponseData } from "../../../../../types/api/notes"
+import type { FullNoteResponseData } from "@/types/api/notes"
 
 import { FaDatabase } from "react-icons/fa"
-import { getPrettySize } from "../../../../../utils/utils"
+import { getPrettySize } from "@/utils/utils"
 
 import styles from "./ModalNoteFileView.module.css"
 import clsx from "clsx"
