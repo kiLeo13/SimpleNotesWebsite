@@ -1,11 +1,11 @@
 import type { JSX, ReactNode } from "react"
 
-import RequiredHint from "../../../../hints/RequiredHint"
-import OptionalHint from "../../../../hints/OptionalHint"
+import RequiredHint from "@/components/hints/RequiredHint"
+import OptionalHint from "@/components/hints/OptionalHint"
 
 import { MdOutlineQuestionAnswer } from "react-icons/md"
 import { MdQuestionAnswer } from "react-icons/md"
-import { useHover } from "../../../../../hooks/useHover"
+import { useHover } from "@/hooks/useHover"
 
 import styles from "./ModalLabel.module.css"
 

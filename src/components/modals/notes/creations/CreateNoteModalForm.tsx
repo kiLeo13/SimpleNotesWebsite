@@ -1,11 +1,11 @@
-import type { FullNoteResponseData } from "../../../../types/api/notes"
-import { createNoteSchema, VISIBILITY_OPTIONS, type NoteFormFields } from "../../../../types/forms/notes"
+import type { FullNoteResponseData } from "@/types/api/notes"
+import { createNoteSchema, VISIBILITY_OPTIONS, type NoteFormFields } from "@/types/forms/notes"
 import { useState, type JSX, type MouseEventHandler } from "react"
 
 import clsx from "clsx"
 
-import { getPrettySize } from "../../../../utils/utils"
-import { NOTE_EXTENSIONS, NOTE_MAX_SIZE_BYTES, noteService } from "../../../../services/noteService"
+import { getPrettySize } from "@/utils/utils"
+import { NOTE_EXTENSIONS, NOTE_MAX_SIZE_BYTES, noteService } from "@/services/noteService"
 import { ModalActionRow } from "../shared/sections/ModalActionRow"
 import { ModalFileInput } from "../shared/inputs/ModalFileInput"
 import { zodResolver } from "@hookform/resolvers/zod"

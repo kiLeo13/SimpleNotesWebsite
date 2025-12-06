@@ -1,4 +1,4 @@
-import { hasSession } from '../../utils/authutils'
+import { hasSession } from '@/utils/authutils'
 import { Navigate } from 'react-router-dom'
 
 type ProtectedRouteProps = {

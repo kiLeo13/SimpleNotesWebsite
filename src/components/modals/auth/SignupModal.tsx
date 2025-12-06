@@ -1,18 +1,18 @@
-import { signupSchema, type SignupFormFields } from "../../../types/forms/users"
+import { signupSchema, type SignupFormFields } from "@/types/forms/users"
 import { useCallback, useMemo, useState, type JSX } from "react"
 import { useForm, type SubmitHandler, type UseFormSetError } from "react-hook-form"
 
-import RequiredHint from "../../hints/RequiredHint"
+import RequiredHint from "@/components/hints/RequiredHint"
 
 import { VerificationModal } from "./steps/verification/VerificationModal"
 import { FaArrowRight } from "react-icons/fa"
 import { Link } from "react-router-dom"
-import { DarkWrapper } from "../../DarkWrapper"
+import { DarkWrapper } from "@/components/DarkWrapper"
 import { PasswordRules } from "./PasswordRules"
-import { displayFormsErrors } from "../../../utils/errorHandlerUtils"
+import { displayFormsErrors } from "@/utils/errorHandlerUtils"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useAsync } from "../../../hooks/useAsync"
-import { userService } from "../../../services/userService"
+import { useAsync } from "@/hooks/useAsync"
+import { userService } from "@/services/userService"
 import { debounce } from "lodash"
 
 import styles from "./AuthModal.module.css"
@@ -40,7 +40,7 @@ export function SignupModal(): JSX.Element {
 
   const handleEmailCheck = useCallback(async () => {
     const val = getValues('email')
-    
+
     if (getFieldState('email').invalid) return
 
     // We don't reuse the `status` function because we don't want the loading

@@ -1,12 +1,12 @@
 import { useEffect, type JSX } from "react"
-import type { FullNoteResponseData } from "../../types/api/notes"
+import type { FullNoteResponseData } from "@/types/api/notes"
 
 import { DocumentBoardFrame } from "./renderers/DocumentBoardFrame"
 import { ImageBoardFrame } from "./renderers/ImageBoardFrame"
 import { VideoBoardFrame } from "./renderers/VideoBoardFrame"
 import { AudioBoardFrame } from "./renderers/AudioBoardFrame"
 import { TextBoardFrame } from "./renderers/TextBoardFrame"
-import { ext } from "../../utils/utils"
+import { ext } from "@/utils/utils"
 
 type ContentBoardProps = {
   note: FullNoteResponseData

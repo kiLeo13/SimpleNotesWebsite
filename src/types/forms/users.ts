@@ -1,7 +1,7 @@
-import i18n from "../../services/i18n"
+import i18n from "@/services/i18n"
 
 import { z } from "zod"
-import { hasCustom, hasDigits, hasLower, hasUpper } from "../../utils/pwdUtils"
+import { hasCustom, hasDigits, hasLower, hasUpper } from "@/utils/pwdUtils"
 
 const t = i18n.t
 

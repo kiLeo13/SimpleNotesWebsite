@@ -1,9 +1,9 @@
-import type { FullNoteResponseData, NoteResponseData } from "../../types/api/notes"
-import type { UserResponseData } from "../../types/api/users"
+import type { FullNoteResponseData, NoteResponseData } from "@/types/api/notes"
+import type { UserResponseData } from "@/types/api/users"
 import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEventHandler, type JSX, type KeyboardEventHandler, type MouseEventHandler } from "react"
 
 import { throttle } from "lodash"
-import { noteService } from "../../services/noteService"
+import { noteService } from "@/services/noteService"
 import { SidebarNote } from "../notes/SidebarNote"
 import { MdOutlineFileUpload } from "react-icons/md"
 

@@ -1,4 +1,4 @@
-import type { NoteResponseData } from "../../types/api/notes"
+import type { NoteResponseData } from "@/types/api/notes"
 import { useState, type JSX, type MouseEventHandler } from "react"
 
 import { DarkWrapper } from "../DarkWrapper"

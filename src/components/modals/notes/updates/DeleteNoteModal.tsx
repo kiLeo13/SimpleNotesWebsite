@@ -1,11 +1,11 @@
 import { useState, type ChangeEvent, type JSX } from "react"
-import type { FullNoteResponseData } from "../../../../types/api/notes"
+import type { FullNoteResponseData } from "@/types/api/notes"
 
 import { IoIosWarning } from "react-icons/io"
 import { BaseModalTextInput } from "../shared/inputs/BaseModalTextInput"
-import { noteService } from "../../../../services/noteService"
-import { LoaderContainer } from "../../../LoaderContainer"
-import { useAsync } from "../../../../hooks/useAsync"
+import { noteService } from "@/services/noteService"
+import { LoaderContainer } from "@/components/LoaderContainer"
+import { useAsync } from "@/hooks/useAsync"
 
 import styles from "./DeleteNoteModal.module.css"
 
