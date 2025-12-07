@@ -3,9 +3,8 @@ import type { FullNoteResponseData } from "@/types/api/notes"
 
 import { IoIosWarning } from "react-icons/io"
 import { BaseModalTextInput } from "../shared/inputs/BaseModalTextInput"
-import { noteService } from "@/services/noteService"
 import { LoaderContainer } from "@/components/LoaderContainer"
-import { useAsync } from "@/hooks/useAsync"
+import { useNoteStore } from "@/stores/useNotesStore"
 
 import styles from "./DeleteNoteModal.module.css"
 
@@ -17,7 +16,9 @@ type DeleteNoteModalProps = {
 
 export function DeleteNoteModal({ note, setShowDelete, setIsPatching }: DeleteNoteModalProps): JSX.Element {
   const [answer, setAnswer] = useState("")
-  const [delNote, isLoading] = useAsync(noteService.deleteNote)
+  const [isLoading, setIsLoading] = useState(false)
+
+  const deleteNoteAndRefresh = useNoteStore((state) => state.deleteNoteAndRefresh)
   const answerMatches = answer == note.name
   const canConfirm = answerMatches && !isLoading
 
@@ -25,15 +26,15 @@ export function DeleteNoteModal({ note, setShowDelete, setIsPatching }: DeleteNo
     setAnswer(e.target.value)
   }
 
-  const handleClose = () => {
-    setShowDelete(false)
-  }
+  const handleClose = () => setShowDelete(false)
 
   const handleDeletion = async () => {
-    const resp = await delNote(note.id)
+    setIsLoading(true)
+    const success = await deleteNoteAndRefresh(note.id)
+    setIsLoading(false)
 
-    if (!resp.success) {
-      alert(`Error:\n${JSON.stringify(resp.errors, null, 2)}`)
+    if (!success) {
+      alert(`Error on API call`)
       return
     }
     setIsPatching(false)

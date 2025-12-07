@@ -1,52 +1,39 @@
-import type { FullNoteResponseData, NoteResponseData } from "@/types/api/notes"
+import type { NoteResponseData } from "@/types/api/notes"
 import type { UserResponseData } from "@/types/api/users"
-import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEventHandler, type JSX, type KeyboardEventHandler, type MouseEventHandler } from "react"
+import { useEffect, useMemo, useRef, useState, type ChangeEventHandler, type JSX, type KeyboardEventHandler, type MouseEventHandler } from "react"
 
 import { throttle } from "lodash"
-import { noteService } from "@/services/noteService"
 import { SidebarNote } from "../notes/SidebarNote"
 import { MdOutlineFileUpload } from "react-icons/md"
+import { SidebarProfile } from "./SidebarProfile"
+import { useNoteStore } from "@/stores/useNotesStore"
 
 import styles from "./Sidebar.module.css"
-import { SidebarProfile } from "./SidebarProfile"
 
 type SidebarProps = {
   selfUser: UserResponseData | null
-  notes: NoteResponseData[]
   showUploadModal: boolean
-  shownNote: NoteResponseData | null,
-  setNotes: (notes: NoteResponseData[]) => void
   setShowUploadModal: (show: boolean) => void
-  setShownNote: (note: FullNoteResponseData) => void
-  setIsNoteLoading: (flag: boolean) => void
 }
 
 export function Sidebar({
   selfUser,
-  notes,
   showUploadModal,
-  setNotes,
-  shownNote,
-  setShowUploadModal,
-  setShownNote,
-  setIsNoteLoading
+  setShowUploadModal
 }: SidebarProps): JSX.Element {
-  const [isLoading, setIsLoading] = useState(false)
+  const notes = useNoteStore((state) => state.notes)
+  const isLoading = useNoteStore((state) => state.isLoading)
+  const fetchNotes = useNoteStore((state) => state.fetchNotes)
+  const closeNote = useNoteStore((state) => state.closeNote)
+  const openNote = useNoteStore((state) => state.openNote)
+
   const [search, setSearch] = useState('')
   const searchRef = useRef<HTMLInputElement>(null)
-  const filteredNotes = notes
-    .filter((n) => filterNote(n, search))
-    .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
+  const filteredNotes = toFilteredNotes(search, notes)
 
-  const loadNotes = useCallback(async () => {
-    setIsLoading(true)
-    const resp = await noteService.listNotes()
-
-    if (resp.success) {
-      setNotes(resp.data.notes)
-    }
-    setIsLoading(false)
-  }, [setNotes])
+  useEffect(() => {
+    fetchNotes()
+  }, [fetchNotes])
 
   const handleSearch: ChangeEventHandler<HTMLInputElement> = (e) => {
     setSearch(e.target.value)
@@ -58,44 +45,30 @@ export function Sidebar({
     }
   }
 
-  const handleOpenNote = async (n: NoteResponseData) => {
-    // Are trying to open the same note?
-    if (shownNote?.id === n.id) return
-
-    if (n.note_type === 'REFERENCE') {
-      setIsNoteLoading(true)
-      console.log('Set to TRUE')
-      setShownNote(n)
-    } else {
-      setIsNoteLoading(true)
-      const resp = await noteService.fetchNote(n.id)
-      setIsNoteLoading(false)
-
-      if (resp.success) {
-        setShownNote(resp.data)
-      } else {
-        alert(`Erro: ${JSON.stringify(resp.errors, null, 2)}`)
-      }
-    }
-  }
-
   const handleShowUpload: MouseEventHandler<HTMLButtonElement> = () => {
     setShowUploadModal(!showUploadModal)
   }
 
+  const handleOpenNote = (n: NoteResponseData) => {
+    closeNote()
+    openNote(n)
+  }
+
   const throttledLoadNotes = useMemo(
-    () => throttle(loadNotes, 5000, { leading: true, trailing: false }),
-    [loadNotes]
+    () => throttle(fetchNotes, 5000, { leading: true, trailing: false }),
+    [fetchNotes]
   )
 
   useEffect(() => {
     const handleGlobalKeydown = (e: KeyboardEvent) => {
       const key = e.key?.toLowerCase()
+      // CTRL + SPACE = Focus the search bar
       if (e.ctrlKey && key === " ") {
         searchRef?.current?.focus()
         e.preventDefault()
       }
 
+      // CTRL + R = Reloads the notes on the sidebar
       if (e.ctrlKey && key === "r") {
         e.preventDefault()
         throttledLoadNotes()
@@ -104,10 +77,6 @@ export function Sidebar({
     window.addEventListener("keydown", handleGlobalKeydown)
     return () => window.removeEventListener("keydown", handleGlobalKeydown)
   })
-
-  useEffect(() => {
-    loadNotes()
-  }, [loadNotes])
 
   return (
     <nav className={styles.leftMenu}>
@@ -152,6 +121,12 @@ export function Sidebar({
       </div>
     </nav>
   )
+}
+
+function toFilteredNotes(search: string, notes: NoteResponseData[]): NoteResponseData[] {
+  return notes
+    .filter((n) => filterNote(n, search))
+    .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
 }
 
 function filterNote(note: NoteResponseData, search: string): boolean {

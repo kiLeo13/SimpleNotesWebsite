@@ -1,30 +1,30 @@
-import type { FullNoteResponseData } from "@/types/api/notes"
 import { createNoteSchema, VISIBILITY_OPTIONS, type NoteFormFields } from "@/types/forms/notes"
-import { useState, type JSX, type MouseEventHandler } from "react"
+import { useState, type JSX } from "react"
 
 import clsx from "clsx"
 
-import { getPrettySize } from "@/utils/utils"
-import { NOTE_EXTENSIONS, NOTE_MAX_SIZE_BYTES, noteService } from "@/services/noteService"
+import { NOTE_EXTENSIONS, NOTE_MAX_SIZE_BYTES } from "@/services/noteService"
 import { ModalActionRow } from "../shared/sections/ModalActionRow"
 import { ModalFileInput } from "../shared/inputs/ModalFileInput"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { FormProvider, useForm } from "react-hook-form"
 import { ModalTextInput } from "../shared/inputs/ModalTextInput"
 import { ModalSelectInput } from "../shared/inputs/ModalSelectInput"
 import { ModalLabel } from "../shared/sections/ModalLabel"
 import { ModalSection } from "../shared/sections/ModalSection"
 import { ModalArrayInput } from "../shared/inputs/ModalArrayInput"
+import { getPrettySize } from "@/utils/utils"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useNoteStore } from "@/stores/useNotesStore"
 
 import styles from "./CreateNoteModal.module.css"
 
 type CreateNoteModalFormProps = {
-  setShownNote: (note: FullNoteResponseData) => void
   setShowUploadModal: (show: boolean) => void
 }
 
-export function CreateNoteModalForm({ setShowUploadModal, setShownNote }: CreateNoteModalFormProps): JSX.Element {
+export function CreateNoteModalForm({ setShowUploadModal }: CreateNoteModalFormProps): JSX.Element {
   const [isLoading, setIsLoading] = useState(false)
+  const createNoteAndOpen = useNoteStore((state) => state.createNoteAndOpen)
   const methods = useForm<NoteFormFields>({
     resolver: zodResolver(createNoteSchema),
     defaultValues: {
@@ -44,21 +44,24 @@ export function CreateNoteModalForm({ setShowUploadModal, setShownNote }: Create
     }
 
     setIsLoading(true)
-    const tags = data.tags || []
-    const resp = await noteService.createNote({ name: data.name, tags: tags, visibility: data.visibility }, file)
+    const success = await createNoteAndOpen(
+      {
+        name: data.name,
+        tags: data.tags || [],
+        visibility: data.visibility
+      },
+      file
+    )
     setIsLoading(false)
 
-    if (resp.success) {
-      setShownNote(resp.data)
+    if (success) {
       setShowUploadModal(false)
     } else {
-      alert(`Erro:\n${JSON.stringify(resp.errors, null, 2)}`)
+      alert(`Error from API`)
     }
   }
 
-  const handleCloseClick: MouseEventHandler<HTMLButtonElement> = () => {
-    setShowUploadModal(false)
-  }
+  const handleCloseClick = () => setShowUploadModal(false)
 
   return (
     <div className={styles.container}>

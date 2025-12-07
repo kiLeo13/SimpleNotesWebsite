@@ -1,4 +1,3 @@
-import type { FullNoteResponseData, NoteResponseData } from "@/types/api/notes"
 import type { UserResponseData } from "@/types/api/users"
 import { useEffect, useState, type JSX } from "react"
 
@@ -12,13 +11,15 @@ import { LoaderContainer } from "@/components/LoaderContainer"
 import { APP_NAME } from "@/App"
 
 import styles from "./MainPage.module.css"
+import { useNoteStore } from "@/stores/useNotesStore"
 
 export function MainPage(): JSX.Element {
-  const [notes, setNotes] = useState<NoteResponseData[]>([])
   const [showUploadModal, setShowUploadModal] = useState(false)
-  const [isNoteLoading, setIsNoteLoading] = useState(false)
-  const [shownNote, setShownNote] = useState<FullNoteResponseData | null>(null)
   const [selfUser, setSelfUser] = useState<UserResponseData | null>(null)
+  
+  const shownNote = useNoteStore((state) => state.shownNote)
+  const isRendering = useNoteStore((state) => state.isRendering)
+  const closeNote = useNoteStore((state) => state.closeNote)
 
   useEffect(() => {
     const loadSelfUser = async () => {
@@ -37,15 +38,15 @@ export function MainPage(): JSX.Element {
       if (key && key === 'escape') {
         const target = e.target as HTMLElement
 
-        // We don't want to close our note if we are typing
+        // We don't want to close our note if we are typing in an input
         if (isInput(target)) return
 
-        setShownNote(null)
+        closeNote()
       }
     }
     window.addEventListener('keydown', handleGlobalClose)
     return () => window.removeEventListener('keydown', handleGlobalClose)
-  }, [])
+  }, [closeNote])
 
   return (
     <>
@@ -54,27 +55,22 @@ export function MainPage(): JSX.Element {
       <div className={styles.container}>
         <Sidebar
           selfUser={selfUser}
-          notes={notes}
           showUploadModal={showUploadModal}
-          shownNote={shownNote}
-          setNotes={setNotes}
           setShowUploadModal={setShowUploadModal}
-          setShownNote={setShownNote}
-          setIsNoteLoading={setIsNoteLoading}
         />
 
         {showUploadModal && (
           <DarkWrapper>
-            <CreateNoteModalForm setShownNote={setShownNote} setShowUploadModal={setShowUploadModal} />
+            <CreateNoteModalForm setShowUploadModal={setShowUploadModal} />
           </DarkWrapper>
         )}
 
         <main className={styles.mainContent}>
           {shownNote ? (
-            <ContentBoard note={shownNote} setIsNoteLoading={setIsNoteLoading} />
+            <ContentBoard note={shownNote} />
           ) : <EmptyDisplay />}
 
-          {isNoteLoading && <LoaderContainer />}
+          {isRendering && <LoaderContainer />}
         </main>
       </div>
     </>

@@ -7,26 +7,25 @@ import { VideoBoardFrame } from "./renderers/VideoBoardFrame"
 import { AudioBoardFrame } from "./renderers/AudioBoardFrame"
 import { TextBoardFrame } from "./renderers/TextBoardFrame"
 import { ext } from "@/utils/utils"
+import { useNoteStore } from "@/stores/useNotesStore"
 
 type ContentBoardProps = {
   note: FullNoteResponseData
-  setIsNoteLoading: (flag: boolean) => void
 }
 
 const BASE_ROUTE = 'https://d26143aouxq3ma.cloudfront.net/attachments'
 
-export function ContentBoard({ note, setIsNoteLoading }: ContentBoardProps): JSX.Element {
+export function ContentBoard({ note }: ContentBoardProps): JSX.Element {
+  const setRendering = useNoteStore((state) => state.setRendering)
   const fileExt = ext(note.content) || "pdf"
   const isText = note.note_type === 'TEXT'
   const route = isText ? "" : `${BASE_ROUTE}/${note.content}`
-  const hideLoading = () => {
-    setIsNoteLoading(false)
-    console.log('Set to FALSE')
-  }
+  
+  const hideLoading = () => setRendering(false)
 
   useEffect(() => {
-    return () => setIsNoteLoading(false)
-  }, [setIsNoteLoading])
+    return () => setRendering(false)
+  }, [setRendering])
 
   if (fileExt === "pdf") {
     return <DocumentBoardFrame onLoad={hideLoading} url={route} />
