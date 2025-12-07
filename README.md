@@ -113,6 +113,7 @@ The frontend is a modern, responsive Single-Page Application built with **React*
 * **UI & Utilities:**
     * [React Icons](https://github.com/react-icons/react-icons) - Icon library.
     * [clsx](https://github.com/lukeed/clsx) - Utility for constructing class names.
+    * [Zustand](https://github.com/pmndrs/zustand) - State/Context management for global resource sharing.
     * [Day.js](https://github.com/iamkun/dayjs) - Lightweight date/time manipulation and formatting.
 * **Content & Security:**
     * [Marked](https://github.com/markedjs/marked) - A markdown parser.
@@ -123,7 +124,7 @@ The frontend is a modern, responsive Single-Page Application built with **React*
 
 ### Database
 
-* **Database:** **SQLite** (mounted on a Docker volume for persistence).
+* **Database:** **SQLite** (mounted on a Docker bind mount for persistence).
 
 ### Containerization
 
