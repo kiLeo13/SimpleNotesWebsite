@@ -59,6 +59,10 @@ export function formatTimeSeconds(seconds: number): string {
   return timeDuration.format('HH:mm:ss')
 }
 
+export function isAlphanumeric(s: string): boolean {
+  return /^[\p{L}\p{N}]+$/u.test(s)
+}
+
 /**
  * Resolves the extension of a given file.
  * Returns `undefined` if none is provided (if the file does not have a `.` character).
