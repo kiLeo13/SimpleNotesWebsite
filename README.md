@@ -113,6 +113,7 @@ The frontend is a modern, responsive Single-Page Application built with **React*
 * **UI & Utilities:**
     * [React Icons](https://github.com/react-icons/react-icons) - Icon library.
     * [clsx](https://github.com/lukeed/clsx) - Utility for constructing class names.
+    * [sonner](https://github.com/emilkowalski/sonner) - Library for toast notifications.
     * [Zustand](https://github.com/pmndrs/zustand) - State/Context management for global resource sharing.
     * [Day.js](https://github.com/iamkun/dayjs) - Lightweight date/time manipulation and formatting.
 * **Content & Security:**
