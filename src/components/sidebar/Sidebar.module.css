@@ -155,17 +155,16 @@
   aspect-ratio: 1;
   align-items: center;
   justify-content: center;
-  background-color: rgb(104, 93, 133);
+  background-color: transparent;
   border: none;
-  border-radius: 8px;
+  border-radius: 9999px;
   font-size: 35px;
-  color: rgba(0, 0, 0, 0.6);
+  color: rgba(147, 117, 182, 0.6);
   font-weight: 700;
   cursor: pointer;
-  user-select: none;
   transition: background-color 0.3s;
 }
 
 .footerControlButton:hover:not(:disabled) {
-  background-color: rgb(130, 118, 161);
+  background-color: rgba(119, 102, 161, 0.1);
 }
