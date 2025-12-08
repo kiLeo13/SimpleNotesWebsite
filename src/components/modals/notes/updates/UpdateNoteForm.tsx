@@ -4,14 +4,14 @@ import { useFormContext, type UseFormHandleSubmit } from "react-hook-form"
 import { useEffect, useState, type JSX } from "react"
 import { VISIBILITY_OPTIONS, type UpdateNoteFormFields } from "@/types/forms/notes"
 
-import { userService } from "@/services/userService"
+import _ from "lodash"
+
 import { ModalSection } from "../shared/sections/ModalSection"
 import { ModalActionRow } from "../shared/sections/ModalActionRow"
 import { ModalLabel } from "../shared/sections/ModalLabel"
 import { PiCrownFill } from "react-icons/pi"
 import { BaseModalTextInput } from "../shared/inputs/BaseModalTextInput"
 import { FaCalendarAlt } from "react-icons/fa"
-import { formatLocalTimestamp, getDirtyValues } from "@/utils/utils"
 import { ModalFooter } from "./ModalFooter"
 import { ModalArrayInput } from "../shared/inputs/ModalArrayInput"
 import { ModalTextInput } from "../shared/inputs/ModalTextInput"
@@ -19,11 +19,11 @@ import { ModalNoteFileView } from "../shared/tiny/ModalNoteFileView"
 import { FaEye } from "react-icons/fa6"
 import { DarkWrapper } from "@/components/DarkWrapper"
 import { DeleteNoteModal } from "./DeleteNoteModal"
-import { noteService } from "@/services/noteService"
 import { ModalSelectInput } from "../shared/inputs/ModalSelectInput"
-import { useAsync } from "@/hooks/useAsync"
-
-import _ from "lodash"
+import { userService } from "@/services/userService"
+import { formatLocalTimestamp, getDirtyValues } from "@/utils/utils"
+import { useNoteStore } from "@/stores/useNotesStore"
+import { toasts } from "@/utils/toastUtils"
 
 import styles from "./UpdateNoteForm.module.css"
 
@@ -35,9 +35,14 @@ type UpdateNoteFormProps = {
 
 export function UpdateNoteForm({ note, handleSubmit, setIsPatching }: UpdateNoteFormProps): JSX.Element {
   const { formState: { isDirty, isValid, dirtyFields } } = useFormContext<UpdateNoteFormFields>()
+  
+  // Local UI
   const [author, setAuthor] = useState<UserResponseData | null>(null)
   const [showDelete, setShowDelete] = useState(false)
-  const [update, isLoading] = useAsync(noteService.updateNote)
+  const [isLoading, setIsLoading] = useState(false)
+
+  // Store Actions
+  const updateNoteAndRefresh = useNoteStore((state) => state.updateNoteAndRefresh)
 
   const onSubmit = async (data: UpdateNoteFormFields) => {
     const payload = getDirtyValues(dirtyFields, data)
@@ -46,24 +51,24 @@ export function UpdateNoteForm({ note, handleSubmit, setIsPatching }: UpdateNote
       return
     }
 
-    const resp = await update(note!.id, payload)
+    setIsLoading(true)
+    const success = await updateNoteAndRefresh(note!.id, payload)
+    setIsLoading(false)
 
-    if (!resp.success) {
-      alert(`Error:\n${JSON.stringify(resp.errors, null, 2)}`)
-      return
+    if (success) {
+      setIsPatching(false)
     }
-    setIsPatching(false)
   }
 
   useEffect(() => {
     const fetchAuthor = async (note: FullNoteResponseData) => {
       const resp = await userService.getUserById(note.created_by_id)
-
-      if (resp.success) {
-        setAuthor(resp.data)
-      } else {
-        alert(`Failed to fetch note author:\n${JSON.stringify(resp.errors, null, 2)}`)
+      if (!resp.success) {
+        toasts.error('Erro ao buscar autor da anotação', resp)
+        return
       }
+
+      setAuthor(resp.data)
     }
 
     if (note) fetchAuthor(note)

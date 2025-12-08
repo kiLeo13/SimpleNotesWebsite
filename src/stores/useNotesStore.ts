@@ -1,4 +1,4 @@
-import type { FullNoteResponseData, NoteRequestPayload, NoteResponseData } from "@/types/api/notes"
+import type { FullNoteResponseData, NoteRequestPayload, NoteResponseData, UpdateNoteRequestPayload } from "@/types/api/notes"
 import { noteService } from "@/services/noteService"
 
 import { toasts } from "@/utils/toastUtils"
@@ -18,6 +18,7 @@ type NotesState = {
   openNote: (note: NoteResponseData) => Promise<void>
   closeNote: () => void
   deleteNoteAndRefresh: (noteId: number) => Promise<boolean>
+  updateNoteAndRefresh: (noteId: number, payload: UpdateNoteRequestPayload) => Promise<boolean>
   createNoteAndOpen: (payload: NoteRequestPayload, file: File) => Promise<boolean>
   setRendering: (flag: boolean) => void
 }
@@ -73,6 +74,24 @@ export const useNoteStore = create<NotesState>((set, get) => ({
     set({
       notes: currentNotes.filter(n => n.id !== noteId),
       shownNote: currentShown?.id === noteId ? null : currentShown
+    })
+
+    return true
+  },
+
+  updateNoteAndRefresh: async (noteId, payload) => {
+    const resp = await noteService.updateNote(noteId, payload)
+    if (!resp.success) {
+      toasts.error('Erro ao atualizar anotação', resp)
+      return false
+    }
+
+    toasts.success('Nota atualizada com sucesso')
+
+    const currentNotes = get().notes
+
+    set({
+      notes: currentNotes.map(n => n.id === noteId ? resp.data : n)
     })
 
     return true
