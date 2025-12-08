@@ -2,13 +2,15 @@ import type { NoteResponseData } from "@/types/api/notes"
 import type { UserResponseData } from "@/types/api/users"
 import { useEffect, useMemo, useRef, useState, type ChangeEventHandler, type JSX, type KeyboardEventHandler, type MouseEventHandler } from "react"
 
-import { throttle } from "lodash"
+import _ from "lodash"
+
 import { SidebarNote } from "../notes/SidebarNote"
 import { MdOutlineFileUpload } from "react-icons/md"
 import { SidebarProfile } from "./SidebarProfile"
 import { DarkWrapper } from "../DarkWrapper"
 import { CreateNoteModalForm } from "../modals/notes/creations/CreateNoteModalForm"
 import { useNoteStore } from "@/stores/useNotesStore"
+import { matchSorter } from "match-sorter"
 
 import styles from "./Sidebar.module.css"
 
@@ -52,7 +54,7 @@ export function Sidebar({ selfUser }: SidebarProps): JSX.Element {
   }
 
   const throttledLoadNotes = useMemo(
-    () => throttle(fetchNotes, 5000, { leading: true, trailing: false }),
+    () => _.throttle(fetchNotes, 5000, { leading: true, trailing: false }),
     [fetchNotes]
   )
 
@@ -129,16 +131,15 @@ export function Sidebar({ selfUser }: SidebarProps): JSX.Element {
 }
 
 function toFilteredNotes(search: string, notes: NoteResponseData[]): NoteResponseData[] {
-  return notes
-    .filter((n) => filterNote(n, search))
-    .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
-}
+  if (!search.trim()) {
+    return notes
+  }
 
-function filterNote(note: NoteResponseData, search: string): boolean {
-  const sanitizedSearch = search.trim().toLowerCase()
-  const name = note.name.toLowerCase()
-
-  return name.includes(sanitizedSearch) || note.tags.some(tag => tag.includes(sanitizedSearch))
+  return matchSorter(notes, search, {
+    keys: ['name', 'tags'],
+    // Just a tie-breaker
+    baseSort: (a, b) => a.item.name.localeCompare(b.item.name)
+  })
 }
 
 function toPrettyResultCount(count: number): string {
