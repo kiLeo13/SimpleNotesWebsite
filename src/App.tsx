@@ -24,8 +24,7 @@ function App() {
             duration: 5000,
             style: {
               backgroundColor: "rgb(33, 29, 43)",
-              borderColor: "rgba(60, 55, 77, 1)",
-              color: "#dd7a7aff"
+              borderColor: "rgba(60, 55, 77, 1)"
             }
           }
         }
