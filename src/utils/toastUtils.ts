@@ -9,12 +9,29 @@ export const toasts = {
 
     toast.error(message, {
       description: desc,
+      style: {
+        color: "#dd7a7aff"
+      },
       ...data
     })
   },
 
   warning: (message: string | null, data?: ExternalToast) => {
-    toast.warning(message, data)
+    toast.warning(message, {
+      style: {
+        color: "#b9be66ff"
+      },
+      ...data
+    })
+  },
+
+  success: (message: string | null, data?: ExternalToast) => {
+    toast.success(message, {
+      style: {
+        color: "#86dd7aff"
+      },
+      ...data
+    })
   }
 }
 
