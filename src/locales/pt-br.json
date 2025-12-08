@@ -15,6 +15,11 @@
       "confidential": "Confidencial"
     }
   },
+  "warnings": {
+    "noteCreation": {
+      "noFiles": "Arquivo não encontrado? Isso é possível aqui? Bem, de qualquer jeito, deixe o Léo ciente sobre isso."
+    }
+  },
   "errors": {
     "tags": {
       "min": "Cada item precisa ter pelo menos {{val}} caracteres",
