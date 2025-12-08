@@ -6,21 +6,20 @@ import { throttle } from "lodash"
 import { SidebarNote } from "../notes/SidebarNote"
 import { MdOutlineFileUpload } from "react-icons/md"
 import { SidebarProfile } from "./SidebarProfile"
+import { DarkWrapper } from "../DarkWrapper"
+import { CreateNoteModalForm } from "../modals/notes/creations/CreateNoteModalForm"
 import { useNoteStore } from "@/stores/useNotesStore"
 
 import styles from "./Sidebar.module.css"
 
 type SidebarProps = {
   selfUser: UserResponseData | null
-  showUploadModal: boolean
-  setShowUploadModal: (show: boolean) => void
 }
 
-export function Sidebar({
-  selfUser,
-  showUploadModal,
-  setShowUploadModal
-}: SidebarProps): JSX.Element {
+export function Sidebar({ selfUser }: SidebarProps): JSX.Element {
+  const [showUploadModal, setShowUploadModal] = useState(false)
+
+  // Note store actions and states
   const notes = useNoteStore((state) => state.notes)
   const isLoading = useNoteStore((state) => state.isLoading)
   const fetchNotes = useNoteStore((state) => state.fetchNotes)
@@ -79,47 +78,55 @@ export function Sidebar({
   })
 
   return (
-    <nav className={styles.leftMenu}>
-      <div className={styles.menuUpperControls}>
-        <input
-          className={styles.searchInput}
-          disabled={isLoading}
-          type="text"
-          placeholder="Pesquisar"
-          autoComplete="off"
-          ref={searchRef}
-          onKeyDown={handleKeyboard}
-          onChange={handleSearch}
-          value={search}
-        />
-        <div className={styles.menuDivider} />
-        <span className={styles.searchResultCount}>{toPrettyResultCount(filteredNotes.length)}</span>
-      </div>
-      <div className={styles.menuLowerItems}>
-        <div className={styles.sidebarLoaderContainer}>
-          {isLoading && <div className="loader" />}
-        </div>
+    <>
+      {showUploadModal && (
+        <DarkWrapper>
+          <CreateNoteModalForm setShowUploadModal={setShowUploadModal} />
+        </DarkWrapper>
+      )}
 
-        {!isLoading && (
-          filteredNotes.map((n) => {
-            return <SidebarNote
-              onClick={() => handleOpenNote(n)}
-              key={n.id}
-              note={n}
-              isAdmin={selfUser?.isAdmin || false}
-            />
-          })
-        )}
-      </div>
-      <div className={styles.menuFooterControls}>
-        <SidebarProfile />
-        {selfUser?.isAdmin && (
-          <button onClick={handleShowUpload} className={styles.footerControlButton}>
-            <MdOutlineFileUpload size={"0.8em"} />
-          </button>
-        )}
-      </div>
-    </nav>
+      <nav className={styles.leftMenu}>
+        <div className={styles.menuUpperControls}>
+          <input
+            className={styles.searchInput}
+            disabled={isLoading}
+            type="text"
+            placeholder="Pesquisar"
+            autoComplete="off"
+            ref={searchRef}
+            onKeyDown={handleKeyboard}
+            onChange={handleSearch}
+            value={search}
+          />
+          <div className={styles.menuDivider} />
+          <span className={styles.searchResultCount}>{toPrettyResultCount(filteredNotes.length)}</span>
+        </div>
+        <div className={styles.menuLowerItems}>
+          <div className={styles.sidebarLoaderContainer}>
+            {isLoading && <div className="loader" />}
+          </div>
+
+          {!isLoading && (
+            filteredNotes.map((n) => {
+              return <SidebarNote
+                onClick={() => handleOpenNote(n)}
+                key={n.id}
+                note={n}
+                isAdmin={selfUser?.isAdmin || false}
+              />
+            })
+          )}
+        </div>
+        <div className={styles.menuFooterControls}>
+          <SidebarProfile />
+          {selfUser?.isAdmin && (
+            <button onClick={handleShowUpload} className={styles.footerControlButton}>
+              <MdOutlineFileUpload size={"0.8em"} />
+            </button>
+          )}
+        </div>
+      </nav>
+    </>
   )
 }
 

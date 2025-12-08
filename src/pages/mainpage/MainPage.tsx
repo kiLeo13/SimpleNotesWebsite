@@ -1,20 +1,17 @@
 import type { UserResponseData } from "@/types/api/users"
 import { useEffect, useState, type JSX } from "react"
 
-import { userService } from "@/services/userService"
+import { APP_NAME } from "@/App"
 import { Sidebar } from "@/components/sidebar/Sidebar"
-import { CreateNoteModalForm } from "@/components/modals/notes/creations/CreateNoteModalForm"
-import { DarkWrapper } from "@/components/DarkWrapper"
 import { EmptyDisplay } from "@/components/board/EmptyDisplay"
 import { ContentBoard } from "@/components/board/ContentBoard"
 import { LoaderContainer } from "@/components/LoaderContainer"
-import { APP_NAME } from "@/App"
-
-import styles from "./MainPage.module.css"
+import { userService } from "@/services/userService"
 import { useNoteStore } from "@/stores/useNotesStore"
 
+import styles from "./MainPage.module.css"
+
 export function MainPage(): JSX.Element {
-  const [showUploadModal, setShowUploadModal] = useState(false)
   const [selfUser, setSelfUser] = useState<UserResponseData | null>(null)
   
   const shownNote = useNoteStore((state) => state.shownNote)
@@ -53,17 +50,7 @@ export function MainPage(): JSX.Element {
       <title>{`${APP_NAME} - Anotações`}</title>
 
       <div className={styles.container}>
-        <Sidebar
-          selfUser={selfUser}
-          showUploadModal={showUploadModal}
-          setShowUploadModal={setShowUploadModal}
-        />
-
-        {showUploadModal && (
-          <DarkWrapper>
-            <CreateNoteModalForm setShowUploadModal={setShowUploadModal} />
-          </DarkWrapper>
-        )}
+        <Sidebar selfUser={selfUser} />
 
         <main className={styles.mainContent}>
           {shownNote ? (
