@@ -3,7 +3,7 @@ import z from "zod"
 import i18n from "@/services/i18n"
 
 import { NOTE_EXTENSIONS, NOTE_MAX_SIZE_BYTES } from "@/services/noteService"
-import { getPrettySize } from "@/utils/utils"
+import { getPrettySize, isAlphanumeric } from "@/utils/utils"
 
 const hasValidExtension = (fileName: string): boolean => {
   const ext = (fileName.split(".").pop() || "").toLowerCase()
@@ -30,7 +30,7 @@ export const createNoteSchema = z.object({
       .string()
       .min(2, t('errors.tags.min', { val: 2 }))
       .max(30, t('errors.tags.max', { val: 30 }))
-      .regex(/^[a-zA-Z0-9-]+$/, t('errors.tags.pattern'))
+      .refine(s => isAlphanumeric(s), t('errors.tags.pattern'))
   ).max(50, t('errors.tags.array.max', { val: 50 })),
 
   file: z.instanceof(FileList, { error: t('errors.file.required') })
