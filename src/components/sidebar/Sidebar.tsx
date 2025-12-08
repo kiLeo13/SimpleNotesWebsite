@@ -23,7 +23,6 @@ export function Sidebar({ selfUser }: SidebarProps): JSX.Element {
   const notes = useNoteStore((state) => state.notes)
   const isLoading = useNoteStore((state) => state.isLoading)
   const fetchNotes = useNoteStore((state) => state.fetchNotes)
-  const closeNote = useNoteStore((state) => state.closeNote)
   const openNote = useNoteStore((state) => state.openNote)
 
   const [search, setSearch] = useState('')
@@ -49,7 +48,6 @@ export function Sidebar({ selfUser }: SidebarProps): JSX.Element {
   }
 
   const handleOpenNote = (n: NoteResponseData) => {
-    closeNote()
     openNote(n)
   }
 
