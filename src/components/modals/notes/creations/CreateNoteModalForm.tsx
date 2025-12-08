@@ -59,6 +59,7 @@ export function CreateNoteModalForm({ setShowUploadModal }: CreateNoteModalFormP
     setIsLoading(false)
 
     if (success) {
+      toasts.success('Nota criada com sucesso!')
       setShowUploadModal(false)
     }
   }

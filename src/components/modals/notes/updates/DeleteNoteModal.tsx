@@ -7,6 +7,7 @@ import { LoaderContainer } from "@/components/LoaderContainer"
 import { useNoteStore } from "@/stores/useNotesStore"
 
 import styles from "./DeleteNoteModal.module.css"
+import { toasts } from "@/utils/toastUtils"
 
 type DeleteNoteModalProps = {
   note: FullNoteResponseData
@@ -34,6 +35,7 @@ export function DeleteNoteModal({ note, setShowDelete, setIsPatching }: DeleteNo
     setIsLoading(false)
 
     if (success) {
+      toasts.success('Nota excluída com sucesso.', { style: { color: "#b9be66ff" } })
       setShowDelete(false)
       setIsPatching(false)
     }
