@@ -33,11 +33,10 @@ export function DeleteNoteModal({ note, setShowDelete, setIsPatching }: DeleteNo
     const success = await deleteNoteAndRefresh(note.id)
     setIsLoading(false)
 
-    if (!success) {
-      alert(`Error on API call`)
-      return
+    if (success) {
+      setShowDelete(false)
+      setIsPatching(false)
     }
-    setIsPatching(false)
   }
 
   return (

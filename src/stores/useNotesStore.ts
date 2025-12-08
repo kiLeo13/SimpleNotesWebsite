@@ -1,6 +1,7 @@
 import type { FullNoteResponseData, NoteRequestPayload, NoteResponseData } from "@/types/api/notes"
 import { noteService } from "@/services/noteService"
 
+import { toasts } from "@/utils/toastUtils"
 import { create } from "zustand"
 
 type NotesState = {
@@ -45,7 +46,7 @@ export const useNoteStore = create<NotesState>((set, get) => ({
     const resp = await noteService.fetchNote(note.id)
     if (!resp.success) {
       set({ isRendering: false })
-      alert("Failed to load note.")
+      toasts.error('Não foi possível encontrar nota completa', resp)
       return
     }
 
@@ -61,7 +62,10 @@ export const useNoteStore = create<NotesState>((set, get) => ({
   deleteNoteAndRefresh: async (noteId) => {
     const resp = await noteService.deleteNote(noteId)
 
-    if (!resp.success) return false
+    if (!resp.success) {
+      toasts.error('Erro ao apagar anotação', resp)
+      return false
+    }
 
     const currentNotes = get().notes
     const currentShown = get().shownNote
@@ -77,7 +81,10 @@ export const useNoteStore = create<NotesState>((set, get) => ({
   createNoteAndOpen: async (data, file) => {
     const resp = await noteService.createNote(data, file)
     
-    if (!resp.success) return false
+    if (!resp.success) {
+      toasts.error('Não foi possível criar anotação', resp)
+      return false
+    }
 
     await get().fetchNotes()
 

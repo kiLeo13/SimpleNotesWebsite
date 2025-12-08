@@ -11,6 +11,7 @@ import { IoMdClose } from "react-icons/io"
 import { UpdateNoteForm } from "./UpdateNoteForm"
 
 import styles from "./UpdateNoteModal.module.css"
+import { toasts } from "@/utils/toastUtils"
 
 type UpdateNoteModalProps = {
   noteId: number
@@ -60,7 +61,7 @@ export function UpdateNoteModal({ noteId, setIsPatching }: UpdateNoteModalProps)
           tags: resp.data.tags || []
         })
       } else {
-        alert(`Failed to fetch full note and/or metrics:\n${JSON.stringify(resp.errors, null, 2)}`)
+        toasts.error('Erro ao buscar anotação/métricas completas', resp)
         setIsPatching(false)
       }
     }

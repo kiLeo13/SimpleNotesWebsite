@@ -17,6 +17,10 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useNoteStore } from "@/stores/useNotesStore"
 
 import styles from "./CreateNoteModal.module.css"
+import { toasts } from "@/utils/toastUtils"
+import i18n from "@/services/i18n"
+
+const t = i18n.t
 
 type CreateNoteModalFormProps = {
   setShowUploadModal: (show: boolean) => void
@@ -39,7 +43,7 @@ export function CreateNoteModalForm({ setShowUploadModal }: CreateNoteModalFormP
   const onSubmit = async (data: NoteFormFields) => {
     const file = data.file[0]
     if (!file) {
-      alert('Arquivo não encontrado? Isso é possível aqui? Bem, de qualquer jeito, deixe o Léo ciente sobre isso.')
+      toasts.warning(null, { description: t('warnings.noteCreation.noFiles') })
       return
     }
 
@@ -56,8 +60,6 @@ export function CreateNoteModalForm({ setShowUploadModal }: CreateNoteModalFormP
 
     if (success) {
       setShowUploadModal(false)
-    } else {
-      alert(`Error from API`)
     }
   }
 
