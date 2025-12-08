@@ -2,13 +2,16 @@ import { useEffect, useRef, useState, type JSX } from "react"
 
 import RequiredHint from "@/components/hints/RequiredHint"
 
+import { createPortal } from "react-dom"
 import { isOnlyDigit } from "@/utils/utils"
-import { useNavigate } from "react-router-dom"
 import { useAsync } from "@/hooks/useAsync"
+import { useNavigate } from "react-router-dom"
 import { userService } from "@/services/userService"
 
 import authStyles from "../../AuthModal.module.css"
 import styles from "./VerificationModal.module.css"
+
+const root = document.getElementById('root')!
 
 type VerificationModalProps = {
   email: string
@@ -50,7 +53,7 @@ export function VerificationModal({ email }: VerificationModalProps): JSX.Elemen
     navigate('/login')
   }
 
-  return (
+  return createPortal(
     <div className={styles.modalWrapper}>
       <header className={styles.verifyHeader}>
         <h2 className={styles.verifyTitle}>Verificação de Email</h2>
@@ -80,6 +83,7 @@ export function VerificationModal({ email }: VerificationModalProps): JSX.Elemen
           </button>
         </footer>
       </form>
-    </div>
+    </div>,
+    root
   )
 }
