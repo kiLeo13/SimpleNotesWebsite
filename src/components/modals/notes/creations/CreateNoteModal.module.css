@@ -6,37 +6,31 @@
 .container {
   position: relative;
   display: flex;
-  padding: 20px;
+  padding: 20px 25px;
   box-sizing: border-box;
   height: max-content;
   max-height: 98vh;
-  width: 400px;
+  width: 430px;
   border: 1px solid rgb(42, 36, 51);
-  background-color: rgb(36, 33, 46);
+  background-color: rgb(30, 25, 37);
   border-radius: 10px;
   box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
   animation: smoothToggleModal 300ms cubic-bezier(0.25, 0.1, 0.25, 1.5) forwards;
 }
 
-.closeTabContainer {
+.close {
   position: absolute;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 30px;
-  width: 30px;
-  border: none;
-  outline: none;
-  background-color: transparent;
-  border-radius: 5px;
-  user-select: none;
-  inset: 6px 6px auto auto;
   cursor: pointer;
-  opacity: 0.5;
+  top: 10px;
+  padding: 3px;
+  border-radius: 8px;
+  right: 10px;
+  transition: background-color 300ms;
 }
 
-.closeTabContainer:hover {
-  opacity: 1;
+.close:hover {
+  background-color: rgb(51, 42, 63);
 }
 
 .closeIcon {
@@ -58,7 +52,7 @@
   font-weight: bold;
   margin: 0;
   margin-top: 10px;
-  color: rgb(146, 146, 146);
+  color: rgb(147, 142, 153);
 }
 
 .bottomContainer {
@@ -73,14 +67,14 @@
   display: flex;
   justify-content: center;
   color: rgba(0, 0, 0, 0.7);
-  font-size: 1.1em;
+  font-size: 1em;
   font-weight: 600;
   padding: 12px 18px;
   min-width: 100px;
   border-radius: 9999px;
   border: none;
   cursor: pointer;
-  background-color: rgb(168, 153, 204);
+  background-color: rgb(144, 92, 192);
   user-select: none;
   overflow: hidden;
   transition: background-color 300ms;

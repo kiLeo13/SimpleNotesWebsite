@@ -22,7 +22,7 @@ export function BaseModalFileInput({
   return (
     <>
       <label className={clsx(styles.fileInputWrapper, errorMessage && styles.invalid, className)}>
-        <span>{label}</span>
+        <span className={styles.label}>{label}</span>
         <span className={styles.chosenFile}>
           {displayFileName && (
             <>

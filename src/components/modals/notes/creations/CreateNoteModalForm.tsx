@@ -2,6 +2,7 @@ import { createNoteSchema, VISIBILITY_OPTIONS, type NoteFormFields } from "@/typ
 import { useState, type JSX } from "react"
 
 import clsx from "clsx"
+import i18n from "@/services/i18n"
 
 import { NOTE_EXTENSIONS, NOTE_MAX_SIZE_BYTES } from "@/services/noteService"
 import { ModalActionRow } from "../shared/sections/ModalActionRow"
@@ -15,10 +16,10 @@ import { ModalArrayInput } from "../shared/inputs/ModalArrayInput"
 import { getPrettySize } from "@/utils/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useNoteStore } from "@/stores/useNotesStore"
+import { toasts } from "@/utils/toastUtils"
+import { IoMdClose } from "react-icons/io"
 
 import styles from "./CreateNoteModal.module.css"
-import { toasts } from "@/utils/toastUtils"
-import i18n from "@/services/i18n"
 
 const t = i18n.t
 
@@ -64,13 +65,13 @@ export function CreateNoteModalForm({ setShowUploadModal }: CreateNoteModalFormP
     }
   }
 
-  const handleCloseClick = () => setShowUploadModal(false)
+  const handleCloseModal = () => setShowUploadModal(false)
 
   return (
     <div className={styles.container}>
-      <button onClick={handleCloseClick} className={styles.closeTabContainer}>
-        <span className={styles.closeIcon}>+</span>
-      </button>
+      <div className={styles.close} onClick={handleCloseModal}>
+        <IoMdClose color="rgba(94, 76, 121, 1)" size={"24px"} />
+      </div>
 
       <FormProvider {...methods}>
         <form className={styles.form} noValidate>

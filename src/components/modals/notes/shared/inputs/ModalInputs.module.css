@@ -4,12 +4,16 @@
   gap: 10px;
   align-items: center;
   justify-content: center;
-  background-color: rgb(29, 27, 37);
+  background-color: rgb(35, 30, 44);
   border-radius: 10px;
   color: rgb(150, 150, 150);
   border: 2px dashed rgb(102, 74, 146);
   height: 100px;
   cursor: pointer;
+}
+
+.label {
+  color: rgb(144, 130, 155);
 }
 
 .chosenFile {
