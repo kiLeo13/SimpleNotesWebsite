@@ -108,7 +108,7 @@
 }
 
 .submitButton:disabled {
-  color: rgb(40, 22, 68);
+  color: rgb(39, 29, 49);
   background-color: rgb(65, 44, 85);
 }
 
