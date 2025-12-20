@@ -7,6 +7,7 @@ import RequiredHint from "@/components/hints/RequiredHint"
 import { AlreadyAuthWarn } from "@/components/warns/AlreadyAuthWarn"
 import { FaArrowRight } from "react-icons/fa"
 import { Link, useNavigate } from "react-router-dom"
+import { LoaderContainer } from "@/components/LoaderContainer"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useAsync } from "@/hooks/useAsync"
 import { hasSession } from "@/utils/authutils"
@@ -71,9 +72,7 @@ export function LoginModal(): JSX.Element {
               <button disabled={isLoading} className={styles.submitButton} type="submit">
                 Login
                 {isLoading && (
-                  <div className={styles.loaderContainer}>
-                    <div className={`loader ${styles.loader}`}></div>
-                  </div>
+                  <LoaderContainer style={{scale: "80%"}} />
                 )}
               </button>
               <Link draggable="false" className={styles.modalSwitcher} to="/register">

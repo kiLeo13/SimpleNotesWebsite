@@ -9,6 +9,7 @@ import { FaArrowRight } from "react-icons/fa"
 import { Link } from "react-router-dom"
 import { DarkWrapper } from "@/components/DarkWrapper"
 import { PasswordRules } from "./passwords/PasswordRules"
+import { LoaderContainer } from "@/components/LoaderContainer"
 import { displayFormsErrors } from "@/utils/errorHandlerUtils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useAsync } from "@/hooks/useAsync"
@@ -145,9 +146,7 @@ export function SignupModal(): JSX.Element {
               <button disabled={isLoading} className={styles.submitButton} type="submit">
                 Verificar
                 {isLoading && (
-                  <div className={styles.loaderContainer}>
-                    <div className={`loader ${styles.loader}`}></div>
-                  </div>
+                  <LoaderContainer style={{scale: "80%"}} />
                 )}
               </button>
               <Link draggable="false" className={styles.modalSwitcher} to="/login">
