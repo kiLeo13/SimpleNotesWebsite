@@ -4,7 +4,7 @@ import { useFormContext, type UseFormHandleSubmit } from "react-hook-form"
 import { useEffect, useState, type JSX } from "react"
 import { VISIBILITY_OPTIONS, type UpdateNoteFormFields } from "@/types/forms/notes"
 
-import _ from "lodash"
+import { isEmpty } from "lodash-es"
 
 import { ModalSection } from "../shared/sections/ModalSection"
 import { ModalActionRow } from "../shared/sections/ModalActionRow"
@@ -46,7 +46,7 @@ export function UpdateNoteForm({ note, handleSubmit, setIsPatching }: UpdateNote
 
   const onSubmit = async (data: UpdateNoteFormFields) => {
     const payload = getDirtyValues(dirtyFields, data)
-    if (_.isEmpty(payload)) {
+    if (isEmpty(payload)) {
       setIsPatching(false)
       return
     }

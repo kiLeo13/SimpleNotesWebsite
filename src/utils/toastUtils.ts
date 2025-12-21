@@ -1,7 +1,7 @@
 import type { ApiErrorResponse } from "@/types/api/api"
 import { toast, type ExternalToast } from "sonner"
 
-import _ from "lodash"
+import { capitalize } from "lodash-es"
 
 export const toasts = {
   error: (message: string | null, error: ApiErrorResponse, data?: ExternalToast) => {
@@ -44,7 +44,7 @@ export function formatToastError(errorResponse: ApiErrorResponse): string {
 
   const fieldMessages = Object.entries(errors)
     .map(([field, msgs]) => {
-      const fieldName = _.capitalize(field)
+      const fieldName = capitalize(field)
       return `• ${fieldName}: ${msgs.join(", ")}`
     })
 

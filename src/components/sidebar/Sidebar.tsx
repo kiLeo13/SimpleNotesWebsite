@@ -2,7 +2,7 @@ import type { NoteResponseData } from "@/types/api/notes"
 import type { UserResponseData } from "@/types/api/users"
 import { useEffect, useMemo, useRef, useState, type ChangeEventHandler, type JSX, type KeyboardEventHandler, type MouseEventHandler } from "react"
 
-import _ from "lodash"
+import { throttle } from "lodash-es"
 
 import { SidebarNote } from "../notes/SidebarNote"
 import { MdOutlineFileUpload } from "react-icons/md"
@@ -54,7 +54,7 @@ export function Sidebar({ selfUser }: SidebarProps): JSX.Element {
   }
 
   const throttledLoadNotes = useMemo(
-    () => _.throttle(fetchNotes, 5000, { leading: true, trailing: false }),
+    () => throttle(fetchNotes, 5000, { leading: true, trailing: false }),
     [fetchNotes]
   )
 

@@ -14,7 +14,7 @@ import { displayFormsErrors } from "@/utils/errorHandlerUtils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useAsync } from "@/hooks/useAsync"
 import { userService } from "@/services/userService"
-import { debounce } from "lodash"
+import { debounce } from "lodash-es"
 
 import styles from "./AuthModal.module.css"
 
