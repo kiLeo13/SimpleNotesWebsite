@@ -11,7 +11,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: auto;
-  width: auto;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
   background-color: var(--main-background-color);
+  /* 
+   * Allows the grid/flex item to shrink below its content size. 
+   * Without this, a long string forces the div to grow endlessly (for markdowns).
+   */
+  min-width: 0;
 }
