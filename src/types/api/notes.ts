@@ -36,13 +36,18 @@ const ReferenceNoteSchema = NoteBaseSchema.extend({
   content: z.string()
 })
 
+const FlowchartNoteSchema = NoteBaseSchema.extend({
+  note_type: z.literal("FLOWCHART")
+})
+
 export const NoteResponseSchema = z.discriminatedUnion("note_type", [
   TextNoteSchema,
-  ReferenceNoteSchema
+  ReferenceNoteSchema,
+  FlowchartNoteSchema
 ])
 
 export const FullNoteResponseSchema = NoteBaseSchema.extend({
-  note_type: z.enum(["TEXT", "REFERENCE"]),
+  note_type: z.enum(["TEXT", "REFERENCE", "FLOWCHART"]),
   content: z.string()
 })
 
