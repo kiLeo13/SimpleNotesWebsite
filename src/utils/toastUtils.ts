@@ -16,6 +16,15 @@ export const toasts = {
     })
   },
 
+  error: (message: string | null, data?: ExternalToast) => {
+    toast.error(message, {
+      style: {
+        color: "#dd7a7aff"
+      },
+      ...data
+    })
+  },
+
   warning: (message: string | null, data?: ExternalToast) => {
     toast.warning(message, {
       style: {
