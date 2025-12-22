@@ -13,7 +13,7 @@ import styles from "./MainPage.module.css"
 
 export function MainPage(): JSX.Element {
   const [selfUser, setSelfUser] = useState<UserResponseData | null>(null)
-  
+
   const shownNote = useNoteStore((state) => state.shownNote)
   const isRendering = useNoteStore((state) => state.isRendering)
   const closeNote = useNoteStore((state) => state.closeNote)
