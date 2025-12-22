@@ -21,27 +21,32 @@
     scale 300ms;
 }
 
-.noteItem:hover {
+.noteItem:hover:not(.open) {
   outline: 1px solid var(--sidebar-item-hover-border-color);
   scale: 103%;
   cursor: pointer;
   height: max-content;
-  background-color: var(--sidebar-item-hover-background-color)
+  background-color: var(--sidebar-item-hover-background-color);
+}
+
+.open {
+  background-color: var(--sidebar-item-open-background-color);
+  cursor: default;
 }
 
 .noteItemTitle {
   overflow: hidden;
   white-space: nowrap;
-  text-overflow: ellipsis
+  text-overflow: ellipsis;
 }
 
 .noteItem:hover .noteItemTitle {
   overflow: visible;
-  white-space: normal
+  white-space: normal;
 }
 
-.noteItem:active {
-  scale: 97%
+.noteItem:active:not(.open) {
+  scale: 97%;
 }
 
 .noteItem:hover .patch {
