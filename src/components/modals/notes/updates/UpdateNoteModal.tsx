@@ -61,7 +61,7 @@ export function UpdateNoteModal({ noteId, setIsPatching }: UpdateNoteModalProps)
           tags: resp.data.tags || []
         })
       } else {
-        toasts.error('Erro ao buscar anotação/métricas completas', resp)
+        toasts.apiError('Erro ao buscar anotação/métricas completas', resp)
         setIsPatching(false)
       }
     }

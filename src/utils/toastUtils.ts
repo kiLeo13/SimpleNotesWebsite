@@ -4,7 +4,7 @@ import { toast, type ExternalToast } from "sonner"
 import { capitalize } from "lodash-es"
 
 export const toasts = {
-  error: (message: string | null, error: ApiErrorResponse, data?: ExternalToast) => {
+  apiError: (message: string | null, error: ApiErrorResponse, data?: ExternalToast) => {
     const desc = formatToastError(error)
 
     toast.error(message, {

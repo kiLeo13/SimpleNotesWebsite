@@ -47,7 +47,7 @@ export const useNoteStore = create<NotesState>((set, get) => ({
     const resp = await noteService.fetchNote(note.id)
     if (!resp.success) {
       set({ isRendering: false })
-      toasts.error('Não foi possível encontrar nota completa', resp)
+      toasts.apiError('Não foi possível encontrar nota completa', resp)
       return
     }
 
@@ -64,7 +64,7 @@ export const useNoteStore = create<NotesState>((set, get) => ({
     const resp = await noteService.deleteNote(noteId)
 
     if (!resp.success) {
-      toasts.error('Erro ao apagar anotação', resp)
+      toasts.apiError('Erro ao apagar anotação', resp)
       return false
     }
 
@@ -82,7 +82,7 @@ export const useNoteStore = create<NotesState>((set, get) => ({
   updateNoteAndRefresh: async (noteId, payload) => {
     const resp = await noteService.updateNote(noteId, payload)
     if (!resp.success) {
-      toasts.error('Erro ao atualizar anotação', resp)
+      toasts.apiError('Erro ao atualizar anotação', resp)
       return false
     }
 
@@ -101,7 +101,7 @@ export const useNoteStore = create<NotesState>((set, get) => ({
     const resp = await noteService.createNote(data, file)
     
     if (!resp.success) {
-      toasts.error('Não foi possível criar anotação', resp)
+      toasts.apiError('Não foi possível criar anotação', resp)
       return false
     }
 

@@ -64,7 +64,7 @@ export function UpdateNoteForm({ note, handleSubmit, setIsPatching }: UpdateNote
     const fetchAuthor = async (note: FullNoteResponseData) => {
       const resp = await userService.getUserById(note.created_by_id)
       if (!resp.success) {
-        toasts.error('Erro ao buscar autor da anotação', resp)
+        toasts.apiError('Erro ao buscar autor da anotação', resp)
         return
       }
 
