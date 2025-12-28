@@ -1,4 +1,4 @@
-import type { JSX } from "react"
+import type { CSSProperties, JSX } from "react"
 import { useController, useFormContext, type ControllerFieldState, type FieldError, type FieldValues, type Path } from "react-hook-form"
 import { BaseArrayInput } from "./BaseArrayInput"
 
@@ -7,13 +7,15 @@ type ModalArrayInputProps<T extends FieldValues> = {
   placeholder?: string
   minLength?: number
   maxLength?: number
+  style?: CSSProperties
 }
 
 export function ModalArrayInput<T extends FieldValues>({ 
   name, 
   placeholder,
   minLength,
-  maxLength
+  maxLength,
+  style
 }: ModalArrayInputProps<T>): JSX.Element {
   const { control } = useFormContext<T>()
   const { field, fieldState } = useController<T>({ name, control })
@@ -43,6 +45,8 @@ export function ModalArrayInput<T extends FieldValues>({
 
       minLength={minLength}
       maxLength={maxLength}
+
+      style={style}
     />
   )
 }

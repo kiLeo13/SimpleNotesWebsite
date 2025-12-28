@@ -1,4 +1,12 @@
-import { useRef, useState, type KeyboardEvent, type JSX, type ChangeEvent } from "react"
+import {
+  useRef,
+  useState,
+
+  type KeyboardEvent,
+  type JSX,
+  type ChangeEvent,
+  type CSSProperties
+} from "react"
 
 import clsx from "clsx"
 
@@ -17,6 +25,7 @@ type BaseArrayInputProps = {
   className?: string
   minLength?: number
   maxLength?: number
+  style?: CSSProperties
 }
 
 export function BaseArrayInput({
@@ -29,7 +38,8 @@ export function BaseArrayInput({
   disabled,
   className,
   minLength,
-  maxLength
+  maxLength,
+  style
 }: BaseArrayInputProps): JSX.Element {
   const [inputValue, setInputValue] = useState("")
   const inputRef = useRef<HTMLInputElement>(null)
@@ -63,6 +73,7 @@ export function BaseArrayInput({
       <div
         className={clsx(styles.input, styles.arrayContainer, errorMessage && styles.invalid, className)}
         onClick={handleContainerClick}
+        style={style}
       >
         {items.map((item) => (
           <ArrayFragment
