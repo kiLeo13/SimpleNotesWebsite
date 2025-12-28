@@ -75,6 +75,7 @@
   flex-wrap: wrap;
   gap: 6px;
   align-items: center;
+  overflow-y: auto;
 }
 
 .arrayInput {
