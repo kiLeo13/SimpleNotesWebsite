@@ -119,6 +119,7 @@ The frontend is a modern, responsive Single-Page Application built with **React*
     * [Day.js](https://github.com/iamkun/dayjs) - Lightweight date/time manipulation and formatting.
     * [Mermaid](https://github.com/mermaid-js/mermaid) - Library for generation of diagrams like flowcharts.
     * [React Zoom Pan Pinch](https://github.com/BetterTyped/react-zoom-pan-pinch) - Library to support zoom, pan, pinch on divs.
+    * [html-react-parser](https://github.com/remarkablemark/html-react-parser) - Library to adapt Mermaid canvas to the app board.
 * **Content & Security:**
     * [Marked](https://github.com/markedjs/marked) - A markdown parser.
     * [DOMPurify](https://github.com/cure53/dompurify) - XSS sanitizer for HTML.
