@@ -1,0 +1,53 @@
+.mermaidFrame {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.mermaidFrame:hover {
+  cursor: grab;
+}
+
+.mermaidFrame:active {
+  cursor: grabbing;
+}
+
+.graphSvg {
+  width: 100%;
+  height: 100%;
+  max-width: none !important;
+  display: block;
+}
+
+.controlPanel {
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  right: 20px;
+  bottom: 20px;
+  z-index: 100;
+  gap: 8px;
+}
+
+.controlButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  padding: 6px;
+  background: #323047;
+  color: #b1a0da;
+  border: 1px solid #443b58;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background-color 200ms;
+}
+
+.controlButton:hover {
+  background: #423a5a;
+}
+
+.controlButton:active {
+  background: #2c243e;
+}
