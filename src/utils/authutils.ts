@@ -32,7 +32,7 @@ export function isTokenValid(jwt: string | null): boolean {
 
   try {
     const { exp } = jwtDecode(jwt)
-  
+
     return !!exp && now < exp * 1000
   } catch (err) {
     console.error('Failed to check if JWT token is valid:', err)
