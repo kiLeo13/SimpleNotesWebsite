@@ -8,6 +8,7 @@ import { ContentBoard } from "@/components/board/ContentBoard"
 import { LoaderContainer } from "@/components/LoaderContainer"
 import { userService } from "@/services/userService"
 import { useNoteStore } from "@/stores/useNotesStore"
+import { toasts } from "@/utils/toastUtils"
 
 import styles from "./MainPage.module.css"
 
@@ -24,6 +25,8 @@ export function MainPage(): JSX.Element {
 
       if (resp.success) {
         setSelfUser(resp.data)
+      } else {
+        toasts.apiError('Failed to load self user data', resp)
       }
     }
     loadSelfUser()
