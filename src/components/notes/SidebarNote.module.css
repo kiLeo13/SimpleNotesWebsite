@@ -16,14 +16,11 @@
   user-select: none;
   line-height: 140%;
   z-index: 2;
-  transition:
-    background-color 300ms,
-    scale 300ms;
+  transition: background-color 300ms;
 }
 
 .noteItem:hover:not(.open) {
   outline: 1px solid var(--sidebar-item-hover-border-color);
-  scale: 103%;
   cursor: pointer;
   height: max-content;
   background-color: var(--sidebar-item-hover-background-color);
@@ -55,7 +52,8 @@
 
 .patch {
   display: none;
-  height: 30px;
+  height: 100%;
+  max-height: 30px;
   aspect-ratio: 1;
   justify-content: center;
   align-items: center;
