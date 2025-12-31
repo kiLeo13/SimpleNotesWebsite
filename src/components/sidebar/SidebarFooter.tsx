@@ -6,6 +6,8 @@ import { MdOutlineFileUpload } from "react-icons/md"
 import { SidebarProfile } from "./SidebarProfile"
 import { DarkWrapper } from "../DarkWrapper"
 import { CreateNoteModalForm } from "../modals/notes/creations/CreateNoteModalForm"
+import { AlgorithmCalculator } from "../modals/global/AlgorithmCalculator"
+
 import { useState } from "react"
 
 import styles from "./SidebarFooter.module.css"
@@ -16,9 +18,14 @@ type SidebarFooterProps = {
 
 export function SidebarFooter({ selfUser }: SidebarFooterProps): JSX.Element {
   const [showUploadModal, setShowUploadModal] = useState(false)
+  const [showAlgoCalc, setShowAlgoCalc] = useState(false)
 
   const handleShowUpload: MouseEventHandler<HTMLButtonElement> = () => {
     setShowUploadModal(true)
+  }
+
+  const handleShowAlgo = () => {
+    setShowAlgoCalc(true)
   }
 
   return (
@@ -29,11 +36,17 @@ export function SidebarFooter({ selfUser }: SidebarFooterProps): JSX.Element {
         </DarkWrapper>
       )}
 
+      {showAlgoCalc && (
+        <DarkWrapper>
+          <AlgorithmCalculator setShowAlgoCalc={setShowAlgoCalc} />
+        </DarkWrapper>
+      )}
+
       <div className={styles.footer}>
         <SidebarProfile />
 
         <div className={styles.buttonsContainer}>
-          <button className={styles.actionButton}>
+          <button onClick={handleShowAlgo} className={styles.actionButton}>
             <CgController size={"0.7em"} />
           </button>
           {selfUser?.isAdmin && (

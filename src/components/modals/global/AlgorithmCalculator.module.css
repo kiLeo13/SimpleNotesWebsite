@@ -1,0 +1,38 @@
+.container {
+  position: relative;
+  height: 600px;
+  width: 950px;
+  max-height: 90vh;
+  max-width: 80vw;
+  border-radius: 12px;
+  border: 1px solid rgb(53, 47, 66);
+  background-color: var(--algo-calc-modal-background-color);
+  animation: smoothToggleModal 300ms cubic-bezier(0.25, 0.1, 0.25, 1.5) forwards;
+}
+
+.close {
+  position: absolute;
+  display: flex;
+  cursor: pointer;
+  top: 10px;
+  padding: 3px;
+  border-radius: 8px;
+  right: 10px;
+  transition: background-color 300ms;
+}
+
+.close:hover {
+  background-color: rgb(51, 42, 63);
+}
+
+@keyframes smoothToggleModal {
+  from {
+    opacity: 0;
+    scale: 70%;
+  }
+  
+  to {
+    opacity: 1;
+    scale: 100%;
+  }
+}
