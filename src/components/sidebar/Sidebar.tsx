@@ -1,16 +1,16 @@
+import type { ChangeEventHandler, JSX, KeyboardEventHandler, MouseEventHandler } from "react"
 import type { NoteResponseData } from "@/types/api/notes"
 import type { UserResponseData } from "@/types/api/users"
-import { useEffect, useMemo, useRef, useState, type ChangeEventHandler, type JSX, type KeyboardEventHandler, type MouseEventHandler } from "react"
-
-import { throttle } from "lodash-es"
 
 import { SidebarNote } from "../notes/SidebarNote"
 import { MdOutlineFileUpload } from "react-icons/md"
 import { SidebarProfile } from "./SidebarProfile"
 import { DarkWrapper } from "../DarkWrapper"
 import { CreateNoteModalForm } from "../modals/notes/creations/CreateNoteModalForm"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useNoteStore } from "@/stores/useNotesStore"
 import { matchSorter } from "match-sorter"
+import { throttle } from "lodash-es"
 
 import styles from "./Sidebar.module.css"
 
