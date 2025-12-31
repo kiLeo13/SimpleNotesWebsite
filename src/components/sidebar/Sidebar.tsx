@@ -3,8 +3,6 @@ import type { NoteResponseData } from "@/types/api/notes"
 import type { UserResponseData } from "@/types/api/users"
 
 import { SidebarNote } from "../notes/SidebarNote"
-import { DarkWrapper } from "../DarkWrapper"
-import { CreateNoteModalForm } from "../modals/notes/creations/CreateNoteModalForm"
 import { SidebarFooter } from "./SidebarFooter"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useNoteStore } from "@/stores/useNotesStore"
@@ -18,9 +16,6 @@ type SidebarProps = {
 }
 
 export function Sidebar({ selfUser }: SidebarProps): JSX.Element {
-  const [showUploadModal, setShowUploadModal] = useState(false)
-
-  // Note store actions and states
   const notes = useNoteStore((state) => state.notes)
   const isLoading = useNoteStore((state) => state.isLoading)
   const fetchNotes = useNoteStore((state) => state.fetchNotes)
@@ -73,48 +68,40 @@ export function Sidebar({ selfUser }: SidebarProps): JSX.Element {
   })
 
   return (
-    <>
-      {showUploadModal && (
-        <DarkWrapper>
-          <CreateNoteModalForm setShowUploadModal={setShowUploadModal} />
-        </DarkWrapper>
-      )}
-
-      <nav className={styles.leftMenu}>
-        <div className={styles.menuUpperControls}>
-          <input
-            className={styles.searchInput}
-            disabled={isLoading}
-            type="text"
-            placeholder="Pesquisar"
-            autoComplete="off"
-            ref={searchRef}
-            onKeyDown={handleKeyboard}
-            onChange={handleSearch}
-            value={search}
-          />
-          <div className={styles.menuDivider} />
-          <span className={styles.searchResultCount}>{toPrettyResultCount(filteredNotes.length)}</span>
+    <nav className={styles.leftMenu}>
+      <div className={styles.menuUpperControls}>
+        <input
+          className={styles.searchInput}
+          disabled={isLoading}
+          type="text"
+          placeholder="Pesquisar"
+          autoComplete="off"
+          ref={searchRef}
+          onKeyDown={handleKeyboard}
+          onChange={handleSearch}
+          value={search}
+        />
+        <div className={styles.menuDivider} />
+        <span className={styles.searchResultCount}>{toPrettyResultCount(filteredNotes.length)}</span>
+      </div>
+      <div className={styles.menuLowerItems}>
+        <div className={styles.sidebarLoaderContainer}>
+          {isLoading && <div className="loader" />}
         </div>
-        <div className={styles.menuLowerItems}>
-          <div className={styles.sidebarLoaderContainer}>
-            {isLoading && <div className="loader" />}
-          </div>
 
-          {!isLoading && (
-            filteredNotes.map((n) => {
-              return <SidebarNote
-                onClick={() => handleOpenNote(n)}
-                key={n.id}
-                note={n}
-                isAdmin={selfUser?.isAdmin || false}
-              />
-            })
-          )}
-        </div>
-        <SidebarFooter selfUser={selfUser} setShowUploadModal={setShowUploadModal} />
-      </nav>
-    </>
+        {!isLoading && (
+          filteredNotes.map((n) => {
+            return <SidebarNote
+              onClick={() => handleOpenNote(n)}
+              key={n.id}
+              note={n}
+              isAdmin={selfUser?.isAdmin || false}
+            />
+          })
+        )}
+      </div>
+      <SidebarFooter selfUser={selfUser} />
+    </nav>
   )
 }
 
