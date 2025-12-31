@@ -3,15 +3,15 @@ import { useEffect, useRef, useState, type JSX } from "react"
 import { updateNoteSchema, type UpdateNoteFormFields } from "@/types/forms/notes"
 
 import { FormProvider, useForm } from "react-hook-form"
-import { noteService } from "@/services/noteService"
 import { ModalHeader } from "./ModalHeader"
 import { DarkWrapper } from "@/components/DarkWrapper"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { IoMdClose } from "react-icons/io"
 import { UpdateNoteForm } from "./UpdateNoteForm"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { noteService } from "@/services/noteService"
+import { toasts } from "@/utils/toastUtils"
 
 import styles from "./UpdateNoteModal.module.css"
-import { toasts } from "@/utils/toastUtils"
 
 type UpdateNoteModalProps = {
   noteId: number
