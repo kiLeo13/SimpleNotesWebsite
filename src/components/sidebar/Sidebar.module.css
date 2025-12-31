@@ -133,38 +133,3 @@
 .noteItem:active {
   scale: 97%;
 }
-
-.menuFooterControls {
-  height: 60px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  box-sizing: border-box;
-  margin-left: calc(var(--sidebar-padding) * -1);
-  margin-right: calc(var(--sidebar-padding) * -1);
-  background-color: var(--sidebar-bottom-background-color);
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-  transition: margin-bottom 0.5s;
-}
-
-.footerControlButton {
-  display: flex;
-  height: 100%;
-  aspect-ratio: 1;
-  align-items: center;
-  justify-content: center;
-  background-color: transparent;
-  border: none;
-  border-radius: 9999px;
-  font-size: 35px;
-  color: rgba(147, 117, 182, 0.6);
-  font-weight: 700;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.footerControlButton:hover:not(:disabled) {
-  background-color: rgba(119, 102, 161, 0.1);
-}

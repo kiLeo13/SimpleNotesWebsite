@@ -1,12 +1,11 @@
-import type { ChangeEventHandler, JSX, KeyboardEventHandler, MouseEventHandler } from "react"
+import type { ChangeEventHandler, JSX, KeyboardEventHandler } from "react"
 import type { NoteResponseData } from "@/types/api/notes"
 import type { UserResponseData } from "@/types/api/users"
 
 import { SidebarNote } from "../notes/SidebarNote"
-import { MdOutlineFileUpload } from "react-icons/md"
-import { SidebarProfile } from "./SidebarProfile"
 import { DarkWrapper } from "../DarkWrapper"
 import { CreateNoteModalForm } from "../modals/notes/creations/CreateNoteModalForm"
+import { SidebarFooter } from "./SidebarFooter"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useNoteStore } from "@/stores/useNotesStore"
 import { matchSorter } from "match-sorter"
@@ -43,10 +42,6 @@ export function Sidebar({ selfUser }: SidebarProps): JSX.Element {
     if (e.key.toLowerCase() === "escape") {
       searchRef?.current?.blur()
     }
-  }
-
-  const handleShowUpload: MouseEventHandler<HTMLButtonElement> = () => {
-    setShowUploadModal(!showUploadModal)
   }
 
   const handleOpenNote = (n: NoteResponseData) => {
@@ -117,14 +112,7 @@ export function Sidebar({ selfUser }: SidebarProps): JSX.Element {
             })
           )}
         </div>
-        <div className={styles.menuFooterControls}>
-          <SidebarProfile />
-          {selfUser?.isAdmin && (
-            <button onClick={handleShowUpload} className={styles.footerControlButton}>
-              <MdOutlineFileUpload size={"0.8em"} />
-            </button>
-          )}
-        </div>
+        <SidebarFooter selfUser={selfUser} setShowUploadModal={setShowUploadModal} />
       </nav>
     </>
   )
