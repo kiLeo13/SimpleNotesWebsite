@@ -22,6 +22,9 @@ export function SidebarFooter({ selfUser, setShowUploadModal }: SidebarFooterPro
       <SidebarProfile />
 
       <div className={styles.buttonsContainer}>
+        <button className={styles.actionButton}>
+          <CgController size={"0.7em"} />
+        </button>
         {selfUser?.isAdmin && (
           <>
             <button onClick={handleShowUpload} className={styles.actionButton}>
