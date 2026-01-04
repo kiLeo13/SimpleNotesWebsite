@@ -17,6 +17,7 @@
   line-height: 140%;
   z-index: 2;
   transition: background-color 300ms;
+  animation: insideoutNotes 100ms ease-in-out forwards;
 }
 
 .noteItem:hover:not(.open) {
@@ -75,8 +76,18 @@
   from {
     opacity: 0;
   }
-  
+
   to {
     opacity: 1;
+  }
+}
+
+@keyframes insideoutNotes {
+  from {
+    scale: 0.97;
+  }
+
+  to {
+    scale: 1;
   }
 }
