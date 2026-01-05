@@ -120,9 +120,13 @@ The frontend is a modern, responsive Single-Page Application built with **React*
     * [Mermaid](https://github.com/mermaid-js/mermaid) - Library for generation of diagrams like flowcharts.
     * [React Zoom Pan Pinch](https://github.com/BetterTyped/react-zoom-pan-pinch) - Library to support zoom, pan, pinch on divs.
     * [html-react-parser](https://github.com/remarkablemark/html-react-parser) - Library to adapt Mermaid canvas to the app board.
+    * [React Flow](https://github.com/xyflow/xyflow) - Library to render dynamic flows.
 * **Content & Security:**
-    * [Marked](https://github.com/markedjs/marked) - A markdown parser.
-    * [DOMPurify](https://github.com/cure53/dompurify) - XSS sanitizer for HTML.
+    * [ReactMarkdown](https://github.com/remarkjs/react-markdown) - A markdown parser.
+    * [rehype-highlight](https://github.com/rehypejs/rehype-highlight) - A plugin to support code highlight on Markdowns.
+    * [rehype-raw](https://github.com/rehypejs/rehype-raw) - A plugin to support some raw Markdown data.
+    * [rehype-sanitize](https://github.com/rehypejs/rehype-sanitize) - A plugin to sanitize markdown output.
+    * [remark-gfm](https://github.com/remarkjs/remark-gfm) - Plugin to support GFM.
 * **Internationalization (i18n):**
     * [i18next](https://github.com/i18next/i18next) - The internationalization framework.
     * [react-i18next](https://github.com/i18next/react-i18next) - React bindings for i18next.
