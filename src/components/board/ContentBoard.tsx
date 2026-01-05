@@ -18,12 +18,12 @@ const BASE_ROUTE = 'https://d26143aouxq3ma.cloudfront.net/attachments'
 
 export function ContentBoard({ note }: ContentBoardProps): JSX.Element {
   const setRendering = useNoteStore((state) => state.setRendering)
-  const fileExt = ext(note.content) || "pdf"
-
+  
   const isFlowchart = note.note_type === 'FLOWCHART'
-  const isText = note.note_type === 'TEXT'
+  const isReference = note.note_type === 'REFERENCE'
+  const fileExt = !isReference ? "" : ext(note.content) || "pdf"
 
-  const route = (isText || isFlowchart) ? "" : `${BASE_ROUTE}/${note.content}`
+  const route = (!isReference) ? "" : `${BASE_ROUTE}/${note.content}`
   
   const hideLoading = () => setRendering(false)
 
