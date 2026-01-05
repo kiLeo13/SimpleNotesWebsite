@@ -1,4 +1,30 @@
 {
+  "modals": {
+    "algoCalc": {
+      "nodes": {
+        "lotteryPrize": "1º Prêmio Loteria Federal",
+        "groupSize": "Participantes no Grupo",
+        "initialDiv": "Divisão Inicial",
+        "isolatingDecimal": "Isolando a Dízima (6 casas)",
+        "discardInteger": "Descarte o número inteiro",
+        "groupMult": "Multiplicação pelo Grupo",
+        "keyStone": "Pedra Chave (Resultado)",
+        "roundingRule": "Regra de Aproximação (>= 0,5 sobe)"
+      },
+      "expl": {
+        "title": "Explicação do Cálculo",
+        "intro": "O cálculo da Pedra Chave segue a lógica definida em regulamento:",
+        "step1": "Divide-se o prêmio da loteria pelo número de participantes.",
+        "step2": "Utiliza-se apenas a dízima (6 casas decimais), descartando o número inteiro.",
+        "step3": "Multiplica-se essa dízima pelo número de participantes novamente.",
+        "roundingNote": "O resultado final segue a regra matemática de aproximação.",
+        "importantNoteTitle": "Nota Importante (Regras II e III)",
+        "importantNoteBody": "Se a Pedra Chave calculada for uma cota não apta (ex: cancelada), considera-se a próxima acima. Se esta também não estiver apta, considera-se a abaixo da original, e assim sucessivamente.",
+        "referencesTitle": "Referências",
+        "referencesBody": "As informações aqui apresentadas são de caráter público e observam o disposto na Cláusula 21 (Do Consorciado Ativo) do [Regulamento](https://consorciomagalu.com.br/regulamento)."
+      }
+    }
+  },
   "createNoteModal": {
     "title": "Criar Nota",
     "name": "Nome",
