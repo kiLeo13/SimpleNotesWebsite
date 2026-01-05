@@ -3,6 +3,7 @@ import type { FullNoteResponseData } from "@/types/api/notes"
 
 import { MdHeadphones, MdImage } from "react-icons/md"
 import { LuClapperboard } from "react-icons/lu"
+import { RiFlowChart } from "react-icons/ri"
 import { RiFileGifLine } from "react-icons/ri"
 import { ext } from "@/utils/utils"
 import { FaFilePdf } from "react-icons/fa6"
@@ -30,11 +31,15 @@ export function ModalHeader({ noteId, note }: UpdateModalHeaderProps): JSX.Eleme
   )
 }
 
-function resolveIcon(fileName: string | undefined, noteType: "TEXT" | "REFERENCE" | undefined): JSX.Element {
+function resolveIcon(fileName: string | undefined, noteType: "TEXT" | "REFERENCE" | "FLOWCHART" | undefined): JSX.Element {
   const fileExt = ext(fileName || '')
 
   if (noteType === 'TEXT') {
     return <IoDocumentText />
+  }
+
+  if (noteType === 'FLOWCHART') {
+    return <RiFlowChart />
   }
 
   switch (fileExt) {
