@@ -6,7 +6,7 @@ import { MdOutlineFileUpload } from "react-icons/md"
 import { SidebarProfile } from "./SidebarProfile"
 import { DarkWrapper } from "../DarkWrapper"
 import { CreateNoteModalForm } from "../modals/notes/creations/CreateNoteModalForm"
-import { AlgorithmCalculator } from "../modals/global/AlgorithmCalculator"
+import { AlgorithmCalculator } from "../modals/global/algorithm/AlgorithmCalculator"
 
 import { useState } from "react"
 

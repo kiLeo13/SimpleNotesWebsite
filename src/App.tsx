@@ -9,6 +9,9 @@ import { ProtectedRoute } from "./pages/mainpage/ProtectedRoute"
 import "./services/i18n" // Init translations
 import "./App.css"
 
+// Init code style
+import 'highlight.js/styles/github-dark.css'
+
 export const APP_NAME: string = "Onnyx"
 
 function App() {

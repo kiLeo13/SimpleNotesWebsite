@@ -1,9 +1,11 @@
 import type { ComponentProps, JSX } from "react"
 
-import DOMPurify from "dompurify"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
+import rehypeRaw from "rehype-raw"
+import rehypeHighlight from "rehype-highlight"
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize"
 import clsx from "clsx"
-
-import { marked } from "marked"
 
 import styles from "./MarkdownDisplay.module.css"
 
@@ -11,16 +13,37 @@ type MarkdownDisplayProps = ComponentProps<"div"> & {
   content: string
 }
 
-export function MarkdownDisplay({ content, ...props }: MarkdownDisplayProps): JSX.Element {
-  const dirty = marked(content, { async: false })
-  const clean = DOMPurify.sanitize(dirty)
-  const { className, ...restProps } = props
+export function MarkdownDisplay({ content, className, ...props }: MarkdownDisplayProps): JSX.Element {
+  const schema = {
+    ...defaultSchema,
+    attributes: {
+      ...defaultSchema.attributes,
+      code: [...(defaultSchema.attributes?.code || []), 'className'], 
+      img: [...(defaultSchema.attributes?.img || []), 'align', 'className', 'src', 'alt', 'width', 'height'],
+      span: [...(defaultSchema.attributes?.span || []), 'className']
+    }
+  }
 
   return (
-    <div
-      className={clsx(styles.md, className)}
-      {...restProps}
-      dangerouslySetInnerHTML={{ __html: clean }}
-    />
+    <div className={clsx(styles.md, className)} {...props}>
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        rehypePlugins={[
+          rehypeRaw, 
+          [rehypeSanitize, schema],
+          rehypeHighlight
+        ]}
+        components={{
+          a: ({ ...props }) => (
+            <a {...props} target="_blank" rel="noopener noreferrer" />
+          ),
+          img: ({ ...props }) => (
+             props.src ? <img {...props} /> : null
+          )
+        }}
+      >
+        {content}
+      </ReactMarkdown>
+    </div>
   )
 }

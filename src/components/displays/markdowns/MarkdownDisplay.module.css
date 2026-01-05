@@ -9,20 +9,31 @@
   border-spacing: 0;
 }
 
-.md table > thead > tr {
+.md table>thead>tr {
   background-color: rgba(255, 255, 255, 0.2);
 }
 
-.md table > tbody > tr {
+.md table>tbody>tr {
   background-color: rgba(255, 255, 255, 0.02);
 }
 
 .md table th,
 .md table td {
   border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 8px; 
+  padding: 8px;
 }
 
-.md > ul {
+.md>ul {
   padding-left: 25px;
+}
+
+.md code {
+  border-radius: 5px;
+  background-color: rgb(13, 17, 23);
+  font-family: var(--font-code);
+  font-size: var(--font-code-size);
+}
+
+.md pre>code {
+  border: 1px solid rgb(41, 43, 65);
 }

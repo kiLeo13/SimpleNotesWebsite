@@ -1,0 +1,83 @@
+.nodeBox {
+  padding: 12px;
+  border-radius: 8px;
+  background-color: var(--sidebar-item-background-color);
+  border: 1px solid var(--sidebar-item-hover-border-color);
+  width: 240px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  color: #e0e0e0;
+}
+
+.nodeBox:active {
+  cursor: grabbing;
+}
+
+.inputNode {
+  border-top: 3px solid #8b44ac;
+}
+
+.resultNode {
+  border-top: 3px solid #4caf50;
+}
+
+.highlightNode {
+  background-color: var(--sidebar-item-hover-background-color);
+  border: 2px solid #786985;
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(120, 105, 133, 0.3);
+}
+
+.nodeLabel {
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #b0b0b0;
+  font-size: 0.85rem;
+  word-break: break-word;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.nodeInput {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px;
+  background-color: var(--sidebar-bottom-background-color);
+  border: 1px solid var(--sidebar-item-hover-border-color);
+  border-radius: 4px;
+  font-size: 1.1rem;
+  color: #fff;
+  text-align: center;
+  outline: none;
+  appearance: textfield;
+  transition: border-color 0.2s;
+}
+
+.nodeInput::-webkit-outer-spin-button,
+.nodeInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.nodeInput:focus {
+  border-color: #843eb3;
+}
+
+.nodeFormula {
+  font-size: 0.75rem;
+  color: #786985;
+  margin-bottom: 6px;
+  font-family: monospace;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 2px 4px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.nodeValue {
+  font-size: 1.4rem;
+  color: #fff;
+  font-weight: bold;
+  word-break: break-all;
+}
