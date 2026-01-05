@@ -10,6 +10,9 @@
   --sidebar-padding: 13px;
   --black-background-container-zindex: 10;
   --algo-calc-modal-background-color: rgb(33, 29, 43);
+
+  --font-code: "JetBrains Mono", monospace;
+  --font-code-size: 85%;
 }
 
 * {
