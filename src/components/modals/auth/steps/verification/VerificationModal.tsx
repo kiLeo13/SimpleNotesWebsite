@@ -2,16 +2,15 @@ import { useEffect, useRef, useState, type JSX } from "react"
 
 import RequiredHint from "@/components/hints/RequiredHint"
 
-import { createPortal } from "react-dom"
+import { LoaderContainer } from "@/components/LoaderContainer"
 import { isOnlyDigit } from "@/utils/utils"
 import { useAsync } from "@/hooks/useAsync"
 import { useNavigate } from "react-router-dom"
 import { userService } from "@/services/userService"
+import { isNumber } from "lodash-es"
 
 import authStyles from "../../AuthModal.module.css"
 import styles from "./VerificationModal.module.css"
-
-const root = document.getElementById('root')!
 
 type VerificationModalProps = {
   email: string
@@ -23,6 +22,7 @@ export function VerificationModal({ email }: VerificationModalProps): JSX.Elemen
   const [error, setError] = useState<string | null>(null)
   const [verify, isLoading] = useAsync(userService.verifyEmail)
   const codeInRef = useRef<HTMLInputElement>(null)
+  const isValid = isNumber(code) || code.length === 6
 
   useEffect(() => {
     codeInRef?.current?.focus()
@@ -30,7 +30,7 @@ export function VerificationModal({ email }: VerificationModalProps): JSX.Elemen
 
   const codeTypeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value.trim()
-    if (val.length < 6 || isOnlyDigit(val)) {
+    if (val.length <= 6 && (val === '' || isOnlyDigit(val))) {
       setCode(val)
     }
   }
@@ -53,7 +53,7 @@ export function VerificationModal({ email }: VerificationModalProps): JSX.Elemen
     navigate('/login')
   }
 
-  return createPortal(
+  return (
     <div className={styles.modalWrapper}>
       <header className={styles.verifyHeader}>
         <h2 className={styles.verifyTitle}>Verificação de Email</h2>
@@ -73,17 +73,14 @@ export function VerificationModal({ email }: VerificationModalProps): JSX.Elemen
           )}
         </div>
         <footer className={styles.verifyFooter}>
-          <button disabled={isLoading} className={authStyles.submitButton} type="submit">
+          <button disabled={isLoading || !isValid} className={authStyles.submitButton} type="submit">
             Verificar
             {isLoading && (
-              <div className={authStyles.loaderContainer}>
-                <div className={`loader ${authStyles.loader}`}></div>
-              </div>
+              <LoaderContainer scale="0.7" />
             )}
           </button>
         </footer>
       </form>
-    </div>,
-    root
+    </div>
   )
 }
