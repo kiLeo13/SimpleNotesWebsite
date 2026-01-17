@@ -5,15 +5,11 @@ import { toasts } from "@/utils/toastUtils"
 import { create } from "zustand"
 
 type NotesState = {
-  // Sidebar State
   notes: NoteResponseData[]
   isLoading: boolean
-
-  // Content State
   shownNote: FullNoteResponseData | null
   isRendering: boolean
 
-  // Actions
   fetchNotes: () => Promise<void>
   openNote: (note: NoteResponseData) => Promise<void>
   closeNote: () => void
@@ -99,7 +95,7 @@ export const useNoteStore = create<NotesState>((set, get) => ({
 
   createNoteAndOpen: async (data, file) => {
     const resp = await noteService.createNote(data, file)
-    
+
     if (!resp.success) {
       toasts.apiError('Não foi possível criar anotação', resp)
       return false
