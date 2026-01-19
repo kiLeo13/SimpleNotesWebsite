@@ -74,6 +74,7 @@ export function Sidebar({ selfUser }: SidebarProps): JSX.Element {
           className={styles.searchInput}
           disabled={isLoading}
           type="text"
+          name="noteSearch" // Just to remove browser warnings
           placeholder="Pesquisar"
           autoComplete="off"
           ref={searchRef}

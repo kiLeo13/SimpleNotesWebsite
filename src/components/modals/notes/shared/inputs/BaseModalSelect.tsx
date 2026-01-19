@@ -23,7 +23,7 @@ export function BaseModalSelect({
   return (
     <>
       <select 
-        className={clsx(styles.input, styles.select, errorMessage && styles.invalid, className)} 
+        className={clsx(styles.input, styles.select, errorMessage && styles.invalid, className)}
         {...props}
       >
         {options.map((opt) => (

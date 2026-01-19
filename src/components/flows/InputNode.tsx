@@ -21,6 +21,7 @@ export function InputNode({ data, isConnectable, selected }: NodeProps<InputNode
         type="number"
         className={styles.nodeInput}
         value={data.value}
+        name="algoInputNode"
         onChange={(evt) => data.onChange(evt.target.value === '' ? '' : Number(evt.target.value))}
         placeholder="Digite aqui..."
       />
