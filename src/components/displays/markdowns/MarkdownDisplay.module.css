@@ -9,11 +9,11 @@
   border-spacing: 0;
 }
 
-.md table>thead>tr {
+.md table > thead > tr {
   background-color: rgba(255, 255, 255, 0.2);
 }
 
-.md table>tbody>tr {
+.md table > tbody > tr {
   background-color: rgba(255, 255, 255, 0.02);
 }
 
@@ -23,8 +23,12 @@
   padding: 8px;
 }
 
-.md>ul {
+.md > ul,
+.md > ol {
+  display: flex;
+  flex-direction: column;
   padding-left: 25px;
+  gap: 5px;
 }
 
 .md code {
@@ -34,6 +38,12 @@
   font-size: var(--font-code-size);
 }
 
-.md pre>code {
+.md pre > code {
+  border: 1px solid rgb(41, 43, 65);
+}
+
+.md code:not(:global(.hljs)),
+.md :not(pre) > code {
+  padding: 0px 4px;
   border: 1px solid rgb(41, 43, 65);
 }
