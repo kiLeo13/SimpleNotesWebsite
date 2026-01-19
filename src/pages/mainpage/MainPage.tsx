@@ -18,6 +18,7 @@ export function MainPage(): JSX.Element {
   const shownNote = useNoteStore((state) => state.shownNote)
   const isRendering = useNoteStore((state) => state.isRendering)
   const closeNote = useNoteStore((state) => state.closeNote)
+  const showRenderingLoader = isRendering && !shownNote?.content?.endsWith('mp4')
 
   useEffect(() => {
     const loadSelfUser = async () => {
@@ -60,7 +61,7 @@ export function MainPage(): JSX.Element {
             <ContentBoard note={shownNote} />
           ) : <EmptyDisplay />}
 
-          {isRendering && <LoaderContainer />}
+          {showRenderingLoader && <LoaderContainer />}
         </main>
       </div>
     </>
