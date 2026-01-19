@@ -46,9 +46,9 @@ export function AlgoExplanation(): JSX.Element {
           <BsFillInfoCircleFill size={"1.1em"} />
           {t('modals.algoCalc.expl.referencesTitle')}
         </p>
-        <p className={styles.explCommonBody}>
+        <div className={styles.explCommonBody}>
           <MarkdownDisplay content={t('modals.algoCalc.expl.referencesBody')} />
-        </p>
+        </div>
       </div>
     </div>
   )
