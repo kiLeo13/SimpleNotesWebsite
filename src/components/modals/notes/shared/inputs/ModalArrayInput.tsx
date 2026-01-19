@@ -1,5 +1,12 @@
 import type { CSSProperties, JSX } from "react"
-import { useController, useFormContext, type ControllerFieldState, type FieldError, type FieldValues, type Path } from "react-hook-form"
+import {
+  useController,
+  useFormContext,
+  type ControllerFieldState,
+  type FieldError,
+  type FieldValues,
+  type Path
+} from "react-hook-form"
 import { BaseArrayInput } from "./BaseArrayInput"
 
 type ModalArrayInputProps<T extends FieldValues> = {
@@ -10,8 +17,8 @@ type ModalArrayInputProps<T extends FieldValues> = {
   style?: CSSProperties
 }
 
-export function ModalArrayInput<T extends FieldValues>({ 
-  name, 
+export function ModalArrayInput<T extends FieldValues>({
+  name,
   placeholder,
   minLength,
   maxLength,
@@ -30,22 +37,19 @@ export function ModalArrayInput<T extends FieldValues>({
   }
 
   const handleRemove = (toRemove: string) => {
-    field.onChange(currentItems.filter(t => t !== toRemove))
+    field.onChange(currentItems.filter((t) => t !== toRemove))
   }
 
   return (
     <BaseArrayInput
       items={currentItems}
       invalidItems={invalidValues}
-
       onAdd={handleAdd}
       onRemove={handleRemove}
       errorMessage={errorMessage}
       placeholder={placeholder}
-
       minLength={minLength}
       maxLength={maxLength}
-
       style={style}
     />
   )
