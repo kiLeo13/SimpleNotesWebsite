@@ -1,4 +1,9 @@
-import type { FullNoteResponseData, NoteRequestPayload, NoteResponseData, UpdateNoteRequestPayload } from "@/types/api/notes"
+import type {
+  FullNoteResponseData,
+  NoteRequestPayload,
+  NoteResponseData,
+  UpdateNoteRequestPayload
+} from "@/types/api/notes"
 import { noteService } from "@/services/noteService"
 
 import { toasts } from "@/utils/toastUtils"
@@ -14,8 +19,14 @@ type NotesState = {
   openNote: (note: NoteResponseData) => Promise<void>
   closeNote: () => void
   deleteNoteAndRefresh: (noteId: number) => Promise<boolean>
-  updateNoteAndRefresh: (noteId: number, payload: UpdateNoteRequestPayload) => Promise<boolean>
-  createNoteAndOpen: (payload: NoteRequestPayload, file: File) => Promise<boolean>
+  updateNoteAndRefresh: (
+    noteId: number,
+    payload: UpdateNoteRequestPayload
+  ) => Promise<boolean>
+  createNoteAndOpen: (
+    payload: NoteRequestPayload,
+    file: File
+  ) => Promise<boolean>
   setRendering: (flag: boolean) => void
 }
 
@@ -28,49 +39,55 @@ export const useNoteStore = create<NotesState>((set, get) => ({
   fetchNotes: async () => {
     set({ isLoading: true })
     const resp = await noteService.listNotes()
-    if (resp.success) {
-      set({ notes: resp.data.notes })
-    }
-    set({ isLoading: false })
+
+    set({
+      notes: resp.success ? resp.data.notes : [],
+      isLoading: false
+    })
   },
 
   openNote: async (note) => {
-    const currentShown = get().shownNote
-    if (currentShown?.id === note.id) return
+    const { shownNote } = get()
+    if (shownNote?.id === note.id) return
 
     set({ isRendering: true })
+
+    // We don't need to fetch reference notes, as the `content` is already present
+    if (note.note_type === "REFERENCE") {
+      set({ shownNote: note as FullNoteResponseData, isRendering: false })
+      return
+    }
 
     const resp = await noteService.fetchNote(note.id)
     if (!resp.success) {
       set({ isRendering: false })
-      toasts.apiError('Não foi possível encontrar nota completa', resp)
+      toasts.apiError("Não foi possível encontrar nota completa", resp)
       return
     }
 
-    set({ shownNote: resp.data })
+    // We only turn off rendering for TEXT
+    // (Assuming PDFs/Images handle their own loading state in the UI component)
+    const isText = resp.data.note_type === "TEXT"
 
-    if (resp.data.note_type === 'TEXT') {
-      set({ isRendering: false })
-    }
+    set({
+      shownNote: resp.data,
+      ...(isText && { isRendering: false })
+    })
   },
 
   closeNote: () => set({ shownNote: null }),
 
   deleteNoteAndRefresh: async (noteId) => {
     const resp = await noteService.deleteNote(noteId)
-
     if (!resp.success) {
-      toasts.apiError('Erro ao apagar anotação', resp)
+      toasts.apiError("Erro ao apagar anotação", resp)
       return false
     }
 
-    const currentNotes = get().notes
-    const currentShown = get().shownNote
-
-    set({
-      notes: currentNotes.filter(n => n.id !== noteId),
-      shownNote: currentShown?.id === noteId ? null : currentShown
-    })
+    set((state) => ({
+      notes: state.notes.filter((n) => n.id !== noteId),
+      shownNote: state.shownNote?.id === noteId ? null : state.shownNote
+    }))
 
     return true
   },
@@ -78,32 +95,35 @@ export const useNoteStore = create<NotesState>((set, get) => ({
   updateNoteAndRefresh: async (noteId, payload) => {
     const resp = await noteService.updateNote(noteId, payload)
     if (!resp.success) {
-      toasts.apiError('Erro ao atualizar anotação', resp)
+      toasts.apiError("Erro ao atualizar anotação", resp)
       return false
     }
 
-    toasts.success('Nota atualizada com sucesso')
+    toasts.success("Nota atualizada com sucesso")
 
-    const currentNotes = get().notes
-
-    set({
-      notes: currentNotes.map(n => n.id === noteId ? resp.data : n)
-    })
+    set((state) => ({
+      notes: state.notes.map((n) => (n.id === noteId ? resp.data : n)),
+      // If the updated note is currently open, update the view too
+      shownNote:
+        state.shownNote?.id === noteId
+          ? { ...state.shownNote, ...resp.data }
+          : state.shownNote
+    }))
 
     return true
   },
 
   createNoteAndOpen: async (data, file) => {
     const resp = await noteService.createNote(data, file)
-
     if (!resp.success) {
-      toasts.apiError('Não foi possível criar anotação', resp)
+      toasts.apiError("Não foi possível criar anotação", resp)
       return false
     }
 
-    await get().fetchNotes()
-
-    set({ shownNote: resp.data })
+    set((state) => ({
+      notes: [...state.notes, resp.data],
+      shownNote: resp.data
+    }))
     return true
   },
 
