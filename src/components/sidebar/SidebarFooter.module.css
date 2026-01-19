@@ -20,22 +20,3 @@
   align-items: center;
   gap: 5px;
 }
-
-.actionButton {
-  display: flex;
-  aspect-ratio: 1;
-  height: 100%;
-  justify-content: center;
-  align-items: center;
-  background-color: transparent;
-  border: none;
-  border-radius: 9999px;
-  font-size: 35px;
-  color: rgba(147, 117, 182, 0.6);
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.actionButton:hover:not(:disabled) {
-  background-color: rgba(119, 102, 161, 0.1);
-}
