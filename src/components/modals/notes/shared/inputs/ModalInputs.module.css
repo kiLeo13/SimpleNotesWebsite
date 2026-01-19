@@ -62,8 +62,9 @@
   transition: border-color 0.3s;
 }
 
-.input:focus:not(.invalid) {
-  border-color: #5c4791
+.input:focus:not(.invalid),
+.input:has(.arrayInput:focus) {
+  border-color: #5c4791;
 }
 
 .input:disabled {
