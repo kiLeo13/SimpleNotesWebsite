@@ -56,7 +56,8 @@
   margin: 0;
 }
 
-.explCommonBody > p {
+/* Necessary for markdowns' <p> margin */
+.explCommonBody p {
   margin: 0;
 }
 
