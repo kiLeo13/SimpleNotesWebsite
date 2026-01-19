@@ -76,5 +76,12 @@
       "maxSize": "Arquivo muito grande (máx {{size}})",
       "invalidExtension": "Extensão inválida. Permitido: {{extensions}}"
     }
+  },
+  "tooltips": {
+    "labels": {
+      "algoCalc": "Pedra Chave",
+      "createNote": "Criar Nota",
+      "settings": "Configurações"
+    }
   }
 }
