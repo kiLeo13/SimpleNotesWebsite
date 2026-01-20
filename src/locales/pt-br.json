@@ -82,6 +82,11 @@
       "algoCalc": "Pedra Chave",
       "createNote": "Criar Nota",
       "settings": "Configurações"
+    },
+    "menus": {
+      "header": {
+        "createNote": "Criar Nota"
+      }
     }
   }
 }
