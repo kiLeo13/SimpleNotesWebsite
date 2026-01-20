@@ -7,7 +7,7 @@ import { FaGear } from "react-icons/fa6"
 import { DarkWrapper } from "../DarkWrapper"
 import { CreateNoteModalForm } from "../modals/notes/creations/CreateNoteModalForm"
 import { AlgorithmCalculator } from "../modals/global/algorithm/AlgorithmCalculator"
-import { TooltipButton } from "./TooltipButton"
+import { FooterButton } from "./FooterButton"
 import { useTranslation } from "react-i18next"
 import { useState } from "react"
 
@@ -45,18 +45,18 @@ export function SidebarFooter({ selfUser }: SidebarFooterProps): JSX.Element {
       )}
 
       <div className={styles.footer}>
-        <TooltipButton onClick={() => {}} label={t("tooltips.labels.settings")}>
+        <FooterButton onClick={() => {}} label={t("tooltips.labels.settings")}>
           <FaGear size={"0.5em"} />
-        </TooltipButton>
+        </FooterButton>
 
         <div className={styles.buttonsContainer}>
-          <TooltipButton onClick={handleShowAlgo} label={t("tooltips.labels.algoCalc")}>
+          <FooterButton onClick={handleShowAlgo} label={t("tooltips.labels.algoCalc")}>
             <CgController size={"0.7em"} />
-          </TooltipButton>
+          </FooterButton>
           {selfUser?.isAdmin && (
-            <TooltipButton onClick={handleShowUpload} label={t("tooltips.labels.createNote")}>
+            <FooterButton onClick={handleShowUpload} label={t("tooltips.labels.createNote")}>
               <MdOutlineFileUpload size={"0.8em"} />
-            </TooltipButton>
+            </FooterButton>
           )}
         </div>
       </div>
