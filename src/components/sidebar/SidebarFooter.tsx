@@ -8,11 +8,11 @@ import { FaGear } from "react-icons/fa6"
 import { DarkWrapper } from "../DarkWrapper"
 import { CreateNoteModalForm } from "../modals/notes/creations/CreateNoteModalForm"
 import { AlgorithmCalculator } from "../modals/global/algorithm/AlgorithmCalculator"
+import { AppTooltip } from "../ui/AppTooltip"
 import { useTranslation } from "react-i18next"
 import { useState } from "react"
 
 import styles from "./SidebarFooter.module.css"
-import { AppTooltip } from "../ui/AppTooltip"
 
 type SidebarFooterProps = {
   selfUser: UserResponseData | null
@@ -23,28 +23,22 @@ export function SidebarFooter({ selfUser }: SidebarFooterProps): JSX.Element {
   const [showUploadModal, setShowUploadModal] = useState(false)
   const [showAlgoCalc, setShowAlgoCalc] = useState(false)
 
-  const handleShowUpload = () => {
-    setShowUploadModal(true)
-  }
-
-  const handleShowAlgo = () => {
-    setShowAlgoCalc(true)
-  }
+  const handleShowAlgo = () => setShowAlgoCalc(true)
 
   const createNoteOptions: MenuActionItem[] = [
     {
       label: "Markdown / Texto",
-      icon: <MdTextFields />,
+      icon: <MdTextFields size={"1.2em"} />,
       onClick: () => {}
     },
     {
       label: "Diagrama",
-      icon: <MdSchema />,
+      icon: <MdSchema size={"1.2em"} />,
       onClick: () => {}
     },
     {
       label: "Arquivo",
-      icon: <MdInsertDriveFile />,
+      icon: <MdInsertDriveFile size={"1.2em"} />,
       onClick: () => {}
     }
   ]
@@ -64,7 +58,6 @@ export function SidebarFooter({ selfUser }: SidebarFooterProps): JSX.Element {
       )}
 
       <div className={styles.footer}>
-
         {/* Settings */}
         <AppTooltip label={t("tooltips.labels.settings")}>
           <button className={styles.button}>
@@ -73,7 +66,6 @@ export function SidebarFooter({ selfUser }: SidebarFooterProps): JSX.Element {
         </AppTooltip>
 
         <div className={styles.buttonsContainer}>
-
           {/* Algorithm Calculator */}
           <AppTooltip label={t("tooltips.labels.algoCalc")}>
             <button className={styles.button} onClick={handleShowAlgo}>
@@ -81,15 +73,18 @@ export function SidebarFooter({ selfUser }: SidebarFooterProps): JSX.Element {
             </button>
           </AppTooltip>
           {selfUser?.isAdmin && (
-
             // Create Note Action Menu
-            <AppTooltip label={t("tooltips.labels.createNote")}>
-              <ActionMenu header="New Entry" items={createNoteOptions} side="right">
-                <button className={styles.button} onClick={handleShowUpload}>
+            <ActionMenu
+              header={t("tooltips.menus.header.createNote")}
+              items={createNoteOptions}
+              side="right"
+            >
+              <AppTooltip label={t("tooltips.labels.createNote")}>
+                <button className={styles.button}>
                   <MdOutlineFileUpload size={"0.8em"} />
                 </button>
-              </ActionMenu>
-            </AppTooltip>
+              </AppTooltip>
+            </ActionMenu>
           )}
         </div>
       </div>
