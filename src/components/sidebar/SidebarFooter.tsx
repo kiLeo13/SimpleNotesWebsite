@@ -3,7 +3,8 @@ import type { UserResponseData } from "@/types/api/users"
 import { ActionMenu, type MenuActionItem } from "../ui/ActionMenu"
 
 import { CgController } from "react-icons/cg"
-import { MdInsertDriveFile, MdOutlineFileUpload, MdSchema, MdTextFields } from "react-icons/md"
+import { MdInsertDriveFile, MdOutlineFileUpload, MdTextFields } from "react-icons/md"
+import { RiFlowChart } from "react-icons/ri"
 import { FaGear } from "react-icons/fa6"
 import { DarkWrapper } from "../DarkWrapper"
 import { CreateNoteModalForm } from "../modals/notes/creations/CreateNoteModalForm"
@@ -33,7 +34,7 @@ export function SidebarFooter({ selfUser }: SidebarFooterProps): JSX.Element {
     },
     {
       label: "Diagrama",
-      icon: <MdSchema size={"1.2em"} />,
+      icon: <RiFlowChart size={"1.2em"} />,
       onClick: () => {}
     },
     {

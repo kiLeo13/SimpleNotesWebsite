@@ -1,6 +1,6 @@
 .menuContent {
   min-width: 200px;
-  background-color: #1e1f22;
+  background-color: #24202b;
   border-radius: 6px;
   padding: 6px;
   box-shadow:
@@ -14,7 +14,7 @@
 
 .menuLabel {
   padding: 8px 12px 4px;
-  font-size: 11px;
+  font-size: 0.8em;
   font-weight: 700;
   color: #949ba4;
   text-transform: uppercase;
@@ -35,24 +35,14 @@
   font-size: 14px;
   color: #dbdee1;
   border-radius: 4px;
-  cursor: default;
   user-select: none;
   outline: none;
   transition: background-color 0.1s;
+  cursor: pointer;
 }
 
 .menuItem[data-highlighted] {
-  background-color: #5865f2;
-  color: white;
-}
-
-.menuItem[data-variant="danger"] {
-  color: #fa777c;
-}
-
-.menuItem[data-variant="danger"][data-highlighted] {
-  background-color: #da373c;
-  color: white;
+  background-color: #58457c;
 }
 
 .iconWrapper {
@@ -68,7 +58,7 @@
 }
 
 .menuArrow {
-  fill: #1e1f22;
+  fill: #24202b;
 }
 
 /* Animations */
