@@ -7,12 +7,13 @@ import styles from "./AppTooltip.module.css"
 interface AppTooltipProps {
   children: React.ReactNode
   label: string
+  delay?: number
   side?: "top" | "bottom" | "left" | "right"
 }
 
-export function AppTooltip({ children, label, side = "top" }: AppTooltipProps): JSX.Element {
+export function AppTooltip({ children, label, delay = 100, side = "top" }: AppTooltipProps): JSX.Element {
   return (
-    <Tooltip.Provider delayDuration={200}>
+    <Tooltip.Provider delayDuration={delay}>
       <Tooltip.Root>
         <Tooltip.Trigger asChild>{children}</Tooltip.Trigger>
 

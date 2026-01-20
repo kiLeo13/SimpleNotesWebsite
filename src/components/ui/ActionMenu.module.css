@@ -1,0 +1,84 @@
+.menuContent {
+  min-width: 200px;
+  background-color: #1e1f22;
+  border-radius: 6px;
+  padding: 6px;
+  box-shadow:
+    0px 10px 38px -10px rgba(22, 23, 24, 0.35),
+    0px 10px 20px -15px rgba(22, 23, 24, 0.2);
+
+  transform-origin: var(--radix-dropdown-menu-content-transform-origin);
+  animation: slideUpAndFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1000;
+}
+
+.menuLabel {
+  padding: 8px 12px 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #949ba4;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.menuSeparator {
+  height: 1px;
+  background-color: #35363c;
+  margin: 4px 6px;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: #dbdee1;
+  border-radius: 4px;
+  cursor: default;
+  user-select: none;
+  outline: none;
+  transition: background-color 0.1s;
+}
+
+.menuItem[data-highlighted] {
+  background-color: #5865f2;
+  color: white;
+}
+
+.menuItem[data-variant="danger"] {
+  color: #fa777c;
+}
+
+.menuItem[data-variant="danger"][data-highlighted] {
+  background-color: #da373c;
+  color: white;
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  width: 16px;
+}
+
+.itemLabel {
+  flex: 1;
+}
+
+.menuArrow {
+  fill: #1e1f22;
+}
+
+/* Animations */
+@keyframes slideUpAndFade {
+  from {
+    opacity: 0;
+    transform: translateY(2px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
