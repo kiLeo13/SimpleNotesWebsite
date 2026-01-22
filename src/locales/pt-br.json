@@ -38,7 +38,7 @@
     "submit": "Criar",
     "visibilityOptions": {
       "public": "Público",
-      "confidential": "Confidencial"
+      "private": "Privado"
     }
   },
   "warnings": {
