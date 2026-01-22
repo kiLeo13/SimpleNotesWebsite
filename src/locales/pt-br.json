@@ -43,7 +43,7 @@
   },
   "warnings": {
     "noteCreation": {
-      "noFiles": "Arquivo não encontrado? Isso é possível aqui? Bem, de qualquer jeito, deixe o Léo ciente sobre isso."
+      "noFiles": "Arquivo não encontrado."
     }
   },
   "errors": {
