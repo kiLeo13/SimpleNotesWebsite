@@ -13,14 +13,19 @@ type MarkdownDisplayProps = ComponentProps<"div"> & {
   content: string
 }
 
-export function MarkdownDisplay({ content, className, ...props }: MarkdownDisplayProps): JSX.Element {
+export function MarkdownDisplay({
+  content,
+  className,
+  ...props
+}: MarkdownDisplayProps): JSX.Element {
   const schema = {
     ...defaultSchema,
     attributes: {
       ...defaultSchema.attributes,
-      code: [...(defaultSchema.attributes?.code || []), 'className'], 
-      img: [...(defaultSchema.attributes?.img || []), 'align', 'className', 'src', 'alt', 'width', 'height'],
-      span: [...(defaultSchema.attributes?.span || []), 'className']
+      code: [...(defaultSchema.attributes?.code || []), "className"],
+      img: [...(defaultSchema.attributes?.img || []), "align", "src", "alt", "width", "height"],
+      span: [...(defaultSchema.attributes?.span || []), "style"],
+      div: [...(defaultSchema.attributes?.div || []), "style"]
     }
   }
 
@@ -28,18 +33,10 @@ export function MarkdownDisplay({ content, className, ...props }: MarkdownDispla
     <div className={clsx(styles.md, className)} {...props}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
-        rehypePlugins={[
-          rehypeRaw, 
-          [rehypeSanitize, schema],
-          rehypeHighlight
-        ]}
+        rehypePlugins={[rehypeRaw, [rehypeSanitize, schema], rehypeHighlight]}
         components={{
-          a: ({ ...props }) => (
-            <a {...props} target="_blank" rel="noopener noreferrer" />
-          ),
-          img: ({ ...props }) => (
-             props.src ? <img {...props} /> : null
-          )
+          a: ({ ...props }) => <a {...props} target="_blank" rel="noopener noreferrer" />,
+          img: ({ ...props }) => (props.src ? <img {...props} /> : null)
         }}
       >
         {content}
