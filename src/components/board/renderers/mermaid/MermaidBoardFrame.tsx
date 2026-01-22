@@ -20,9 +20,10 @@ mermaid.initialize({
 
 type MermaidBoardFrameProps = {
   diagram: string
+  warnOnFail?: boolean
 }
 
-export function MermaidBoardFrame({ diagram }: MermaidBoardFrameProps) {
+export function MermaidBoardFrame({ diagram, warnOnFail = true }: MermaidBoardFrameProps) {
   const [svgString, setSvgString] = useState("")
   const [failed, setFailed] = useState(false)
 
@@ -35,13 +36,15 @@ export function MermaidBoardFrame({ diagram }: MermaidBoardFrameProps) {
         const { svg } = await mermaid.render(elementIdRef.current, diagram)
         setSvgString(svg)
       } catch (err) {
-        console.error("Mermaid rendering error:", err)
-        toasts.error("Failed to render Mermaid diagram.")
+        if (warnOnFail) {
+          console.error("Mermaid rendering error:", err)
+          toasts.error("Failed to render Mermaid diagram.")
+        }
         setFailed(true)
       }
     }
     renderChart()
-  }, [diagram])
+  }, [diagram, warnOnFail])
 
   const parsedContent = useMemo(() => {
     if (!svgString) return null
@@ -94,7 +97,7 @@ export function MermaidBoardFrame({ diagram }: MermaidBoardFrameProps) {
                 wrapperStyle={{
                   width: "100%",
                   height: "100%",
-                  overflow: "hidden",
+                  overflow: "hidden"
                 }}
                 contentStyle={{
                   width: "100%",
