@@ -52,6 +52,7 @@ select {
 /* Scroll bar */
 ::-webkit-scrollbar {
   width: var(--scrollbar-width);
+  height: var(--scrollbar-width);
   transition: background-color 300ms;
 }
 
