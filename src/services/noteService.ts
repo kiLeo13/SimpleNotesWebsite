@@ -13,7 +13,7 @@ import apiClient from "./apiClient"
 import { VoidSchema } from "../types/api/api"
 import { safeApiCall } from "./safeApiCall"
 
-export const NOTE_EXTENSIONS = ["txt", "md", "pdf", "png", "jpg", "jpeg", "jfif", "webp", "gif", "mp4", "mp3"]
+export const NOTE_EXTENSIONS = ["pdf", "png", "jpg", "jpeg", "jfif", "webp", "gif", "mp4", "mp3"]
 export const NOTE_MAX_SIZE_BYTES = 20 * 1024 * 1024 // 20 MiB
 
 export const noteService = {
