@@ -1,13 +1,15 @@
 import type {
   FullNoteResponseData,
-  NoteRequestPayload,
   NoteResponseData,
+  NoteType,
   UpdateNoteRequestPayload
 } from "@/types/api/notes"
+import type { NoteFormFields } from "@/types/forms/notes" // Ensure this path is correct
 import { noteService } from "@/services/noteService"
 
 import { toasts } from "@/utils/toastUtils"
 import { create } from "zustand"
+import type { ApiResponse } from "@/types/api/api"
 
 type NotesState = {
   notes: NoteResponseData[]
@@ -19,14 +21,11 @@ type NotesState = {
   openNote: (note: NoteResponseData) => Promise<void>
   closeNote: () => void
   deleteNoteAndRefresh: (noteId: number) => Promise<boolean>
-  updateNoteAndRefresh: (
-    noteId: number,
-    payload: UpdateNoteRequestPayload
-  ) => Promise<boolean>
-  createNoteAndOpen: (
-    payload: NoteRequestPayload,
-    file: File
-  ) => Promise<boolean>
+  updateNoteAndRefresh: (noteId: number, payload: UpdateNoteRequestPayload) => Promise<boolean>
+
+  // Updated Signature to support both File Uploads and Text Editors
+  createNoteAndOpen: (data: NoteFormFields, noteType: NoteType) => Promise<boolean>
+
   setRendering: (flag: boolean) => void
 }
 
@@ -52,7 +51,8 @@ export const useNoteStore = create<NotesState>((set, get) => ({
 
     set({ isRendering: true })
 
-    // We don't need to fetch reference notes, as the `content` is already present
+    // We don't need to fetch reference notes content (binary files),
+    // as we just show the metadata or a download button.
     if (note.note_type === "REFERENCE") {
       set({ shownNote: note as FullNoteResponseData, isRendering: false })
       return
@@ -65,13 +65,14 @@ export const useNoteStore = create<NotesState>((set, get) => ({
       return
     }
 
-    // We only turn off rendering for TEXT
-    // (Assuming PDFs/Images handle their own loading state in the UI component)
-    const isText = resp.data.note_type === "TEXT"
+    // We turn off rendering immediately for text-based notes (Markdown, Mermaid, Text).
+    // For binary files (like PDF/Images), we leave it true so the specific UI component
+    // (e.g., <PdfViewer>) can handle its own loading state.
+    const isTextBased = ["TEXT", "MARKDOWN", "MERMAID"].includes(resp.data.note_type)
 
     set({
       shownNote: resp.data,
-      ...(isText && { isRendering: false })
+      ...(isTextBased && { isRendering: false })
     })
   },
 
@@ -105,16 +106,14 @@ export const useNoteStore = create<NotesState>((set, get) => ({
       notes: state.notes.map((n) => (n.id === noteId ? resp.data : n)),
       // If the updated note is currently open, update the view too
       shownNote:
-        state.shownNote?.id === noteId
-          ? { ...state.shownNote, ...resp.data }
-          : state.shownNote
+        state.shownNote?.id === noteId ? { ...state.shownNote, ...resp.data } : state.shownNote
     }))
 
     return true
   },
 
-  createNoteAndOpen: async (data, file) => {
-    const resp = await noteService.createNote(data, file)
+  createNoteAndOpen: async (data, noteType) => {
+    const resp = await uploadNote(data, noteType)
     if (!resp.success) {
       toasts.apiError("Não foi possível criar anotação", resp)
       return false
@@ -124,8 +123,33 @@ export const useNoteStore = create<NotesState>((set, get) => ({
       notes: [...state.notes, resp.data],
       shownNote: resp.data
     }))
+
     return true
   },
 
   setRendering: (flag) => set({ isRendering: flag })
 }))
+
+async function uploadNote(
+  note: NoteFormFields,
+  type: NoteType
+): Promise<ApiResponse<FullNoteResponseData>> {
+  if (note.mode === "EDITOR") {
+    return noteService.createTextNote({
+      ...note,
+      note_type: type
+    })
+  }
+
+  if (note.mode === "UPLOAD") {
+    return noteService.createFileNote(
+      {
+        ...note,
+        note_type: type
+      },
+      note.file
+    )
+  }
+
+  return Promise.reject()
+}
