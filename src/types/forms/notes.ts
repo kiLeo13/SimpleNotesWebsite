@@ -39,15 +39,16 @@ const baseNoteSchema = z.object({
 export const uploadSchema = baseNoteSchema.extend({
   mode: z.literal("UPLOAD"),
   file: z
-    .instanceof(File, { error: t("errors.file.required") })
+    .instanceof(FileList, { error: t("errors.file.required") })
+    .refine((files) => files?.length === 1, t("errors.file.required"))
     .refine(
-      (file) => file.size <= NOTE_MAX_SIZE_BYTES,
+      (files) => files?.[0].size <= NOTE_MAX_SIZE_BYTES,
       t("errors.file.maxSize", {
         size: getPrettySize(NOTE_MAX_SIZE_BYTES)
       })
     )
     .refine(
-      (file) => hasValidExtension(file.name),
+      (files) => hasValidExtension(files?.[0].name),
       t("errors.file.invalidExtension", {
         extensions: NOTE_EXTENSIONS.join(", ")
       })

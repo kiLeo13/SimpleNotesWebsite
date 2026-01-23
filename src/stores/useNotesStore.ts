@@ -147,7 +147,7 @@ async function uploadNote(
         ...note,
         note_type: type
       },
-      note.file
+      note.file[0]
     )
   }
 
