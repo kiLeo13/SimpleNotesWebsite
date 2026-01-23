@@ -31,7 +31,7 @@ const NoteBaseSchema = z.object({
   name: z.string(),
   tags: z.array(z.string()),
   visibility: z.enum(["PUBLIC", "CONFIDENTIAL"]),
-  note_type: z.enum(["MARKDOWN", "MERMAID", "REFERENCE"]),
+  note_type: z.enum(["MARKDOWN", "FLOWCHART", "REFERENCE"]),
   created_by_id: z.number(),
   content_size: z.number(),
   created_at: z.string(),
@@ -39,7 +39,7 @@ const NoteBaseSchema = z.object({
 })
 
 const TextNoteSchema = NoteBaseSchema.extend({
-  note_type: z.enum(["TEXT", "MARKDOWN", "MERMAID"])
+  note_type: z.enum(["TEXT", "MARKDOWN", "FLOWCHART"])
 })
 
 // Specific Schema for File Notes (PDFs, Images)
