@@ -12,8 +12,8 @@ type ModalNoteFileViewProps = {
 }
 
 export function ModalNoteFileView({ note }: ModalNoteFileViewProps): JSX.Element {
-  const isText = note?.note_type === 'TEXT'
-  const nameView = normalizeFileName(note?.content, isText)
+  const hasFileName = ["FLOWCHART", "MARKDOWN"].includes(note?.note_type ?? "")
+  const nameView = normalizeFileName(note?.content, hasFileName)
   const sizeView = getPrettySize(note?.content_size ?? 0)
 
   return (
@@ -22,14 +22,14 @@ export function ModalNoteFileView({ note }: ModalNoteFileViewProps): JSX.Element
         <FaDatabase color="#7a6494ff" />
         <span className={styles.size}>{sizeView}</span>
       </div>
-      <span className={clsx(styles.name, isText && styles.textDisclaimer)}>{nameView}</span>
+      <span className={clsx(styles.name, hasFileName && styles.textDisclaimer)}>{nameView}</span>
     </div>
   )
 }
 
-function normalizeFileName(content: string | undefined, isText: boolean): string {
-  if (isText) {
-    return "Anotações de texto não têm arquivo."
+function normalizeFileName(content: string | undefined, hasFileName: boolean): string {
+  if (hasFileName) {
+    return "Anotações desse tipo não têm arquivo."
   }
   return content ?? '-'
 }
