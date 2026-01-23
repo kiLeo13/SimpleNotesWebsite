@@ -1,5 +1,5 @@
 import type { JSX } from "react"
-import type { EditorMode } from "@/components/sidebar/SidebarFooter"
+import type { EditorMode } from "./CreateEditorModal"
 
 import { MermaidBoardFrame } from "@/components/board/renderers/mermaid/MermaidBoardFrame"
 import { TextBoardFrame } from "@/components/board/renderers/TextBoardFrame"
@@ -20,7 +20,7 @@ export function LivePreview({ mode, content }: LivePreviewProps): JSX.Element {
         Live Preview
       </div>
 
-      {mode === "MERMAID" ? (
+      {mode === "FLOWCHART" ? (
         <MermaidBoardFrame diagram={content} warnOnFail={false} />
       ) : (
         <div style={{ height: "100%", overflowY: "auto" }}>

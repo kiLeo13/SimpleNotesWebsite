@@ -1,23 +1,23 @@
-import { createNoteSchema, VISIBILITY_OPTIONS, type NoteFormFields } from "@/types/forms/notes"
+import { uploadSchema, VISIBILITY_OPTIONS, type FileNoteFormFields } from "@/types/forms/notes"
 import { useState, type JSX } from "react"
 
 import clsx from "clsx"
 import i18n from "@/services/i18n"
 
 import { NOTE_EXTENSIONS, NOTE_MAX_SIZE_BYTES } from "@/services/noteService"
-import { ModalActionRow } from "../shared/sections/ModalActionRow"
-import { ModalFileInput } from "../shared/inputs/ModalFileInput"
+import { ModalActionRow } from "../../shared/sections/ModalActionRow"
+import { ModalFileInput } from "../../shared/inputs/ModalFileInput"
 import { FormProvider, useForm } from "react-hook-form"
-import { ModalTextInput } from "../shared/inputs/ModalTextInput"
-import { ModalSelectInput } from "../shared/inputs/ModalSelectInput"
-import { ModalLabel } from "../shared/sections/ModalLabel"
-import { ModalSection } from "../shared/sections/ModalSection"
-import { ModalArrayInput } from "../shared/inputs/ModalArrayInput"
+import { ModalTextInput } from "../../shared/inputs/ModalTextInput"
+import { ModalSelectInput } from "../../shared/inputs/ModalSelectInput"
+import { ModalLabel } from "../../shared/sections/ModalLabel"
+import { ModalSection } from "../../shared/sections/ModalSection"
+import { IoMdClose } from "react-icons/io"
+import { ModalArrayInput } from "../../shared/inputs/ModalArrayInput"
 import { getPrettySize } from "@/utils/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useNoteStore } from "@/stores/useNotesStore"
 import { toasts } from "@/utils/toastUtils"
-import { IoMdClose } from "react-icons/io"
 
 import styles from "./CreateNoteModal.module.css"
 
@@ -30,9 +30,10 @@ type CreateNoteModalFormProps = {
 export function CreateNoteModalForm({ setShowUploadModal }: CreateNoteModalFormProps): JSX.Element {
   const [isLoading, setIsLoading] = useState(false)
   const createNoteAndOpen = useNoteStore((state) => state.createNoteAndOpen)
-  const methods = useForm<NoteFormFields>({
-    resolver: zodResolver(createNoteSchema),
+  const methods = useForm<FileNoteFormFields>({
+    resolver: zodResolver(uploadSchema),
     defaultValues: {
+      mode: "UPLOAD",
       name: "",
       visibility: "PUBLIC",
       tags: [],
@@ -41,10 +42,10 @@ export function CreateNoteModalForm({ setShowUploadModal }: CreateNoteModalFormP
   })
   const { handleSubmit } = methods
 
-  const onSubmit = async (data: NoteFormFields) => {
-    const file = data.file[0]
-    if (!file) {
-      toasts.warning(null, { description: t('warnings.noteCreation.noFiles') })
+  const onSubmit = async (data: FileNoteFormFields) => {
+    // This should be impossible, but better
+    if (!data.file) {
+      toasts.warning(null, { description: t("warnings.noteCreation.noFiles") })
       return
     }
 
@@ -52,15 +53,17 @@ export function CreateNoteModalForm({ setShowUploadModal }: CreateNoteModalFormP
     const success = await createNoteAndOpen(
       {
         name: data.name,
+        mode: "UPLOAD",
         tags: data.tags || [],
-        visibility: data.visibility
+        visibility: data.visibility,
+        file: data.file
       },
-      file
+      "REFERENCE"
     )
     setIsLoading(false)
 
     if (success) {
-      toasts.success('Nota criada com sucesso!')
+      toasts.success("Nota criada com sucesso!")
       setShowUploadModal(false)
     }
   }
@@ -89,8 +92,6 @@ export function CreateNoteModalForm({ setShowUploadModal }: CreateNoteModalFormP
               label={
                 <ModalLabel
                   title="Visibilidade"
-                  hint="A visibilidade de uma nota é apenas para fins de organização e não afeta
-                      a privacidade a nível de permissões de visualização do arquivo."
                   required
                 />
               }
@@ -101,24 +102,37 @@ export function CreateNoteModalForm({ setShowUploadModal }: CreateNoteModalFormP
           <ModalActionRow>
             <ModalSection
               label={<ModalLabel title="Palavras-chave" required={false} />}
-              input={<ModalArrayInput
-                name="tags"
-                placeholder="Adicione apelidos..."
-                minLength={2}
-                maxLength={30}
-              />}
+              input={
+                <ModalArrayInput
+                  name="tags"
+                  placeholder="Adicione apelidos..."
+                  minLength={2}
+                  maxLength={30}
+                />
+              }
             />
           </ModalActionRow>
 
           <ModalActionRow>
             <ModalSection
-              label={<ModalLabel title="Conteúdo" hint={`Arquivo máximo: ${getPrettySize(NOTE_MAX_SIZE_BYTES)}.`} required />}
+              label={
+                <ModalLabel
+                  title="Conteúdo"
+                  hint={`Arquivo máximo: ${getPrettySize(NOTE_MAX_SIZE_BYTES)}.`}
+                  required
+                />
+              }
               input={<ModalFileInput name="file" allowedExtensions={NOTE_EXTENSIONS} />}
             />
           </ModalActionRow>
 
           <div className={styles.bottomContainer}>
-            <button disabled={isLoading} className={styles.submitButton} onClick={handleSubmit(onSubmit)} type="submit">
+            <button
+              disabled={isLoading}
+              className={styles.submitButton}
+              onClick={handleSubmit(onSubmit)}
+              type="submit"
+            >
               Criar
               {isLoading && (
                 <div className={styles.loaderContainer}>

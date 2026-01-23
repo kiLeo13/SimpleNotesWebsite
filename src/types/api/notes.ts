@@ -2,7 +2,7 @@ import z from "zod"
 
 export type NoteVisibility = "PUBLIC" | "CONFIDENTIAL"
 
-export type NoteType = "MARKDOWN" | "MERMAID" | "REFERENCE"
+export type NoteType = "MARKDOWN" | "FLOWCHART" | "REFERENCE"
 
 // --- REQUEST PAYLOADS ---
 interface BaseNotePayload {
