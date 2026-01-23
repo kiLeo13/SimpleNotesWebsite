@@ -39,7 +39,7 @@ export const LoginResponseSchema = RawLoginResponse.transform((data) => ({
 }))
 
 export const CheckUserStatusSchema = z.object({
-  status: z.enum(['AVAILABLE', 'TAKEN', 'VERIFYING'])
+  status: z.enum(["AVAILABLE", "TAKEN", "VERIFYING"])
 })
 
 // Users
@@ -59,7 +59,7 @@ export const UserResponseSchema = RawUserResponse.transform((data) => ({
   updatedAt: data.updated_at
 }))
 
-export const QueryUsersResponseSchema = z.object({
+export const ListUserResponseSchema = z.object({
   users: z.array(UserResponseSchema)
 })
 
@@ -73,4 +73,4 @@ export type CheckUserStatusData = z.infer<typeof CheckUserStatusSchema>
 
 // Users
 export type UserResponseData = z.infer<typeof UserResponseSchema>
-export type QueryUsersResponseData = z.infer<typeof QueryUsersResponseSchema>
+export type ListUsersResponseData = z.infer<typeof ListUserResponseSchema>
