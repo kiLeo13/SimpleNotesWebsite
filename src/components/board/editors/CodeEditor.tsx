@@ -1,4 +1,5 @@
-import React from "react"
+import type { JSX } from "react"
+
 import CodeMirror from "@uiw/react-codemirror"
 
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown"
@@ -12,7 +13,7 @@ interface CodeEditorProps {
   onChange?: (value: string) => void
 }
 
-const CodeEditor: React.FC<CodeEditorProps> = ({ code, onChange }) => {
+export function CodeEditor({ code, onChange }: CodeEditorProps): JSX.Element {
   return (
     <div className={styles.container}>
       <CodeMirror
@@ -31,5 +32,3 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ code, onChange }) => {
     </div>
   )
 }
-
-export default CodeEditor
