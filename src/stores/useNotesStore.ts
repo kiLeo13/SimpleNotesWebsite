@@ -68,7 +68,7 @@ export const useNoteStore = create<NotesState>((set, get) => ({
     // We turn off rendering immediately for text-based notes (Markdown and Mermaid).
     // For binary files (like PDF/Images), we leave it true so the specific UI component
     // (e.g., <PdfViewer>) can handle its own loading state.
-    const isTextBased = ["TEXT", "MARKDOWN"].includes(resp.data.note_type)
+    const isTextBased = ["TEXT", "MARKDOWN", "FLOWCHART"].includes(resp.data.note_type)
 
     set({
       shownNote: resp.data,
