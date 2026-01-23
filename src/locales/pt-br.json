@@ -77,6 +77,9 @@
       "invalidExtension": "Extensão inválida. Permitido: {{extensions}}"
     }
   },
+  "success": {
+    "noteCreated": "Nota criada com sucesso!"
+  },
   "tooltips": {
     "labels": {
       "algoCalc": "Pedra Chave",

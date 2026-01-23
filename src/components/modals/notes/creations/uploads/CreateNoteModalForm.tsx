@@ -2,7 +2,6 @@ import { uploadSchema, VISIBILITY_OPTIONS, type FileNoteFormFields } from "@/typ
 import { useState, type JSX } from "react"
 
 import clsx from "clsx"
-import i18n from "@/services/i18n"
 
 import { NOTE_EXTENSIONS, NOTE_MAX_SIZE_BYTES } from "@/services/noteService"
 import { ModalActionRow } from "../../shared/sections/ModalActionRow"
@@ -17,17 +16,17 @@ import { ModalArrayInput } from "../../shared/inputs/ModalArrayInput"
 import { getPrettySize } from "@/utils/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useNoteStore } from "@/stores/useNotesStore"
+import { useTranslation } from "react-i18next"
 import { toasts } from "@/utils/toastUtils"
 
 import styles from "./CreateNoteModal.module.css"
-
-const t = i18n.t
 
 type CreateNoteModalFormProps = {
   setShowUploadModal: (show: boolean) => void
 }
 
 export function CreateNoteModalForm({ setShowUploadModal }: CreateNoteModalFormProps): JSX.Element {
+  const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
   const createNoteAndOpen = useNoteStore((state) => state.createNoteAndOpen)
   const methods = useForm<FileNoteFormFields>({
@@ -63,7 +62,7 @@ export function CreateNoteModalForm({ setShowUploadModal }: CreateNoteModalFormP
     setIsLoading(false)
 
     if (success) {
-      toasts.success("Nota criada com sucesso!")
+      toasts.success(t("success.noteCreated"))
       setShowUploadModal(false)
     }
   }
@@ -89,12 +88,7 @@ export function CreateNoteModalForm({ setShowUploadModal }: CreateNoteModalFormP
 
           <ModalActionRow>
             <ModalSection
-              label={
-                <ModalLabel
-                  title="Visibilidade"
-                  required
-                />
-              }
+              label={<ModalLabel title="Visibilidade" required />}
               input={<ModalSelectInput name="visibility" options={VISIBILITY_OPTIONS} />}
             />
           </ModalActionRow>
