@@ -15,6 +15,7 @@
   --font-code-size: 85%;
 
   --modal-bg-color: rgb(30, 25, 37);
+  --modal-border-color: rgb(42, 36, 51);
 }
 
 *:disabled {
