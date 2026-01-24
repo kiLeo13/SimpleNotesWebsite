@@ -63,7 +63,7 @@ export const userService = {
   },
 
   getUsers: async (): Promise<ApiResponse<ListUsersResponseData>> => {
-    return safeApiCall(() => apiClient.post("/users"), ListUserResponseSchema)
+    return safeApiCall(() => apiClient.get("/users"), ListUserResponseSchema)
   },
 
   getUserById: async (id: number): Promise<ApiResponse<UserResponseData>> => {
