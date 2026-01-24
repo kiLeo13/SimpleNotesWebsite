@@ -26,4 +26,8 @@ export class Permission {
       Permission.ManageUsers
     ]
   }
+
+  static check(userMask: number, permission: Permission): boolean {
+    return (userMask & permission.raw) === permission.raw
+  }
 }
