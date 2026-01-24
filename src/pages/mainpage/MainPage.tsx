@@ -1,5 +1,4 @@
-import type { UserResponseData } from "@/types/api/users"
-import { useEffect, useState, type JSX } from "react"
+import { useEffect, type JSX } from "react"
 
 import { APP_NAME } from "@/App"
 import { Sidebar } from "@/components/sidebar/Sidebar"
@@ -9,34 +8,35 @@ import { LoaderContainer } from "@/components/LoaderContainer"
 import { userService } from "@/services/userService"
 import { useNoteStore } from "@/stores/useNotesStore"
 import { toasts } from "@/utils/toastUtils"
+import { useSessionStore } from "@/stores/useSessionStore"
 
 import styles from "./MainPage.module.css"
 
 export function MainPage(): JSX.Element {
-  const [selfUser, setSelfUser] = useState<UserResponseData | null>(null)
+  const updateSelfUser = useSessionStore((state) => state.updateUser)
 
   const shownNote = useNoteStore((state) => state.shownNote)
   const isRendering = useNoteStore((state) => state.isRendering)
   const closeNote = useNoteStore((state) => state.closeNote)
-  const showRenderingLoader = isRendering && !shownNote?.content?.endsWith('mp4')
+  const showRenderingLoader = isRendering && !shownNote?.content?.endsWith("mp4")
 
   useEffect(() => {
     const loadSelfUser = async () => {
       const resp = await userService.getSelfUser()
 
       if (resp.success) {
-        setSelfUser(resp.data)
+        updateSelfUser(resp.data)
       } else {
-        toasts.apiError('Failed to load self user data', resp)
+        toasts.apiError("Failed to load self user data", resp)
       }
     }
     loadSelfUser()
-  }, [])
+  }, [updateSelfUser])
 
   useEffect(() => {
     const handleGlobalClose = (e: KeyboardEvent) => {
       const key = e.key?.toLowerCase()
-      if (key && key === 'escape') {
+      if (key && key === "escape") {
         const target = e.target as HTMLElement
 
         // We don't want to close our note if we are typing in an input
@@ -45,8 +45,8 @@ export function MainPage(): JSX.Element {
         closeNote()
       }
     }
-    window.addEventListener('keydown', handleGlobalClose)
-    return () => window.removeEventListener('keydown', handleGlobalClose)
+    window.addEventListener("keydown", handleGlobalClose)
+    return () => window.removeEventListener("keydown", handleGlobalClose)
   }, [closeNote])
 
   return (
@@ -54,12 +54,10 @@ export function MainPage(): JSX.Element {
       <title>{`${APP_NAME} - Anotações`}</title>
 
       <div className={styles.container}>
-        <Sidebar selfUser={selfUser} />
+        <Sidebar />
 
         <main className={styles.mainContent}>
-          {shownNote ? (
-            <ContentBoard note={shownNote} />
-          ) : <EmptyDisplay />}
+          {shownNote ? <ContentBoard note={shownNote} /> : <EmptyDisplay />}
 
           {showRenderingLoader && <LoaderContainer />}
         </main>
@@ -69,5 +67,5 @@ export function MainPage(): JSX.Element {
 }
 
 function isInput(el: HTMLElement): boolean {
-  return el.tagName === 'INPUT' || el.tagName === 'TEXTAREA'
+  return el.tagName === "INPUT" || el.tagName === "TEXTAREA"
 }

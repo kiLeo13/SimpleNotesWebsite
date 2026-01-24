@@ -1,6 +1,5 @@
 import type { ChangeEventHandler, JSX, KeyboardEventHandler } from "react"
 import type { NoteResponseData } from "@/types/api/notes"
-import type { UserResponseData } from "@/types/api/users"
 
 import { SidebarNote } from "../notes/SidebarNote"
 import { SidebarFooter } from "./SidebarFooter"
@@ -11,11 +10,7 @@ import { throttle } from "lodash-es"
 
 import styles from "./Sidebar.module.css"
 
-type SidebarProps = {
-  selfUser: UserResponseData | null
-}
-
-export function Sidebar({ selfUser }: SidebarProps): JSX.Element {
+export function Sidebar(): JSX.Element {
   const notes = useNoteStore((state) => state.notes)
   const isLoading = useNoteStore((state) => state.isLoading)
   const fetchNotes = useNoteStore((state) => state.fetchNotes)
@@ -96,12 +91,11 @@ export function Sidebar({ selfUser }: SidebarProps): JSX.Element {
               onClick={() => handleOpenNote(n)}
               key={n.id}
               note={n}
-              isAdmin={selfUser?.isAdmin || false}
             />
           })
         )}
       </div>
-      <SidebarFooter selfUser={selfUser} />
+      <SidebarFooter />
     </nav>
   )
 }
