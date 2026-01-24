@@ -5,13 +5,27 @@ import clsx from "clsx"
 import styles from "./LoaderContainer.module.css"
 
 type LoaderContainerProps = ComponentProps<"div"> & {
-  scale?: string
+  scale?: string | number
+  loaderColor?: string
 }
 
-export function LoaderContainer({ scale, ...props }: LoaderContainerProps): JSX.Element {
+export function LoaderContainer({
+  scale,
+  loaderColor,
+  ...props
+}: LoaderContainerProps): JSX.Element {
+  const { className, ...rest } = props
+
   return (
-    <div className={styles.container} {...props}>
-      <div className={clsx("loader", styles.loader)} style={{ scale: scale }} />
+    <div className={clsx(styles.container, className)} {...rest}>
+      <div
+        className="loader"
+        style={{
+          scale: scale,
+          borderTopColor: loaderColor,
+          borderLeftColor: loaderColor
+        }}
+      />
     </div>
   )
 }
