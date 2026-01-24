@@ -27,7 +27,14 @@ export class Permission {
     ]
   }
 
-  static check(userMask: number, permission: Permission): boolean {
+  static hasRaw(userMask: number, permission: Permission): boolean {
     return (userMask & permission.raw) === permission.raw
+  }
+
+  static hasEffective(userMask: number, permission: Permission): boolean {
+    return (
+      Permission.hasRaw(userMask, Permission.Administrator) ||
+      Permission.hasRaw(userMask, permission)
+    )
   }
 }
