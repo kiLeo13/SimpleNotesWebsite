@@ -1,4 +1,4 @@
-class Permission {
+export class Permission {
   public readonly label: string
   public readonly offset: number
   public readonly raw: number
