@@ -34,12 +34,6 @@
   background-color: rgb(51, 42, 63);
 }
 
-.closeIcon {
-  color: rgb(136, 136, 136);
-  font-size: 2rem;
-  transform: rotate(45deg);
-}
-
 .form {
   display: flex;
   flex-direction: column;
