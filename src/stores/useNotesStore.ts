@@ -4,12 +4,12 @@ import type {
   NoteType,
   UpdateNoteRequestPayload
 } from "@/types/api/notes"
-import type { NoteFormFields } from "@/types/forms/notes" // Ensure this path is correct
+import type { NoteFormFields } from "@/types/forms/notes"
+import type { ApiResponse } from "@/types/api/api"
 import { noteService } from "@/services/noteService"
 
 import { toasts } from "@/utils/toastUtils"
 import { create } from "zustand"
-import type { ApiResponse } from "@/types/api/api"
 
 type NotesState = {
   notes: NoteResponseData[]
@@ -23,7 +23,6 @@ type NotesState = {
   deleteNoteAndRefresh: (noteId: number) => Promise<boolean>
   updateNoteAndRefresh: (noteId: number, payload: UpdateNoteRequestPayload) => Promise<boolean>
 
-  // Updated Signature to support both File Uploads and Text Editors
   createNoteAndOpen: (data: NoteFormFields, noteType: NoteType) => Promise<boolean>
 
   setRendering: (flag: boolean) => void
@@ -67,7 +66,6 @@ export const useNoteStore = create<NotesState>((set, get) => ({
 
     // We turn off rendering immediately for text-based notes (Markdown and Mermaid).
     // For binary files (like PDF/Images), we leave it true so the specific UI component
-    // (e.g., <PdfViewer>) can handle its own loading state.
     const isTextBased = ["TEXT", "MARKDOWN", "FLOWCHART"].includes(resp.data.note_type)
 
     set({
