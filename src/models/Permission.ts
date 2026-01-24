@@ -37,4 +37,8 @@ export class Permission {
       Permission.hasRaw(userMask, permission)
     )
   }
+
+  static toArray(mask: number): Permission[] {
+    return Permission.all.filter(perm => Permission.hasRaw(mask, perm))
+  }
 }
