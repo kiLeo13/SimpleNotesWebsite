@@ -43,21 +43,23 @@ export const CheckUserStatusSchema = z.object({
 })
 
 // Users
-const RawUserResponse = z.object({
-  id: z.number(),
-  username: z.string(),
-  is_admin: z.boolean(),
-  created_at: z.string(),
-  updated_at: z.string()
-})
-
-export const UserResponseSchema = RawUserResponse.transform((data) => ({
-  id: data.id,
-  username: data.username,
-  isAdmin: data.is_admin,
-  createdAt: data.created_at,
-  updatedAt: data.updated_at
-}))
+export const UserResponseSchema = z
+  .object({
+    id: z.number(),
+    username: z.string(),
+    is_admin: z.boolean(),
+    permissions: z.number(),
+    created_at: z.string(),
+    updated_at: z.string()
+  })
+  .transform((data) => ({
+    id: data.id,
+    username: data.username,
+    isAdmin: data.is_admin,
+    permissions: data.permissions,
+    createdAt: data.created_at,
+    updatedAt: data.updated_at
+  }))
 
 export const ListUserResponseSchema = z.object({
   users: z.array(UserResponseSchema)
