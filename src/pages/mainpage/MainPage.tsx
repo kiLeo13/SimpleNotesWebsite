@@ -13,7 +13,7 @@ import { useSessionStore } from "@/stores/useSessionStore"
 import styles from "./MainPage.module.css"
 
 export function MainPage(): JSX.Element {
-  const updateSelfUser = useSessionStore((state) => state.updateUser)
+  const setUser = useSessionStore((state) => state.setUser)
 
   const shownNote = useNoteStore((state) => state.shownNote)
   const isRendering = useNoteStore((state) => state.isRendering)
@@ -25,13 +25,13 @@ export function MainPage(): JSX.Element {
       const resp = await userService.getSelfUser()
 
       if (resp.success) {
-        updateSelfUser(resp.data)
+        setUser(resp.data)
       } else {
         toasts.apiError("Failed to load self user data", resp)
       }
     }
     loadSelfUser()
-  }, [updateSelfUser])
+  }, [setUser])
 
   useEffect(() => {
     const handleGlobalClose = (e: KeyboardEvent) => {
