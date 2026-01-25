@@ -14,12 +14,7 @@ dayjs.extend(isYesterday)
 const KB = 1024
 const MB = KB * 1024
 const GB = MB * 1024
-const MONTHS = [
-  "Jan", "Fev", "Mar",
-  "Abr", "Mai", "Jun", "Jul",
-  "Ago", "Set", "Out",
-  "Nov", "Dez"
-]
+const MONTHS = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
 
 export function formatLocalTimestamp(date: string): string {
   const d = dayjs.utc(date).local()
@@ -40,6 +35,10 @@ export function formatLocalTimestamp(date: string): string {
   return `${day} de ${month}. de ${year}, às ${time}`
 }
 
+export function formatTimestamp(timestamp: string): string {
+  return dayjs(timestamp).format("DD/MM/YYYY [às] HH:mm")
+}
+
 export function inRange(value: number, min: number, max: number): boolean {
   const [_min, _max] = checkAndGetBounds(min, max)
   return value >= _min && value <= _max
@@ -52,11 +51,11 @@ export function clamp(value: number, floor: number, roof: number): number {
 
 export function formatTimeSeconds(seconds: number): string {
   if (seconds <= 0) {
-    return '00:00:00'
+    return "00:00:00"
   }
 
-  const timeDuration = dayjs.duration(seconds, 'seconds')
-  return timeDuration.format('HH:mm:ss')
+  const timeDuration = dayjs.duration(seconds, "seconds")
+  return timeDuration.format("HH:mm:ss")
 }
 
 export function isAlphanumeric(s: string): boolean {
@@ -66,18 +65,18 @@ export function isAlphanumeric(s: string): boolean {
 /**
  * Resolves the extension of a given file.
  * Returns `undefined` if none is provided (if the file does not have a `.` character).
- * 
+ *
  * **Example:**
  * ```js
  * const checks = ext("mynote.txt")
  * const three = ext("this.is.a.test")
  * const none = ext("onefile")
- * 
+ *
  * console.log(checks) // "txt"
  * console.log(three)  // "test"
  * console.log(none)   // undefined
  * ```
- * 
+ *
  * @param fileName The name of the file to get the extension.
  * @returns The extension of the file.
  */
@@ -95,9 +94,10 @@ export function getPrettySize(size: number): string {
 }
 
 export function formatNumber(num: number): string {
-  return num.toFixed(2)
-    .replace(/\.00$/, '')
-    .replace(/(\.\d)0$/, '$1')
+  return num
+    .toFixed(2)
+    .replace(/\.00$/, "")
+    .replace(/(\.\d)0$/, "$1")
 }
 
 export function isOnlyDigit(s: string): boolean {
@@ -105,7 +105,7 @@ export function isOnlyDigit(s: string): boolean {
 }
 
 /**
- * Extracts only the fields that have been modified (marked as dirty) 
+ * Extracts only the fields that have been modified (marked as dirty)
  * from the React Hook Form data.
  */
 export function getDirtyValues<T extends Record<string, unknown>>(
@@ -124,7 +124,9 @@ export function getDirtyValues<T extends Record<string, unknown>>(
 // Helpers
 function checkAndGetBounds(a: number, b: number): [number, number] {
   if (a > b) {
-    console.warn(`[utils] The first bound (${a}) is greater than the second (${b}). The values will be swapped.`)
+    console.warn(
+      `[utils] The first bound (${a}) is greater than the second (${b}). The values will be swapped.`
+    )
     return [b, a]
   }
   return [a, b]
