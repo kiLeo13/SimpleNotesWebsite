@@ -1,50 +1,28 @@
-import type { CSSProperties, JSX, ReactNode } from "react"
+import React from "react"
 
+import * as Dialog from "@radix-ui/react-dialog"
 import clsx from "clsx"
-
-import { clamp, inRange } from "../utils/utils"
-import { createPortal } from "react-dom"
 
 import styles from "./DarkWrapper.module.css"
 
-const root = document.getElementById('root')
-
 type DarkWrapperProps = {
-  intensity?: number
-  blurpx?: number
-  animate?: boolean
-  portalContainer?: Element | DocumentFragment | null
-  children: ReactNode
+  children: React.ReactNode
+  className?: string
+  open?: boolean
 }
 
-export function DarkWrapper({
-  intensity = 0.7,
-  blurpx = 2,
-  animate = true,
-  portalContainer,
-  children
-}: DarkWrapperProps): JSX.Element {
+export function DarkWrapper({ children, className, open }: DarkWrapperProps) {
+  return (
+    <Dialog.Root open={open ?? true}>
+      <Dialog.Portal>
+        <Dialog.Overlay className={styles.overlay} />
 
-  if (!inRange(intensity, 0, 1)) {
-    console.warn(
-      `[DarkWrapper] Warning: 'intensity' must be between 0 and 1. ` +
-      `Received ${intensity}. The value will be clamped to the closest valid range.`
-    )
-  }
-
-  const container = portalContainer ?? root!
-  const css: CSSProperties = {
-    backdropFilter: `blur(${blurpx}px)`,
-    backgroundColor: `rgba(0, 0, 0, ${clamp(intensity, 0, 1)})`
-  }
-  return createPortal(
-    <div
-      className={clsx(styles.wrapper, !animate && styles.noAnimation)}
-      style={css}
-      onClick={(e) => e.stopPropagation()} // Prevent clicks from bubbling up
-    >
-      {children}
-    </div>,
-    container
+        <Dialog.Content
+          className={clsx(styles.content, className)}
+        >
+          {children}
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   )
 }

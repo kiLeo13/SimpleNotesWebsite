@@ -1,23 +1,28 @@
-.wrapper {
-  position: absolute;
+.overlay {
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(2px);
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  animation: fadeIn 200ms ease-out;
+}
+
+.content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   justify-content: center;
   align-items: center;
-  inset: 0;
-  z-index: 10;
-  backdrop-filter: blur(2px);
-  animation: smoothBackgroundLoad 200ms ease-in forwards;
+  z-index: 41;
+  outline: none;
 }
 
-.noAnimation {
-  animation: none;
-}
-
-@keyframes smoothBackgroundLoad {
+@keyframes fadeIn {
   from {
     opacity: 0;
   }
-
   to {
     opacity: 1;
   }
