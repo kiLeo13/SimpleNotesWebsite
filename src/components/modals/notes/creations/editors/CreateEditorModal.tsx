@@ -8,10 +8,10 @@ import {
   type TextNoteFormFields
 } from "@/types/forms/notes"
 import { useForm, FormProvider, Controller, useWatch } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { ModalActionRow } from "../../shared/sections/ModalActionRow"
 import { ModalSection } from "../../shared/sections/ModalSection"
 import { ModalLabel } from "../../shared/sections/ModalLabel"
+import { FaMarkdown } from "react-icons/fa"
 import { BsDiagram3 } from "react-icons/bs"
 import { CodeEditor } from "@/components/board/editors/CodeEditor"
 import { ModalTextInput } from "../../shared/inputs/ModalTextInput"
@@ -20,6 +20,7 @@ import { LivePreview } from "./LivePreview"
 import { LoaderContainer } from "@/components/LoaderContainer"
 import { ModalArrayInput } from "../../shared/inputs/ModalArrayInput"
 import { useNoteStore } from "@/stores/useNotesStore"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next"
 import { toasts } from "@/utils/toastUtils"
 
@@ -69,10 +70,16 @@ export function CreateEditorModal({ mode, onClose }: CreateEditorModalProps): JS
 
       <div className={styles.header}>
         <div className={styles.headerIconWrapper}>
-          <BsDiagram3 size={"1.5em"} color="#6d5c88" />
+          {mode === "FLOWCHART" ? (
+            <BsDiagram3 size={"1.5em"} color="#6d5c88" />
+          ) : (
+            <FaMarkdown size={"1.5em"} color="#6d5c88" />
+          )}
         </div>
         <div className={styles.title}>
-          {mode === "FLOWCHART" ? "Novo Diagrama" : "Nova Nota Markdown"}
+          {mode === "FLOWCHART"
+            ? t("createNoteModal.modeFlowchart")
+            : t("createNoteModal.modeMarkdown")}
         </div>
       </div>
 
