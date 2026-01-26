@@ -9,17 +9,16 @@ type DarkWrapperProps = {
   children: React.ReactNode
   className?: string
   open?: boolean
+  zIndex?: number
 }
 
-export function DarkWrapper({ children, className, open }: DarkWrapperProps) {
+export function DarkWrapper({ children, className, open, zIndex = 40 }: DarkWrapperProps) {
   return (
     <Dialog.Root open={open ?? true}>
       <Dialog.Portal>
-        <Dialog.Overlay className={styles.overlay} />
+        <Dialog.Overlay className={styles.overlay} style={{ zIndex: zIndex }} />
 
-        <Dialog.Content
-          className={clsx(styles.content, className)}
-        >
+        <Dialog.Content className={clsx(styles.content, className)} style={{ zIndex: zIndex + 1 }}>
           {children}
         </Dialog.Content>
       </Dialog.Portal>
