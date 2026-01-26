@@ -8,7 +8,7 @@ import { LoaderContainer } from "../LoaderContainer"
 import { BsCheck } from "react-icons/bs"
 import { useTranslation } from "react-i18next"
 
-import styles from "./MultiCheckMenu.module.css"
+import styles from "./MultiSelectMenu.module.css"
 
 export type MenuOption = {
   id: string | number
@@ -18,7 +18,7 @@ export type MenuOption = {
   disabled?: boolean
 }
 
-type MultiCheckMenuProps = {
+type MultiSelectMenuProps = {
   label?: string
   options: MenuOption[]
   values: (string | number)[]
@@ -27,14 +27,14 @@ type MultiCheckMenuProps = {
   isLoading?: boolean
 }
 
-export function MultiCheckMenu({
+export function MultiSelectMenu({
   label,
   options,
   values,
   onChange,
   onSave,
   isLoading
-}: MultiCheckMenuProps): JSX.Element {
+}: MultiSelectMenuProps): JSX.Element {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
 
