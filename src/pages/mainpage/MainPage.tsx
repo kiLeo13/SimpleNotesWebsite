@@ -1,6 +1,5 @@
 import { useEffect, type JSX } from "react"
 
-import { APP_NAME } from "@/App"
 import { Sidebar } from "@/components/sidebar/Sidebar"
 import { EmptyDisplay } from "@/components/board/EmptyDisplay"
 import { ContentBoard } from "@/components/board/ContentBoard"
@@ -11,8 +10,10 @@ import { toasts } from "@/utils/toastUtils"
 import { useSessionStore } from "@/stores/useSessionStore"
 
 import styles from "./MainPage.module.css"
+import { useTranslation } from "react-i18next"
 
 export function MainPage(): JSX.Element {
+  const { t } = useTranslation()
   const setUser = useSessionStore((state) => state.setUser)
 
   const shownNote = useNoteStore((state) => state.shownNote)
@@ -51,7 +52,7 @@ export function MainPage(): JSX.Element {
 
   return (
     <>
-      <title>{`${APP_NAME} - Anotações`}</title>
+      <title>{`${t("app.title")} - Anotações`}</title>
 
       <div className={styles.container}>
         <Sidebar />

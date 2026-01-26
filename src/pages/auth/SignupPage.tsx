@@ -1,18 +1,19 @@
 import type { JSX } from "react"
 
 import { SignupModal } from "@/components/modals/auth/SignupModal"
-import { APP_NAME } from "@/App"
 
 import styles from "./AuthPage.module.css"
+import { useTranslation } from "react-i18next"
 
 const BASE_ROUTE = 'https://d26143aouxq3ma.cloudfront.net/landscapes'
 
 export function SignupPage(): JSX.Element {
+  const { t } = useTranslation()
   const route = `${BASE_ROUTE}/introduce.jpg`
 
   return (
     <>
-      <title>{`${APP_NAME} - Registro`}</title>
+      <title>{`${t("app.title")} - Registro`}</title>
 
       <div className={styles.container}>
         <div className={styles.authContainer}>
