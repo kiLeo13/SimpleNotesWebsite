@@ -1,4 +1,7 @@
 {
+  "app": {
+    "title": "Zenboard"
+  },
   "labels": {
     "you": "Você",
     "unverified": "Não Verificado",
