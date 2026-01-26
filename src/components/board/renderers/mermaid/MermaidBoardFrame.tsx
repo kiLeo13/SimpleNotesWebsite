@@ -8,7 +8,7 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch"
 import { MdOutlineZoomIn, MdOutlineZoomOut } from "react-icons/md"
 import { GrRevert } from "react-icons/gr"
 import { toasts } from "@/utils/toastUtils"
-import { useEffect, useState, useRef, useMemo } from "react"
+import { useEffect, useState, useMemo } from "react"
 
 import styles from "./MermaidBoardFrame.module.css"
 
@@ -27,13 +27,17 @@ export function MermaidBoardFrame({ diagram, warnOnFail = true }: MermaidBoardFr
   const [svgString, setSvgString] = useState("")
   const [failed, setFailed] = useState(false)
 
-  const elementIdRef = useRef(`mermaid-diagram-${Math.random().toString(36).slice(2, 11)}`)
-
   useEffect(() => {
     const renderChart = async () => {
+      // Don't try to render if the string is too short 
+      // or doesn't start with a keyword.
+      if (!diagram || diagram.length < 5) return
+
       try {
+        const uniqueId = `mermaid-${Math.random().toString(36).substring(2, 9)}`
+
         setFailed(false)
-        const { svg } = await mermaid.render(elementIdRef.current, diagram)
+        const { svg } = await mermaid.render(uniqueId, diagram)
         setSvgString(svg)
       } catch (err) {
         if (warnOnFail) {
