@@ -109,11 +109,11 @@
 @keyframes smoothToggleModal {
   from {
     opacity: 0;
-    scale: 70%;
+    transform: translateY(20px);
   }
 
   to {
     opacity: 1;
-    scale: 100%;
+    transform: translateY(0);
   }
 }
