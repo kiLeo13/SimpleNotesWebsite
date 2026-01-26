@@ -56,6 +56,8 @@
     "content": "Conteúdo",
     "contentHint": "Arquivo máximo: {{size}}",
     "selectFile": "Selecione um arquivo",
+    "modeFlowchart": "Novo Diagrama",
+    "modeMarkdown": "Nova Nota Markdown",
     "submit": "Criar",
     "visibilityOptions": {
       "public": "Público",
