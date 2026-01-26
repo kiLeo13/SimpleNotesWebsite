@@ -2,9 +2,9 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/kiLeo13/SimpleNotesWebsite/blob/master/LICENSE)
 
-# ✨ Onnyx
+# ✨ Zenboard
 
-Onnyx is a lightweight, high-performance web application designed to streamline note-taking and file management, inspired by the clean and responsive UI of ChatGPT.
+Zenboard is a lightweight, high-performance web application designed to streamline note-taking and file management, inspired by the clean and responsive UI of ChatGPT.
 
 -----
 
@@ -14,7 +14,7 @@ Traditional cloud storage services, while powerful, can become slow and cumberso
 
 ## 💡 The Solution
 
-Onnyx provides a simple, single-page application (SPA) where your notes are immediately accessible from a left-side navigation bar. This design eliminates the need to click through multiple folders, allowing you to create, view, and manage your content with exceptional speed. While initially built for internal company use to boost productivity, it's designed to be useful for anyone.
+Zenboard provides a simple, single-page application (SPA) where your notes are immediately accessible from a left-side navigation bar. This design eliminates the need to click through multiple folders, allowing you to create, view, and manage your content with exceptional speed. While initially built for internal company use to boost productivity, it's designed to be useful for anyone.
 
 -----
 
@@ -46,7 +46,7 @@ The project is built on a modern, cloud-native architecture designed for scalabi
 1.  Clone the repository from GitHub.
 2.  Build the Docker image:
     ```bash
-    docker build -t onnyx .
+    docker build -t zenboard .
     ```
 
 > [!Note]
@@ -99,37 +99,29 @@ The backend deployment is automated using **Docker** and **WatchTower**.
 
 The frontend is a modern, responsive Single-Page Application built with **React** and **TypeScript**.
 
-* **Core Library:** [React](https://github.com/facebook/react).
-* **Language:** **TypeScript**
-* **Build Tool:** [Vite](https://github.com/vitejs/vite).
-* **Routing:** [React Router](https://github.com/remix-run/react-router) - For client-side routing.
-* **Forms & Validation:**
-    * [React Hook Form](https://github.com/react-hook-form/react-hook-form) - Performant form state management.
-    * [Zod](https://github.com/colinhacks/zod) - Schema-based validation.
-    * [@hookform/resolvers](https://github.com/react-hook-form/resolvers) - To connect Zod with React Hook Form.
-* **API & Data:**
-    * [Axios](https://github.com/axios/axios) - Promise-based HTTP client.
-    * [jwt-decode](https://github.com/auth0/jwt-decode) - For decoding JWTs on the client-side.
-* **UI & Utilities:**
-    * [React Icons](https://github.com/react-icons/react-icons) - Icon library.
-    * [clsx](https://github.com/lukeed/clsx) - Utility for constructing class names.
-    * [sonner](https://github.com/emilkowalski/sonner) - Library for toast notifications.
-    * [match-sorter](https://github.com/kentcdodds/match-sorter) - Dependency for smart string array searches.
-    * [Zustand](https://github.com/pmndrs/zustand) - State/Context management for global resource sharing.
-    * [Day.js](https://github.com/iamkun/dayjs) - Lightweight date/time manipulation and formatting.
-    * [Mermaid](https://github.com/mermaid-js/mermaid) - Library for generation of diagrams like flowcharts.
-    * [React Zoom Pan Pinch](https://github.com/BetterTyped/react-zoom-pan-pinch) - Library to support zoom, pan, pinch on divs.
-    * [html-react-parser](https://github.com/remarkablemark/html-react-parser) - Library to adapt Mermaid canvas to the app board.
-    * [React Flow](https://github.com/xyflow/xyflow) - Library to render dynamic flows.
-* **Content & Security:**
-    * [ReactMarkdown](https://github.com/remarkjs/react-markdown) - A markdown parser.
-    * [rehype-highlight](https://github.com/rehypejs/rehype-highlight) - A plugin to support code highlight on Markdowns.
-    * [rehype-raw](https://github.com/rehypejs/rehype-raw) - A plugin to support some raw Markdown data.
-    * [rehype-sanitize](https://github.com/rehypejs/rehype-sanitize) - A plugin to sanitize markdown output.
-    * [remark-gfm](https://github.com/remarkjs/remark-gfm) - Plugin to support GFM.
-* **Internationalization (i18n):**
-    * [i18next](https://github.com/i18next/i18next) - The internationalization framework.
-    * [react-i18next](https://github.com/i18next/react-i18next) - React bindings for i18next.
+* **Editor & Code Rendering:**
+    * [CodeMirror](https://github.com/codemirror/dev) - In-browser code editor foundation.
+    * [@uiw/react-codemirror](https://github.com/uiwjs/react-codemirror) - React bindings for CodeMirror.
+    * [@codemirror/lang-markdown](https://github.com/codemirror/lang-markdown) - Markdown language support.
+    * [@codemirror/language-data](https://github.com/codemirror/language-data) - Language metadata for CodeMirror.
+    * [@uiw/codemirror-theme-vscode](https://github.com/uiwjs/react-codemirror) - VS Code–like theme.
+    * [highlight.js](https://github.com/highlightjs/highlight.js) - Syntax highlighting engine.
+    * [marked-highlight](https://github.com/markedjs/marked-highlight) - Highlight integration for Markdown parsing.
+
+* **UI Components & Primitives:**
+    * [Radix UI](https://github.com/radix-ui/primitives) - Accessible, unstyled UI primitives.
+        * Dialog, Dropdown Menu, Tooltip
+
+* **Styling & Assets:**
+    * [Fontsource](https://github.com/fontsource/fontsource) - Self-hosted webfonts.
+        * Monaspace Neon
+
+* **Content Enhancements:**
+    * [remark-emoji](https://github.com/rhysd/remark-emoji) - Emoji support in Markdown.
+    * [twemoji](https://github.com/twitter/twemoji) - Consistent emoji rendering.
+
+* **Utilities:**
+    * [lodash-es](https://github.com/lodash/lodash) - Utility helpers (ES module build).
 
 ### Database
 
