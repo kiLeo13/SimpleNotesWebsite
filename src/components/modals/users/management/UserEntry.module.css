@@ -1,0 +1,61 @@
+.userRow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 5px;
+  padding: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  transition: background-color 150ms;
+}
+
+.userRow:hover {
+  background-color: rgba(106, 89, 119, 0.2);
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.userIcon {
+  display: flex;
+  align-items: center;
+  background-color: rgba(204, 174, 228, 0.2);
+  padding: 5px;
+  aspect-ratio: 1;
+  border-radius: 9999px;
+}
+
+.userData {
+  display: flex;
+  gap: 2px;
+  flex-direction: column;
+}
+
+.userName {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 1em;
+  font-weight: 500;
+  color: rgb(152, 143, 163);
+}
+
+.you {
+  background-color: rgb(63, 53, 73);
+  text-transform: uppercase;
+  padding: 3px 5px;
+  font-size: 0.8em;
+  border-radius: 5px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.timestamp {
+  font-size: 0.8em;
+  font-weight: 450;
+  color: rgb(104, 95, 116);
+}

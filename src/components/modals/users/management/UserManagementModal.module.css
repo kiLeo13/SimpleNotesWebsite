@@ -1,0 +1,66 @@
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--modal-bg-color);
+  padding: 25px 30px;
+  gap: 15px;
+  box-sizing: border-box;
+  min-height: 450px;
+  max-height: 95vh;
+  width: 500px;
+  border: 1px solid var(--modal-border-color);
+  border-radius: 15px;
+  animation: smoothToggleModal 300ms cubic-bezier(0.25, 0.1, 0.25, 1.5) forwards;
+}
+
+.close {
+  position: absolute;
+  display: flex;
+  cursor: pointer;
+  top: 10px;
+  padding: 3px;
+  border-radius: 8px;
+  right: 10px;
+  transition: background-color 300ms;
+}
+
+.close:hover {
+  background-color: rgb(51, 42, 63);
+}
+
+.title {
+  margin: 0;
+  font-size: 1.8em;
+  color: rgb(151, 146, 163);
+}
+
+.division {
+  width: 100%;
+  border-bottom: 1px solid rgb(81, 72, 92);
+}
+
+.userList {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow-y: auto;
+  gap: 3px;
+}
+
+.loader {
+  inset: auto auto 10px 10px;
+  scale: 0.8;
+}
+
+@keyframes smoothToggleModal {
+  from {
+    opacity: 0;
+    scale: 70%;
+  }
+
+  to {
+    opacity: 1;
+    scale: 100%;
+  }
+}
