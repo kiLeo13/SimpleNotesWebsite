@@ -25,6 +25,7 @@ type MultiSelectMenuProps = {
   onChange?: (newValues: (string | number)[]) => void
   onSave?: () => Promise<void> | void
   isLoading?: boolean
+  showFooter?: boolean
 }
 
 export function MultiSelectMenu({
@@ -33,7 +34,8 @@ export function MultiSelectMenu({
   values,
   onChange,
   onSave,
-  isLoading
+  isLoading,
+  showFooter = true
 }: MultiSelectMenuProps): JSX.Element {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
@@ -51,7 +53,7 @@ export function MultiSelectMenu({
   return (
     <DropdownMenu.Root open={open} onOpenChange={setOpen}>
       <DropdownMenu.Trigger asChild>
-        <button className={styles.triggerButton} disabled={isLoading}>
+        <button className={styles.triggerButton}>
           {label}
           <FaChevronDown className={clsx(styles.chevron, open && styles.open)} />
         </button>
@@ -97,14 +99,20 @@ export function MultiSelectMenu({
             })}
           </div>
 
-          <DropdownMenu.Separator className={styles.separator} />
+          {showFooter && (
+            <>
+              <DropdownMenu.Separator className={styles.separator} />
 
-          <div className={styles.footer}>
-            <button className={styles.saveButton} onClick={handleSave} disabled={isLoading}>
-              {t("menus.users.perms.saveButton")}
-              {isLoading && <LoaderContainer />}
-            </button>
-          </div>
+              <div className={styles.footer}>
+                {isLoading && (
+                  <LoaderContainer className={styles.loader} scale={0.8} loaderColor="#9881a5" />
+                )}
+                <button className={styles.saveButton} onClick={handleSave} disabled={isLoading}>
+                  {t("menus.users.perms.saveButton")}
+                </button>
+              </div>
+            </>
+          )}
 
           <DropdownMenu.Arrow className={styles.arrow} />
         </DropdownMenu.Content>
