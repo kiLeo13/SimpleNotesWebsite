@@ -1,5 +1,23 @@
 {
+  "labels": {
+    "you": "Você",
+    "unverified": "Não Verificado",
+    "verified": "Verificado"
+  },
+  "perms": {
+    "adm": "Administrador",
+    "createNotes": "Criar Notas",
+    "editNotes": "Editar Notas",
+    "deleteNotes": "Apagar Notas",
+    "seeHiddenNotes": "Ver Notas Ocultas",
+    "manageUsers": "Gerenciar Usuários",
+    "deleteUsers": "Apagar Usuários",
+    "managePerms": "Gerenciar Permissões"
+  },
   "modals": {
+    "usersMng": {
+      "title": "Usuários ({{val}})"
+    },
     "algoCalc": {
       "nodes": {
         "lotteryPrize": "1º Prêmio Loteria Federal",
@@ -88,8 +106,16 @@
       "settings": "Configurações"
     },
     "menus": {
-      "header": {
-        "createNote": "Criar Nota"
+    },
+    "header": {
+      "createNote": "Criar Nota"
+    }
+  },
+  "menus": {
+    "users": {
+      "perms": {
+        "label": "Permissões",
+        "saveButton": "Salvar"
       }
     }
   }
