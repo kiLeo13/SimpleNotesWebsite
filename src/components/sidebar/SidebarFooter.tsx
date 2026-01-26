@@ -98,7 +98,7 @@ export function SidebarFooter(): JSX.Element {
           {canCreate && (
             // Create Note Action Menu
             <ActionMenu
-              header={t("tooltips.menus.header.createNote")}
+              header={t("tooltips.labels.createNote")}
               items={createNoteOptions}
               side="right"
             >
