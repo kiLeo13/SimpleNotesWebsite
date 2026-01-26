@@ -35,12 +35,11 @@ export function UserEntry({ user }: UserEntryProps): JSX.Element {
     [selectedOffsets, self?.permissions, allPermissions, t]
   )
 
+  const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
   const handleSave = async () => {
     setIsLoading(true)
     const newMask = selectedOffsets.reduce((acc, offset) => acc | (1 << offset), 0)
-    setTimeout(() => {
-      setIsLoading(false)
-    }, 800);
+    await sleep(800)
 
     console.log(`Saving new mask for ${user.username}: ${newMask}`)
   }
