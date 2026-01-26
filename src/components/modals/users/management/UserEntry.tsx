@@ -23,9 +23,9 @@ export function UserEntry({ user }: UserEntryProps): JSX.Element {
   const self = useSessionStore((state) => state.user)
   const isSelf = user.id === self?.id
   const canManagePerms = usePermission(Permission.ManagePermissions)
-
   const allPermissions = useMemo(() => [...Permission.all], [])
 
+  const [isLoading, setIsLoading] = useState(false)
   const [selectedOffsets, setSelectedOffsets] = useState<number[]>(() =>
     allPermissions.filter((p) => Permission.hasRaw(user.permissions, p)).map((p) => p.offset)
   )
@@ -36,7 +36,11 @@ export function UserEntry({ user }: UserEntryProps): JSX.Element {
   )
 
   const handleSave = async () => {
+    setIsLoading(true)
     const newMask = selectedOffsets.reduce((acc, offset) => acc | (1 << offset), 0)
+    setTimeout(() => {
+      setIsLoading(false)
+    }, 800);
 
     console.log(`Saving new mask for ${user.username}: ${newMask}`)
   }
@@ -72,6 +76,8 @@ export function UserEntry({ user }: UserEntryProps): JSX.Element {
             values={selectedOffsets}
             onChange={(newValues) => setSelectedOffsets(newValues as number[])}
             onSave={handleSave}
+            isLoading={isLoading}
+            showFooter={!Permission.hasEffective(user.permissions, Permission.Administrator)}
           />
         </div>
       )}
