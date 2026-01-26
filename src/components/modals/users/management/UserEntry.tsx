@@ -10,9 +10,9 @@ import { formatTimestamp } from "@/utils/utils"
 import { useTranslation } from "react-i18next"
 import { useSessionStore } from "@/stores/useSessionStore"
 import { Permission } from "@/models/Permission"
+import { usePermission } from "@/hooks/usePermission"
 
 import styles from "./UserEntry.module.css"
-import { usePermission } from "@/hooks/usePermission"
 
 type UserEntryProps = {
   user: UserResponseData
