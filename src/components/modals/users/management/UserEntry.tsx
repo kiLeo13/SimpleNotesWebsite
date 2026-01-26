@@ -12,6 +12,7 @@ import { useSessionStore } from "@/stores/useSessionStore"
 import { Permission } from "@/models/Permission"
 
 import styles from "./UserEntry.module.css"
+import { usePermission } from "@/hooks/usePermission"
 
 type UserEntryProps = {
   user: UserResponseData
@@ -21,6 +22,7 @@ export function UserEntry({ user }: UserEntryProps): JSX.Element {
   const { t } = useTranslation()
   const self = useSessionStore((state) => state.user)
   const isSelf = user.id === self?.id
+  const canManagePerms = usePermission(Permission.ManagePermissions)
 
   const allPermissions = useMemo(() => [...Permission.all], [])
 
@@ -62,15 +64,17 @@ export function UserEntry({ user }: UserEntryProps): JSX.Element {
         </div>
       </div>
 
-      <div className={styles.right}>
-        <MultiSelectMenu
-          label={t("menus.users.perms.label")}
-          options={menuOptions}
-          values={selectedOffsets}
-          onChange={(newValues) => setSelectedOffsets(newValues as number[])}
-          onSave={handleSave}
-        />
-      </div>
+      {canManagePerms && (
+        <div className={styles.right}>
+          <MultiSelectMenu
+            label={t("menus.users.perms.label")}
+            options={menuOptions}
+            values={selectedOffsets}
+            onChange={(newValues) => setSelectedOffsets(newValues as number[])}
+            onSave={handleSave}
+          />
+        </div>
+      )}
     </div>
   )
 }
