@@ -134,7 +134,7 @@ export function UpdateNoteForm({ note, handleSubmit, setIsPatching }: UpdateNote
 
       {/* The delete confirmation modal */}
       {showDelete && (
-        <DarkWrapper>
+        <DarkWrapper zIndex={50}>
           <DeleteNoteModal
             note={note!}
             setShowDelete={setShowDelete}

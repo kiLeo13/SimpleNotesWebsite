@@ -1,5 +1,5 @@
 import type { FullNoteResponseData } from "@/types/api/notes"
-import { useEffect, useRef, useState, type JSX } from "react"
+import { useEffect, useState, type JSX } from "react"
 import { updateNoteSchema, type UpdateNoteFormFields } from "@/types/forms/notes"
 
 import { FormProvider, useForm } from "react-hook-form"
@@ -21,14 +21,13 @@ type UpdateNoteModalProps = {
 export function UpdateNoteModal({ noteId, setIsPatching }: UpdateNoteModalProps): JSX.Element {
   const [note, setNote] = useState<FullNoteResponseData | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const modalRef = useRef<HTMLDivElement>(null)
   const handleCloseModal = () => setIsPatching(false)
   const methods = useForm<UpdateNoteFormFields>({
     resolver: zodResolver(updateNoteSchema),
-    mode: 'onChange',
+    mode: "onChange",
     defaultValues: {
       name: "",
-      visibility: 'PUBLIC',
+      visibility: "PUBLIC",
       tags: []
     }
   })
@@ -37,13 +36,13 @@ export function UpdateNoteModal({ noteId, setIsPatching }: UpdateNoteModalProps)
   useEffect(() => {
     const globalEscapeHandler = (e: KeyboardEvent) => {
       e.stopPropagation()
-      if (e.key?.toLowerCase() === 'escape') {
+      if (e.key?.toLowerCase() === "escape") {
         setIsPatching(false)
       }
     }
 
-    window.addEventListener('keydown', globalEscapeHandler)
-    return () => window.removeEventListener('keydown', globalEscapeHandler)
+    window.addEventListener("keydown", globalEscapeHandler)
+    return () => window.removeEventListener("keydown", globalEscapeHandler)
   }, [setIsPatching])
 
   useEffect(() => {
@@ -61,7 +60,7 @@ export function UpdateNoteModal({ noteId, setIsPatching }: UpdateNoteModalProps)
           tags: resp.data.tags || []
         })
       } else {
-        toasts.apiError('Erro ao buscar anotação/métricas completas', resp)
+        toasts.apiError("Erro ao buscar anotação/métricas completas", resp)
         setIsPatching(false)
       }
     }
@@ -69,9 +68,9 @@ export function UpdateNoteModal({ noteId, setIsPatching }: UpdateNoteModalProps)
   }, [noteId, setIsPatching, reset])
 
   return (
-    <div ref={modalRef} className={styles.container}>
+    <div className={styles.container}>
       {isLoading && (
-        <DarkWrapper portalContainer={modalRef.current} intensity={0.5} blurpx={0}>
+        <DarkWrapper>
           <div className="loader" />
         </DarkWrapper>
       )}
