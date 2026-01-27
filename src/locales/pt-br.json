@@ -1,4 +1,10 @@
 {
+  "notes": {
+    "visibility": {
+      "public": "Público",
+      "private": "Oculto"
+    }
+  },
   "app": {
     "title": "Zenboard"
   },
@@ -6,6 +12,14 @@
     "you": "Você",
     "unverified": "Não Verificado",
     "verified": "Verificado"
+  },
+  "sidebar": {
+    "notes": {
+      "edit": "Editar Nota",
+      "search": "Pesquisar",
+      "oneFound": "1 resultado encontrado",
+      "manyFound": "{{val}} resultados encontrados"
+    }
   },
   "perms": {
     "adm": "Administrador",
@@ -46,6 +60,17 @@
       }
     }
   },
+  "updateNoteModal": {
+    "title": "Editar Nota #{{note}}",
+    "author": "Autor",
+    "creationTime": "Criação",
+    "visibility": "Visibilidade",
+    "lastUpdate": "Última Atualização",
+    "content": "Conteúdo",
+    "name": "Nome",
+    "tags": "Palavras-chave",
+    "tagsPlaceholder": "Adicione apelidos..."
+  },
   "createNoteModal": {
     "title": "Criar Nota",
     "name": "Nome",
@@ -59,9 +84,9 @@
     "modeFlowchart": "Novo Diagrama",
     "modeMarkdown": "Nova Nota Markdown",
     "submit": "Criar Nota",
-    "visibilityOptions": {
-      "public": "Público",
-      "private": "Privado"
+    "preview": "Live Preview",
+    "hints": {
+      "opt": "opcional"
     }
   },
   "warnings": {
@@ -70,6 +95,7 @@
     }
   },
   "errors": {
+    "noteAuthor": "Erro ao buscar autor da anotação",
     "tags": {
       "min": "Cada item precisa ter pelo menos {{val}} caracteres",
       "max": "Cada item pode ter no máximo {{val}} caracteres",
@@ -112,6 +138,11 @@
     }
   },
   "menus": {
+    "notes": {
+      "optText": "Markdown / Texto",
+      "optFlowchart": "Diagrama",
+      "optFile": "Arquivo"
+    },
     "users": {
       "perms": {
         "label": "Permissões",
