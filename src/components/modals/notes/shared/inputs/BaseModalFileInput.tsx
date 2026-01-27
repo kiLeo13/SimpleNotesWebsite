@@ -1,6 +1,8 @@
-import { type ComponentProps, type JSX } from "react"
+import type { ComponentProps, JSX } from "react"
 
 import clsx from "clsx"
+
+import { useTranslation } from "react-i18next"
 
 import styles from "./ModalInputs.module.css"
 
@@ -11,18 +13,20 @@ type BaseModalFileInputProps = Omit<ComponentProps<"input">, "type"> & {
   label?: string
 }
 
-export function BaseModalFileInput({ 
-  className, 
-  errorMessage, 
+export function BaseModalFileInput({
+  className,
+  errorMessage,
   displayFileName,
   displayFileSize,
-  label = "Selecione um arquivo",
-  ...props 
+  label,
+  ...props
 }: BaseModalFileInputProps): JSX.Element {
+  const { t } = useTranslation()
+
   return (
     <>
       <label className={clsx(styles.fileInputWrapper, errorMessage && styles.invalid, className)}>
-        <span className={styles.label}>{label}</span>
+        <span className={styles.label}>{label || t("createNoteModal.selectFile")}</span>
         <span className={styles.chosenFile}>
           {displayFileName && (
             <>
@@ -31,11 +35,7 @@ export function BaseModalFileInput({
             </>
           )}
         </span>
-        <input
-          type="file"
-          className="hidden-styled-file-input"
-          {...props}
-        />
+        <input type="file" className="hidden-styled-file-input" {...props} />
       </label>
 
       {errorMessage && <span className={styles.errorMessage}>{errorMessage}</span>}

@@ -7,16 +7,19 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { useNoteStore } from "@/stores/useNotesStore"
 import { matchSorter } from "match-sorter"
 import { throttle } from "lodash-es"
+import { useTranslation } from "react-i18next"
 
 import styles from "./Sidebar.module.css"
 
 export function Sidebar(): JSX.Element {
+  const { t } = useTranslation()
+
   const notes = useNoteStore((state) => state.notes)
   const isLoading = useNoteStore((state) => state.isLoading)
   const fetchNotes = useNoteStore((state) => state.fetchNotes)
   const openNote = useNoteStore((state) => state.openNote)
 
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState("")
   const searchRef = useRef<HTMLInputElement>(null)
   const filteredNotes = toFilteredNotes(search, notes)
 
@@ -70,7 +73,7 @@ export function Sidebar(): JSX.Element {
           disabled={isLoading}
           type="text"
           name="noteSearch" // Just to remove browser warnings
-          placeholder="Pesquisar"
+          placeholder={t("sidebar.notes.search")}
           autoComplete="off"
           ref={searchRef}
           onKeyDown={handleKeyboard}
@@ -78,22 +81,21 @@ export function Sidebar(): JSX.Element {
           value={search}
         />
         <div className={styles.menuDivider} />
-        <span className={styles.searchResultCount}>{toPrettyResultCount(filteredNotes.length)}</span>
+        <span className={styles.searchResultCount}>
+          {filteredNotes.length === 1
+            ? t("sidebar.notes.oneFound")
+            : t("sidebar.notes.manyFound", { val: filteredNotes.length })}
+        </span>
       </div>
       <div className={styles.menuLowerItems}>
         <div className={styles.sidebarLoaderContainer}>
           {isLoading && <div className="loader" />}
         </div>
 
-        {!isLoading && (
+        {!isLoading &&
           filteredNotes.map((n) => {
-            return <SidebarNote
-              onClick={() => handleOpenNote(n)}
-              key={n.id}
-              note={n}
-            />
-          })
-        )}
+            return <SidebarNote onClick={() => handleOpenNote(n)} key={n.id} note={n} />
+          })}
       </div>
       <SidebarFooter />
     </nav>
@@ -106,14 +108,8 @@ function toFilteredNotes(search: string, notes: NoteResponseData[]): NoteRespons
   }
 
   return matchSorter(notes, search, {
-    keys: ['name', 'tags'],
+    keys: ["name", "tags"],
     // Just a tie-breaker
     baseSort: (a, b) => a.item.name.localeCompare(b.item.name)
   })
-}
-
-function toPrettyResultCount(count: number): string {
-  return count == 1
-    ? `1 resultado encontrado`
-    : `${count} resultados encontrados`
 }

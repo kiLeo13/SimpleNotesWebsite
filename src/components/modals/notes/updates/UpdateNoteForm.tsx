@@ -5,7 +5,6 @@ import { useEffect, useState, type JSX } from "react"
 import { VISIBILITY_OPTIONS, type UpdateNoteFormFields } from "@/types/forms/notes"
 
 import { isEmpty } from "lodash-es"
-
 import { ModalSection } from "../shared/sections/ModalSection"
 import { ModalActionRow } from "../shared/sections/ModalActionRow"
 import { ModalLabel } from "../shared/sections/ModalLabel"
@@ -23,6 +22,7 @@ import { ModalSelectInput } from "../shared/inputs/ModalSelectInput"
 import { userService } from "@/services/userService"
 import { formatLocalTimestamp, getDirtyValues } from "@/utils/utils"
 import { useNoteStore } from "@/stores/useNotesStore"
+import { useTranslation } from "react-i18next"
 import { toasts } from "@/utils/toastUtils"
 
 import styles from "./UpdateNoteForm.module.css"
@@ -33,9 +33,16 @@ type UpdateNoteFormProps = {
   setIsPatching: (show: boolean) => void
 }
 
-export function UpdateNoteForm({ note, handleSubmit, setIsPatching }: UpdateNoteFormProps): JSX.Element {
-  const { formState: { isDirty, isValid, dirtyFields } } = useFormContext<UpdateNoteFormFields>()
-  
+export function UpdateNoteForm({
+  note,
+  handleSubmit,
+  setIsPatching
+}: UpdateNoteFormProps): JSX.Element {
+  const {
+    formState: { isDirty, isValid, dirtyFields }
+  } = useFormContext<UpdateNoteFormFields>()
+  const { t } = useTranslation()
+
   // Local UI
   const [author, setAuthor] = useState<UserResponseData | null>(null)
   const [showDelete, setShowDelete] = useState(false)
@@ -43,6 +50,10 @@ export function UpdateNoteForm({ note, handleSubmit, setIsPatching }: UpdateNote
 
   // Store Actions
   const updateNoteAndRefresh = useNoteStore((state) => state.updateNoteAndRefresh)
+  const viewOptions = [...VISIBILITY_OPTIONS].map((o) => ({
+    label: t(o.label),
+    value: o.value
+  }))
 
   const onSubmit = async (data: UpdateNoteFormFields) => {
     const payload = getDirtyValues(dirtyFields, data)
@@ -64,7 +75,7 @@ export function UpdateNoteForm({ note, handleSubmit, setIsPatching }: UpdateNote
     const fetchAuthor = async (note: FullNoteResponseData) => {
       const resp = await userService.getUserById(note.created_by_id)
       if (!resp.success) {
-        toasts.apiError('Erro ao buscar autor da anotação', resp)
+        toasts.apiError(t("errors.noteAuthor"), resp)
         return
       }
 
@@ -72,38 +83,57 @@ export function UpdateNoteForm({ note, handleSubmit, setIsPatching }: UpdateNote
     }
 
     if (note) fetchAuthor(note)
-  }, [note])
+  }, [note, t])
 
   return (
     <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
       <ModalActionRow>
         <ModalSection
-          label={<ModalLabel
-            icon={<PiCrownFill color="#ada96dff" />}
-            title="Autor"
-          />}
+          label={
+            <ModalLabel
+              icon={<PiCrownFill color="#ada96dff" />}
+              title={t("updateNoteModal.author")}
+            />
+          }
           input={<BaseModalTextInput disabled value={author?.username ?? "-"} />}
         />
         <ModalSection
-          label={<ModalLabel icon={<FaCalendarAlt color="#8ca1b4ff" />} title="Criação" />}
+          label={
+            <ModalLabel
+              icon={<FaCalendarAlt color="#8ca1b4ff" />}
+              title={t("updateNoteModal.creationTime")}
+            />
+          }
           input={<BaseModalTextInput disabled value={getCreation(note?.created_at)} />}
         />
       </ModalActionRow>
 
       <ModalActionRow>
         <ModalSection
-          label={<ModalLabel icon={<FaEye color="#a085b3ff" />} title="Visibilidade" />}
-          input={<ModalSelectInput name="visibility" options={VISIBILITY_OPTIONS} />}
+          label={
+            <ModalLabel
+              icon={<FaEye color="#a085b3ff" />}
+              title={t("updateNoteModal.visibility")}
+            />
+          }
+          input={<ModalSelectInput name="visibility" options={viewOptions} />}
         />
         <ModalSection
-          label={<ModalLabel icon={<FaCalendarAlt color="#8ca1b4ff" />} title="Última Atualização" />}
-          input={<BaseModalTextInput disabled value={getUpdate(note?.created_at, note?.updated_at)} />}
+          label={
+            <ModalLabel
+              icon={<FaCalendarAlt color="#8ca1b4ff" />}
+              title={t("updateNoteModal.lastUpdate")}
+            />
+          }
+          input={
+            <BaseModalTextInput disabled value={getUpdate(note?.created_at, note?.updated_at)} />
+          }
         />
       </ModalActionRow>
 
       <ModalActionRow>
         <ModalSection
-          label={<ModalLabel title="Conteúdo" required />}
+          label={<ModalLabel title={t("updateNoteModal.content")} required />}
           input={<ModalNoteFileView note={note} />}
         />
       </ModalActionRow>
@@ -112,15 +142,22 @@ export function UpdateNoteForm({ note, handleSubmit, setIsPatching }: UpdateNote
 
       <ModalActionRow>
         <ModalSection
-          label={<ModalLabel title="Nome" required />}
+          label={<ModalLabel title={t("updateNoteModal.name")} required />}
           input={<ModalTextInput name="name" />}
         />
       </ModalActionRow>
 
       <ModalActionRow>
         <ModalSection
-          label={<ModalLabel title="Palavras-chave" required={false} />}
-          input={<ModalArrayInput name="tags" minLength={2} maxLength={30} placeholder="Digite apelidos..." />}
+          label={<ModalLabel title={t("updateNoteModal.tags")} required={false} />}
+          input={
+            <ModalArrayInput
+              name="tags"
+              minLength={2}
+              maxLength={30}
+              placeholder={t("updateNoteModal.tagsPlaceholder")}
+            />
+          }
         />
       </ModalActionRow>
 
@@ -149,9 +186,9 @@ export function UpdateNoteForm({ note, handleSubmit, setIsPatching }: UpdateNote
 function getUpdate(creation?: string, date?: string): string {
   // For a simpler user experience, if the note was never updated,
   // we keep this field empty (shows "-").
-  return !date || creation === date ? '-' : formatLocalTimestamp(date)
+  return !date || creation === date ? "-" : formatLocalTimestamp(date)
 }
 
 function getCreation(date?: string): string {
-  return date ? formatLocalTimestamp(date) : '-'
+  return date ? formatLocalTimestamp(date) : "-"
 }

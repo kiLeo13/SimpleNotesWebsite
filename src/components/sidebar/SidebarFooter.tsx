@@ -41,17 +41,17 @@ export function SidebarFooter(): JSX.Element {
 
   const createNoteOptions: MenuActionItem[] = [
     {
-      label: "Markdown / Texto",
+      label: t("menus.notes.optText"),
       icon: <MdTextFields size={"1.5em"} color="#a285d1" />,
       onClick: () => setEditorMode("MARKDOWN")
     },
     {
-      label: "Diagrama",
+      label: t("menus.notes.optFlowchart"),
       icon: <RiFlowChart size={"1.4em"} color="#a285d1" />,
       onClick: () => setEditorMode("FLOWCHART")
     },
     {
-      label: "Arquivo",
+      label: t("menus.notes.optFile"),
       icon: <MdInsertDriveFile size={"1.4em"} color="#a285d1" />,
       onClick: () => setShowUploadModal(true)
     }

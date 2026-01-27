@@ -6,8 +6,9 @@ import { LuClapperboard } from "react-icons/lu"
 import { FaMarkdown } from "react-icons/fa"
 import { RiFlowChart } from "react-icons/ri"
 import { RiFileGifLine } from "react-icons/ri"
-import { ext } from "@/utils/utils"
 import { FaFilePdf } from "react-icons/fa6"
+import { useTranslation } from "react-i18next"
+import { ext } from "@/utils/utils"
 
 import styles from "./ModalHeader.module.css"
 
@@ -17,9 +18,11 @@ type UpdateModalHeaderProps = {
 }
 
 export function ModalHeader({ noteId, note }: UpdateModalHeaderProps): JSX.Element {
+  const { t } = useTranslation()
+
   return (
     <header className={styles.header}>
-      <h2 className={styles.title}>{`Editar Nota #${noteId}`}</h2>
+      <h2 className={styles.title}>{t("updateNoteModal.title", { note: noteId })}</h2>
 
       <h3 className={styles.subtitle}>
         <span className={styles.noteName}>

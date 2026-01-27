@@ -89,25 +89,25 @@ export function CreateEditorModal({ mode, onClose }: CreateEditorModalProps): JS
             <form className={styles.form} onSubmit={handleSubmit(onSubmit)} noValidate>
               <ModalActionRow>
                 <ModalSection
-                  label={<ModalLabel title="Nome" required />}
+                  label={<ModalLabel title={t("createNoteModal.name")} required />}
                   input={<ModalTextInput name="name" autoComplete="off" />}
                 />
               </ModalActionRow>
 
               <ModalActionRow>
                 <ModalSection
-                  label={<ModalLabel title="Visibilidade" required />}
+                  label={<ModalLabel title={t("createNoteModal.visibility")} required />}
                   input={<ModalSelectInput name="visibility" options={VISIBILITY_OPTIONS} />}
                 />
               </ModalActionRow>
 
               <ModalActionRow>
                 <ModalSection
-                  label={<ModalLabel title="Tags" required={false} />}
+                  label={<ModalLabel title={t("createNoteModal.tags")} required={false} />}
                   input={
                     <ModalArrayInput
                       name="tags"
-                      placeholder="Adicione tags..."
+                      placeholder={t("createNoteModal.tagsPlaceholder")}
                       minLength={2}
                       maxLength={30}
                     />
@@ -115,19 +115,27 @@ export function CreateEditorModal({ mode, onClose }: CreateEditorModalProps): JS
                 />
               </ModalActionRow>
 
-              <div className={styles.codeEditorWrapper}>
-                <Controller
-                  name="content"
-                  control={control}
-                  render={({ field }) => (
-                    <CodeEditor code={field.value || ""} onChange={(val) => field.onChange(val)} />
-                  )}
+              <ModalActionRow>
+                <ModalSection
+                  label={<ModalLabel title={t("createNoteModal.content")} required />}
+                  input={
+                    <Controller
+                      name="content"
+                      control={control}
+                      render={({ field }) => (
+                        <CodeEditor
+                          code={field.value || ""}
+                          onChange={(val) => field.onChange(val)}
+                        />
+                      )}
+                    />
+                  }
                 />
-              </div>
+              </ModalActionRow>
 
               <button disabled={isLoading} className={styles.submitButton} type="submit">
                 {isLoading && <LoaderContainer />}
-                Criar Nota
+                {t("createNoteModal.submit")}
               </button>
             </form>
           </FormProvider>

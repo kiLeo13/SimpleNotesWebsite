@@ -40,6 +40,10 @@ export function CreateNoteModalForm({ setShowUploadModal }: CreateNoteModalFormP
     }
   })
   const { handleSubmit } = methods
+  const viewOptions = [...VISIBILITY_OPTIONS].map((o) => ({
+    label: t(o.label),
+    value: o.value
+  }))
 
   const onSubmit = async (data: FileNoteFormFields) => {
     // This should be impossible, but better
@@ -77,29 +81,29 @@ export function CreateNoteModalForm({ setShowUploadModal }: CreateNoteModalFormP
 
       <FormProvider {...methods}>
         <form className={styles.form} noValidate>
-          <div className={styles.title}>Criar Nota</div>
+          <div className={styles.title}>{t("createNoteModal.title")}</div>
 
           <ModalActionRow>
             <ModalSection
-              label={<ModalLabel title="Nome" required />}
+              label={<ModalLabel title={t("createNoteModal.name")} required />}
               input={<ModalTextInput name="name" autoComplete="off" />}
             />
           </ModalActionRow>
 
           <ModalActionRow>
             <ModalSection
-              label={<ModalLabel title="Visibilidade" required />}
-              input={<ModalSelectInput name="visibility" options={VISIBILITY_OPTIONS} />}
+              label={<ModalLabel title={t("createNoteModal.visibility")} required />}
+              input={<ModalSelectInput name="visibility" options={viewOptions} />}
             />
           </ModalActionRow>
 
           <ModalActionRow>
             <ModalSection
-              label={<ModalLabel title="Palavras-chave" required={false} />}
+              label={<ModalLabel title={t("createNoteModal.tags")} required={false} />}
               input={
                 <ModalArrayInput
                   name="tags"
-                  placeholder="Adicione apelidos..."
+                  placeholder={t("createNoteModal.tagsPlaceholder")}
                   minLength={2}
                   maxLength={30}
                 />
@@ -111,8 +115,10 @@ export function CreateNoteModalForm({ setShowUploadModal }: CreateNoteModalFormP
             <ModalSection
               label={
                 <ModalLabel
-                  title="Conteúdo"
-                  hint={`Arquivo máximo: ${getPrettySize(NOTE_MAX_SIZE_BYTES)}.`}
+                  title={t("createNoteModal.content")}
+                  hint={t("createNoteModal.contentHint", {
+                    size: getPrettySize(NOTE_MAX_SIZE_BYTES)
+                  })}
                   required
                 />
               }
@@ -127,7 +133,7 @@ export function CreateNoteModalForm({ setShowUploadModal }: CreateNoteModalFormP
               onClick={handleSubmit(onSubmit)}
               type="submit"
             >
-              Criar
+              {t("createNoteModal.submit")}
               {isLoading && (
                 <div className={styles.loaderContainer}>
                   <div className={clsx("loader", styles.buttonLoader)}></div>
