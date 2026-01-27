@@ -51,14 +51,14 @@
     "name": "Nome",
     "visibility": "Visibilidade",
     "visibilityHint": "A visibilidade de uma nota é apenas para fins de organização...",
-    "tags": "Apelidos",
-    "tagsPlaceholder": "Separe os apelidos por espaço",
+    "tags": "Palavras-chave",
+    "tagsPlaceholder": "Adicione apelidos...",
     "content": "Conteúdo",
     "contentHint": "Arquivo máximo: {{size}}",
     "selectFile": "Selecione um arquivo",
     "modeFlowchart": "Novo Diagrama",
     "modeMarkdown": "Nova Nota Markdown",
-    "submit": "Criar",
+    "submit": "Criar Nota",
     "visibilityOptions": {
       "public": "Público",
       "private": "Privado"
