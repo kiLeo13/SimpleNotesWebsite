@@ -69,7 +69,8 @@
     "content": "Conteúdo",
     "name": "Nome",
     "tags": "Palavras-chave",
-    "tagsPlaceholder": "Adicione apelidos..."
+    "tagsPlaceholder": "Adicione apelidos...",
+    "noFile": "Anotações desse tipo não possuem arquivo."
   },
   "createNoteModal": {
     "title": "Criar Nota",
