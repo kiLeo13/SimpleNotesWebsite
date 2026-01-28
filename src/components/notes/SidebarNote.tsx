@@ -26,7 +26,7 @@ export function SidebarNote({ note, onClick }: SidebarNoteProps): JSX.Element {
   const shownNote = useNoteStore((state) => state.shownNote)
   const isOpen = shownNote?.id === note.id
 
-  const handleClick: MouseEventHandler<HTMLButtonElement> = async (e) => {
+  const handleClick: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.stopPropagation()
     setIsPatching(true)
   }
