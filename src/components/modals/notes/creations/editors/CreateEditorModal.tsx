@@ -16,8 +16,8 @@ import { BsDiagram3 } from "react-icons/bs"
 import { CodeEditor } from "@/components/board/editors/CodeEditor"
 import { ModalTextInput } from "../../shared/inputs/ModalTextInput"
 import { ModalSelectInput } from "../../shared/inputs/ModalSelectInput"
+import { LoaderWrapper } from "@/components/loader/LoaderWrapper"
 import { LivePreview } from "./LivePreview"
-import { LoaderContainer } from "@/components/LoaderContainer"
 import { ModalArrayInput } from "../../shared/inputs/ModalArrayInput"
 import { useNoteStore } from "@/stores/useNotesStore"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -139,10 +139,11 @@ export function CreateEditorModal({ mode, onClose }: CreateEditorModalProps): JS
                 />
               </ModalActionRow>
 
-              <button disabled={isLoading} className={styles.submitButton} type="submit">
-                {isLoading && <LoaderContainer />}
-                {t("createNoteModal.submit")}
-              </button>
+              <LoaderWrapper isLoading={isLoading} loaderProps={{ scale: 0.8 }}>
+                <button disabled={isLoading} className={styles.submitButton} type="submit">
+                  {t("createNoteModal.submit")}
+                </button>
+              </LoaderWrapper>
             </form>
           </FormProvider>
         </div>

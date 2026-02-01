@@ -23,12 +23,17 @@
   padding: 8px;
 }
 
-.md > ul,
-.md > ol {
+.md ul,
+.md ol {
   display: flex;
   flex-direction: column;
   padding-left: 25px;
   gap: 5px;
+}
+
+.md ul p,
+.md ol p {
+  margin: 5px;
 }
 
 .md code {
@@ -62,7 +67,7 @@
   gap: 8px;
   position: relative;
   margin-left: 0;
-  padding: 5px 0 5px 12px ;
+  padding: 5px 0 5px 12px;
 }
 
 .md blockquote p {

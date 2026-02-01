@@ -127,7 +127,10 @@
     "modeFlowchart": "Novo Diagrama",
     "modeMarkdown": "Nova Nota Markdown",
     "submit": "Criar Nota",
-    "preview": "Live Preview",
+    "top": {
+      "preview": "Live Preview",
+      "md": "Docs"
+    },
     "hints": {
       "opt": "opcional"
     }

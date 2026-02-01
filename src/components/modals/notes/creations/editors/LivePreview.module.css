@@ -6,18 +6,39 @@
   overflow: hidden;
 }
 
-.previewHeader {
+.topInfos {
   position: absolute;
   display: flex;
-  align-items: center;
-  gap: 5px;
-  top: 1rem;
-  right: 1rem;
-  padding: 0.5rem 1rem;
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 8px;
-  font-size: 0.8rem;
-  color: #a6adc8;
+  align-items: stretch;
   z-index: 10;
-  pointer-events: none;
+  font-size: 0.8rem;
+  top: 1rem;
+  gap: 5px;
+  right: 1rem;
+  user-select: none;
+}
+
+.topItem {
+  display: flex;
+  color: #a6adc8;
+  text-decoration: none;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 0.5rem 1rem;
+  gap: 5px;
+  border-radius: 8px;
+}
+
+.docs:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.topIcon {
+  display: flex;
+}
+
+.textView {
+  height: 100%;
+  overflow-y: auto;
 }

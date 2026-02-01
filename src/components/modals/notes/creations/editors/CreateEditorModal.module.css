@@ -59,6 +59,7 @@
 
 .form {
   display: flex;
+  align-items: stretch;
   flex-direction: column;
   gap: 15px;
 }
@@ -87,23 +88,13 @@
   background-color: rgb(144, 92, 192);
   color: #11111b;
   border: none;
+  width: 100%;
   border-radius: 9999px;
-  padding: 12px;
   font-size: 1em;
   font-weight: 600;
-  padding: 12px 18px;
+  padding: 12px;
   cursor: pointer;
   transition: background-color 300ms;
-}
-
-.submitButton:hover:not(:disabled) {
-  background-color: rgb(169, 119, 216);
-}
-
-.submitButton:disabled {
-  background-color: rgb(54, 36, 71);
-  color: #1a1522;
-  cursor: not-allowed;
 }
 
 @keyframes smoothToggleModal {

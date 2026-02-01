@@ -35,6 +35,7 @@ export function MarkdownDisplay({
     ...defaultSchema,
     attributes: {
       ...defaultSchema.attributes,
+      p: [...(defaultSchema.attributes?.p || []), "color", "style"],
       code: [...(defaultSchema.attributes?.code || []), "className"],
       img: [...(defaultSchema.attributes?.img || []), "align", "src", "alt", "width", "height", "className"],
       span: [...(defaultSchema.attributes?.span || []), "style"],
