@@ -1,10 +1,12 @@
 import type { JSX } from "react"
 
 import { FaTrashAlt } from "react-icons/fa"
-
-import clsx from "clsx"
+import { Permission } from "@/models/Permission"
+import { LoaderWrapper } from "@/components/loader/LoaderWrapper"
+import { usePermission } from "@/hooks/usePermission"
 
 import styles from "./ModalFooter.module.css"
+import clsx from "clsx"
 
 type ModalFooterProps = {
   /**
@@ -21,26 +23,41 @@ type ModalFooterProps = {
   setShowDelete: (show: boolean) => void
 }
 
-export function ModalFooter({ exists, isDirty, isValid, isLoading, setShowDelete }: ModalFooterProps): JSX.Element {
+export function ModalFooter({
+  exists,
+  isDirty,
+  isValid,
+  isLoading,
+  setShowDelete
+}: ModalFooterProps): JSX.Element {
   const canSubmit = exists && isDirty && isValid && !isLoading
+  const canDelete = usePermission(Permission.DeleteNotes)
   const handleDeleteClick = () => {
     setShowDelete(true)
   }
 
   return (
     <footer className={styles.footer}>
-      <button disabled={!exists} type="button" className={styles.deleteButton} onClick={handleDeleteClick}>
-        <FaTrashAlt size={"1.1em"} color="rgba(102, 34, 34, 1)" />
-      </button>
+      {canDelete && (
+        <button
+          disabled={!exists}
+          type="button"
+          className={clsx(styles.button, styles.deleteButton)}
+          onClick={handleDeleteClick}
+        >
+          <FaTrashAlt size={"1.1em"} color="rgba(102, 34, 34, 1)" />
+        </button>
+      )}
 
-      <button disabled={!canSubmit} type="submit" className={styles.saveButton}>
-        Salvar
-        {isLoading && (
-          <div className={styles.loaderContainer}>
-            <div className={clsx("loader", styles.buttonLoader)}></div>
-          </div>
-        )}
-      </button>
+      <LoaderWrapper isLoading={isLoading} loaderProps={{ scale: 0.8 }}>
+        <button
+          disabled={!canSubmit}
+          type="submit"
+          className={clsx(styles.button, styles.saveButton)}
+        >
+          Salvar
+        </button>
+      </LoaderWrapper>
     </footer>
   )
 }
