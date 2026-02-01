@@ -7,6 +7,7 @@ import { isOnlyDigit } from "@/utils/utils"
 import { useAsync } from "@/hooks/useAsync"
 import { useNavigate } from "react-router-dom"
 import { userService } from "@/services/userService"
+import { useTranslation } from "react-i18next"
 import { isNumber } from "lodash-es"
 
 import authStyles from "../../AuthModal.module.css"
@@ -18,6 +19,7 @@ type VerificationModalProps = {
 
 export function VerificationModal({ email }: VerificationModalProps): JSX.Element {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const [code, setCode] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [verify, isLoading] = useAsync(userService.verifyEmail)
@@ -40,32 +42,27 @@ export function VerificationModal({ email }: VerificationModalProps): JSX.Elemen
     e.preventDefault()
     const response = await verify({ code: code, email: email })
 
-    console.log("Hit")
     if (!response.success) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       for (const [_, messages] of Object.entries(response.errors)) {
         setError(messages.join(", "))
       }
-      console.log("Got an error")
       return
     }
-    console.log("Trying to redirect")
     navigate("/login")
   }
 
   return (
     <div className={styles.modalWrapper}>
       <header className={styles.verifyHeader}>
-        <h2 className={styles.verifyTitle}>Verificação de Email</h2>
-        <p className={styles.verifySubtitle}>
-          Insira o código de verificação que foi enviado para o seu email.
-        </p>
+        <h2 className={styles.verifyTitle}>{t("modals.verify.title")}</h2>
+        <p className={styles.verifySubtitle}>{t("modals.verify.subtitle")}</p>
       </header>
       <div className={styles.division}></div>
       <form className={styles.verifyForm} onSubmit={verifyHandler}>
         <div className={styles.verifyFormControl}>
           <label className={styles.verifyFormLabel} htmlFor="email-input">
-            Email
+            {t("modals.verify.email")}
             <RequiredHint />
           </label>
           <input
@@ -78,7 +75,7 @@ export function VerificationModal({ email }: VerificationModalProps): JSX.Elemen
         </div>
         <div className={styles.verifyFormControl}>
           <label className={styles.verifyFormLabel} htmlFor="code-input">
-            Código
+            {t("modals.verify.code")}
             <RequiredHint />
           </label>
           <input
@@ -97,7 +94,7 @@ export function VerificationModal({ email }: VerificationModalProps): JSX.Elemen
             className={authStyles.submitButton}
             type="submit"
           >
-            Verificar
+            {t("modals.verify.confirm")}
             {isLoading && <LoaderContainer scale="0.7" />}
           </button>
         </footer>

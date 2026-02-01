@@ -32,7 +32,22 @@
     "managePerms": "Gerenciar Permissões"
   },
   "modals": {
+    "verify": {
+      "title": "Verificação de E-mail",
+      "subtitle": "Insira o código de verificação que foi enviado para o seu e-mail.",
+      "email": "E-mail",
+      "code": "Código",
+      "confirm": "Verificar"
+    },
     "auth": {
+      "warn": {
+        "title": "Sessão já existente",
+        "subtitle": "Você já está logado neste site, deseja mesmo prosseguir?",
+        "subtle": "Nada será perdido, só não tem necessidade :D",
+        "countdown": "Esta sessão ainda tem uma duração de `{{time}}`.",
+        "proceed": "Continuar Login",
+        "back": "Voltar à Plataforma"
+      },
       "name": "Nome Completo",
       "email": "E-mail",
       "emailPlh": "exemplo@server.com",

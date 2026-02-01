@@ -16,6 +16,7 @@ import { displayFormsErrors } from "@/utils/errorHandlerUtils"
 import { useTranslation } from "react-i18next"
 
 import styles from "./AuthModal.module.css"
+import { DarkWrapper } from "@/components/DarkWrapper"
 
 export function LoginModal(): JSX.Element {
   const navigate = useNavigate()
@@ -45,7 +46,9 @@ export function LoginModal(): JSX.Element {
 
   return (
     <>
-      {showWarn && <AlreadyAuthWarn setShowWarn={setShowWarn} />}
+      <DarkWrapper open={showWarn}>
+        <AlreadyAuthWarn setShowWarn={setShowWarn} />
+      </DarkWrapper>
 
       <div className={styles.authModalContainer}>
         <form className={styles.authForm} onSubmit={handleSubmit(onSubmit)}>

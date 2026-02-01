@@ -43,14 +43,16 @@
   color: rgb(72, 67, 82);
 }
 
-.division {
-  border-top: 1px solid rgb(68, 61, 77);
+.countdown p {
+  margin: 0;
 }
 
-.remainSession {
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 5px;
-  padding: 3px 6px;
+.countdown code {
+  padding: 3px 6px !important;
+}
+
+.division {
+  border-top: 1px solid rgb(68, 61, 77);
 }
 
 .warnFooter {
