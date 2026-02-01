@@ -82,7 +82,7 @@ export function UpdateNoteModal({ noteId, setIsPatching }: UpdateNoteModalProps)
         <IoMdClose color="rgba(94, 76, 121, 1)" size={"24px"} />
       </div>
 
-      <ModalHeader noteId={noteId} note={note} />
+      <ModalHeader note={note} />
 
       <FormProvider {...methods}>
         <UpdateNoteForm note={note} handleSubmit={handleSubmit} setIsPatching={setIsPatching} />

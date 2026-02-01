@@ -73,7 +73,7 @@
     }
   },
   "updateNoteModal": {
-    "title": "Editar Nota #{{note}}",
+    "title": "Editar Nota",
     "author": "Autor",
     "creationTime": "Criação",
     "visibility": "Visibilidade",

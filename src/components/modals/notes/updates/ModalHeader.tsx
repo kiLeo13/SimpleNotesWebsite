@@ -13,16 +13,15 @@ import { ext } from "@/utils/utils"
 import styles from "./ModalHeader.module.css"
 
 type UpdateModalHeaderProps = {
-  noteId: number
   note: FullNoteResponseData | null
 }
 
-export function ModalHeader({ noteId, note }: UpdateModalHeaderProps): JSX.Element {
+export function ModalHeader({ note }: UpdateModalHeaderProps): JSX.Element {
   const { t } = useTranslation()
 
   return (
     <header className={styles.header}>
-      <h2 className={styles.title}>{t("updateNoteModal.title", { note: noteId })}</h2>
+      <h2 className={styles.title}>{t("updateNoteModal.title")}</h2>
 
       <h3 className={styles.subtitle}>
         <span className={styles.noteName}>
