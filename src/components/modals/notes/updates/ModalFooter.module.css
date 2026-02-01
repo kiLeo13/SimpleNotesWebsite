@@ -4,19 +4,7 @@
   gap: 8px;
 }
 
-.loaderContainer {
-  position: absolute;
-  display: flex;
-  inset: 0;
-  justify-content: center;
-  align-items: center;
-}
-
-.buttonLoader {
-  scale: 0.7;
-}
-
-.footer > button {
+.button {
   position: relative;
   cursor: pointer;
   padding: 12px 25px;
@@ -27,18 +15,13 @@
   transition: opacity 300ms;
 }
 
-.footer > button:hover {
+.button:hover {
   opacity: 0.8;
 }
 
 .saveButton {
   background-color: rgb(144, 92, 192);
   color: rgb(52, 27, 75);
-}
-
-.saveButton:disabled {
-  background-color: rgb(69, 46, 90);
-  color: rgb(41, 25, 56);
 }
 
 .deleteButton {
