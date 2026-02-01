@@ -1,4 +1,4 @@
-import { type JSX, useState } from "react"
+import { type JSX, useMemo, useState } from "react"
 
 import { IoMdClose } from "react-icons/io"
 import {
@@ -50,6 +50,12 @@ export function CreateEditorModal({ mode, onClose }: CreateEditorModalProps): JS
 
   const { handleSubmit, control } = methods
   const liveContent = useWatch({ control, name: "content" })
+  const viewOptions = useMemo(() => {
+    return [...VISIBILITY_OPTIONS].map((o) => ({
+      label: t(o.label),
+      value: o.value
+    }))
+  }, [t])
 
   const onSubmit = async (data: NoteFormFields) => {
     setIsLoading(true)
@@ -97,7 +103,7 @@ export function CreateEditorModal({ mode, onClose }: CreateEditorModalProps): JS
               <ModalActionRow>
                 <ModalSection
                   label={<ModalLabel title={t("createNoteModal.visibility")} required />}
-                  input={<ModalSelectInput name="visibility" options={VISIBILITY_OPTIONS} />}
+                  input={<ModalSelectInput name="visibility" options={viewOptions} />}
                 />
               </ModalActionRow>
 
