@@ -55,3 +55,25 @@
   vertical-align: -0.2em;
   display: inline-block;
 }
+
+.md blockquote {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  margin-left: 0;
+  padding: 5px 0 5px 12px ;
+}
+
+.md blockquote p {
+  margin: 0;
+}
+
+.md blockquote::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  border-radius: 9999px;
+  background-color: rgb(73, 65, 87);
+}
