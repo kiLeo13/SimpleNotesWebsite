@@ -9,6 +9,7 @@ import { IoMdClose } from "react-icons/io"
 import { UpdateNoteForm } from "./UpdateNoteForm"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { noteService } from "@/services/noteService"
+import { useTranslation } from "react-i18next"
 import { toasts } from "@/utils/toastUtils"
 
 import styles from "./UpdateNoteModal.module.css"
@@ -19,6 +20,8 @@ type UpdateNoteModalProps = {
 }
 
 export function UpdateNoteModal({ noteId, setIsPatching }: UpdateNoteModalProps): JSX.Element {
+  const { t } = useTranslation()
+
   const [note, setNote] = useState<FullNoteResponseData | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const handleCloseModal = () => setIsPatching(false)
@@ -60,12 +63,12 @@ export function UpdateNoteModal({ noteId, setIsPatching }: UpdateNoteModalProps)
           tags: resp.data.tags || []
         })
       } else {
-        toasts.apiError("Erro ao buscar anotação/métricas completas", resp)
+        toasts.apiError(t("updateNoteModal.fetchError"), resp)
         setIsPatching(false)
       }
     }
     fetchNote()
-  }, [noteId, setIsPatching, reset])
+  }, [noteId, setIsPatching, reset, t])
 
   return (
     <div className={styles.container}>

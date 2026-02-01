@@ -82,7 +82,8 @@
     "name": "Nome",
     "tags": "Palavras-chave",
     "tagsPlaceholder": "Adicione apelidos...",
-    "noFile": "Anotações desse tipo não possuem arquivo."
+    "noFile": "Anotações desse tipo não possuem arquivo.",
+    "fetchError": "Erro ao buscar anotação/métricas completas"
   },
   "createNoteModal": {
     "title": "Criar Nota",
