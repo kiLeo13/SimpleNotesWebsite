@@ -1,7 +1,7 @@
 import type { FullNoteResponseData } from "@/types/api/notes"
 import type { UserResponseData } from "@/types/api/users"
-import { useFormContext, type UseFormHandleSubmit } from "react-hook-form"
-import { useEffect, useState, type JSX } from "react"
+import { useFormContext, useFormState, type UseFormHandleSubmit } from "react-hook-form"
+import { useEffect, useMemo, useState, type JSX } from "react"
 import { VISIBILITY_OPTIONS, type UpdateNoteFormFields } from "@/types/forms/notes"
 
 import { isEmpty } from "lodash-es"
@@ -38,9 +38,9 @@ export function UpdateNoteForm({
   handleSubmit,
   setIsPatching
 }: UpdateNoteFormProps): JSX.Element {
-  const {
-    formState: { isDirty, isValid, dirtyFields }
-  } = useFormContext<UpdateNoteFormFields>()
+  const { control } = useFormContext<UpdateNoteFormFields>()
+  const { isDirty, isValid, dirtyFields } = useFormState({ control })
+
   const { t } = useTranslation()
 
   // Local UI
@@ -50,10 +50,12 @@ export function UpdateNoteForm({
 
   // Store Actions
   const updateNoteAndRefresh = useNoteStore((state) => state.updateNoteAndRefresh)
-  const viewOptions = [...VISIBILITY_OPTIONS].map((o) => ({
-    label: t(o.label),
-    value: o.value
-  }))
+  const viewOptions = useMemo(() => {
+    return [...VISIBILITY_OPTIONS].map((o) => ({
+      label: t(o.label),
+      value: o.value
+    }))
+  }, [t])
 
   const onSubmit = async (data: UpdateNoteFormFields) => {
     const payload = getDirtyValues(dirtyFields, data)
