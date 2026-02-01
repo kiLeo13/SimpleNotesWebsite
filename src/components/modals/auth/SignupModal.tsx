@@ -9,16 +9,18 @@ import { FaArrowRight } from "react-icons/fa"
 import { Link } from "react-router-dom"
 import { DarkWrapper } from "@/components/DarkWrapper"
 import { PasswordRules } from "./passwords/PasswordRules"
-import { LoaderContainer } from "@/components/LoaderContainer"
+import { LoaderWrapper } from "@/components/loader/LoaderWrapper"
 import { displayFormsErrors } from "@/utils/errorHandlerUtils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useAsync } from "@/hooks/useAsync"
 import { userService } from "@/services/userService"
+import { useTranslation } from "react-i18next"
 import { debounce } from "lodash-es"
 
 import styles from "./AuthModal.module.css"
 
 export function SignupModal(): JSX.Element {
+  const { t } = useTranslation()
   const [isEmailVerifying, setIsEmailVerifying] = useState(false)
   const [showPwdChecks, setShowPwdChecks] = useState(false)
   const [signup, signupLoading] = useAsync(userService.signup)
@@ -36,26 +38,23 @@ export function SignupModal(): JSX.Element {
     mode: "onChange",
     resolver: zodResolver(signupSchema)
   })
-  const { onBlur, ...passwordRest } = register('password')
-  const { onChange, ...emailRest } = register('email')
+  const { onBlur, ...passwordRest } = register("password")
+  const { onChange, ...emailRest } = register("email")
 
   const handleEmailCheck = useCallback(async () => {
-    const val = getValues('email')
+    const val = getValues("email")
 
-    if (getFieldState('email').invalid) return
+    if (getFieldState("email").invalid) return
 
     // We don't reuse the `status` function because we don't want the loading
     // icon to show on screen. This operation should be handled "silently".
     const resp = await userService.getUserStatus({ email: val })
-    if (resp.success && resp.data.status === 'TAKEN') {
-      handleEmailTaken(setError)
+    if (resp.success && resp.data.status === "TAKEN") {
+      handleEmailTaken(setError, t)
     }
-  }, [getFieldState, getValues, setError])
+  }, [getFieldState, getValues, setError, t])
 
-  const debouncedEmailCheck = useMemo(
-    () => debounce(handleEmailCheck, 500),
-    [handleEmailCheck]
-  )
+  const debouncedEmailCheck = useMemo(() => debounce(handleEmailCheck, 500), [handleEmailCheck])
 
   const onSubmit: SubmitHandler<SignupFormFields> = async (data) => {
     const statusResp = await status(data)
@@ -64,7 +63,7 @@ export function SignupModal(): JSX.Element {
       return
     }
 
-    if (statusResp.data.status === 'VERIFYING') {
+    if (statusResp.data.status === "VERIFYING") {
       setIsEmailVerifying(true)
       return
     }
@@ -79,26 +78,33 @@ export function SignupModal(): JSX.Element {
 
   return (
     <>
-      {isEmailVerifying && (
-        <DarkWrapper>
-          <VerificationModal email={getValues('email')} />
-        </DarkWrapper>
-      )}
+      <DarkWrapper open={isEmailVerifying}>
+        <VerificationModal email={getValues("email")} />
+      </DarkWrapper>
 
       <div className={styles.authModalContainer}>
         <form className={styles.authForm} onSubmit={handleSubmit(onSubmit)}>
-          {/* Username */}
           <div className={styles.authFormControl}>
-            <label className={styles.authFormLabel}>Nome Completo<RequiredHint /></label>
-            <input className={styles.authFormInput} {...register("username")} type="text" autoComplete="name" />
+            <label className={styles.authFormLabel}>
+              {t("modals.auth.name")}
+              <RequiredHint />
+            </label>
+            <input
+              className={styles.authFormInput}
+              {...register("username")}
+              type="text"
+              autoComplete="name"
+            />
             {!!errors.username && (
               <span className={styles.authInputError}>{errors.username.message}</span>
             )}
           </div>
 
-          {/* Email address */}
           <div className={styles.authFormControl}>
-            <label className={styles.authFormLabel}>Email<RequiredHint /></label>
+            <label className={styles.authFormLabel}>
+              {t("modals.auth.email")}
+              <RequiredHint />
+            </label>
             <input
               className={styles.authFormInput}
               {...emailRest}
@@ -108,7 +114,7 @@ export function SignupModal(): JSX.Element {
               }}
               type="email"
               autoComplete="email"
-              placeholder="example@company.com"
+              placeholder={t("modals.auth.emailPlh")}
             />
             {!!errors.email && (
               <span className={styles.authInputError}>{errors.email.message}</span>
@@ -117,7 +123,10 @@ export function SignupModal(): JSX.Element {
 
           {/* Password input */}
           <div className={styles.authFormControl}>
-            <label className={styles.authFormLabel}>Nova Senha<RequiredHint /></label>
+            <label className={styles.authFormLabel}>
+              {t("modals.auth.newPwd")}
+              <RequiredHint />
+            </label>
             <div className={styles.passwordContainer}>
               <input
                 className={styles.authFormInput}
@@ -140,23 +149,19 @@ export function SignupModal(): JSX.Element {
             )}
           </div>
 
-          {/* Bottom/Submit */}
           <div className={styles.authFormFooterContainer}>
             <div className={styles.authFooterContents}>
-              <button disabled={isLoading} className={styles.submitButton} type="submit">
-                Verificar
-                {isLoading && (
-                  <LoaderContainer style={{scale: "80%"}} />
-                )}
-              </button>
+              <LoaderWrapper isLoading={isLoading} loaderProps={{ scale: 0.8 }}>
+                <button disabled={isLoading} className={styles.submitButton} type="submit">
+                  {t("modals.auth.verify")}
+                </button>
+              </LoaderWrapper>
               <Link draggable="false" className={styles.modalSwitcher} to="/login">
-                <span>Já tenho conta</span>
+                <span>{t("modals.auth.hasAcc")}</span>
                 <FaArrowRight />
               </Link>
             </div>
-            {!!errors.root && (
-              <span className={styles.authInputError}>{errors.root.message}</span>
-            )}
+            {!!errors.root && <span className={styles.authInputError}>{errors.root.message}</span>}
           </div>
         </form>
       </div>
@@ -164,9 +169,12 @@ export function SignupModal(): JSX.Element {
   )
 }
 
-function handleEmailTaken(setError: UseFormSetError<SignupFormFields>): void {
-  setError('email', {
-    type: 'manual',
-    message: 'Já existe um usuário cadastrado com este e-mail'
+function handleEmailTaken(
+  setError: UseFormSetError<SignupFormFields>,
+  t: (key: string) => string
+): void {
+  setError("email", {
+    type: "manual",
+    message: t("modals.auth.errors.usedEmail")
   })
 }

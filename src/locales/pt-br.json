@@ -32,6 +32,20 @@
     "managePerms": "Gerenciar Permissões"
   },
   "modals": {
+    "auth": {
+      "name": "Nome Completo",
+      "email": "E-mail",
+      "emailPlh": "exemplo@server.com",
+      "pwd": "Senha",
+      "newPwd": "Nova Senha",
+      "login": "Login",
+      "newAcc": "Criar conta",
+      "verify": "Verificar",
+      "hasAcc": "Já tenho conta",
+      "errors": {
+        "usedEmail": "Já existe um usuário cadastrado com este e-mail"
+      }
+    },
     "delNote": {
       "title": "Excluir Nota",
       "subtitle": "Você tem certeza que deseja excluir esta nota? Esta decisão é ***irreversível***.",

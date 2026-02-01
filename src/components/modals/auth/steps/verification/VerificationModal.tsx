@@ -18,7 +18,7 @@ type VerificationModalProps = {
 
 export function VerificationModal({ email }: VerificationModalProps): JSX.Element {
   const navigate = useNavigate()
-  const [code, setCode] = useState('')
+  const [code, setCode] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [verify, isLoading] = useAsync(userService.verifyEmail)
   const codeInRef = useRef<HTMLInputElement>(null)
@@ -30,7 +30,7 @@ export function VerificationModal({ email }: VerificationModalProps): JSX.Elemen
 
   const codeTypeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value.trim()
-    if (val.length <= 6 && (val === '' || isOnlyDigit(val))) {
+    if (val.length <= 6 && (val === "" || isOnlyDigit(val))) {
       setCode(val)
     }
   }
@@ -40,44 +40,65 @@ export function VerificationModal({ email }: VerificationModalProps): JSX.Elemen
     e.preventDefault()
     const response = await verify({ code: code, email: email })
 
-    console.log('Hit')
+    console.log("Hit")
     if (!response.success) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       for (const [_, messages] of Object.entries(response.errors)) {
         setError(messages.join(", "))
       }
-      console.log('Got an error')
+      console.log("Got an error")
       return
     }
-    console.log('Trying to redirect')
-    navigate('/login')
+    console.log("Trying to redirect")
+    navigate("/login")
   }
 
   return (
     <div className={styles.modalWrapper}>
       <header className={styles.verifyHeader}>
         <h2 className={styles.verifyTitle}>Verificação de Email</h2>
-        <p className={styles.verifySubtitle}>Insira o código de verificação que foi enviado para o seu email.</p>
+        <p className={styles.verifySubtitle}>
+          Insira o código de verificação que foi enviado para o seu email.
+        </p>
       </header>
       <div className={styles.division}></div>
       <form className={styles.verifyForm} onSubmit={verifyHandler}>
         <div className={styles.verifyFormControl}>
-          <label className={styles.verifyFormLabel} htmlFor="email-input">Email<RequiredHint /></label>
-          <input disabled className={styles.verifyFormInput} id="email-input" type="email" value={email} />
+          <label className={styles.verifyFormLabel} htmlFor="email-input">
+            Email
+            <RequiredHint />
+          </label>
+          <input
+            disabled
+            className={styles.verifyFormInput}
+            id="email-input"
+            type="email"
+            value={email}
+          />
         </div>
         <div className={styles.verifyFormControl}>
-          <label className={styles.verifyFormLabel} htmlFor="code-input">Código<RequiredHint /></label>
-          <input className={styles.verifyFormInput} ref={codeInRef} id="code-input" type="text" onChange={codeTypeHandler} value={code} />
-          {error && (
-            <span className={authStyles.authInputError}>{error}</span>
-          )}
+          <label className={styles.verifyFormLabel} htmlFor="code-input">
+            Código
+            <RequiredHint />
+          </label>
+          <input
+            className={styles.verifyFormInput}
+            ref={codeInRef}
+            id="code-input"
+            type="text"
+            onChange={codeTypeHandler}
+            value={code}
+          />
+          {error && <span className={authStyles.authInputError}>{error}</span>}
         </div>
         <footer className={styles.verifyFooter}>
-          <button disabled={isLoading || !isValid} className={authStyles.submitButton} type="submit">
+          <button
+            disabled={isLoading || !isValid}
+            className={authStyles.submitButton}
+            type="submit"
+          >
             Verificar
-            {isLoading && (
-              <LoaderContainer scale="0.7" />
-            )}
+            {isLoading && <LoaderContainer scale="0.7" />}
           </button>
         </footer>
       </form>

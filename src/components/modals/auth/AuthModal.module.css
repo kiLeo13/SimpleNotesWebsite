@@ -107,11 +107,6 @@
   background-color: rgb(162, 114, 207);
 }
 
-.submitButton:disabled {
-  color: rgb(39, 29, 49);
-  background-color: rgb(65, 44, 85);
-}
-
 .modalSwitcher {
   display: flex;
   align-items: center;
