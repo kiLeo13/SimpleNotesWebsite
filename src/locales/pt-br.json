@@ -32,6 +32,18 @@
     "managePerms": "Gerenciar Permissões"
   },
   "modals": {
+    "delNote": {
+      "title": "Excluir Nota",
+      "subtitle": "Você tem certeza que deseja excluir esta nota? Esta decisão é ***irreversível***.",
+      "instruct": "Digite o nome da nota \"{{val}}\" para excluir.",
+      "toasts": {
+        "success": "Nota excluída com sucesso."
+      },
+      "buttons": {
+        "cancel": "Cancelar",
+        "confirm": "Excluir"
+      }
+    },
     "usersMng": {
       "title": "Usuários ({{val}})"
     },

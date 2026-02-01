@@ -36,6 +36,10 @@
   color: rgb(124, 117, 136);
 }
 
+.question p {
+  margin: 0;
+}
+
 .prompt {
   margin-top: 12px;
   font-size: 0.9em;
@@ -52,7 +56,7 @@
 }
 
 .footer::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0 0 auto 0;
   height: 1px;
@@ -85,13 +89,8 @@
   color: rgb(99, 22, 22);
 }
 
-.confirm:hover {
+.confirm:hover:not(:disabled) {
   background-color: rgb(253, 64, 64);
-}
-
-.confirm:disabled {
-  background-color: rgba(255, 87, 87, 0.3);
-  color: rgb(59, 20, 20);
 }
 
 @keyframes smoothToggleModal {
@@ -99,7 +98,7 @@
     opacity: 0;
     scale: 70%;
   }
-  
+
   to {
     opacity: 1;
     scale: 100%;

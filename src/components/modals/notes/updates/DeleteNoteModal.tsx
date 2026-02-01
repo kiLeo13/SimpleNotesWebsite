@@ -3,11 +3,13 @@ import type { FullNoteResponseData } from "@/types/api/notes"
 
 import { IoIosWarning } from "react-icons/io"
 import { BaseModalTextInput } from "../shared/inputs/BaseModalTextInput"
-import { LoaderContainer } from "@/components/LoaderContainer"
+import { LoaderWrapper } from "@/components/loader/LoaderWrapper"
+import { MarkdownDisplay } from "@/components/displays/markdowns/MarkdownDisplay"
 import { useNoteStore } from "@/stores/useNotesStore"
+import { toasts } from "@/utils/toastUtils"
+import { useTranslation } from "react-i18next"
 
 import styles from "./DeleteNoteModal.module.css"
-import { toasts } from "@/utils/toastUtils"
 
 type DeleteNoteModalProps = {
   note: FullNoteResponseData
@@ -15,7 +17,13 @@ type DeleteNoteModalProps = {
   setIsPatching: (flag: boolean) => void
 }
 
-export function DeleteNoteModal({ note, setShowDelete, setIsPatching }: DeleteNoteModalProps): JSX.Element {
+export function DeleteNoteModal({
+  note,
+  setShowDelete,
+  setIsPatching
+}: DeleteNoteModalProps): JSX.Element {
+  const { t } = useTranslation()
+
   const [answer, setAnswer] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
@@ -35,7 +43,7 @@ export function DeleteNoteModal({ note, setShowDelete, setIsPatching }: DeleteNo
     setIsLoading(false)
 
     if (success) {
-      toasts.success('Nota excluída com sucesso.', { style: { color: "#b9be66ff" } })
+      toasts.success(t("modals.delNote.toasts.success"), { style: { color: "#b9be66ff" } })
       setShowDelete(false)
       setIsPatching(false)
     }
@@ -45,25 +53,25 @@ export function DeleteNoteModal({ note, setShowDelete, setIsPatching }: DeleteNo
     <div className={styles.container}>
       <div className={styles.heading}>
         <IoIosWarning size={"1.6em"} color="#ff6161ff" />
-        <h2 className={styles.title}>{`Apagar Nota #${note.id}?`}</h2>
+        <h2 className={styles.title}>{t("modals.delNote.title")}</h2>
       </div>
       <div className={styles.body}>
         <span className={styles.question}>
-          Você tem certeza que deseja excluir esta nota?
-          Esta decisão é <b><u>irreversível</u></b>.
+          <MarkdownDisplay content={t("modals.delNote.subtitle")} />
         </span>
 
-        <span className={styles.prompt}>
-          {`Digite o nome da nota "${note.name}" para excluir.`}
-        </span>
+        <span className={styles.prompt}>{t("modals.delNote.instruct", { val: note.name })}</span>
         <BaseModalTextInput value={answer} onChange={handleAnswer} />
 
         <div className={styles.footer}>
-          <button className={styles.cancel} onClick={handleClose}>Cancelar</button>
-          <button className={styles.confirm} disabled={!canConfirm} onClick={handleDeletion}>
-            Excluir
-            {isLoading && <LoaderContainer scale="0.7" />}
+          <button className={styles.cancel} onClick={handleClose}>
+            {t("modals.delNote.buttons.cancel")}
           </button>
+          <LoaderWrapper isLoading={isLoading} loaderProps={{ scale: 0.7 }}>
+            <button className={styles.confirm} disabled={!canConfirm} onClick={handleDeletion}>
+              {t("modals.delNote.buttons.confirm")}
+            </button>
+          </LoaderWrapper>
         </div>
       </div>
     </div>
