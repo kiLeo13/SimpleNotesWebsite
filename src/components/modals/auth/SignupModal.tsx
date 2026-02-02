@@ -78,9 +78,11 @@ export function SignupModal(): JSX.Element {
 
   return (
     <>
-      <DarkWrapper open={isEmailVerifying}>
-        <VerificationModal email={getValues("email")} />
-      </DarkWrapper>
+      {isEmailVerifying && (
+        <DarkWrapper>
+          <VerificationModal email={getValues("email")} />
+        </DarkWrapper>
+      )}
 
       <div className={styles.authModalContainer}>
         <form className={styles.authForm} onSubmit={handleSubmit(onSubmit)}>
