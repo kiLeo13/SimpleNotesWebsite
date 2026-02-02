@@ -14,6 +14,12 @@ export interface SignupRequestPayload {
   password: string
 }
 
+export interface UpdateUserRequestPayload {
+  username?: string
+  permissions?: number
+  suspended?: boolean
+}
+
 export interface ConfirmRequestPayload {
   email: string
   code: string

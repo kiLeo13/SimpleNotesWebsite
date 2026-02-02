@@ -12,7 +12,8 @@ import {
   type LoginResponseData,
   type SignupRequestPayload,
   type UserResponseData,
-  type ListUsersResponseData
+  type ListUsersResponseData,
+  type UpdateUserRequestPayload
 } from "../types/api/users"
 
 import apiClient from "./apiClient"
@@ -68,6 +69,13 @@ export const userService = {
 
   getUserById: async (id: number): Promise<ApiResponse<UserResponseData>> => {
     return safeApiCall(() => apiClient.get(`/users/${id}`), UserResponseSchema)
+  },
+
+  updateUser: async (
+    id: number,
+    payload: UpdateUserRequestPayload
+  ): Promise<ApiResponse<UserResponseData>> => {
+    return safeApiCall(() => apiClient.patch(`/users/${id}`, payload), UserResponseSchema)
   },
 
   getSelfUser: async (): Promise<ApiResponse<UserResponseData>> => {

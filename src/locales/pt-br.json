@@ -5,6 +5,9 @@
       "private": "Oculto"
     }
   },
+  "toasts": {
+    "userUpdateFailed": "Erro ao atualizar usuário"
+  },
   "app": {
     "title": "Zenboard"
   },

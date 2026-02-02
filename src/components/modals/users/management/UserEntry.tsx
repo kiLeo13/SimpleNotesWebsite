@@ -1,18 +1,20 @@
 import type { UserResponseData } from "@/types/api/users"
-import { useState, useMemo, type JSX } from "react"
+import { useState, useMemo, type JSX, useEffect } from "react"
 import { MultiSelectMenu, type MenuOption } from "@/components/ui/MultiSelectMenu"
 
 import { IoPerson } from "react-icons/io5"
 import { RiErrorWarningLine } from "react-icons/ri"
 import { FaCheck } from "react-icons/fa6"
 import { AppTooltip } from "@/components/ui/AppTooltip"
+import { Permission } from "@/models/Permission"
 import { formatTimestamp } from "@/utils/utils"
 import { useTranslation } from "react-i18next"
 import { useSessionStore } from "@/stores/useSessionStore"
-import { Permission } from "@/models/Permission"
 import { usePermission } from "@/hooks/usePermission"
+import { userService } from "@/services/userService"
 
 import styles from "./UserEntry.module.css"
+import { toasts } from "@/utils/toastUtils"
 
 type UserEntryProps = {
   user: UserResponseData
@@ -24,24 +26,47 @@ export function UserEntry({ user }: UserEntryProps): JSX.Element {
   const isSelf = user.id === self?.id
   const canManagePerms = usePermission(Permission.ManagePermissions)
   const allPermissions = useMemo(() => [...Permission.all], [])
-
   const [isLoading, setIsLoading] = useState(false)
+
+  // State to track the "Database State" locally, so we can calculate isDirty
+  // without waiting for a parent re-render.
+  const [savedPermissions, setSavedPermissions] = useState<number>(user.permissions)
   const [selectedOffsets, setSelectedOffsets] = useState<number[]>(() =>
     allPermissions.filter((p) => Permission.hasRaw(user.permissions, p)).map((p) => p.offset)
   )
 
+  const currentMask = useMemo(() => {
+    return selectedOffsets.reduce((acc, offset) => acc | (1 << offset), 0)
+  }, [selectedOffsets])
+
+  const isDirty = useMemo(() => {
+    return currentMask !== savedPermissions
+  }, [currentMask, savedPermissions])
+
+  useEffect(() => {
+    setSavedPermissions(user.permissions)
+  }, [user.permissions])
+
   const menuOptions = useMemo(
-    () => getComputedOptions(selectedOffsets, self?.permissions || 0, allPermissions, t),
-    [selectedOffsets, self?.permissions, allPermissions, t]
+    () => getComputedOptions(savedPermissions, self?.permissions || 0, allPermissions, t),
+    [savedPermissions, self?.permissions, allPermissions, t]
   )
 
-  const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
   const handleSave = async () => {
-    setIsLoading(true)
-    const newMask = selectedOffsets.reduce((acc, offset) => acc | (1 << offset), 0)
-    await sleep(800)
+    if (!isDirty) return
 
-    console.log(`Saving new mask for ${user.username}: ${newMask}`)
+    setIsLoading(true)
+    const resp = await userService.updateUser(user.id, {
+      permissions: currentMask
+    })
+    setIsLoading(false)
+
+    if (resp.success) {
+      setSavedPermissions(currentMask)
+      user.permissions = currentMask
+    } else {
+      toasts.apiError(t("toasts.userUpdateFailed"), resp)
+    }
   }
 
   return (
@@ -84,38 +109,34 @@ export function UserEntry({ user }: UserEntryProps): JSX.Element {
   )
 }
 
-/**
- * Calculates option availability.
- * RULE: 'Administrator' is strictly developer-controlled (Database only).
- * It will appear checked if the user has it, but will always be disabled.
- */
 function getComputedOptions(
-  currentOffsets: number[],
+  targetMask: number,
   viewerMask: number,
   allPerms: Permission[],
   t: (key: string) => string
 ): MenuOption[] {
-  const isAdminSelected = currentOffsets.includes(Permission.Administrator.offset)
+  const isTargetAdmin = Permission.hasRaw(targetMask, Permission.Administrator)
   const isViewerAdmin = Permission.hasRaw(viewerMask, Permission.Administrator)
+  const isViewerManager = Permission.hasEffective(viewerMask, Permission.ManagePermissions)
 
   return allPerms.map((p) => {
-    const isTargetAdminOption = p.raw === Permission.Administrator.raw
     let disabled = false
 
-    // RULE 1: STRICT - "Administrator" is always read-only in UI
-    if (isTargetAdminOption) {
+    if (p.raw === Permission.Administrator.raw) {
       disabled = true
     }
 
-    // RULE 2: If the target User has "Administrator" checked, all other options
-    // are irrelevant (Admin implies all permissions), so disable them to prevent confusion.
-    if (isAdminSelected && !isTargetAdminOption) {
+    if (isTargetAdmin && p.raw !== Permission.Administrator.raw) {
       disabled = true
     }
 
-    // RULE 3: Non-admins cannot touch "Manage Permissions"
-    // (This prevents a standard moderator from elevating themselves)
-    if (!isViewerAdmin && p.raw === Permission.ManagePermissions.raw) {
+    if (p.raw === Permission.ManagePermissions.raw) {
+      if (!isViewerAdmin) {
+        disabled = true
+      }
+    }
+
+    if (!isViewerManager && !isViewerAdmin) {
       disabled = true
     }
 
