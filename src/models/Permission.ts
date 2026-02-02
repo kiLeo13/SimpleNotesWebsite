@@ -17,6 +17,7 @@ export class Permission {
   static readonly ManageUsers = new Permission(5, "perms.manageUsers")
   static readonly DeleteUsers = new Permission(6, "perms.deleteUsers")
   static readonly ManagePermissions = new Permission(7, "perms.managePerms")
+  static readonly PunishUsers = new Permission(8, "perms.punishUsers")
 
   static get all(): Permission[] {
     return [
@@ -27,7 +28,8 @@ export class Permission {
       Permission.SeeHiddenNotes,
       Permission.ManageUsers,
       Permission.DeleteUsers,
-      Permission.ManagePermissions
+      Permission.ManagePermissions,
+      Permission.PunishUsers
     ]
   }
 
