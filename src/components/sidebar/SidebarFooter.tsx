@@ -65,7 +65,7 @@ export function SidebarFooter(): JSX.Element {
       </DarkWrapper>
 
       {/* Split-Screen Editor Modal */}
-      <DarkWrapper open={!!editorMode}>
+      <DarkWrapper open={!!editorMode} isolateEvents={false}>
         <CreateEditorModal mode={editorMode!} onClose={closeEditor} />
       </DarkWrapper>
 
