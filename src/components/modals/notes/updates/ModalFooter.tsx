@@ -1,12 +1,13 @@
 import type { JSX } from "react"
 
+import clsx from "clsx"
+
 import { FaTrashAlt } from "react-icons/fa"
 import { Permission } from "@/models/Permission"
 import { LoaderWrapper } from "@/components/loader/LoaderWrapper"
 import { usePermission } from "@/hooks/usePermission"
 
 import styles from "./ModalFooter.module.css"
-import clsx from "clsx"
 
 type ModalFooterProps = {
   /**
