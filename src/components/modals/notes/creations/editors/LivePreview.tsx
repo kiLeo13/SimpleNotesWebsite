@@ -18,21 +18,24 @@ type LivePreviewProps = {
 
 export function LivePreview({ mode, content }: LivePreviewProps): JSX.Element {
   const { t } = useTranslation()
+  const isFlowchart = mode === "FLOWCHART"
 
   return (
     <div className={styles.previewPanel}>
-      <div className={styles.topInfos}>
-        <a
-          className={clsx(styles.topItem, styles.docs)}
-          href={"https://www.markdownguide.org/basic-syntax"}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <div className={styles.topIcon}>
-            <FaMarkdown size={"1.5em"} color="#8472a1" />
-          </div>
-          {t("createNoteModal.top.md")}
-        </a>
+      <div className={clsx(styles.topInfos, isFlowchart && styles.modeFlowchart)}>
+        {mode === "MARKDOWN" && (
+          <a
+            className={clsx(styles.topItem, styles.docs)}
+            href={"https://www.markdownguide.org/basic-syntax"}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <div className={styles.topIcon}>
+              <FaMarkdown size={"1.5em"} color="#8472a1" />
+            </div>
+            {t("createNoteModal.top.md")}
+          </a>
+        )}
         <div className={styles.topItem}>
           <div className={styles.topIcon}>
             <FaEye size={"1.2em"} color="#8472a1" />

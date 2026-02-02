@@ -18,6 +18,10 @@
   user-select: none;
 }
 
+.modeFlowchart {
+  pointer-events: none;
+}
+
 .topItem {
   display: flex;
   color: #a6adc8;
