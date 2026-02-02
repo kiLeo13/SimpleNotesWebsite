@@ -3,9 +3,3 @@
   gap: 20px;
   box-sizing: border-box;
 }
-
-.errorMessage {
-  color: rgb(238, 54, 54);
-  font-size: 11px;
-  margin-left: 5px;
-}
