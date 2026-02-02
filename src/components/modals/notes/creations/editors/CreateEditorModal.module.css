@@ -52,7 +52,7 @@
 
 .contentGrid {
   display: grid;
-  grid-template-columns: 450px 1fr;
+  grid-template-columns: min(35%, 510px) 1fr;
   height: 100%;
   overflow: hidden;
 }
@@ -62,6 +62,19 @@
   align-items: stretch;
   flex-direction: column;
   gap: 15px;
+}
+
+.actionRow {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+@media (min-width: 1500px) {
+  .actionRow {
+    flex-direction: row;
+    gap: 10px;
+  }
 }
 
 .editorPanel {

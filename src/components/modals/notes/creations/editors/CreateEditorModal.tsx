@@ -93,14 +93,11 @@ export function CreateEditorModal({ mode, onClose }: CreateEditorModalProps): JS
         <div className={styles.editorPanel}>
           <FormProvider {...methods}>
             <form className={styles.form} onSubmit={handleSubmit(onSubmit)} noValidate>
-              <ModalActionRow>
+              <ModalActionRow className={styles.actionRow}>
                 <ModalSection
                   label={<ModalLabel title={t("createNoteModal.name")} required />}
                   input={<ModalTextInput name="name" autoComplete="off" />}
                 />
-              </ModalActionRow>
-
-              <ModalActionRow>
                 <ModalSection
                   label={<ModalLabel title={t("createNoteModal.visibility")} required />}
                   input={<ModalSelectInput name="visibility" options={viewOptions} />}
