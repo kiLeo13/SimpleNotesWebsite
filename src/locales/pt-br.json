@@ -29,7 +29,8 @@
     "seeHiddenNotes": "Ver Notas Ocultas",
     "manageUsers": "Gerenciar Usuários",
     "deleteUsers": "Apagar Usuários",
-    "managePerms": "Gerenciar Permissões"
+    "managePerms": "Gerenciar Permissões",
+    "punishUsers": "Moderar Usuários"
   },
   "modals": {
     "verify": {
