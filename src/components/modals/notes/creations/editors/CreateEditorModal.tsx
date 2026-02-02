@@ -22,6 +22,7 @@ import { ModalArrayInput } from "../../shared/inputs/ModalArrayInput"
 import { useNoteStore } from "@/stores/useNotesStore"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next"
+import { useDebounce } from "@/hooks/useDebounce"
 import { toasts } from "@/utils/toastUtils"
 
 import styles from "./CreateEditorModal.module.css"
@@ -37,6 +38,7 @@ export function CreateEditorModal({ mode, onClose }: CreateEditorModalProps): JS
   const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
   const createNoteAndOpen = useNoteStore((state) => state.createNoteAndOpen)
+  const isChart = mode === "FLOWCHART"
   const methods = useForm<TextNoteFormFields>({
     resolver: zodResolver(editorSchema),
     defaultValues: {
@@ -50,6 +52,7 @@ export function CreateEditorModal({ mode, onClose }: CreateEditorModalProps): JS
 
   const { handleSubmit, control } = methods
   const liveContent = useWatch({ control, name: "content" })
+  const debouncedContent = useDebounce(liveContent, 300)
   const viewOptions = useMemo(() => {
     return [...VISIBILITY_OPTIONS].map((o) => ({
       label: t(o.label),
@@ -145,7 +148,7 @@ export function CreateEditorModal({ mode, onClose }: CreateEditorModalProps): JS
           </FormProvider>
         </div>
 
-        <LivePreview mode={mode} content={liveContent} />
+        <LivePreview mode={mode} content={isChart ? debouncedContent : liveContent} />
       </div>
     </div>
   )
