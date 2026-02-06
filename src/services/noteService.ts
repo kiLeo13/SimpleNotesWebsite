@@ -2,16 +2,19 @@ import type { ApiResponse } from "../types/api/api"
 import {
   FullNoteResponseSchema,
   ListNoteResponseSchema,
+  NoteResponseSchema,
   type CreateFileNotePayload,
   type CreateTextNotePayload,
   type FullNoteResponseData,
   type ListNoteResponseData,
+  type NoteResponseData,
   type UpdateNoteRequestPayload
 } from "../types/api/notes"
 
-import apiClient from "./apiClient"
 import { VoidSchema } from "../types/api/api"
 import { safeApiCall } from "./safeApiCall"
+
+import apiClient from "./apiClient"
 
 export const NOTE_EXTENSIONS = ["pdf", "png", "jpg", "jpeg", "jfif", "webp", "gif", "mp4", "mp3"]
 export const NOTE_MAX_SIZE_BYTES = 20 * 1024 * 1024 // 20 MiB
@@ -50,10 +53,10 @@ export const noteService = {
    * @param payload - The fields to update (name, tags, visibility).
    * @returns A promise resolving to the updated note data.
    */
-  updateNote: async (id: number, payload: UpdateNoteRequestPayload): Promise<ApiResponse<FullNoteResponseData>> => {
+  updateNote: async (id: number, payload: UpdateNoteRequestPayload): Promise<ApiResponse<NoteResponseData>> => {
     return safeApiCall(
       () => apiClient.patch(`/notes/${id}`, payload),
-      FullNoteResponseSchema
+      NoteResponseSchema
     )
   },
 

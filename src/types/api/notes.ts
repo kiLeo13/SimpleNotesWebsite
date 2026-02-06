@@ -39,7 +39,7 @@ const NoteBaseSchema = z.object({
 })
 
 const TextNoteSchema = NoteBaseSchema.extend({
-  note_type: z.enum(["TEXT", "MARKDOWN", "FLOWCHART"])
+  note_type: z.enum(["MARKDOWN", "FLOWCHART"])
 })
 
 // Specific Schema for File Notes (PDFs, Images)
