@@ -5,12 +5,17 @@ import { create } from "zustand"
 type SessionState = {
   user: UserResponseData | null
 
+  getIdToken: () => string | null
   setUser: (user: UserResponseData) => void
   updateUser: (updates: Partial<UserResponseData>) => void
 }
 
 export const useSessionStore = create<SessionState>((set) => ({
   user: null,
+
+  getIdToken() {
+    return localStorage.getItem("id_token")
+  },
 
   setUser: (user) => {
     set({ user: user })
