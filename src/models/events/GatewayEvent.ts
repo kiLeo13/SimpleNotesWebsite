@@ -21,6 +21,11 @@ const Registry = {
   UserUpdated: createEvent("USER_UPDATED", UserResponseSchema)
 }
 
+export interface EventDefinition<S extends z.ZodTypeAny> {
+  type: string
+  schema: S
+}
+
 type AllEnvelopes = (typeof Registry)[keyof typeof Registry]["envelope"]
 
 const schemas = Object.values(Registry).map((e) => e.envelope) as [AllEnvelopes, ...AllEnvelopes[]]

@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react"
 import { z } from "zod"
-import { GatewayEvent } from "../models/events/GatewayEvent"
 import { socketBus } from "@/services/socketBus"
+import type { GatewayEventDef } from "@/models/events/eventFactory"
 
 export function useSocketSubscription<S extends z.ZodTypeAny>(
-  event: GatewayEvent<S>,
+  event: GatewayEventDef<string, S>,
   callback: (data: z.infer<S>) => void
 ) {
   const savedCallback = useRef(callback)
