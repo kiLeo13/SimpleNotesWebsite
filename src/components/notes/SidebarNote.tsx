@@ -23,6 +23,7 @@ import { FaTrashAlt } from "react-icons/fa"
 import { DeleteNoteModal } from "../modals/notes/updates/DeleteNoteModal"
 
 import styles from "./SidebarNote.module.css"
+import { Ripple } from "../ui/effects/Ripple"
 
 type SidebarNoteProps = {
   note: NoteResponseData
@@ -81,6 +82,7 @@ export function SidebarNote({ note, onClick }: SidebarNoteProps): JSX.Element {
       ref={elementRef}
     >
       <span className={styles.noteItemTitle}>{note.name}</span>
+      <Ripple />
 
       {(canEdit || canDelete) && (
         <ActionMenu items={noteOpts} side="right" align="center">

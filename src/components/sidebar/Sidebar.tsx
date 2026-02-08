@@ -11,6 +11,7 @@ import { throttle } from "lodash-es"
 import { useTranslation } from "react-i18next"
 
 import styles from "./Sidebar.module.css"
+import RippleWrapper from "../ui/effects/Ripple"
 
 export function Sidebar(): JSX.Element {
   const { t } = useTranslation()
@@ -111,11 +112,13 @@ export function Sidebar(): JSX.Element {
         {!isLoading &&
           filteredNotes.map((n) => {
             return (
-              <SidebarNote
-                onClick={() => handleOpenNote(n)}
-                key={n.id}
-                note={n}
-              />
+              <RippleWrapper>
+                <SidebarNote
+                  onClick={() => handleOpenNote(n)}
+                  key={n.id}
+                  note={n}
+                />
+              </RippleWrapper>
             )
           })}
       </div>

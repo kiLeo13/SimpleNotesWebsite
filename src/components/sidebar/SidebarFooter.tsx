@@ -15,6 +15,7 @@ import { UserManagementModal } from "../modals/users/management/UserManagementMo
 import { CreateNoteModalForm } from "../modals/notes/creations/uploads/CreateNoteModalForm"
 import { AlgorithmCalculator } from "../modals/global/algorithm/AlgorithmCalculator"
 import { AppTooltip } from "../ui/AppTooltip"
+import { Ripple } from "../ui/effects/Ripple"
 import { Permission } from "@/models/Permission"
 import { useTranslation } from "react-i18next"
 import { usePermission } from "@/hooks/usePermission"
@@ -84,6 +85,7 @@ export function SidebarFooter(): JSX.Element {
         <AppTooltip label={t("tooltips.labels.settings")}>
           <button className={styles.button}>
             <FaGear size={"0.5em"} />
+            <Ripple />
           </button>
         </AppTooltip>
 
@@ -92,19 +94,21 @@ export function SidebarFooter(): JSX.Element {
           <AppTooltip label={t("tooltips.labels.algoCalc")}>
             <button className={styles.button} onClick={handleShowAlgo}>
               <CgController size={"0.7em"} />
+              <Ripple />
             </button>
           </AppTooltip>
 
           {canCreate && (
             // Create Note Action Menu
             <ActionMenu
-              header={t("tooltips.labels.createNote")}
-              items={createNoteOptions}
-              side="right"
+            header={t("tooltips.labels.createNote")}
+            items={createNoteOptions}
+            side="right"
             >
               <AppTooltip label={t("tooltips.labels.createNote")}>
                 <button className={styles.button}>
                   <MdOutlineFileUpload size={"0.8em"} />
+                  <Ripple />
                 </button>
               </AppTooltip>
             </ActionMenu>
@@ -115,6 +119,7 @@ export function SidebarFooter(): JSX.Element {
             <AppTooltip label={t("tooltips.labels.usersMng")}>
               <button className={styles.button} onClick={handleShowUsers}>
                 <FaUsers size={"0.7em"} />
+                <Ripple />
               </button>
             </AppTooltip>
           )}
