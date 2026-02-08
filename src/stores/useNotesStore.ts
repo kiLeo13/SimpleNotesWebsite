@@ -6,8 +6,8 @@ import type {
 } from "@/types/api/notes"
 import type { NoteFormFields } from "@/types/forms/notes"
 import type { ApiResponse } from "@/types/api/api"
-import { noteService } from "@/services/noteService"
 
+import { noteService } from "@/services/noteService"
 import { toasts } from "@/utils/toastUtils"
 import { create } from "zustand"
 
@@ -17,11 +17,18 @@ type NotesState = {
   shownNote: FullNoteResponseData | null
   isRendering: boolean
 
+  addNote: (note: NoteResponseData) => void
+  updateNote: (newNote: NoteResponseData) => void
+  removeNote: (noteId: number) => void
+
   fetchNotes: () => Promise<void>
   openNote: (note: NoteResponseData) => Promise<void>
   closeNote: () => void
   deleteNoteAndRefresh: (noteId: number) => Promise<boolean>
-  updateNoteAndRefresh: (noteId: number, payload: UpdateNoteRequestPayload) => Promise<boolean>
+  updateNoteAndRefresh: (
+    noteId: number,
+    payload: UpdateNoteRequestPayload
+  ) => Promise<boolean>
 
   createNoteAndOpen: (data: NoteFormFields, noteType: NoteType) => Promise<boolean>
 
@@ -33,6 +40,25 @@ export const useNoteStore = create<NotesState>((set, get) => ({
   isLoading: false,
   shownNote: null,
   isRendering: false,
+
+  addNote: (note) => {
+    set((state) => ({
+      notes: [...state.notes, note]
+    }))
+  },
+
+  updateNote: (newNote) => {
+    set((state) => ({
+      notes: state.notes.map((n) => (n.id == newNote.id ? { ...n, ...newNote } : n))
+    }))
+  },
+
+  removeNote: (noteId) => {
+    set((state) => ({
+      notes: state.notes.filter((n) => n.id !== noteId),
+      shownNote: state.shownNote?.id === noteId ? null : state.shownNote
+    }))
+  },
 
   fetchNotes: async () => {
     set({ isLoading: true })
@@ -104,7 +130,9 @@ export const useNoteStore = create<NotesState>((set, get) => ({
       notes: state.notes.map((n) => (n.id === noteId ? resp.data : n)),
       // If the updated note is currently open, update the view too
       shownNote:
-        state.shownNote?.id === noteId ? { ...state.shownNote, ...resp.data } : state.shownNote
+        state.shownNote?.id === noteId
+          ? { ...state.shownNote, ...resp.data }
+          : state.shownNote
     }))
 
     return true
