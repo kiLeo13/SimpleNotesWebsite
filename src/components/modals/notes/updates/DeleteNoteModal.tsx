@@ -14,13 +14,11 @@ import styles from "./DeleteNoteModal.module.css"
 type DeleteNoteModalProps = {
   note: NoteResponseData
   setIsDeleting: (show: boolean) => void
-  setIsPatching: (flag: boolean) => void
 }
 
 export function DeleteNoteModal({
   note,
-  setIsDeleting,
-  setIsPatching
+  setIsDeleting
 }: DeleteNoteModalProps): JSX.Element {
   const { t } = useTranslation()
 
@@ -46,7 +44,6 @@ export function DeleteNoteModal({
         style: { color: "#b9be66ff" }
       })
       setIsDeleting(false)
-      setIsPatching(false)
     } else {
       toasts.apiError(t("modals.delNote.toasts.error"), resp)
     }

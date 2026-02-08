@@ -72,7 +72,8 @@
       "subtitle": "Você tem certeza que deseja excluir esta nota? Esta decisão é ***irreversível***.",
       "instruct": "Digite o nome da nota \"{{val}}\" para excluir.",
       "toasts": {
-        "success": "Nota excluída com sucesso."
+        "success": "Nota excluída com sucesso.",
+        "error": "Erro ao excluir nota."
       },
       "buttons": {
         "cancel": "Cancelar",

@@ -92,7 +92,6 @@ export function SidebarNote({ note, onClick }: SidebarNoteProps): JSX.Element {
         <DeleteNoteModal
           note={note!}
           setIsDeleting={setIsDeleting}
-          setIsPatching={setIsPatching}
         />
       </DarkWrapper>
     </div>
