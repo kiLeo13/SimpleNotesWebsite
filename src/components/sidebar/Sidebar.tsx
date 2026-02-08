@@ -3,6 +3,7 @@ import type { NoteResponseData } from "@/types/api/notes"
 
 import { SidebarNote } from "../notes/SidebarNote"
 import { SidebarFooter } from "./SidebarFooter"
+import { PiListMagnifyingGlass } from "react-icons/pi"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useNoteStore } from "@/stores/useNotesStore"
 import { matchSorter } from "match-sorter"
@@ -22,6 +23,7 @@ export function Sidebar(): JSX.Element {
   const [search, setSearch] = useState("")
   const searchRef = useRef<HTMLInputElement>(null)
   const filteredNotes = toFilteredNotes(search, notes)
+  const resultCount = filteredNotes.length
 
   useEffect(() => {
     fetchNotes()
@@ -81,10 +83,15 @@ export function Sidebar(): JSX.Element {
           value={search}
         />
         <div className={styles.menuDivider} />
-        <span className={styles.searchResultCount}>
-          {filteredNotes.length === 1
-            ? t("sidebar.notes.oneFound")
-            : t("sidebar.notes.manyFound", { val: filteredNotes.length })}
+        <span className={styles.noteListHeader}>
+          <span className={styles.noteListTitle}>
+            {t("sidebar.notes.title")}
+          </span>
+          <span className={styles.noteListCount}>
+            {resultCount === 1
+              ? t("sidebar.notes.oneFound")
+              : t("sidebar.notes.manyFound", { val: resultCount })}
+          </span>
         </span>
       </div>
       <div className={styles.menuLowerItems}>
@@ -92,9 +99,24 @@ export function Sidebar(): JSX.Element {
           {isLoading && <div className="loader" />}
         </div>
 
+        {resultCount === 0 && !isLoading && (
+          <div className={styles.noResultsContainer}>
+            <PiListMagnifyingGlass size={"3em"} color="#61586b67" />
+            <span className={styles.noResultsText}>
+              {t("sidebar.notes.noResults")}
+            </span>
+          </div>
+        )}
+
         {!isLoading &&
           filteredNotes.map((n) => {
-            return <SidebarNote onClick={() => handleOpenNote(n)} key={n.id} note={n} />
+            return (
+              <SidebarNote
+                onClick={() => handleOpenNote(n)}
+                key={n.id}
+                note={n}
+              />
+            )
           })}
       </div>
       <SidebarFooter />
@@ -102,7 +124,10 @@ export function Sidebar(): JSX.Element {
   )
 }
 
-function toFilteredNotes(search: string, notes: NoteResponseData[]): NoteResponseData[] {
+function toFilteredNotes(
+  search: string,
+  notes: NoteResponseData[]
+): NoteResponseData[] {
   if (!search.trim()) {
     return notes
   }

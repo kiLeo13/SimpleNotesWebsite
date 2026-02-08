@@ -18,10 +18,12 @@
   },
   "sidebar": {
     "notes": {
+      "title": "Notas",
+      "noResults": "Parece não ter nada aqui...",
       "edit": "Editar Nota",
       "search": "Pesquisar",
-      "oneFound": "1 resultado encontrado",
-      "manyFound": "{{val}} resultados encontrados"
+      "oneFound": "1 item",
+      "manyFound": "{{val}} itens"
     }
   },
   "perms": {
