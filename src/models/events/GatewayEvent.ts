@@ -1,55 +1,33 @@
 import z from "zod"
 
+import { createEvent } from "./eventFactory"
+import { connKillSchema } from "@/types/websocket/events"
 import { NoteBaseSchema, NoteResponseSchema } from "@/types/api/notes"
 import { UserResponseSchema } from "@/types/api/users"
-import { connKillSchema } from "@/types/websocket/events"
 
-export class GatewayEvent<S extends z.ZodType> {
-  public readonly type: string
-  public readonly schema: S
-
-  constructor(type: string, schema: S) {
-    this.type = type
-    this.schema = schema
-  }
-
-  validate(data: unknown): z.infer<S> {
-    return this.schema.parse(data)
-  }
-}
-
-export class ServerEvents {
+const Registry = {
   // System
-  static readonly Ping = new GatewayEvent("ping", z.unknown())
-  static readonly Ack = new GatewayEvent("ACK", z.unknown())
-
-  // Session
-  static readonly SessionExpired = new GatewayEvent("SESSION_EXPIRED", z.void())
-
-  static readonly ConnectionKill = new GatewayEvent(
-    "CONNECTION_KILL",
-    connKillSchema
-  )
+  Ping: createEvent("ping", z.unknown()),
+  Ack: createEvent("ACK", z.unknown()),
+  SessionExpired: createEvent("SESSION_EXPIRED", z.unknown()),
+  ConnectionKill: createEvent("CONNECTION_KILL", connKillSchema),
 
   // Notes
-  static readonly NoteCreated = new GatewayEvent(
-    "NOTE_CREATED",
-    NoteResponseSchema
-  )
-
-  static readonly NoteUpdated = new GatewayEvent(
-    "NOTE_UPDATED",
-    NoteResponseSchema
-  )
-
-  static readonly NoteDeleted = new GatewayEvent(
-    "NOTE_DELETED",
-    NoteBaseSchema.pick({ id: true })
-  )
+  NoteCreated: createEvent("NOTE_CREATED", NoteResponseSchema),
+  NoteUpdated: createEvent("NOTE_UPDATED", NoteResponseSchema),
+  NoteDeleted: createEvent("NOTE_DELETED", NoteBaseSchema.pick({ id: true })),
 
   // Users
-  static readonly UserUpdated = new GatewayEvent(
-    "USER_UPDATED",
-    UserResponseSchema
-  )
+  UserUpdated: createEvent("USER_UPDATED", UserResponseSchema)
 }
+
+type AllEnvelopes = (typeof Registry)[keyof typeof Registry]["envelope"]
+
+const schemas = Object.values(Registry).map((e) => e.envelope) as [AllEnvelopes, ...AllEnvelopes[]]
+
+// Exports
+export const ServerEvents = Registry
+
+export const gatewayMessageSchema = z.discriminatedUnion("type", schemas)
+
+export type GatewayMessage = z.infer<typeof gatewayMessageSchema>

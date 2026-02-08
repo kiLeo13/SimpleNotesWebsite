@@ -8,9 +8,10 @@ import { userService } from "@/services/userService"
 import { useNoteStore } from "@/stores/useNotesStore"
 import { toasts } from "@/utils/toastUtils"
 import { useSessionStore } from "@/stores/useSessionStore"
+import { useTranslation } from "react-i18next"
+import { useWebSocketManager } from "@/hooks/useWebSocketManager"
 
 import styles from "./MainPage.module.css"
-import { useTranslation } from "react-i18next"
 
 export function MainPage(): JSX.Element {
   const { t } = useTranslation()
@@ -20,6 +21,9 @@ export function MainPage(): JSX.Element {
   const isRendering = useNoteStore((state) => state.isRendering)
   const closeNote = useNoteStore((state) => state.closeNote)
   const showRenderingLoader = isRendering && !shownNote?.content?.endsWith("mp4")
+
+  // Init WebSocket
+  useWebSocketManager()
 
   useEffect(() => {
     const loadSelfUser = async () => {
