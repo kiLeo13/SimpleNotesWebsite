@@ -138,6 +138,10 @@
     "modeFlowchart": "Novo Diagrama",
     "modeMarkdown": "Nova Nota Markdown",
     "submit": "Criar Nota",
+    "toasts": {
+      "success": "Nota criada com sucesso!",
+      "error": "Erro ao criar nota."
+    },
     "top": {
       "preview": "Live Preview",
       "md": "Docs"
@@ -186,9 +190,6 @@
       "maxSize": "Arquivo muito grande (máx {{size}})",
       "invalidExtension": "Extensão inválida. Permitido: {{extensions}}"
     }
-  },
-  "success": {
-    "noteCreated": "Nota criada com sucesso!"
   },
   "tooltips": {
     "labels": {

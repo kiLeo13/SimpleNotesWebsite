@@ -1,10 +1,4 @@
-import type {
-  FullNoteResponseData,
-  NoteResponseData,
-  NoteType
-} from "@/types/api/notes"
-import type { NoteFormFields } from "@/types/forms/notes"
-import type { ApiResponse } from "@/types/api/api"
+import type { FullNoteResponseData, NoteResponseData } from "@/types/api/notes"
 
 import { noteService } from "@/services/noteService"
 import { toasts } from "@/utils/toastUtils"
@@ -24,8 +18,6 @@ type NotesState = {
   openNote: (note: NoteResponseData) => Promise<void>
   closeNote: () => void
 
-  createNoteAndOpen: (data: NoteFormFields, noteType: NoteType) => Promise<boolean>
-
   setRendering: (flag: boolean) => void
 }
 
@@ -43,7 +35,9 @@ export const useNoteStore = create<NotesState>((set, get) => ({
 
   updateNote: (newNote) => {
     set((state) => ({
-      notes: state.notes.map((n) => (n.id == newNote.id ? { ...n, ...newNote } : n))
+      notes: state.notes.map((n) =>
+        n.id == newNote.id ? { ...n, ...newNote } : n
+      )
     }))
   },
 
@@ -96,44 +90,5 @@ export const useNoteStore = create<NotesState>((set, get) => ({
 
   closeNote: () => set({ shownNote: null }),
 
-  createNoteAndOpen: async (data, noteType) => {
-    const resp = await uploadNote(data, noteType)
-    if (!resp.success) {
-      toasts.apiError("Não foi possível criar anotação", resp)
-      return false
-    }
-
-    set((state) => ({
-      notes: [...state.notes, resp.data],
-      shownNote: resp.data
-    }))
-
-    return true
-  },
-
   setRendering: (flag) => set({ isRendering: flag })
 }))
-
-async function uploadNote(
-  note: NoteFormFields,
-  type: NoteType
-): Promise<ApiResponse<FullNoteResponseData>> {
-  if (note.mode === "EDITOR") {
-    return noteService.createTextNote({
-      ...note,
-      note_type: type
-    })
-  }
-
-  if (note.mode === "UPLOAD") {
-    return noteService.createFileNote(
-      {
-        ...note,
-        note_type: type
-      },
-      note.file[0]
-    )
-  }
-
-  return Promise.reject()
-}

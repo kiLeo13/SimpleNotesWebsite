@@ -1,9 +1,17 @@
-import { uploadSchema, VISIBILITY_OPTIONS, type FileNoteFormFields } from "@/types/forms/notes"
+import {
+  uploadSchema,
+  VISIBILITY_OPTIONS,
+  type FileNoteFormFields
+} from "@/types/forms/notes"
 import { useState, type JSX } from "react"
 
 import clsx from "clsx"
 
-import { NOTE_EXTENSIONS, NOTE_MAX_SIZE_BYTES } from "@/services/noteService"
+import {
+  NOTE_EXTENSIONS,
+  NOTE_MAX_SIZE_BYTES,
+  noteService
+} from "@/services/noteService"
 import { ModalActionRow } from "../../shared/sections/ModalActionRow"
 import { ModalFileInput } from "../../shared/inputs/ModalFileInput"
 import { FormProvider, useForm } from "react-hook-form"
@@ -25,10 +33,12 @@ type CreateNoteModalFormProps = {
   setShowUploadModal: (show: boolean) => void
 }
 
-export function CreateNoteModalForm({ setShowUploadModal }: CreateNoteModalFormProps): JSX.Element {
+export function CreateNoteModalForm({
+  setShowUploadModal
+}: CreateNoteModalFormProps): JSX.Element {
   const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
-  const createNoteAndOpen = useNoteStore((state) => state.createNoteAndOpen)
+  const openNote = useNoteStore((state) => state.openNote)
   const methods = useForm<FileNoteFormFields>({
     resolver: zodResolver(uploadSchema),
     defaultValues: {
@@ -47,27 +57,29 @@ export function CreateNoteModalForm({ setShowUploadModal }: CreateNoteModalFormP
 
   const onSubmit = async (data: FileNoteFormFields) => {
     // This should be impossible, but better
-    if (!data.file) {
+    if (!data.file?.[0]) {
       toasts.warning(null, { description: t("warnings.noteCreation.noFiles") })
       return
     }
 
     setIsLoading(true)
-    const success = await createNoteAndOpen(
+    const resp = await noteService.createFileNote(
       {
         name: data.name,
-        mode: "UPLOAD",
+        note_type: "REFERENCE",
         tags: data.tags || [],
-        visibility: data.visibility,
-        file: data.file
+        visibility: data.visibility
       },
-      "REFERENCE"
+      data.file[0]
     )
     setIsLoading(false)
 
-    if (success) {
-      toasts.success(t("success.noteCreated"))
+    if (resp.success) {
+      toasts.success(t("createNoteModal.toasts.success"))
+      openNote(resp.data)
       setShowUploadModal(false)
+    } else {
+      toasts.apiError(t("createNoteModal.toasts.error"), resp)
     }
   }
 
@@ -92,14 +104,23 @@ export function CreateNoteModalForm({ setShowUploadModal }: CreateNoteModalFormP
 
           <ModalActionRow>
             <ModalSection
-              label={<ModalLabel title={t("createNoteModal.visibility")} required />}
-              input={<ModalSelectInput name="visibility" options={viewOptions} />}
+              label={
+                <ModalLabel title={t("createNoteModal.visibility")} required />
+              }
+              input={
+                <ModalSelectInput name="visibility" options={viewOptions} />
+              }
             />
           </ModalActionRow>
 
           <ModalActionRow>
             <ModalSection
-              label={<ModalLabel title={t("createNoteModal.tags")} required={false} />}
+              label={
+                <ModalLabel
+                  title={t("createNoteModal.tags")}
+                  required={false}
+                />
+              }
               input={
                 <ModalArrayInput
                   name="tags"
@@ -122,7 +143,12 @@ export function CreateNoteModalForm({ setShowUploadModal }: CreateNoteModalFormP
                   required
                 />
               }
-              input={<ModalFileInput name="file" allowedExtensions={NOTE_EXTENSIONS} />}
+              input={
+                <ModalFileInput
+                  name="file"
+                  allowedExtensions={NOTE_EXTENSIONS}
+                />
+              }
             />
           </ModalActionRow>
 
