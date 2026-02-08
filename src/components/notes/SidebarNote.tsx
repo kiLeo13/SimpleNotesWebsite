@@ -15,15 +15,15 @@ import { FaPenToSquare } from "react-icons/fa6"
 import { Permission } from "@/models/Permission"
 import { SlOptions } from "react-icons/sl"
 import { UpdateNoteModal } from "../modals/notes/updates/UpdateNoteModal"
-import { useNoteStore } from "@/stores/useNotesStore"
+import { DeleteNoteModal } from "../modals/notes/updates/DeleteNoteModal"
+import { FaTrashAlt } from "react-icons/fa"
+import { Ripple } from "../ui/effects/Ripple"
+import { ActionMenu, type MenuActionItem } from "../ui/ActionMenu"
 import { usePermission } from "@/hooks/usePermission"
 import { useTranslation } from "react-i18next"
-import { ActionMenu, type MenuActionItem } from "../ui/ActionMenu"
-import { FaTrashAlt } from "react-icons/fa"
-import { DeleteNoteModal } from "../modals/notes/updates/DeleteNoteModal"
+import { useNoteStore } from "@/stores/useNotesStore"
 
 import styles from "./SidebarNote.module.css"
-import { Ripple } from "../ui/effects/Ripple"
 
 type SidebarNoteProps = {
   note: NoteResponseData
