@@ -1,5 +1,11 @@
 import type { NoteResponseData } from "@/types/api/notes"
-import { useEffect, useRef, useState, type JSX, type MouseEventHandler } from "react"
+import {
+  useEffect,
+  useRef,
+  useState,
+  type JSX,
+  type MouseEventHandler
+} from "react"
 
 import clsx from "clsx"
 
@@ -57,9 +63,7 @@ export function SidebarNote({ note, onClick }: SidebarNoteProps): JSX.Element {
     const observer = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const height = entry.contentRect.height
-        const newVal = height > 40
-        console.log("Height:", height, "isTall:", newVal)
-        setIsTall(newVal)
+        setIsTall(height > 40)
       }
     })
     observer.observe(element)
@@ -69,7 +73,11 @@ export function SidebarNote({ note, onClick }: SidebarNoteProps): JSX.Element {
   return (
     <div
       onClick={onClick}
-      className={clsx(styles.noteItem, isOpen && styles.open, isTall && styles.tall)}
+      className={clsx(
+        styles.noteItem,
+        isOpen && styles.open,
+        isTall && styles.tall
+      )}
       ref={elementRef}
     >
       <span className={styles.noteItemTitle}>{note.name}</span>
@@ -89,10 +97,7 @@ export function SidebarNote({ note, onClick }: SidebarNoteProps): JSX.Element {
       </DarkWrapper>
 
       <DarkWrapper open={isDeleting}>
-        <DeleteNoteModal
-          note={note!}
-          setIsDeleting={setIsDeleting}
-        />
+        <DeleteNoteModal note={note!} setIsDeleting={setIsDeleting} />
       </DarkWrapper>
     </div>
   )
