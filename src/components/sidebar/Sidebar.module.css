@@ -71,7 +71,7 @@
 .noteListTitle {
   color: rgb(160, 157, 167);
   font-weight: 500;
-  font-size: 1.2em;
+  font-size: 1.4em;
 }
 
 .noteListCount {
@@ -86,7 +86,7 @@
   margin-left: -13px;
   padding: 8px 13px;
   overflow: hidden;
-  gap: 8px;
+  gap: 3px;
 }
 
 .menuLowerItems:hover {
