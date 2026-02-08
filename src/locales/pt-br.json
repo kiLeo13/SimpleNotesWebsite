@@ -20,7 +20,7 @@
     "notes": {
       "title": "Notas",
       "noResults": "Parece não ter nada aqui...",
-      "edit": "Editar Nota",
+      "options": "Opções",
       "search": "Pesquisar",
       "oneFound": "1 item",
       "manyFound": "{{val}} itens"
@@ -195,6 +195,10 @@
   },
   "menus": {
     "notes": {
+      "opts": {
+        "edit": "Editar",
+        "delete": "Excluir"
+      },
       "optText": "Markdown / Texto",
       "optFlowchart": "Diagrama",
       "optFile": "Arquivo"

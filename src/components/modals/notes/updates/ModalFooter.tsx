@@ -2,10 +2,7 @@ import type { JSX } from "react"
 
 import clsx from "clsx"
 
-import { FaTrashAlt } from "react-icons/fa"
-import { Permission } from "@/models/Permission"
 import { LoaderWrapper } from "@/components/loader/LoaderWrapper"
-import { usePermission } from "@/hooks/usePermission"
 
 import styles from "./ModalFooter.module.css"
 
@@ -21,35 +18,18 @@ type ModalFooterProps = {
   isDirty: boolean
   isValid: boolean
   isLoading: boolean
-  setShowDelete: (show: boolean) => void
 }
 
 export function ModalFooter({
   exists,
   isDirty,
   isValid,
-  isLoading,
-  setShowDelete
+  isLoading
 }: ModalFooterProps): JSX.Element {
   const canSubmit = exists && isDirty && isValid && !isLoading
-  const canDelete = usePermission(Permission.DeleteNotes)
-  const handleDeleteClick = () => {
-    setShowDelete(true)
-  }
 
   return (
     <footer className={styles.footer}>
-      {canDelete && (
-        <button
-          disabled={!exists}
-          type="button"
-          className={clsx(styles.button, styles.deleteButton)}
-          onClick={handleDeleteClick}
-        >
-          <FaTrashAlt size={"1.1em"} color="rgba(102, 34, 34, 1)" />
-        </button>
-      )}
-
       <LoaderWrapper isLoading={isLoading} loaderProps={{ scale: 0.8 }}>
         <button
           disabled={!canSubmit}

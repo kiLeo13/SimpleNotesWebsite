@@ -1,5 +1,5 @@
 import { useState, type ChangeEvent, type JSX } from "react"
-import type { FullNoteResponseData } from "@/types/api/notes"
+import type { NoteResponseData } from "@/types/api/notes"
 
 import { IoIosWarning } from "react-icons/io"
 import { BaseModalTextInput } from "../shared/inputs/BaseModalTextInput"
@@ -12,14 +12,14 @@ import { useTranslation } from "react-i18next"
 import styles from "./DeleteNoteModal.module.css"
 
 type DeleteNoteModalProps = {
-  note: FullNoteResponseData
-  setShowDelete: (show: boolean) => void
+  note: NoteResponseData
+  setIsDeleting: (show: boolean) => void
   setIsPatching: (flag: boolean) => void
 }
 
 export function DeleteNoteModal({
   note,
-  setShowDelete,
+  setIsDeleting,
   setIsPatching
 }: DeleteNoteModalProps): JSX.Element {
   const { t } = useTranslation()
@@ -35,7 +35,7 @@ export function DeleteNoteModal({
     setAnswer(e.target.value)
   }
 
-  const handleClose = () => setShowDelete(false)
+  const handleClose = () => setIsDeleting(false)
 
   const handleDeletion = async () => {
     setIsLoading(true)
@@ -44,7 +44,7 @@ export function DeleteNoteModal({
 
     if (success) {
       toasts.success(t("modals.delNote.toasts.success"), { style: { color: "#b9be66ff" } })
-      setShowDelete(false)
+      setIsDeleting(false)
       setIsPatching(false)
     }
   }

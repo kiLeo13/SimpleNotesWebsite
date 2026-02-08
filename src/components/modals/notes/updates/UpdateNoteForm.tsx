@@ -16,8 +16,6 @@ import { ModalArrayInput } from "../shared/inputs/ModalArrayInput"
 import { ModalTextInput } from "../shared/inputs/ModalTextInput"
 import { ModalNoteFileView } from "../shared/tiny/ModalNoteFileView"
 import { FaEye } from "react-icons/fa6"
-import { DarkWrapper } from "@/components/DarkWrapper"
-import { DeleteNoteModal } from "./DeleteNoteModal"
 import { ModalSelectInput } from "../shared/inputs/ModalSelectInput"
 import { userService } from "@/services/userService"
 import { formatLocalTimestamp, getDirtyValues } from "@/utils/utils"
@@ -45,7 +43,6 @@ export function UpdateNoteForm({
 
   // Local UI
   const [author, setAuthor] = useState<UserResponseData | null>(null)
-  const [showDelete, setShowDelete] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
   // Store Actions
@@ -165,22 +162,10 @@ export function UpdateNoteForm({
 
       <ModalFooter
         exists={!!note}
-        setShowDelete={setShowDelete}
         isDirty={isDirty}
         isValid={isValid}
         isLoading={isLoading}
       />
-
-      {/* The delete confirmation modal */}
-      {showDelete && (
-        <DarkWrapper zIndex={50}>
-          <DeleteNoteModal
-            note={note!}
-            setShowDelete={setShowDelete}
-            setIsPatching={setIsPatching}
-          />
-        </DarkWrapper>
-      )}
     </form>
   )
 }
