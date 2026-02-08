@@ -12,9 +12,9 @@
 .ripple {
   position: absolute;
   border-radius: 50%;
-  background-color: rgba(216, 186, 255, 0.2);
-  transform: scale(0);
-  animation: ripple-anim 600ms linear;
+  background-color: #d8baff33;
+  transform: scale(0.2);
+  animation: ripple-anim linear forwards;
 }
 
 @keyframes ripple-anim {
