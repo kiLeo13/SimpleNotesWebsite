@@ -24,7 +24,6 @@ type NotesState = {
   fetchNotes: () => Promise<void>
   openNote: (note: NoteResponseData) => Promise<void>
   closeNote: () => void
-  deleteNoteAndRefresh: (noteId: number) => Promise<boolean>
   updateNoteAndRefresh: (
     noteId: number,
     payload: UpdateNoteRequestPayload
@@ -101,21 +100,6 @@ export const useNoteStore = create<NotesState>((set, get) => ({
   },
 
   closeNote: () => set({ shownNote: null }),
-
-  deleteNoteAndRefresh: async (noteId) => {
-    const resp = await noteService.deleteNote(noteId)
-    if (!resp.success) {
-      toasts.apiError("Erro ao apagar anotação", resp)
-      return false
-    }
-
-    set((state) => ({
-      notes: state.notes.filter((n) => n.id !== noteId),
-      shownNote: state.shownNote?.id === noteId ? null : state.shownNote
-    }))
-
-    return true
-  },
 
   updateNoteAndRefresh: async (noteId, payload) => {
     const resp = await noteService.updateNote(noteId, payload)
