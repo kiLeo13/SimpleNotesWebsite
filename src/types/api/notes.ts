@@ -26,7 +26,7 @@ export interface UpdateNoteRequestPayload {
 }
 
 // --- API Responses ---
-const NoteBaseSchema = z.object({
+export const NoteBaseSchema = z.object({
   id: z.number(),
   name: z.string(),
   tags: z.array(z.string()),

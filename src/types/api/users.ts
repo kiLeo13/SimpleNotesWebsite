@@ -53,16 +53,18 @@ export const UserResponseSchema = z
   .object({
     id: z.number(),
     username: z.string(),
-    is_verified: z.boolean().optional(),
     permissions: z.number(),
+    is_verified: z.boolean().optional(),
+    suspended: z.boolean().optional(),
     created_at: z.string(),
     updated_at: z.string()
   })
   .transform((data) => ({
     id: data.id,
     username: data.username,
-    isVerified: data.is_verified,
     permissions: data.permissions,
+    isVerified: data.is_verified,
+    suspended: data.suspended,
     createdAt: data.created_at,
     updatedAt: data.updated_at
   }))
