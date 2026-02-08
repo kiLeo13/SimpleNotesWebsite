@@ -142,9 +142,13 @@
   "warnings": {
     "noteCreation": {
       "noFiles": "Arquivo não encontrado."
-    }
+    },
+    "unspecified": "Não especificado.",
+    "reconnectingIdle": "Conexão WebSocket perdida! Reconectando...",
+    "sessionExpired": "Sua sessão expirou! Faça login novamente."
   },
   "errors": {
+    "accountSuspended": "Sua conta foi suspensa. Motivo: {{reason}}",
     "noteAuthor": "Erro ao buscar autor da anotação",
     "tags": {
       "min": "Cada item precisa ter pelo menos {{val}} caracteres",
