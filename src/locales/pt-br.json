@@ -119,7 +119,11 @@
     "tags": "Palavras-chave",
     "tagsPlaceholder": "Adicione apelidos...",
     "noFile": "Anotações desse tipo não possuem arquivo.",
-    "fetchError": "Erro ao buscar anotação/métricas completas"
+    "fetchError": "Erro ao buscar anotação/métricas completas",
+    "toasts": {
+      "success": "Nota atualizada com sucesso.",
+      "error": "Erro ao atualizar nota."
+    }
   },
   "createNoteModal": {
     "title": "Criar Nota",

@@ -1,8 +1,15 @@
 import type { FullNoteResponseData } from "@/types/api/notes"
 import type { UserResponseData } from "@/types/api/users"
-import { useFormContext, useFormState, type UseFormHandleSubmit } from "react-hook-form"
+import {
+  useFormContext,
+  useFormState,
+  type UseFormHandleSubmit
+} from "react-hook-form"
 import { useEffect, useMemo, useState, type JSX } from "react"
-import { VISIBILITY_OPTIONS, type UpdateNoteFormFields } from "@/types/forms/notes"
+import {
+  VISIBILITY_OPTIONS,
+  type UpdateNoteFormFields
+} from "@/types/forms/notes"
 
 import { isEmpty } from "lodash-es"
 import { ModalSection } from "../shared/sections/ModalSection"
@@ -19,8 +26,8 @@ import { FaEye } from "react-icons/fa6"
 import { ModalSelectInput } from "../shared/inputs/ModalSelectInput"
 import { userService } from "@/services/userService"
 import { formatLocalTimestamp, getDirtyValues } from "@/utils/utils"
-import { useNoteStore } from "@/stores/useNotesStore"
 import { useTranslation } from "react-i18next"
+import { noteService } from "@/services/noteService"
 import { toasts } from "@/utils/toastUtils"
 
 import styles from "./UpdateNoteForm.module.css"
@@ -46,7 +53,6 @@ export function UpdateNoteForm({
   const [isLoading, setIsLoading] = useState(false)
 
   // Store Actions
-  const updateNoteAndRefresh = useNoteStore((state) => state.updateNoteAndRefresh)
   const viewOptions = useMemo(() => {
     return [...VISIBILITY_OPTIONS].map((o) => ({
       label: t(o.label),
@@ -62,11 +68,14 @@ export function UpdateNoteForm({
     }
 
     setIsLoading(true)
-    const success = await updateNoteAndRefresh(note!.id, payload)
+    const resp = await noteService.updateNote(note!.id, payload)
     setIsLoading(false)
 
-    if (success) {
+    if (resp.success) {
       setIsPatching(false)
+      toasts.success(t("updateNoteModal.toasts.success"))
+    } else {
+      toasts.apiError(t("updateNoteModal.toasts.error"), resp)
     }
   }
 
@@ -94,7 +103,9 @@ export function UpdateNoteForm({
               title={t("updateNoteModal.author")}
             />
           }
-          input={<BaseModalTextInput disabled value={author?.username ?? "-"} />}
+          input={
+            <BaseModalTextInput disabled value={author?.username ?? "-"} />
+          }
         />
         <ModalSection
           label={
@@ -103,7 +114,12 @@ export function UpdateNoteForm({
               title={t("updateNoteModal.creationTime")}
             />
           }
-          input={<BaseModalTextInput disabled value={getCreation(note?.created_at)} />}
+          input={
+            <BaseModalTextInput
+              disabled
+              value={getCreation(note?.created_at)}
+            />
+          }
         />
       </ModalActionRow>
 
@@ -125,7 +141,10 @@ export function UpdateNoteForm({
             />
           }
           input={
-            <BaseModalTextInput disabled value={getUpdate(note?.created_at, note?.updated_at)} />
+            <BaseModalTextInput
+              disabled
+              value={getUpdate(note?.created_at, note?.updated_at)}
+            />
           }
         />
       </ModalActionRow>
@@ -148,7 +167,9 @@ export function UpdateNoteForm({
 
       <ModalActionRow>
         <ModalSection
-          label={<ModalLabel title={t("updateNoteModal.tags")} required={false} />}
+          label={
+            <ModalLabel title={t("updateNoteModal.tags")} required={false} />
+          }
           input={
             <ModalArrayInput
               name="tags"

@@ -1,8 +1,7 @@
 import type {
   FullNoteResponseData,
   NoteResponseData,
-  NoteType,
-  UpdateNoteRequestPayload
+  NoteType
 } from "@/types/api/notes"
 import type { NoteFormFields } from "@/types/forms/notes"
 import type { ApiResponse } from "@/types/api/api"
@@ -24,10 +23,6 @@ type NotesState = {
   fetchNotes: () => Promise<void>
   openNote: (note: NoteResponseData) => Promise<void>
   closeNote: () => void
-  updateNoteAndRefresh: (
-    noteId: number,
-    payload: UpdateNoteRequestPayload
-  ) => Promise<boolean>
 
   createNoteAndOpen: (data: NoteFormFields, noteType: NoteType) => Promise<boolean>
 
@@ -100,27 +95,6 @@ export const useNoteStore = create<NotesState>((set, get) => ({
   },
 
   closeNote: () => set({ shownNote: null }),
-
-  updateNoteAndRefresh: async (noteId, payload) => {
-    const resp = await noteService.updateNote(noteId, payload)
-    if (!resp.success) {
-      toasts.apiError("Erro ao atualizar anotação", resp)
-      return false
-    }
-
-    toasts.success("Nota atualizada com sucesso")
-
-    set((state) => ({
-      notes: state.notes.map((n) => (n.id === noteId ? resp.data : n)),
-      // If the updated note is currently open, update the view too
-      shownNote:
-        state.shownNote?.id === noteId
-          ? { ...state.shownNote, ...resp.data }
-          : state.shownNote
-    }))
-
-    return true
-  },
 
   createNoteAndOpen: async (data, noteType) => {
     const resp = await uploadNote(data, noteType)
