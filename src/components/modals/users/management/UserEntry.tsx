@@ -1,6 +1,9 @@
 import type { UserResponseData } from "@/types/api/users"
 import { useState, useMemo, type JSX, useEffect } from "react"
-import { MultiSelectMenu, type MenuOption } from "@/components/ui/MultiSelectMenu"
+import {
+  MultiSelectMenu,
+  type MenuOption
+} from "@/components/ui/MultiSelectMenu"
 
 import { IoPerson } from "react-icons/io5"
 import { RiErrorWarningLine } from "react-icons/ri"
@@ -12,9 +15,9 @@ import { useTranslation } from "react-i18next"
 import { useSessionStore } from "@/stores/useSessionStore"
 import { usePermission } from "@/hooks/usePermission"
 import { userService } from "@/services/userService"
+import { toasts } from "@/utils/toastUtils"
 
 import styles from "./UserEntry.module.css"
-import { toasts } from "@/utils/toastUtils"
 
 type UserEntryProps = {
   user: UserResponseData
@@ -30,9 +33,13 @@ export function UserEntry({ user }: UserEntryProps): JSX.Element {
 
   // State to track the "Database State" locally, so we can calculate isDirty
   // without waiting for a parent re-render.
-  const [savedPermissions, setSavedPermissions] = useState<number>(user.permissions)
+  const [savedPermissions, setSavedPermissions] = useState<number>(
+    user.permissions
+  )
   const [selectedOffsets, setSelectedOffsets] = useState<number[]>(() =>
-    allPermissions.filter((p) => Permission.hasRaw(user.permissions, p)).map((p) => p.offset)
+    allPermissions
+      .filter((p) => Permission.hasRaw(user.permissions, p))
+      .map((p) => p.offset)
   )
 
   const currentMask = useMemo(() => {
@@ -48,7 +55,13 @@ export function UserEntry({ user }: UserEntryProps): JSX.Element {
   }, [user.permissions])
 
   const menuOptions = useMemo(
-    () => getComputedOptions(savedPermissions, self?.permissions || 0, allPermissions, t),
+    () =>
+      getComputedOptions(
+        savedPermissions,
+        self?.permissions || 0,
+        allPermissions,
+        t
+      ),
     [savedPermissions, self?.permissions, allPermissions, t]
   )
 
@@ -79,16 +92,26 @@ export function UserEntry({ user }: UserEntryProps): JSX.Element {
         <div className={styles.userData}>
           <div className={styles.userName}>
             <span>{user.username}</span>
-            <AppTooltip label={user.isVerified ? t("labels.verified") : t("labels.unverified")}>
+            <AppTooltip
+              label={
+                user.isVerified ? t("labels.verified") : t("labels.unverified")
+              }
+            >
               {user.isVerified ? (
                 <FaCheck size={"0.7em"} color="#72c272" cursor="pointer" />
               ) : (
-                <RiErrorWarningLine size={"0.9em"} color="#c2af72" cursor="pointer" />
+                <RiErrorWarningLine
+                  size={"0.9em"}
+                  color="#c2af72"
+                  cursor="pointer"
+                />
               )}
             </AppTooltip>
             {isSelf && <span className={styles.you}>{t("labels.you")}</span>}
           </div>
-          <span className={styles.timestamp}>{formatTimestamp(user.createdAt)}</span>
+          <span className={styles.timestamp}>
+            {formatTimestamp(user.createdAt)}
+          </span>
         </div>
       </div>
 
@@ -101,7 +124,12 @@ export function UserEntry({ user }: UserEntryProps): JSX.Element {
             onChange={(newValues) => setSelectedOffsets(newValues as number[])}
             onSave={handleSave}
             isLoading={isLoading}
-            showFooter={!Permission.hasEffective(user.permissions, Permission.Administrator)}
+            showFooter={
+              !Permission.hasEffective(
+                user.permissions,
+                Permission.Administrator
+              )
+            }
           />
         </div>
       )}
@@ -117,7 +145,10 @@ function getComputedOptions(
 ): MenuOption[] {
   const isTargetAdmin = Permission.hasRaw(targetMask, Permission.Administrator)
   const isViewerAdmin = Permission.hasRaw(viewerMask, Permission.Administrator)
-  const isViewerManager = Permission.hasEffective(viewerMask, Permission.ManagePermissions)
+  const isViewerManager = Permission.hasEffective(
+    viewerMask,
+    Permission.ManagePermissions
+  )
 
   return allPerms.map((p) => {
     let disabled = false
