@@ -16,6 +16,7 @@ interface ActionMenuProps {
   items: MenuActionItem[]
   side?: "top" | "bottom" | "left" | "right"
   align?: "start" | "center" | "end"
+  isolateEvents?: boolean
 }
 
 export function ActionMenu({
@@ -23,7 +24,8 @@ export function ActionMenu({
   header,
   items,
   side = "bottom",
-  align = "start"
+  align = "start",
+  isolateEvents = true
 }: ActionMenuProps): JSX.Element {
   return (
     <DropdownMenu.Root>
@@ -49,6 +51,7 @@ export function ActionMenu({
               key={`${item.label}-${index}`}
               className={styles.menuItem}
               onSelect={item.onClick}
+              onClick={(e) => isolateEvents && e.stopPropagation()}
             >
               <div className={styles.iconWrapper}>{item.icon}</div>
               <span className={styles.itemLabel}>{item.label}</span>
