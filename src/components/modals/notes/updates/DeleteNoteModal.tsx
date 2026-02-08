@@ -5,9 +5,9 @@ import { IoIosWarning } from "react-icons/io"
 import { BaseModalTextInput } from "../shared/inputs/BaseModalTextInput"
 import { LoaderWrapper } from "@/components/loader/LoaderWrapper"
 import { MarkdownDisplay } from "@/components/displays/markdowns/MarkdownDisplay"
-import { useNoteStore } from "@/stores/useNotesStore"
 import { toasts } from "@/utils/toastUtils"
 import { useTranslation } from "react-i18next"
+import { noteService } from "@/services/noteService"
 
 import styles from "./DeleteNoteModal.module.css"
 
@@ -27,7 +27,6 @@ export function DeleteNoteModal({
   const [answer, setAnswer] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
-  const deleteNoteAndRefresh = useNoteStore((state) => state.deleteNoteAndRefresh)
   const answerMatches = answer == note.name
   const canConfirm = answerMatches && !isLoading
 
@@ -39,13 +38,17 @@ export function DeleteNoteModal({
 
   const handleDeletion = async () => {
     setIsLoading(true)
-    const success = await deleteNoteAndRefresh(note.id)
+    const resp = await noteService.deleteNote(note.id)
     setIsLoading(false)
 
-    if (success) {
-      toasts.success(t("modals.delNote.toasts.success"), { style: { color: "#b9be66ff" } })
+    if (resp) {
+      toasts.success(t("modals.delNote.toasts.success"), {
+        style: { color: "#b9be66ff" }
+      })
       setIsDeleting(false)
       setIsPatching(false)
+    } else {
+      toasts.apiError(t("modals.delNote.toasts.error"), resp)
     }
   }
 
@@ -60,7 +63,9 @@ export function DeleteNoteModal({
           <MarkdownDisplay content={t("modals.delNote.subtitle")} />
         </span>
 
-        <span className={styles.prompt}>{t("modals.delNote.instruct", { val: note.name })}</span>
+        <span className={styles.prompt}>
+          {t("modals.delNote.instruct", { val: note.name })}
+        </span>
         <BaseModalTextInput value={answer} onChange={handleAnswer} />
 
         <div className={styles.footer}>
@@ -68,7 +73,11 @@ export function DeleteNoteModal({
             {t("modals.delNote.buttons.cancel")}
           </button>
           <LoaderWrapper isLoading={isLoading} loaderProps={{ scale: 0.7 }}>
-            <button className={styles.confirm} disabled={!canConfirm} onClick={handleDeletion}>
+            <button
+              className={styles.confirm}
+              disabled={!canConfirm}
+              onClick={handleDeletion}
+            >
               {t("modals.delNote.buttons.confirm")}
             </button>
           </LoaderWrapper>
