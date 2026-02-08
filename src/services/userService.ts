@@ -1,4 +1,4 @@
-import type { ApiResponse } from "../types/api/api"
+import { VoidSchema, type ApiResponse } from "../types/api/api"
 
 import {
   CheckUserStatusSchema,
@@ -69,6 +69,10 @@ export const userService = {
 
   getUserById: async (id: number): Promise<ApiResponse<UserResponseData>> => {
     return safeApiCall(() => apiClient.get(`/users/${id}`), UserResponseSchema)
+  },
+
+  logout: async (): Promise<ApiResponse<void>> => {
+    return safeApiCall(() => apiClient.post("/users/logout"), VoidSchema)
   },
 
   updateUser: async (
