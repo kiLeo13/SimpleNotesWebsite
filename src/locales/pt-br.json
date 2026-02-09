@@ -210,6 +210,9 @@
       "optFile": "Arquivo"
     },
     "users": {
+      "deleteUser": "Excluir Usuário",
+      "suspendUser": "Suspender Usuário",
+      "moderateUser": "Opções de Moderação",
       "perms": {
         "label": "Permissões",
         "saveButton": "Salvar"
