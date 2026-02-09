@@ -1,0 +1,42 @@
+.userActions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.actionButton {
+  position: relative;
+  display: flex;
+  padding: 10px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  height: 100%;
+  background-color: transparent;
+  aspect-ratio: 1;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  transition: background-color 300ms;
+}
+
+.actionButton:hover {
+  background-color: rgba(165, 142, 192, 0.1);
+}
+
+.actionIcon {
+  color: #908899;
+  transition: color 300ms;
+}
+
+.dangerButtonOption[data-highlighted] {
+  background-color: #be6d6d;
+}
+
+.dangerButtonIcon {
+  color: #a285d1;
+}
+
+.dangerButtonOption[data-highlighted] .dangerButtonIcon {
+  color: #913a3a;
+}
