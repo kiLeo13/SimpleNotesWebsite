@@ -1,6 +1,7 @@
 import React, { type JSX } from "react"
 
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
+import clsx from "clsx"
 
 import styles from "./ActionMenu.module.css"
 
@@ -8,15 +9,18 @@ export interface MenuActionItem {
   label: string
   icon?: React.ReactNode
   onClick: () => void
+  className?: string
+  style?: React.CSSProperties
 }
 
-interface ActionMenuProps {
+type ActionMenuProps = {
   children: React.ReactNode
   header?: string
   items: MenuActionItem[]
   side?: "top" | "bottom" | "left" | "right"
   align?: "start" | "center" | "end"
   isolateEvents?: boolean
+  style?: React.CSSProperties
 }
 
 export function ActionMenu({
@@ -25,7 +29,8 @@ export function ActionMenu({
   items,
   side = "bottom",
   align = "start",
-  isolateEvents = true
+  isolateEvents = true,
+  style
 }: ActionMenuProps): JSX.Element {
   return (
     <DropdownMenu.Root>
@@ -38,6 +43,7 @@ export function ActionMenu({
           align={align}
           sideOffset={8}
           collisionPadding={10}
+          style={style}
         >
           {header && (
             <>
@@ -49,9 +55,10 @@ export function ActionMenu({
           {items.map((item, index) => (
             <DropdownMenu.Item
               key={`${item.label}-${index}`}
-              className={styles.menuItem}
+              className={clsx(styles.menuItem, item.className)}
               onSelect={item.onClick}
               onClick={(e) => isolateEvents && e.stopPropagation()}
+              style={item.style}
             >
               <div className={styles.iconWrapper}>{item.icon}</div>
               <span className={styles.itemLabel}>{item.label}</span>
