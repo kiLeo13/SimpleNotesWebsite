@@ -45,6 +45,18 @@ export class Permission {
   }
 
   static toArray(mask: number): Permission[] {
-    return Permission.all.filter(perm => Permission.hasRaw(mask, perm))
+    return Permission.all.filter((perm) => Permission.hasRaw(mask, perm))
+  }
+
+  /**
+   * Checks if a specific permission state differs between two masks.
+   * Returns `true` if the permission was added OR removed.
+   */
+  static changed(
+    maskA: number,
+    maskB: number,
+    perm: Permission
+  ): boolean {
+    return ((maskA ^ maskB) & perm.raw) !== 0
   }
 }
