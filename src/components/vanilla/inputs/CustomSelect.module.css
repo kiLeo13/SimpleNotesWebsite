@@ -32,6 +32,12 @@
   cursor: not-allowed;
 }
 
+.invalid {
+  border-color: rgb(238, 54, 54) !important;
+  background-color: rgba(238, 54, 54, 0.05) !important;
+  border-width: 2px !important;
+}
+
 .valueWrapper {
   display: flex;
   align-items: center;
@@ -54,8 +60,8 @@
 }
 
 .content {
-  background-color: #1e1e24;
-  border: 1px solid rgb(50, 42, 70);
+  background-color: #1b1720;
+  border: 1px solid #30293a;
   border-radius: 8px;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
   padding: 6px;

@@ -23,6 +23,7 @@ export type CustomSelectProps = {
   disabled?: boolean
   name?: string
   id?: string
+  invalid?: boolean
   onBlur?: () => void
 }
 
@@ -34,6 +35,7 @@ export const CustomSelect = forwardRef<HTMLButtonElement, CustomSelectProps>(({
   hasSearch = false,
   className,
   disabled = false,
+  invalid = false,
   ...props
 }, ref) => {
   const [searchTerm, setSearchTerm] = useState("")
@@ -57,7 +59,7 @@ export const CustomSelect = forwardRef<HTMLButtonElement, CustomSelectProps>(({
       <DropdownMenu.Trigger asChild disabled={disabled}>
         <button
           ref={ref}
-          className={clsx(styles.trigger, className)}
+          className={clsx(styles.trigger, invalid && styles.invalid, className)}
           type="button"
           {...props}
         >

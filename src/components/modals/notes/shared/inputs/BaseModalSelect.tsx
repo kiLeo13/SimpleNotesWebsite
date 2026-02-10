@@ -1,7 +1,5 @@
 import type { JSX } from "react"
 
-import clsx from "clsx"
-
 import {
   CustomSelect,
   type CustomSelectProps
@@ -30,9 +28,10 @@ export function BaseModalSelect({
   return (
     <>
       <CustomSelect
-        className={clsx(errorMessage && styles.invalid, className)}
+        className={className}
         options={options}
         hasSearch={hasSearch}
+        invalid={!!errorMessage}
         {...props}
       />
 
