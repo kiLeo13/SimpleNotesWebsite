@@ -1,0 +1,169 @@
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: rgb(180, 180, 180);
+  background-color: rgba(0, 0, 0, 0.2);
+  border: solid 1px rgb(50, 42, 70);
+  border-radius: 8px;
+  outline: none;
+  transition:
+    border-color 0.3s,
+    background-color 0.2s;
+  cursor: pointer;
+}
+
+.trigger:hover {
+  border-color: #5c4791;
+}
+
+.trigger:focus,
+.trigger[data-state="open"] {
+  border-color: #5c4791;
+  color: #e4e4e7;
+}
+
+.trigger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.valueWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.itemIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.chevron {
+  font-size: 16px;
+  color: rgb(120, 120, 120);
+  flex-shrink: 0;
+}
+
+.content {
+  background-color: #1e1e24;
+  border: 1px solid rgb(50, 42, 70);
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+  padding: 6px;
+  margin-top: 6px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 9999;
+  min-width: var(--radix-dropdown-menu-trigger-width);
+  animation: slideDown 0.2s ease-out;
+}
+
+.searchWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-bottom: 1px solid rgb(50, 42, 70);
+  margin-bottom: 4px;
+}
+
+.searchIcon {
+  color: rgb(120, 120, 120);
+  font-size: 14px;
+}
+
+.searchInput {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: rgb(220, 220, 220);
+  font-size: 13px;
+  width: 100%;
+}
+
+.searchInput::placeholder {
+  color: rgb(100, 100, 100);
+}
+
+.viewport {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.viewport::-webkit-scrollbar {
+  width: 4px;
+}
+
+.viewport::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.viewport::-webkit-scrollbar-thumb {
+  background: rgb(50, 42, 70);
+  border-radius: 2px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: rgb(180, 180, 180);
+  border-radius: 4px;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  transition: background-color 100ms;
+}
+
+.item:hover,
+.item[data-highlighted] {
+  background-color: #5c4791;
+  color: white;
+}
+
+.itemLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkIcon {
+  color: white;
+  font-size: 14px;
+}
+
+.noResults {
+  padding: 12px;
+  color: rgb(120, 120, 120);
+  text-align: center;
+  font-size: 13px;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
