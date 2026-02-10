@@ -1,6 +1,11 @@
-import { type ComponentProps, type JSX } from "react"
+import type { JSX } from "react"
 
 import clsx from "clsx"
+
+import {
+  CustomSelect,
+  type CustomSelectProps
+} from "@/components/vanilla/inputs/CustomSelect"
 
 import styles from "./ModalInputs.module.css"
 
@@ -9,31 +14,31 @@ export type SelectOption = {
   value: string
 }
 
-type BaseModalSelectProps = ComponentProps<"select"> & {
+type BaseModalSelectProps = CustomSelectProps & {
   options: SelectOption[]
   errorMessage?: string
+  hasSearch?: boolean
 }
 
-export function BaseModalSelect({ 
-  className, 
-  errorMessage, 
-  options, 
-  ...props 
+export function BaseModalSelect({
+  className,
+  errorMessage,
+  options,
+  hasSearch,
+  ...props
 }: BaseModalSelectProps): JSX.Element {
   return (
     <>
-      <select 
-        className={clsx(styles.input, styles.select, errorMessage && styles.invalid, className)}
+      <CustomSelect
+        className={clsx(errorMessage && styles.invalid, className)}
+        options={options}
+        hasSearch={hasSearch}
         {...props}
-      >
-        {options.map((opt) => (
-          <option className={styles.selectOption} key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
+      />
 
-      {errorMessage && <span className={styles.errorMessage}>{errorMessage}</span>}
+      {errorMessage && (
+        <span className={styles.errorMessage}>{errorMessage}</span>
+      )}
     </>
   )
 }
