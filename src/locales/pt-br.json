@@ -200,6 +200,10 @@
     }
   },
   "menus": {
+    "select": {
+      "searchPlaceholder": "Buscar...",
+      "noResults": "Nenhum resultado."
+    },
     "notes": {
       "opts": {
         "edit": "Editar",
