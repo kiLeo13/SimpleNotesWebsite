@@ -1,6 +1,6 @@
 import type { ConnectionKill } from "@/types/websocket/events"
 
-import useWebSocket, { ReadyState } from "react-use-websocket"
+import useWebSocket from "react-use-websocket"
 
 import { useEffect, useRef } from "react"
 import { useNoteStore } from "../stores/useNotesStore"
@@ -25,7 +25,6 @@ export function useWebSocketManager() {
     ? `${WS_URL}?token=${encodeURIComponent(token)}`
     : null
 
-  console.log("Rendered.")
   const { lastJsonMessage, readyState } = useWebSocket(socketUrl, {
     shouldReconnect: () => {
       if (isFatal.current || !token) return false
@@ -48,18 +47,6 @@ export function useWebSocketManager() {
 
     onError: (e) => console.error("[WS] Error:", e)
   })
-
-  // Debug: Monitor connection state changes
-  useEffect(() => {
-    const stateName = {
-        [ReadyState.CONNECTING]: "Connecting",
-        [ReadyState.OPEN]: "Open",
-        [ReadyState.CLOSING]: "Closing",
-        [ReadyState.CLOSED]: "Closed",
-        [ReadyState.UNINSTANTIATED]: "Uninstantiated",
-    }[readyState];
-    console.log(`[WS] State: ${stateName}`);
-  }, [readyState]);
 
   useEffect(() => {
     if (lastJsonMessage) {
