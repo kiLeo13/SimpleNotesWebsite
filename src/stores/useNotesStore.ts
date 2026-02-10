@@ -13,6 +13,7 @@ type NotesState = {
   addNote: (note: NoteResponseData) => void
   updateNote: (newNote: NoteResponseData) => void
   removeNote: (noteId: number) => void
+  getNoteById: (noteId: number) => NoteResponseData | null
 
   fetchNotes: () => Promise<void>
   openNote: (note: NoteResponseData) => Promise<void>
@@ -46,6 +47,11 @@ export const useNoteStore = create<NotesState>((set, get) => ({
       notes: state.notes.filter((n) => n.id !== noteId),
       shownNote: state.shownNote?.id === noteId ? null : state.shownNote
     }))
+  },
+
+  getNoteById(noteId) {
+    const note = get().notes.find((n) => n.id === noteId)
+    return note || null
   },
 
   fetchNotes: async () => {

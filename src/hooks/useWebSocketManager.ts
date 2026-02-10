@@ -13,6 +13,7 @@ import {
 import { useSessionStore } from "@/stores/useSessionStore"
 import { toasts } from "@/utils/toastUtils"
 import { useTranslation } from "react-i18next"
+import { Permission } from "@/models/Permission"
 
 const WS_URL = import.meta.env.VITE_WS_URL
 
@@ -68,8 +69,9 @@ function handleServerMessage(
   logoutAction: () => void,
   t: (s: string) => string
 ) {
-  const { addNote, updateNote, removeNote } = useNoteStore.getState()
-  const { setUser } = useSessionStore.getState()
+  const { addNote, updateNote, removeNote, getNoteById, fetchNotes } = useNoteStore.getState()
+  const { user: self, setUser } = useSessionStore.getState()
+  const selfHasAdmin = Permission.hasEffective(self?.permissions || 0, Permission.Administrator)
   socketBus.emit(msg.type, msg.data)
 
   switch (msg.type) {
@@ -77,17 +79,36 @@ function handleServerMessage(
       addNote(msg.data)
       break
 
-    case ServerEvents.NoteUpdated.type:
-      updateNote(msg.data)
+    case ServerEvents.NoteUpdated.type: {
+      const newNote = msg.data
+      const oldNote = getNoteById(newNote.id)
+      const hasVisibilityChanged = oldNote?.visibility !== newNote.visibility
+
+      // If the note's visibility changed, we need to refetch the notes
+      // to ensure the UI reflects the correct set of notes based on the new visibility.
+      // Except if user is admin, since they can see all notes regardless of any constraints.
+      if (hasVisibilityChanged && !selfHasAdmin) {
+        fetchNotes()
+      } else {
+        updateNote(newNote)
+      }
       break
+    }
 
     case ServerEvents.NoteDeleted.type:
       removeNote(msg.data.id)
       break
 
-    case ServerEvents.UserUpdated.type:
-      setUser(msg.data)
+    case ServerEvents.UserUpdated.type: {
+      const newSelf = msg.data
+      if (!selfHasAdmin && Permission.changed(self?.permissions || 0, newSelf.permissions, Permission.SeeHiddenNotes)) {
+        // If the user's permission to see hidden notes changed, we need to refetch the notes.
+        fetchNotes()
+      }
+
+      setUser(newSelf)
       break
+    }
 
     case ServerEvents.SessionExpired.type:
       fatalRef.current = true
