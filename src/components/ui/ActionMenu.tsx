@@ -3,6 +3,8 @@ import React, { type JSX } from "react"
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import clsx from "clsx"
 
+import { Ripple } from "./effects/Ripple"
+
 import styles from "./ActionMenu.module.css"
 
 export interface MenuActionItem {
@@ -57,11 +59,12 @@ export function ActionMenu({
               key={`${item.label}-${index}`}
               className={clsx(styles.menuItem, item.className)}
               onSelect={item.onClick}
-              onClick={(e) => isolateEvents && e.stopPropagation()}
+              onClick={(isolateEvents ? (e) => e.stopPropagation() : undefined)}
               style={item.style}
             >
               <div className={styles.iconWrapper}>{item.icon}</div>
               <span className={styles.itemLabel}>{item.label}</span>
+              <Ripple />
             </DropdownMenu.Item>
           ))}
           <DropdownMenu.Arrow className={styles.menuArrow} />

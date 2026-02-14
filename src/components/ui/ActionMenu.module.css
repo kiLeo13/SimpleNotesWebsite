@@ -27,12 +27,14 @@
 }
 
 .menuItem {
+  position: relative;
   display: flex;
   align-items: center;
   position: relative;
   padding: 8px 12px;
   font-size: 14px;
   gap: 8px;
+  overflow: hidden;
   color: #dbdee1;
   border-radius: 4px;
   user-select: none;
