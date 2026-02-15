@@ -142,11 +142,6 @@
   justify-content: end;
 }
 
-.loader {
-  left: 0;
-  right: auto;
-}
-
 .saveButton {
   position: relative;
   display: flex;
@@ -166,12 +161,6 @@
 
 .saveButton:hover {
   background-color: #7451a1;
-}
-
-.saveButton:disabled {
-  background-color: #2b2335;
-  color: #7d7686;
-  cursor: not-allowed;
 }
 
 .arrow {

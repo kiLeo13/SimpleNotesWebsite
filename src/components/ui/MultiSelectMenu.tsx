@@ -4,7 +4,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import clsx from "clsx"
 
 import { FaChevronDown } from "react-icons/fa"
-import { LoaderContainer } from "../LoaderContainer"
+import { Button } from "./buttons/Button"
 import { BsCheck } from "react-icons/bs"
 import { useTranslation } from "react-i18next"
 
@@ -41,7 +41,9 @@ export function MultiSelectMenu({
   const [open, setOpen] = useState(false)
 
   const handleToggle = (id: string | number) => {
-    const newValues = values.includes(id) ? values.filter((v) => v !== id) : [...values, id]
+    const newValues = values.includes(id)
+      ? values.filter((v) => v !== id)
+      : [...values, id]
     onChange?.(newValues)
   }
 
@@ -55,7 +57,9 @@ export function MultiSelectMenu({
       <DropdownMenu.Trigger asChild>
         <button className={styles.triggerButton}>
           {label}
-          <FaChevronDown className={clsx(styles.chevron, open && styles.open)} />
+          <FaChevronDown
+            className={clsx(styles.chevron, open && styles.open)}
+          />
         </button>
       </DropdownMenu.Trigger>
 
@@ -84,7 +88,9 @@ export function MultiSelectMenu({
                 >
                   {/* Label */}
                   <div className={styles.labelContainer}>
-                    {opt.icon && <span className={styles.optIcon}>{opt.icon}</span>}
+                    {opt.icon && (
+                      <span className={styles.optIcon}>{opt.icon}</span>
+                    )}
                     <span className={styles.itemLabel}>{opt.label}</span>
                   </div>
 
@@ -104,12 +110,15 @@ export function MultiSelectMenu({
               <DropdownMenu.Separator className={styles.separator} />
 
               <div className={styles.footer}>
-                {isLoading && (
-                  <LoaderContainer className={styles.loader} scale={0.8} loaderColor="#9881a5" />
-                )}
-                <button className={styles.saveButton} onClick={handleSave} disabled={isLoading}>
+                <Button
+                  className={styles.saveButton}
+                  isLoading={isLoading}
+                  disabled={isLoading}
+                  onClick={handleSave}
+                  loaderProps={{ scale: 0.8 }}
+                >
                   {t("menus.users.perms.saveButton")}
-                </button>
+                </Button>
               </div>
             </>
           )}
