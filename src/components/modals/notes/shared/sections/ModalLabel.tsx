@@ -4,7 +4,7 @@ import RequiredHint from "@/components/hints/RequiredHint"
 import OptionalHint from "@/components/hints/OptionalHint"
 
 import { AppTooltip } from "@/components/ui/AppTooltip"
-import { MdQuestionAnswer } from "react-icons/md"
+import { IoMdInformationCircleOutline } from "react-icons/io"
 
 import styles from "./ModalLabel.module.css"
 
@@ -33,7 +33,7 @@ export function ModalLabel({
       {hint && (
         <AppTooltip label={hint}>
           <span className={styles.helpHint}>
-            <MdQuestionAnswer />
+            <IoMdInformationCircleOutline />
           </span>
         </AppTooltip>
       )}
