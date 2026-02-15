@@ -1,7 +1,6 @@
 import {
   useRef,
   useState,
-
   type KeyboardEvent,
   type JSX,
   type ChangeEvent,
@@ -52,11 +51,11 @@ export function BaseArrayInput({
 
   // Empty spaces are strictly disallowed in array elements
   const handleContent = (e: ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value.replaceAll(' ', ''))
+    setInputValue(e.target.value.replaceAll(" ", ""))
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' || e.key === ' ') {
+    if (e.key === "Enter" || e.key === " ") {
       e.preventDefault()
       e.stopPropagation()
 
@@ -71,7 +70,12 @@ export function BaseArrayInput({
   return (
     <>
       <div
-        className={clsx(styles.input, styles.arrayContainer, errorMessage && styles.invalid, className)}
+        className={clsx(
+          styles.input,
+          styles.arrayContainer,
+          errorMessage && styles.invalid,
+          className
+        )}
         onClick={handleContainerClick}
         style={style}
       >
@@ -99,7 +103,9 @@ export function BaseArrayInput({
         />
       </div>
 
-      {errorMessage && <span className={styles.errorMessage}>{errorMessage}</span>}
+      {errorMessage && (
+        <span className={styles.errorMessage}>{errorMessage}</span>
+      )}
     </>
   )
 }
