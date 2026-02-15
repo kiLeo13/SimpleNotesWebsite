@@ -15,7 +15,12 @@ type ModalLabelProps = {
   hint?: string
 }
 
-export function ModalLabel({ title, icon, required, hint }: ModalLabelProps): JSX.Element {
+export function ModalLabel({
+  title,
+  icon,
+  required,
+  hint
+}: ModalLabelProps): JSX.Element {
   return (
     <label className={styles.inputLabel}>
       {icon && icon}
