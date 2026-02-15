@@ -2,8 +2,8 @@ import { useState, type ChangeEvent, type JSX } from "react"
 import type { NoteResponseData } from "@/types/api/notes"
 
 import { IoIosWarning } from "react-icons/io"
+import { Button } from "@/components/ui/buttons/Button"
 import { BaseModalTextInput } from "../shared/inputs/BaseModalTextInput"
-import { LoaderWrapper } from "@/components/loader/LoaderWrapper"
 import { MarkdownDisplay } from "@/components/displays/markdowns/MarkdownDisplay"
 import { toasts } from "@/utils/toastUtils"
 import { useTranslation } from "react-i18next"
@@ -69,15 +69,15 @@ export function DeleteNoteModal({
           <button className={styles.cancel} onClick={handleClose}>
             {t("modals.delNote.buttons.cancel")}
           </button>
-          <LoaderWrapper isLoading={isLoading} loaderProps={{ scale: 0.7 }}>
-            <button
-              className={styles.confirm}
-              disabled={!canConfirm}
-              onClick={handleDeletion}
-            >
-              {t("modals.delNote.buttons.confirm")}
-            </button>
-          </LoaderWrapper>
+          <Button
+            className={styles.confirm}
+            isLoading={isLoading}
+            disabled={!canConfirm}
+            onClick={handleDeletion}
+            loaderProps={{ scale: 0.7 }}
+          >
+            {t("modals.delNote.buttons.confirm")}
+          </Button>
         </div>
       </div>
     </div>

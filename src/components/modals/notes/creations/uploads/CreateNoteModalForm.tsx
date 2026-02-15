@@ -5,8 +5,6 @@ import {
 } from "@/types/forms/notes"
 import { useState, type JSX } from "react"
 
-import clsx from "clsx"
-
 import {
   NOTE_EXTENSIONS,
   NOTE_MAX_SIZE_BYTES,
@@ -15,11 +13,12 @@ import {
 import { ModalActionRow } from "../../shared/sections/ModalActionRow"
 import { ModalFileInput } from "../../shared/inputs/ModalFileInput"
 import { FormProvider, useForm } from "react-hook-form"
+import { Button } from "@/components/ui/buttons/Button"
+import { IoMdClose } from "react-icons/io"
 import { ModalTextInput } from "../../shared/inputs/ModalTextInput"
 import { ModalSelectInput } from "../../shared/inputs/ModalSelectInput"
 import { ModalLabel } from "../../shared/sections/ModalLabel"
 import { ModalSection } from "../../shared/sections/ModalSection"
-import { IoMdClose } from "react-icons/io"
 import { ModalArrayInput } from "../../shared/inputs/ModalArrayInput"
 import { getPrettySize } from "@/utils/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -153,19 +152,16 @@ export function CreateNoteModalForm({
           </ModalActionRow>
 
           <div className={styles.bottomContainer}>
-            <button
+            <Button
+              isLoading={isLoading}
               disabled={isLoading}
               className={styles.submitButton}
               onClick={handleSubmit(onSubmit)}
               type="submit"
+              loaderProps={{ scale: 0.7 }}
             >
               {t("createNoteModal.submit")}
-              {isLoading && (
-                <div className={styles.loaderContainer}>
-                  <div className={clsx("loader", styles.buttonLoader)}></div>
-                </div>
-              )}
-            </button>
+            </Button>
           </div>
         </form>
       </FormProvider>

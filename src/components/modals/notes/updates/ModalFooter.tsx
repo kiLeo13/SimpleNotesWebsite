@@ -2,7 +2,8 @@ import type { JSX } from "react"
 
 import clsx from "clsx"
 
-import { LoaderWrapper } from "@/components/loader/LoaderWrapper"
+import { Button } from "@/components/ui/buttons/Button"
+import { useTranslation } from "react-i18next"
 
 import styles from "./ModalFooter.module.css"
 
@@ -26,19 +27,20 @@ export function ModalFooter({
   isValid,
   isLoading
 }: ModalFooterProps): JSX.Element {
+  const { t } = useTranslation()
   const canSubmit = exists && isDirty && isValid && !isLoading
 
   return (
     <footer className={styles.footer}>
-      <LoaderWrapper isLoading={isLoading} loaderProps={{ scale: 0.8 }}>
-        <button
-          disabled={!canSubmit}
-          type="submit"
-          className={clsx(styles.button, styles.saveButton)}
-        >
-          Salvar
-        </button>
-      </LoaderWrapper>
+      <Button
+        isLoading={isLoading}
+        loaderProps={{ scale: 0.8 }}
+        disabled={!canSubmit}
+        type="submit"
+        className={clsx(styles.button, styles.saveButton)}
+      >
+        {t("commons.save")}
+      </Button>
     </footer>
   )
 }

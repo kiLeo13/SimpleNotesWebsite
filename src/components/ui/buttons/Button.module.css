@@ -1,0 +1,6 @@
+.button {
+  position: relative;
+  border-radius: 9999px;
+  border: none;
+  overflow: hidden;
+}

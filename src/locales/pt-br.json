@@ -1,4 +1,7 @@
 {
+  "commons": {
+    "save": "Salvar"
+  },
   "notes": {
     "visibility": {
       "public": "Público",
@@ -217,10 +220,21 @@
     "users": {
       "deleteUser": "Excluir Usuário",
       "suspendUser": "Suspender Usuário",
+      "unsuspendUser": "Revogar Suspensão",
       "moderateUser": "Opções de Moderação",
       "perms": {
         "label": "Permissões",
         "saveButton": "Salvar"
+      },
+      "actions": {
+        "suspend": {
+          "label": "Suspender Usuário",
+          "ask": "Tem certeza que deseja suspender **{{user}}**?  O mesmo não poderá acessar a plataforma até que a suspensão seja revogada.\n\nEle também terá todas as suas sessões invalidadas.",
+          "cancel": "Cancelar",
+          "confirm": "Confirmar",
+          "success": "Usuário suspenso com sucesso.",
+          "error": "Erro ao suspender usuário."
+        }
       }
     }
   }
