@@ -16,17 +16,17 @@ import { BsDiagram3 } from "react-icons/bs"
 import { CodeEditor } from "@/components/board/editors/CodeEditor"
 import { ModalTextInput } from "../../shared/inputs/ModalTextInput"
 import { ModalSelectInput } from "../../shared/inputs/ModalSelectInput"
-import { LoaderWrapper } from "@/components/loader/LoaderWrapper"
+import { Button } from "@/components/ui/buttons/Button"
 import { LivePreview } from "./LivePreview"
 import { ModalArrayInput } from "../../shared/inputs/ModalArrayInput"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { noteService } from "@/services/noteService"
 import { useTranslation } from "react-i18next"
 import { useDebounce } from "@/hooks/useDebounce"
+import { useNoteStore } from "@/stores/useNotesStore"
 import { toasts } from "@/utils/toastUtils"
 
 import styles from "./CreateEditorModal.module.css"
-import { useNoteStore } from "@/stores/useNotesStore"
 
 export type EditorMode = "MARKDOWN" | "FLOWCHART"
 
@@ -166,15 +166,15 @@ export function CreateEditorModal({
                 />
               </ModalActionRow>
 
-              <LoaderWrapper isLoading={isLoading} loaderProps={{ scale: 0.8 }}>
-                <button
-                  disabled={isLoading}
-                  className={styles.submitButton}
-                  type="submit"
-                >
-                  {t("createNoteModal.submit")}
-                </button>
-              </LoaderWrapper>
+              <Button
+                isLoading={isLoading}
+                loaderProps={{ scale: 0.8 }}
+                disabled={isLoading}
+                className={styles.submitButton}
+                type="submit"
+              >
+                {t("createNoteModal.submit")}
+              </Button>
             </form>
           </FormProvider>
         </div>
