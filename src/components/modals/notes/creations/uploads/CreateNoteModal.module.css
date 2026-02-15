@@ -79,10 +79,6 @@
   background-color: rgb(169, 119, 216);
 }
 
-.submitButton:disabled {
-  background-color: rgb(64, 58, 80);
-}
-
 .buttonLoader {
   scale: 70%;
 }
