@@ -1,6 +1,9 @@
 {
   "commons": {
-    "save": "Salvar"
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "typeToConfirm": "Digite \"{{val}}\" para confirmar."
   },
   "notes": {
     "visibility": {
@@ -229,11 +232,23 @@
       "actions": {
         "suspend": {
           "label": "Suspender Usuário",
+          "button": "Suspender",
           "ask": "Tem certeza que deseja suspender **{{user}}**?  O mesmo não poderá acessar a plataforma até que a suspensão seja revogada.\n\nEle também terá todas as suas sessões invalidadas.",
           "cancel": "Cancelar",
           "confirm": "Confirmar",
           "success": "Usuário suspenso com sucesso.",
           "error": "Erro ao suspender usuário."
+        },
+        "unsuspend": {
+          "label": "Remover Suspensão",
+          "button": "Remover Suspensão",
+          "ask": "Tem certeza que deseja remover a suspensão de **{{user}}**?\n\nEle voltará a ter todas as permissões de antes.",
+          "success": "Suspensão retirada com sucesso",
+          "error": "Erro ao retirar suspensão."
+        },
+        "delete": {
+          "label": "Excluir Usuário",
+          "ask": "Tem certeza que deseja excluir **{{user}}**? Esta ação não poderá ser desfeita e o usuário terá suas sessões invalidadas imediatamente."
         }
       }
     }
