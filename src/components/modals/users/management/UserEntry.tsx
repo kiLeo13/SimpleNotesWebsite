@@ -6,6 +6,7 @@ import { RiErrorWarningLine } from "react-icons/ri"
 import { UserActions } from "./UserActions"
 import { FaCheck } from "react-icons/fa6"
 import { AppTooltip } from "@/components/ui/AppTooltip"
+import { FaUserSlash } from "react-icons/fa"
 import { formatTimestamp } from "@/utils/utils"
 import { useSessionStore } from "@/stores/useSessionStore"
 import { useTranslation } from "react-i18next"
@@ -31,6 +32,11 @@ export function UserEntry({ user }: UserEntryProps): JSX.Element {
         <div className={styles.userData}>
           <div className={styles.userName}>
             <span>{user.username}</span>
+
+            {/* Suspended? */}
+            {user.suspended && <FaUserSlash color="#eb5e5e" />}
+            
+            {/* User Verification Status */}
             <AppTooltip
               label={
                 user.isVerified ? t("labels.verified") : t("labels.unverified")
