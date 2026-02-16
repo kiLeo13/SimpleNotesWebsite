@@ -3,4 +3,41 @@
   border-radius: 9999px;
   border: none;
   overflow: hidden;
+  font-size: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 1;
+  transition: 
+    opacity 300ms,
+    background-color 300ms;
+}
+
+.cooldownBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 2;
+  pointer-events: none;
+  width: 100%;
+  animation: cooldownShrink ease-in-out forwards;
+  animation-duration: var(--cooldown-duration);
+}
+
+.coolingDown {
+  cursor: default !important;
+  opacity: 0.5;
+  user-select: none;
+}
+
+@keyframes cooldownShrink {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
 }
