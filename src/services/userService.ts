@@ -82,6 +82,10 @@ export const userService = {
     return safeApiCall(() => apiClient.patch(`/users/${id}`, payload), UserResponseSchema)
   },
 
+  deleteUser: async (id: number): Promise<ApiResponse<void>> => {
+    return safeApiCall(() => apiClient.delete(`/users/${id}`), VoidSchema)
+  },
+
   getSelfUser: async (): Promise<ApiResponse<UserResponseData>> => {
     return safeApiCall(() => apiClient.get("/users/@me"), UserResponseSchema)
   }
