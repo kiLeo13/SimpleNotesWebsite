@@ -71,7 +71,7 @@ export function Button({
       <button
         {...props}
         onClick={handleClick}
-        disabled={disabled}
+        disabled={disabled || isLoading}
         tabIndex={isCoolingDown ? -1 : props.tabIndex}
         style={
           {
