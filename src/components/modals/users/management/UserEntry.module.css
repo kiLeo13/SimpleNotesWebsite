@@ -35,13 +35,42 @@
   flex-direction: column;
 }
 
-.userName {
+.userTop {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 5px;
   font-size: 1em;
   font-weight: 500;
   color: rgb(152, 143, 163);
+}
+
+.loader {
+  position: static;
+}
+
+.username {
+  outline: none;
+}
+
+.editable {
+  margin-left: -2px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 2px 4px;
+  transition:
+    border 200ms,
+    outline 200ms;
+}
+
+.editable:hover,
+.editable:focus {
+  border: 1px solid rgb(95, 72, 126);
+}
+
+.editable:focus {
+  border-color: rgb(101, 66, 146);
+  outline: 1px solid rgb(101, 66, 146);
 }
 
 .you {

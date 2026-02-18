@@ -1,15 +1,23 @@
-import type { JSX } from "react"
+import { useEffect, useState, type JSX } from "react"
 import type { UserResponseData } from "@/types/api/users"
+
+import clsx from "clsx"
 
 import { IoPerson } from "react-icons/io5"
 import { RiErrorWarningLine } from "react-icons/ri"
 import { UserActions } from "./UserActions"
 import { FaCheck } from "react-icons/fa6"
+import { EditableText } from "@/components/ui/inputs/EditableText"
+import { LoaderContainer } from "@/components/LoaderContainer"
 import { AppTooltip } from "@/components/ui/AppTooltip"
+import { Permission } from "@/models/Permission"
 import { FaUserSlash } from "react-icons/fa"
 import { formatTimestamp } from "@/utils/utils"
 import { useSessionStore } from "@/stores/useSessionStore"
 import { useTranslation } from "react-i18next"
+import { usePermission } from "@/hooks/usePermission"
+import { userService } from "@/services/userService"
+import { toasts } from "@/utils/toastUtils"
 
 import styles from "./UserEntry.module.css"
 
@@ -19,8 +27,42 @@ type UserEntryProps = {
 
 export function UserEntry({ user }: UserEntryProps): JSX.Element {
   const { t } = useTranslation()
+
+  const [draftName, setDraftName] = useState(user.username)
+  const [isLoading, setIsLoading] = useState(false)
+
   const self = useSessionStore((state) => state.user)
   const isSelf = user.id === self?.id
+  const isAdmin = Permission.hasEffective(user.permissions, Permission.Administrator)
+  const canEdit = usePermission(Permission.ManageUsers) && (!isAdmin || isSelf)
+
+  // Fix: on error, name remains changed and mermaid mess
+
+  useEffect(() => {
+    setDraftName(user.username)
+  }, [user.username])
+
+  const handleSave = async (val: string) => {
+    const trimmed = val.trim()
+    if (trimmed === user.username) {
+      setDraftName(user.username)
+      return
+    }
+
+    setIsLoading(true)
+    const resp = await userService.updateUser(user.id, { username: trimmed })
+    setIsLoading(false)
+
+    if (!resp.success) {
+      // Rollback the UI if API rejects the request
+      setDraftName(user.username)
+      toasts.apiError(t("menus.users.actions.update.error"), resp)
+    } else {
+      // Just to be sure both sides don't disagree with the info
+      user.username = resp.data.username
+      setDraftName(resp.data.username)
+    }
+  }
 
   return (
     <div className={styles.userRow}>
@@ -30,11 +72,23 @@ export function UserEntry({ user }: UserEntryProps): JSX.Element {
         </div>
 
         <div className={styles.userData}>
-          <div className={styles.userName}>
-            <span>{user.username}</span>
+          <div className={styles.userTop}>
+            {isLoading && <LoaderContainer className={styles.loader} scale={0.6} />}
+            <EditableText
+              value={draftName}
+              onChange={setDraftName}
+              onSave={handleSave}
+              editable={canEdit}
+              className={clsx(styles.username, canEdit && styles.editable)}
+              onCancel={() => setDraftName(user.username)}
+            />
 
             {/* Suspended? */}
-            {user.suspended && <FaUserSlash color="#eb5e5e" />}
+            {user.suspended && (
+              <AppTooltip label={t("labels.suspended")}>
+                <FaUserSlash color="#eb5e5e" cursor="pointer" />
+              </AppTooltip>
+            )}
             
             {/* User Verification Status */}
             <AppTooltip
