@@ -2,9 +2,9 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/kiLeo13/SimpleNotesWebsite/blob/master/LICENSE)
 
-# ✨ Zenboard
+# ✨ ZenKeep
 
-Zenboard is a lightweight, high-performance web application designed to streamline note-taking and file management, inspired by the clean and responsive UI of ChatGPT.
+ZenKeep is a lightweight, high-performance web application designed to streamline note-taking and file management, inspired by the clean and responsive UI of ChatGPT.
 
 -----
 
@@ -14,7 +14,7 @@ Traditional cloud storage services, while powerful, can become slow and cumberso
 
 ## 💡 The Solution
 
-Zenboard provides a simple, single-page application (SPA) where your notes are immediately accessible from a left-side navigation bar. This design eliminates the need to click through multiple folders, allowing you to create, view, and manage your content with exceptional speed. While initially built for internal company use to boost productivity, it's designed to be useful for anyone.
+ZenKeep provides a simple, single-page application (SPA) where your notes are immediately accessible from a left-side navigation bar. This design eliminates the need to click through multiple folders, allowing you to create, view, and manage your content with exceptional speed. While initially built for internal company use to boost productivity, it's designed to be useful for anyone.
 
 -----
 
@@ -46,7 +46,7 @@ The project is built on a modern, cloud-native architecture designed for scalabi
 1.  Clone the repository from GitHub.
 2.  Build the Docker image:
     ```bash
-    docker build -t zenboard .
+    docker build -t zenkeep .
     ```
 
 > [!Note]
