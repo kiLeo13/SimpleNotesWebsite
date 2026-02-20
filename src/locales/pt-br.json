@@ -43,7 +43,8 @@
     "manageUsers": "Gerenciar Usuários",
     "deleteUsers": "Apagar Usuários",
     "managePerms": "Gerenciar Permissões",
-    "punishUsers": "Moderar Usuários"
+    "punishUsers": "Moderar Usuários",
+    "lookup": "Realizar Consultas"
   },
   "modals": {
     "verify": {
@@ -204,6 +205,7 @@
       "algoCalc": "Pedra Chave",
       "usersMng": "Gerenciar Usuários",
       "createNote": "Criar Nota",
+      "lookup": "Consultar",
       "settings": "Configurações"
     }
   },
