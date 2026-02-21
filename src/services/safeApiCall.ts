@@ -1,19 +1,19 @@
-import type { ApiResponse } from '../types/api/api'
+import type { ApiResponse } from "../types/api/api"
+import type { AxiosResponse } from "axios"
 
-import { z } from 'zod'
-import { ZodError } from 'zod'
-import { handleApiError } from '../utils/errorHandlerUtils'
+import { z } from "zod"
+import { ZodError } from "zod"
+import { handleApiError } from "../utils/errorHandlerUtils"
 
 /**
  * A wrapper for API calls that handles success, errors, and Zod validation.
- * 
+ *
  * @param apiCall - The async function that makes the API request (e.g., () => apiClient.post(...)).
  * @param schema - The Zod schema to validate and parse the response data.
  * @returns A promise that resolves to an `ApiResponse<T>`.
  */
 export async function safeApiCall<T>(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  apiCall: () => Promise<any>,
+  apiCall: () => Promise<AxiosResponse<T>>,
   schema?: z.ZodType<T>
 ): Promise<ApiResponse<T>> {
   try {
@@ -21,15 +21,17 @@ export async function safeApiCall<T>(
     const parsedData = schema ? schema.parse(response.data) : response.data
     return {
       success: true,
-      data: parsedData,
+      statusCode: response.status,
+      data: parsedData
     }
   } catch (error) {
     // Handle Zod validation errors separately, as they are a client-side issue
     if (error instanceof ZodError) {
-      console.error('Zod validation failed:', z.treeifyError(error))
+      console.error("Zod validation failed:", z.treeifyError(error))
       return {
         success: false,
-        errors: { root: ['Failed to understand the server response.'] },
+        statusCode: -1,
+        errors: { root: ["Failed to understand the server response."] }
       }
     }
     return handleApiError(error)

@@ -9,12 +9,16 @@ export const VoidSchema = z.undefined()
 // =====================
 // General API Response Wrappers
 // =====================
-export interface ApiSuccessResponse<T> {
+interface ApiBaseResponse {
+  statusCode: number
+}
+
+export interface ApiSuccessResponse<T> extends ApiBaseResponse {
   success: true
   data: T
 }
 
-export interface ApiErrorResponse {
+export interface ApiErrorResponse extends ApiBaseResponse {
   success: false
   errors: Record<string, string[]>
 }

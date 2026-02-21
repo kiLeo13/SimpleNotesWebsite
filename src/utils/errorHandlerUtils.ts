@@ -75,12 +75,14 @@ import { isAxiosError } from 'axios'
 export function handleApiError(error: unknown): ApiErrorResponse {
   if (isAxiosError(error) && error.response) {
     const errorData = error.response.data
+    const status = error.status || -1
 
     // Case 1: The API returned structured validation errors
     // Example: { "errors": { "email": ["This field is required."] } }
     if (errorData?.errors) {
       return {
         success: false,
+        statusCode: status,
         errors: errorData.errors
       }
     }
@@ -91,6 +93,7 @@ export function handleApiError(error: unknown): ApiErrorResponse {
     if (errorData?.message) {
       return {
         success: false,
+        statusCode: status,
         errors: { root: [errorData.message] }
       }
     }
@@ -99,6 +102,7 @@ export function handleApiError(error: unknown): ApiErrorResponse {
   console.error('An unexpected error occurred:', error)
   return {
     success: false,
+    statusCode: -1,
     errors: { root: ['An unknown error occurred. Please try again.'] },
   }
 }
