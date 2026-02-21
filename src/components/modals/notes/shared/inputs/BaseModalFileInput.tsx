@@ -24,21 +24,32 @@ export function BaseModalFileInput({
   const { t } = useTranslation()
 
   return (
-    <>
-      <label className={clsx(styles.fileInputWrapper, errorMessage && styles.invalid, className)}>
-        <span className={styles.label}>{label || t("createNoteModal.selectFile")}</span>
+    <div className={clsx(styles.wrapper, className)}>
+      <label
+        className={clsx(
+          styles.fileInputWrapper,
+          errorMessage && styles.invalid
+        )}
+      >
+        <span className={styles.label}>
+          {label || t("createNoteModal.selectFile")}
+        </span>
         <span className={styles.chosenFile}>
           {displayFileName && (
             <>
               <span className={styles.fileName}>{displayFileName}</span>
-              {displayFileSize && <span className={styles.fileSize}>{displayFileSize}</span>}
+              {displayFileSize && (
+                <span className={styles.fileSize}>{displayFileSize}</span>
+              )}
             </>
           )}
         </span>
         <input type="file" className="hidden-styled-file-input" {...props} />
       </label>
 
-      {errorMessage && <span className={styles.errorMessage}>{errorMessage}</span>}
-    </>
+      {errorMessage && (
+        <span className={styles.errorMessage}>{errorMessage}</span>
+      )}
+    </div>
   )
 }

@@ -5,6 +5,8 @@ import {
   type CustomSelectProps
 } from "@/components/vanilla/inputs/CustomSelect"
 
+import clsx from "clsx"
+
 import styles from "./ModalInputs.module.css"
 
 export type SelectOption = {
@@ -26,9 +28,8 @@ export function BaseModalSelect({
   ...props
 }: BaseModalSelectProps): JSX.Element {
   return (
-    <>
+    <div className={clsx(styles.wrapper, className)}>
       <CustomSelect
-        className={className}
         options={options}
         hasSearch={hasSearch}
         invalid={!!errorMessage}
@@ -38,6 +39,6 @@ export function BaseModalSelect({
       {errorMessage && (
         <span className={styles.errorMessage}>{errorMessage}</span>
       )}
-    </>
+    </div>
   )
 }

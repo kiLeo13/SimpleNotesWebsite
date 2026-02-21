@@ -68,13 +68,12 @@ export function BaseArrayInput({
   }
 
   return (
-    <>
+    <div className={clsx(styles.wrapper, className)}>
       <div
         className={clsx(
           styles.input,
           styles.arrayContainer,
-          errorMessage && styles.invalid,
-          className
+          errorMessage && styles.invalid
         )}
         onClick={handleContainerClick}
         style={style}
@@ -106,6 +105,6 @@ export function BaseArrayInput({
       {errorMessage && (
         <span className={styles.errorMessage}>{errorMessage}</span>
       )}
-    </>
+    </div>
   )
 }
