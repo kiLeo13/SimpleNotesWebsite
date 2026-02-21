@@ -14,7 +14,7 @@ interface RippleProps {
   duration?: number
 }
 
-export function Ripple({ color = "#d8baff33", duration = 600 }: RippleProps) {
+export function Ripple({ color = "#d8baff33", duration = 300 }: RippleProps) {
   const [ripples, setRipples] = useState<RippleState[]>([])
   const triggerRef = useRef<HTMLDivElement>(null)
   const timeouts = useRef<number[]>([])
