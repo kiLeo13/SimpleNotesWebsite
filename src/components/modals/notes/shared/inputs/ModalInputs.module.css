@@ -99,9 +99,12 @@
 }
 
 .invalid {
-  border-color: rgb(238, 54, 54);
+  /*
+   * Using outline here, since borders cause wonky behavior by shifting the
+   * view of a component a bit, as it grows in size.
+   */
+  outline: 2px solid rgb(238, 54, 54);
   background-color: rgba(238, 54, 54, 0.05);
-  border-width: 2px;
 }
 
 .errorMessage {
