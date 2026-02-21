@@ -1,4 +1,4 @@
-import type { JSX, ReactNode } from "react"
+import type { ComponentProps, JSX, ReactNode } from "react"
 
 import RequiredHint from "@/components/hints/RequiredHint"
 import OptionalHint from "@/components/hints/OptionalHint"
@@ -8,7 +8,7 @@ import { IoMdInformationCircleOutline } from "react-icons/io"
 
 import styles from "./ModalLabel.module.css"
 
-type ModalLabelProps = {
+type ModalLabelProps = ComponentProps<"label"> & {
   title: string
   icon?: ReactNode
   required?: boolean
@@ -19,10 +19,11 @@ export function ModalLabel({
   title,
   icon,
   required,
-  hint
+  hint,
+  ...props
 }: ModalLabelProps): JSX.Element {
   return (
-    <label className={styles.inputLabel}>
+    <label className={styles.inputLabel} {...props}>
       {icon && icon}
 
       {title}
