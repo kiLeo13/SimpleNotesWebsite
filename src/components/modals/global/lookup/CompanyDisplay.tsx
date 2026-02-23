@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ChangeEvent, type JSX } from "react"
 import type {
+  CompanyAddress,
   CompanyPartner,
   CompanyResponse,
   RegistrationStatus
@@ -70,6 +71,7 @@ export function CompanyDisplay({ company }: CompanyDisplayProps): JSX.Element {
                 onChange={handleSearchChange}
                 type="text"
                 placeholder={t("placeholders.search")}
+                autoComplete="off"
                 id="partner-search"
               />
             </div>
@@ -78,7 +80,11 @@ export function CompanyDisplay({ company }: CompanyDisplayProps): JSX.Element {
           <ul className={styles.partnerList}>
             {searchedPartners.map((p) => (
               <li className={styles.partnerItem}>
-                <CompanyPartnerItem key={p.name} partner={p} autoExpand={initialRender.current} />
+                <CompanyPartnerItem
+                  key={p.name}
+                  partner={p}
+                  autoExpand={initialRender.current}
+                />
               </li>
             ))}
           </ul>
@@ -181,6 +187,17 @@ export function CompanyDisplay({ company }: CompanyDisplayProps): JSX.Element {
                 {formatMoney(company.shareCapital)}
               </span>
             </li>
+
+            <div className={styles.division} />
+
+            <li className={styles.listItem}>
+              <span className={styles.listItemLabel}>
+                {t("labels.companyAddress")}
+              </span>
+              <span className={styles.listItemValue}>
+                {formatAddress(company.address)}
+              </span>
+            </li>
           </ul>
         </div>
       </div>
@@ -195,4 +212,41 @@ function toFilteredPartners(
   if (!search.trim()) return partners
 
   return matchSorter(partners, search, { keys: ["name"] })
+}
+
+function formatAddress(address: CompanyAddress): string {
+  // 1. Sanitize inputs to guarantee we only work with clean strings
+  const streetType = address.type.trim()
+  const streetName = address.streetName.trim()
+  const number = address.number.trim()
+  const neighborhood = address.neighborhood.trim()
+  const city = address.city.trim()
+  const state = address.region.trim()
+  const rawZipCode = address.zipCode.trim()
+  const zipCode = isZipCodeValid(rawZipCode)
+    ? formatZipCode(rawZipCode)
+    : rawZipCode
+
+  let fullStreetName = streetName
+  const isTypeAlreadyIncluded = streetName
+    .toLowerCase()
+    .startsWith(streetType.toLowerCase())
+
+  if (streetType && !isTypeAlreadyIncluded) {
+    fullStreetName = `${streetType} ${streetName}`.trim()
+  }
+
+  const streetWithNumber = [fullStreetName, number].filter(Boolean).join(", ")
+  const cityAndState = [city, state].filter(Boolean).join(" - ")
+  const addressParts = [streetWithNumber, neighborhood, cityAndState, zipCode]
+
+  return addressParts.filter(Boolean).join(", ")
+}
+
+function isZipCodeValid(zipCode: string): boolean {
+  return zipCode.length === 8 && /^\d{8}$/.test(zipCode)
+}
+
+function formatZipCode(zipCode: string): string {
+  return `${zipCode.slice(0, 5)}-${zipCode.slice(5)}`
 }

@@ -39,7 +39,7 @@
 .searchIcon {
   color: rgb(168, 155, 189);
   padding: 5px;
-  width:  1.1em;
+  width: 1.1em;
   height: 1.1em;
   border-radius: 9999px;
   transition: background-color 300ms;
@@ -180,4 +180,11 @@
 
 .generic.warning .listItemValue {
   color: rgb(131, 130, 111);
+}
+
+.division {
+  margin-top: 6px;
+  margin-bottom: 6px;
+  width: 100%;
+  border-top: 1px solid rgb(88, 81, 117);
 }
