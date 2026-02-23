@@ -248,5 +248,7 @@ function isZipCodeValid(zipCode: string): boolean {
 }
 
 function formatZipCode(zipCode: string): string {
-  return `${zipCode.slice(0, 5)}-${zipCode.slice(5)}`
+  const cleanZip = zipCode.replace(/\D/g, "")
+
+  return `${cleanZip.slice(0, 2)}.${cleanZip.slice(2, 5)}-${cleanZip.slice(5)}`
 }
