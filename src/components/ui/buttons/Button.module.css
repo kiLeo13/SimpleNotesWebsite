@@ -9,9 +9,17 @@
   justify-content: center;
   cursor: pointer;
   opacity: 1;
-  transition: 
+  transition:
     opacity 300ms,
     background-color 300ms;
+}
+
+/*
+ * Necessary to fix buttons being smaller than they should.
+ * This bug was identified at the sidebar footer.
+ */
+.loaderWrapper {
+  height: 100%;
 }
 
 .cooldownBar {

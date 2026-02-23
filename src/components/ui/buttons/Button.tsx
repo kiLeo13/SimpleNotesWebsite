@@ -67,7 +67,11 @@ export function Button({
   }
 
   return (
-    <LoaderWrapper isLoading={isLoading || false} loaderProps={loaderProps}>
+    <LoaderWrapper
+      className={styles.loaderWrapper}
+      isLoading={isLoading || false}
+      loaderProps={loaderProps}
+    >
       <button
         {...props}
         onClick={handleClick}
@@ -86,7 +90,7 @@ export function Button({
         )}
       >
         {isCoolingDown && <span className={styles.cooldownBar} />}
-        
+
         {!isCoolingDown && <Ripple {...rippleProps} />}
 
         {children}
