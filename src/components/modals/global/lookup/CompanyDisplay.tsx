@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent, type JSX } from "react"
+import { useEffect, useRef, useState, type ChangeEvent, type JSX } from "react"
 import type {
   CompanyPartner,
   CompanyResponse,
@@ -37,12 +37,18 @@ export function CompanyDisplay({ company }: CompanyDisplayProps): JSX.Element {
   const { t } = useTranslation()
   const [search, setSearch] = useState("")
 
+  const initialRender = useRef(true)
+
   const cacheLabel = company.cached
     ? t("labels.cacheHit")
     : t("labels.cacheMiss")
   const regStatus = company.registration.status
   const isActive = regStatus === "ACTIVE"
   const searchedPartners = toFilteredPartners(search, company.partners)
+
+  useEffect(() => {
+    initialRender.current = false
+  }, [])
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value)
@@ -72,7 +78,7 @@ export function CompanyDisplay({ company }: CompanyDisplayProps): JSX.Element {
           <ul className={styles.partnerList}>
             {searchedPartners.map((p) => (
               <li className={styles.partnerItem}>
-                <CompanyPartnerItem key={p.name} partner={p} />
+                <CompanyPartnerItem key={p.name} partner={p} autoExpand={initialRender.current} />
               </li>
             ))}
           </ul>

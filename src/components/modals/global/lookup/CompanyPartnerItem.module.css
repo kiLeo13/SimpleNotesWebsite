@@ -1,19 +1,70 @@
 .container {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  align-items: start;
   background-color: rgba(255, 198, 42, 0.2);
   border: 1px solid rgb(216, 198, 110);
   box-sizing: border-box;
   width: 100%;
   border-radius: 8px;
   padding: 12px;
+  gap: 8px;
   transition: background-color 300ms;
   animation: insideoutPartner 100ms ease-in-out forwards;
 }
 
 .container:hover {
   background-color: rgba(221, 173, 40, 0.2);
+}
+
+.chevronButton {
+  display: flex;
+  background-color: transparent;
+  color: rgb(240, 229, 173);
+  padding: 5px;
+  margin-left: -4px;
+  margin-top: -4px;
+  /* Just to cancel our padding and prevent the container from growing downwards */
+  margin-bottom: -5px;
+  aspect-ratio: 1;
+}
+
+.chevronButton:hover {
+  background-color: rgba(255, 198, 42, 0.2);
+}
+
+.chevronIcon {
+  transition: transform 300ms ease-in-out;
+}
+
+.container:not([data-collapsed]) .chevronIcon {
+  transform: rotate(180deg);
+}
+
+.contents {
+  display: flex;
+  flex-direction: column;
+}
+
+.extras {
+  display: grid;
+  grid-template-rows: 1fr;
+  margin-top: 8px;
+  transition:
+    grid-template-rows 300ms ease-in-out,
+    margin-top 300ms ease-in-out;
+}
+
+.collapsed {
+  grid-template-rows: 0fr;
+  margin-top: 0;
+}
+
+.extrasInner {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: hidden;
+  min-height: 0;
 }
 
 .row {
