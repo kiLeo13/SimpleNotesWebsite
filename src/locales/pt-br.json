@@ -1,5 +1,17 @@
 {
   "commons": {
+    "unknown": "Desconhecido",
+    "errors": {
+      "chars": "Você só pode digitar exatamente {{val}} caracteres"
+    },
+    "companies": {
+      "activity": {
+        "active": "ATIVA",
+        "closed": "BAIXADA",
+        "suspended": "SUSPENSA",
+        "unfit": "INAPTA"
+      }
+    },
     "save": "Salvar",
     "cancel": "Cancelar",
     "delete": "Excluir",
@@ -19,10 +31,28 @@
     "title": "ZenKeep"
   },
   "labels": {
+    "partner": {
+      "name": "Nome:",
+      "role": "Qualificação:",
+      "age": "Idade:"
+    },
+    "companyInfos": "Informações Gerais",
+    "partners": "Sócios e Administradores ({{val}})",
+    "tradeName": "Nome Fantasia:",
+    "legalNature": "Natureza Jurídica:",
+    "companyStartDate": "Data de Abertura:",
+    "regStatus": "Situação Cadastral:",
+    "regStatusReason": "Motivo Sit. Cadastral:",
+    "regStatusDate": "Data Sit. Cadastral:",
+    "companySize": "Porte:",
+    "shareCapital": "Capital Social:",
     "you": "Você",
     "suspended": "Suspenso",
     "unverified": "Não Verificado",
-    "verified": "Verificado"
+    "verified": "Verificado",
+    "lookup": "Consultar",
+    "cacheHit": "Cache Hit",
+    "cacheMiss": "Cache Miss"
   },
   "sidebar": {
     "notes": {
@@ -47,6 +77,10 @@
     "lookup": "Realizar Consultas"
   },
   "modals": {
+    "lookup": {
+      "title": "Consultar Pessoa Jurídica",
+      "headerLabel": "Informe o CNPJ"
+    },
     "verify": {
       "title": "Verificação de E-mail",
       "subtitle": "Insira o código de verificação que foi enviado para o seu e-mail.",
@@ -168,6 +202,9 @@
     "sessionExpired": "Sua sessão expirou! Faça login novamente."
   },
   "errors": {
+    "cnpjLookup": "Erro ao consultar CNPJ",
+    "invalidCnpj": "CNPJ inválido",
+    "cnpjNotFound": "CNPJ não encontrado",
     "accountSuspended": "Sua conta foi suspensa. Motivo: {{reason}}",
     "noteAuthor": "Erro ao buscar autor da anotação",
     "tags": {
@@ -201,6 +238,9 @@
     }
   },
   "tooltips": {
+    "warnings": {
+      "inactiveCnpj": "A situação cadastral deste CNPJ não está ativa"
+    },
     "labels": {
       "algoCalc": "Pedra Chave",
       "usersMng": "Gerenciar Usuários",
