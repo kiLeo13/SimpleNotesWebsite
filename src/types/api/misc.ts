@@ -17,7 +17,7 @@ const registrationSchema = z.object({
   date: z.iso.date()
 })
 
-const addressSchema = z
+const companyAddressSchema = z
   .object({
     type: z.string(),
     street_name: z.string(),
@@ -61,7 +61,7 @@ export const companySchema = z
     business_start_date: z.iso.date(),
     share_capital: z.number(),
     registration: registrationSchema,
-    address: addressSchema,
+    address: companyAddressSchema,
     partners: z.array(companyPartnerSchema),
     cached: z.boolean()
   })
@@ -81,5 +81,6 @@ export const companySchema = z
 
 // Exports
 export type RegistrationStatus = z.infer<typeof regStatusSchema>
+export type CompanyAddress = z.infer<typeof companyAddressSchema>
 export type CompanyPartner = z.infer<typeof companyPartnerSchema>
 export type CompanyResponse = z.infer<typeof companySchema>
