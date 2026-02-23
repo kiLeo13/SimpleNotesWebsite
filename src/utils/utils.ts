@@ -48,6 +48,17 @@ export function formatLocalTimestamp(date: string): string {
   return `${day} de ${month}. de ${year}, às ${time}`
 }
 
+export function formatMoney(num: number): string {
+  return `R$ ${formatNumber(num)}`
+}
+
+export function formatNumber(num: number): string {
+  return new Intl.NumberFormat("pt-BR", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2
+  }).format(num)
+}
+
 export function formatTimestamp(timestamp: string): string {
   return dayjs(timestamp).format("DD/MM/YYYY [às] HH:mm")
 }
