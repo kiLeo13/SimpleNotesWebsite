@@ -14,7 +14,20 @@ dayjs.extend(isYesterday)
 const KB = 1024
 const MB = KB * 1024
 const GB = MB * 1024
-const MONTHS = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
+const MONTHS = [
+  "Jan",
+  "Fev",
+  "Mar",
+  "Abr",
+  "Mai",
+  "Jun",
+  "Jul",
+  "Ago",
+  "Set",
+  "Out",
+  "Nov",
+  "Dez"
+]
 
 export function formatLocalTimestamp(date: string): string {
   const d = dayjs.utc(date).local()
@@ -87,17 +100,10 @@ export function ext(fileName: string): string | undefined {
 
 export function getPrettySize(size: number): string {
   if (size < KB) return `${size} Bytes`
-  if (size < MB) return `${formatNumber(size / KB)} KB`
-  if (size < GB) return `${formatNumber(size / MB)} MB`
+  if (size < MB) return `${formatSizeValue(size / KB)} KB`
+  if (size < GB) return `${formatSizeValue(size / MB)} MB`
 
-  return `${formatNumber(size / GB)} GB`
-}
-
-export function formatNumber(num: number): string {
-  return num
-    .toFixed(2)
-    .replace(/\.00$/, "")
-    .replace(/(\.\d)0$/, "$1")
+  return `${formatSizeValue(size / GB)} GB`
 }
 
 export function isOnlyDigit(s: string): boolean {
@@ -130,4 +136,11 @@ function checkAndGetBounds(a: number, b: number): [number, number] {
     return [b, a]
   }
   return [a, b]
+}
+
+function formatSizeValue(num: number): string {
+  return num
+    .toFixed(2)
+    .replace(/\.00$/, "")
+    .replace(/(\.\d)0$/, "$1")
 }
