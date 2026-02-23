@@ -1,9 +1,13 @@
-import type { JSX } from "react"
-import type { CompanyResponse, RegistrationStatus } from "@/types/api/misc"
+import { useState, type ChangeEvent, type JSX } from "react"
+import type {
+  CompanyPartner,
+  CompanyResponse,
+  RegistrationStatus
+} from "@/types/api/misc"
 
 import clsx from "clsx"
 
-import { IoWarning } from "react-icons/io5"
+import { IoSearchSharp, IoWarning } from "react-icons/io5"
 import { IoMdSync } from "react-icons/io"
 import { BsDatabaseCheck } from "react-icons/bs"
 import { CompanyPartnerItem } from "./CompanyPartnerItem"
@@ -12,6 +16,7 @@ import { useTranslation } from "react-i18next"
 import { formatDate, formatMoney } from "@/utils/utils"
 
 import styles from "./CompanyDisplay.module.css"
+import { matchSorter } from "match-sorter"
 
 // Just a replacement for companies with no trade name.
 // "notn" stands for "No Trade Name" :D
@@ -30,13 +35,18 @@ type CompanyDisplayProps = {
 
 export function CompanyDisplay({ company }: CompanyDisplayProps): JSX.Element {
   const { t } = useTranslation()
+  const [search, setSearch] = useState("")
 
   const cacheLabel = company.cached
     ? t("labels.cacheHit")
     : t("labels.cacheMiss")
   const regStatus = company.registration.status
   const isActive = regStatus === "ACTIVE"
-  const partners = company.partners
+  const searchedPartners = toFilteredPartners(search, company.partners)
+
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value)
+  }
 
   return (
     <div className={styles.container}>
@@ -44,12 +54,23 @@ export function CompanyDisplay({ company }: CompanyDisplayProps): JSX.Element {
         <div className={styles.partners}>
           <header className={styles.leftHeader}>
             <h2 className={styles.partnersTitle}>
-              {t("labels.partners", { val: partners.length })}
+              {t("labels.partners", { val: company.partners.length })}
             </h2>
+            <div className={styles.searchContainer}>
+              <IoSearchSharp className={styles.searchIcon} />
+              <input
+                className={styles.partnerSearchInput}
+                value={search}
+                onChange={handleSearchChange}
+                type="text"
+                placeholder={t("placeholders.search")}
+                id="partner-search"
+              />
+            </div>
           </header>
 
           <ul className={styles.partnerList}>
-            {partners.map((p) => (
+            {searchedPartners.map((p) => (
               <li className={styles.partnerItem}>
                 <CompanyPartnerItem key={p.name} partner={p} />
               </li>
@@ -159,4 +180,13 @@ export function CompanyDisplay({ company }: CompanyDisplayProps): JSX.Element {
       </div>
     </div>
   )
+}
+
+function toFilteredPartners(
+  search: string,
+  partners: CompanyPartner[]
+): CompanyPartner[] {
+  if (!search.trim()) return partners
+
+  return matchSorter(partners, search, { keys: ["name"] })
 }

@@ -237,6 +237,9 @@
       "invalidExtension": "Extensão inválida. Permitido: {{extensions}}"
     }
   },
+  "placeholders": {
+    "search": "Pesquisar..."
+  },
   "tooltips": {
     "warnings": {
       "inactiveCnpj": "A situação cadastral deste CNPJ não está ativa"

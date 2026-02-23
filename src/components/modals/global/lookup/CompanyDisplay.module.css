@@ -24,6 +24,50 @@
   flex-direction: column;
 }
 
+.leftHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-right: 12px;
+}
+
+.searchContainer {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.searchIcon {
+  color: rgb(168, 155, 189);
+  padding: 5px;
+  width:  1.1em;
+  height: 1.1em;
+  border-radius: 9999px;
+  transition: background-color 300ms;
+}
+
+.searchIcon:hover {
+  background-color: rgba(223, 183, 255, 0.1);
+}
+
+.partnerSearchInput {
+  background-color: transparent;
+  font-size: 0.9em;
+  color: rgb(167, 162, 180);
+  outline: none;
+  border: none;
+  padding: 2px;
+  border-bottom: 1px solid rgb(147, 130, 168);
+}
+
+.partnerSearchInput::placeholder {
+  color: rgb(109, 104, 121);
+  font-size: 0.9em;
+}
+
+.partnerSearchInput:focus {
+  border-bottom: 2px solid rgb(147, 130, 168);
+}
+
 .partnersTitle {
   margin: 0;
   color: rgb(168, 164, 179);
