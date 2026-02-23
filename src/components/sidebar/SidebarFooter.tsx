@@ -6,7 +6,11 @@ import {
 } from "../modals/notes/creations/editors/CreateEditorModal"
 
 import { CgController } from "react-icons/cg"
-import { MdInsertDriveFile, MdOutlineFileUpload, MdTextFields } from "react-icons/md"
+import {
+  MdInsertDriveFile,
+  MdOutlineFileUpload,
+  MdTextFields
+} from "react-icons/md"
 import { RiFlowChart } from "react-icons/ri"
 import { FaUsers } from "react-icons/fa"
 import { FaGear } from "react-icons/fa6"
@@ -14,8 +18,11 @@ import { DarkWrapper } from "../DarkWrapper"
 import { UserManagementModal } from "../modals/users/management/UserManagementModal"
 import { CreateNoteModalForm } from "../modals/notes/creations/uploads/CreateNoteModalForm"
 import { AlgorithmCalculator } from "../modals/global/algorithm/AlgorithmCalculator"
+import { CompanyLookupModal } from "../modals/global/lookup/CompanyLookupModal"
+import { BiNetworkChart } from "react-icons/bi"
 import { AppTooltip } from "../ui/AppTooltip"
 import { Ripple } from "../ui/effects/Ripple"
+import { Button } from "../ui/buttons/Button"
 import { Permission } from "@/models/Permission"
 import { useTranslation } from "react-i18next"
 import { usePermission } from "@/hooks/usePermission"
@@ -28,17 +35,20 @@ export function SidebarFooter(): JSX.Element {
   // Permissions
   const canCreate = usePermission(Permission.CreateNotes)
   const canManageUsers = usePermission(Permission.ManageUsers)
+  const canLookup = usePermission(Permission.PerformLookup)
 
   // States
   const [showUploadModal, setShowUploadModal] = useState(false)
   const [editorMode, setEditorMode] = useState<EditorMode | null>(null)
   const [showAlgoCalc, setShowAlgoCalc] = useState(false)
   const [showUsersMng, setShowUsersMng] = useState(false)
+  const [lookingUp, setLookingUp] = useState(false)
 
   // Handlers
   const handleShowAlgo = () => setShowAlgoCalc(true)
   const closeEditor = () => setEditorMode(null)
   const handleShowUsers = () => setShowUsersMng(true)
+  const handleShowLookup = () => setLookingUp(true)
 
   const createNoteOptions: MenuActionItem[] = [
     {
@@ -75,6 +85,10 @@ export function SidebarFooter(): JSX.Element {
         <AlgorithmCalculator setShowAlgoCalc={setShowAlgoCalc} />
       </DarkWrapper>
 
+      <DarkWrapper open={lookingUp}>
+        <CompanyLookupModal setLookingUp={setLookingUp} />
+      </DarkWrapper>
+
       {/* User Management */}
       <DarkWrapper open={showUsersMng}>
         <UserManagementModal setShowUsersMng={setShowUsersMng} />
@@ -98,12 +112,20 @@ export function SidebarFooter(): JSX.Element {
             </button>
           </AppTooltip>
 
+          {canLookup && (
+            <AppTooltip label={t("tooltips.labels.lookup")}>
+              <Button className={styles.button} onClick={handleShowLookup}>
+                <BiNetworkChart size={"0.7em"} />
+              </Button>
+            </AppTooltip>
+          )}
+
           {canCreate && (
             // Create Note Action Menu
             <ActionMenu
-            header={t("tooltips.labels.createNote")}
-            items={createNoteOptions}
-            side="right"
+              header={t("tooltips.labels.createNote")}
+              items={createNoteOptions}
+              side="right"
             >
               <AppTooltip label={t("tooltips.labels.createNote")}>
                 <button className={styles.button}>
