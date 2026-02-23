@@ -17,15 +17,15 @@ import { useTranslation } from "react-i18next"
 import { toasts } from "@/utils/toastUtils"
 import { throttle } from "lodash-es"
 
-import styles from "./DataLookupModal.module.css"
+import styles from "./CompanyLookupModal.module.css"
 
-type DataLookupModalProps = {
+type CompanyLookupModalProps = {
   setLookingUp: (flag: boolean) => void
 }
 
-export function DataLookupModal({
+export function CompanyLookupModal({
   setLookingUp
-}: DataLookupModalProps): JSX.Element {
+}: CompanyLookupModalProps): JSX.Element {
   const { t } = useTranslation()
   const ref = useRef<HTMLDivElement | null>(null)
 
