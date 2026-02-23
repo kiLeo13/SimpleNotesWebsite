@@ -63,6 +63,10 @@ export function formatTimestamp(timestamp: string): string {
   return dayjs(timestamp).format("DD/MM/YYYY [às] HH:mm")
 }
 
+export function formatDate(iso: string): string {
+  return dayjs(iso).format("DD/MM/YYYY")
+}
+
 export function inRange(value: number, min: number, max: number): boolean {
   const [_min, _max] = checkAndGetBounds(min, max)
   return value >= _min && value <= _max
