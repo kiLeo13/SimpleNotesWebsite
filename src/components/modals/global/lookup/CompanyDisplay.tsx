@@ -14,9 +14,9 @@ import { CompanyPartnerItem } from "./CompanyPartnerItem"
 import { AppTooltip } from "@/components/ui/AppTooltip"
 import { useTranslation } from "react-i18next"
 import { formatDate, formatMoney } from "@/utils/utils"
+import { matchSorter } from "match-sorter"
 
 import styles from "./CompanyDisplay.module.css"
-import { matchSorter } from "match-sorter"
 
 // Just a replacement for companies with no trade name.
 // "notn" stands for "No Trade Name" :D
