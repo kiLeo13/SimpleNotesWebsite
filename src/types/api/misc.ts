@@ -3,13 +3,39 @@ import z from "zod"
 // --------------------------------------------------
 // API Responses
 // --------------------------------------------------
-const regStatusSchema = z.enum([
+export const regStatusSchema = z.enum([
   "ACTIVE",
   "CLOSED",
   "SUSPENDED",
   "UNFIT",
   "UNKNOWN"
 ])
+
+const registrationSchema = z.object({
+  status: regStatusSchema,
+  reason: z.string(),
+  date: z.iso.date()
+})
+
+const addressSchema = z
+  .object({
+    type: z.string(),
+    street_name: z.string(),
+    number: z.string(),
+    neighborhood: z.string(),
+    zip_code: z.string(),
+    city: z.string(),
+    region: z.string()
+  })
+  .transform((a) => ({
+    type: a.type,
+    streetName: a.street_name,
+    number: a.number,
+    neighborhood: a.neighborhood,
+    zipCode: a.zip_code,
+    city: a.city,
+    region: a.region
+  }))
 
 const companyPartnerSchema = z
   .object({
@@ -31,8 +57,12 @@ export const companySchema = z
     legal_name: z.string(),
     trade_name: z.string().optional(),
     legal_nature: z.string(),
-    registration_status: regStatusSchema,
-    qsa: z.array(companyPartnerSchema),
+    company_size: z.string(),
+    business_start_date: z.iso.date(),
+    share_capital: z.number(),
+    registration: registrationSchema,
+    address: addressSchema,
+    partners: z.array(companyPartnerSchema),
     cached: z.boolean()
   })
   .transform((c) => ({
@@ -40,10 +70,16 @@ export const companySchema = z
     legalName: c.legal_name,
     tradeName: c.trade_name,
     legalNature: c.legal_nature,
-    regStatus: c.registration_status,
-    partners: c.qsa,
+    companySize: c.company_size,
+    startDate: c.business_start_date,
+    shareCapital: c.share_capital,
+    registration: c.registration,
+    address: c.address,
+    partners: c.partners,
     cached: c.cached
   }))
 
 // Exports
+export type RegistrationStatus = z.infer<typeof regStatusSchema>
+export type CompanyPartner = z.infer<typeof companyPartnerSchema>
 export type CompanyResponse = z.infer<typeof companySchema>
