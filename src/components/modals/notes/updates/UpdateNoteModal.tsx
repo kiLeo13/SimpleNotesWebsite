@@ -37,18 +37,6 @@ export function UpdateNoteModal({ noteId, setIsPatching }: UpdateNoteModalProps)
   const { handleSubmit, reset } = methods
 
   useEffect(() => {
-    const globalEscapeHandler = (e: KeyboardEvent) => {
-      e.stopPropagation()
-      if (e.key?.toLowerCase() === "escape") {
-        setIsPatching(false)
-      }
-    }
-
-    window.addEventListener("keydown", globalEscapeHandler)
-    return () => window.removeEventListener("keydown", globalEscapeHandler)
-  }, [setIsPatching])
-
-  useEffect(() => {
     const fetchNote = async () => {
       setIsLoading(true)
       const resp = await noteService.fetchNote(noteId)

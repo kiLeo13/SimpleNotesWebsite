@@ -15,8 +15,8 @@ import { RiFlowChart } from "react-icons/ri"
 import { FaUsers } from "react-icons/fa"
 import { FaGear } from "react-icons/fa6"
 import { DarkWrapper } from "../DarkWrapper"
-import { UserManagementModal } from "../modals/users/management/UserManagementModal"
 import { CreateNoteModalForm } from "../modals/notes/creations/uploads/CreateNoteModalForm"
+import { UserManagementPopover } from "../modals/users/management/UserManagementPopover"
 import { AlgorithmCalculator } from "../modals/global/algorithm/AlgorithmCalculator"
 import { CompanyLookupModal } from "../modals/global/lookup/CompanyLookupModal"
 import { BiNetworkChart } from "react-icons/bi"
@@ -41,13 +41,11 @@ export function SidebarFooter(): JSX.Element {
   const [showUploadModal, setShowUploadModal] = useState(false)
   const [editorMode, setEditorMode] = useState<EditorMode | null>(null)
   const [showAlgoCalc, setShowAlgoCalc] = useState(false)
-  const [showUsersMng, setShowUsersMng] = useState(false)
   const [lookingUp, setLookingUp] = useState(false)
 
   // Handlers
   const handleShowAlgo = () => setShowAlgoCalc(true)
   const closeEditor = () => setEditorMode(null)
-  const handleShowUsers = () => setShowUsersMng(true)
   const handleShowLookup = () => setLookingUp(true)
 
   const createNoteOptions: MenuActionItem[] = [
@@ -71,27 +69,22 @@ export function SidebarFooter(): JSX.Element {
   return (
     <>
       {/* File Upload Modal */}
-      <DarkWrapper open={showUploadModal}>
+      <DarkWrapper open={showUploadModal} onOpenChange={setShowUploadModal}>
         <CreateNoteModalForm setShowUploadModal={setShowUploadModal} />
       </DarkWrapper>
 
       {/* Split-Screen Editor Modal */}
-      <DarkWrapper open={!!editorMode} isolateEvents={false}>
+      <DarkWrapper open={!!editorMode} onOpenChange={closeEditor}>
         <CreateEditorModal mode={editorMode!} onClose={closeEditor} />
       </DarkWrapper>
 
       {/* Utility Modals */}
-      <DarkWrapper open={showAlgoCalc}>
+      <DarkWrapper open={showAlgoCalc} onOpenChange={setShowAlgoCalc}>
         <AlgorithmCalculator setShowAlgoCalc={setShowAlgoCalc} />
       </DarkWrapper>
 
-      <DarkWrapper open={lookingUp}>
+      <DarkWrapper open={lookingUp} onOpenChange={setLookingUp}>
         <CompanyLookupModal setLookingUp={setLookingUp} />
-      </DarkWrapper>
-
-      {/* User Management */}
-      <DarkWrapper open={showUsersMng}>
-        <UserManagementModal setShowUsersMng={setShowUsersMng} />
       </DarkWrapper>
 
       <div className={styles.footer}>
@@ -136,14 +129,15 @@ export function SidebarFooter(): JSX.Element {
             </ActionMenu>
           )}
 
+          {/* User Management Popover */}
           {canManageUsers && (
-            // User Management
-            <AppTooltip label={t("tooltips.labels.usersMng")}>
-              <button className={styles.button} onClick={handleShowUsers}>
-                <FaUsers size={"0.7em"} />
-                <Ripple />
-              </button>
-            </AppTooltip>
+            <UserManagementPopover>
+              <AppTooltip label={t("tooltips.labels.usersMng")}>
+                <Button className={styles.button}>
+                  <FaUsers size={"0.7em"} />
+                </Button>
+              </AppTooltip>
+            </UserManagementPopover>
           )}
         </div>
       </div>

@@ -15,11 +15,15 @@ import { FaUserSlash } from "react-icons/fa"
 import { formatTimestamp } from "@/utils/utils"
 import { useSessionStore } from "@/stores/useSessionStore"
 import { useTranslation } from "react-i18next"
-import { usePermission } from "@/hooks/usePermission"
 import { userService } from "@/services/userService"
 import { toasts } from "@/utils/toastUtils"
 
 import styles from "./UserEntry.module.css"
+
+type UserCapabilities = {
+  canEditProfile: boolean
+  shouldRenderActions: boolean
+}
 
 type UserEntryProps = {
   user: UserResponseData
@@ -33,10 +37,11 @@ export function UserEntry({ user }: UserEntryProps): JSX.Element {
 
   const self = useSessionStore((state) => state.user)
   const isSelf = user.id === self?.id
-  const isAdmin = Permission.hasEffective(user.permissions, Permission.Administrator)
-  const canEdit = usePermission(Permission.ManageUsers) && (!isAdmin || isSelf)
 
-  // Fix: on error, name remains changed and mermaid mess
+  const { canEditProfile, shouldRenderActions } = getUserCapabilities(
+    self,
+    user
+  )
 
   useEffect(() => {
     setDraftName(user.username)
@@ -68,18 +73,23 @@ export function UserEntry({ user }: UserEntryProps): JSX.Element {
     <div className={styles.userRow}>
       <div className={styles.left}>
         <div className={styles.userIcon}>
-          <IoPerson size={"1.3em"} color="rgb(30, 23, 36)" />
+          <IoPerson size={"1.3em"} color="#1e1724" />
         </div>
 
         <div className={styles.userData}>
           <div className={styles.userTop}>
-            {isLoading && <LoaderContainer className={styles.loader} scale={0.6} />}
+            {isLoading && (
+              <LoaderContainer className={styles.loader} scale={0.6} />
+            )}
             <EditableText
               value={draftName}
               onChange={setDraftName}
               onSave={handleSave}
-              editable={canEdit}
-              className={clsx(styles.username, canEdit && styles.editable)}
+              editable={canEditProfile}
+              className={clsx(
+                styles.username,
+                canEditProfile && styles.editable
+              )}
               onCancel={() => setDraftName(user.username)}
             />
 
@@ -89,7 +99,7 @@ export function UserEntry({ user }: UserEntryProps): JSX.Element {
                 <FaUserSlash color="#eb5e5e" cursor="pointer" />
               </AppTooltip>
             )}
-            
+
             {/* User Verification Status */}
             <AppTooltip
               label={
@@ -114,7 +124,67 @@ export function UserEntry({ user }: UserEntryProps): JSX.Element {
         </div>
       </div>
 
-      <UserActions user={user} />
+      {shouldRenderActions && <UserActions user={user} />}
     </div>
   )
+}
+
+function getUserCapabilities(
+  self: UserResponseData | null,
+  target: UserResponseData
+): UserCapabilities {
+  if (!self) {
+    return {
+      canEditProfile: false,
+      shouldRenderActions: false
+    }
+  }
+
+  const isSelf = self.id === target.id
+
+  // Target states
+  const targetIsAdmin = Permission.hasEffective(
+    target.permissions,
+    Permission.Administrator
+  )
+  const targetHasManagePerms = Permission.hasEffective(
+    target.permissions,
+    Permission.ManagePermissions
+  )
+
+  // Actor (Self) capabilities
+  const hasManageUsers = Permission.hasEffective(
+    self.permissions,
+    Permission.ManageUsers
+  )
+  const hasManagePerms = Permission.hasEffective(
+    self.permissions,
+    Permission.ManagePermissions
+  )
+  const hasDeleteUsers = Permission.hasEffective(
+    self.permissions,
+    Permission.DeleteUsers
+  )
+  const hasPunishUsers = Permission.hasEffective(
+    self.permissions,
+    Permission.PunishUsers
+  )
+
+  // Profile Editing: Needs `ManageUsers`. Target cannot be Admin, unless it is self.
+  const canEditProfile = hasManageUsers && (!targetIsAdmin || isSelf)
+
+  // Manage Permissions: Needs `ManagePerms`. Target cannot be Admin at all.
+  const canManagePerms = hasManagePerms && !targetIsAdmin
+
+  // Delete Users: Needs `DeleteUsers`. Cannot delete self. Target cannot be Admin.
+  const canDelete = hasDeleteUsers && !isSelf && !targetIsAdmin
+
+  // Punish Users: Needs `PunishUsers`. Cannot punish self. Target cannot be Admin OR have ManagePerms.
+  const canPunish =
+    hasPunishUsers && !isSelf && !targetIsAdmin && !targetHasManagePerms
+
+  // If the user can do at least one action, we should mount the UserActions component
+  const shouldRenderActions = canManagePerms || canDelete || canPunish
+
+  return { canEditProfile, shouldRenderActions }
 }
