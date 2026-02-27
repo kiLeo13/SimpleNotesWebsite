@@ -11,6 +11,7 @@ type DarkWrapperProps = {
   children: React.ReactNode
   className?: string
   open?: boolean
+  onOpenChange?: (open: boolean) => void
   zIndex?: number
   isolateEvents?: boolean
 }
@@ -19,6 +20,7 @@ export function DarkWrapper({
   children,
   className,
   open,
+  onOpenChange,
   zIndex = 40,
   isolateEvents = true
 }: DarkWrapperProps) {
@@ -29,7 +31,7 @@ export function DarkWrapper({
   }
 
   return (
-    <Dialog.Root open={open ?? true}>
+    <Dialog.Root open={open ?? true} onOpenChange={onOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay
           className={styles.overlay}
