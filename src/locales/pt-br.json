@@ -24,9 +24,6 @@
       "private": "Oculto"
     }
   },
-  "toasts": {
-    "userUpdateFailed": "Erro ao atualizar usuário"
-  },
   "app": {
     "title": "ZenKeep"
   },
@@ -203,6 +200,8 @@
     "sessionExpired": "Sua sessão expirou! Faça login novamente."
   },
   "errors": {
+    "userFetch": "Erro ao buscar usuários",
+    "userUpdate": "Erro ao atualizar usuário",
     "cnpjLookup": "Erro ao consultar CNPJ",
     "invalidCnpj": "CNPJ inválido",
     "cnpjNotFound": "CNPJ não encontrado",
