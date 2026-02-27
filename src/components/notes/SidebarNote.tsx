@@ -94,11 +94,11 @@ export function SidebarNote({ note, onClick }: SidebarNoteProps): JSX.Element {
         </ActionMenu>
       )}
 
-      <DarkWrapper open={isPatching}>
+      <DarkWrapper open={isPatching} onOpenChange={setIsPatching}>
         <UpdateNoteModal noteId={note.id} setIsPatching={setIsPatching} />
       </DarkWrapper>
 
-      <DarkWrapper open={isDeleting}>
+      <DarkWrapper open={isDeleting} onOpenChange={setIsDeleting}>
         <DeleteNoteModal note={note!} setIsDeleting={setIsDeleting} />
       </DarkWrapper>
     </div>
