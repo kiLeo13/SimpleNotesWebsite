@@ -48,23 +48,11 @@ export function SidebarFooter(): JSX.Element {
   const closeEditor = () => setEditorMode(null)
   const handleShowLookup = () => setLookingUp(true)
 
-  const createNoteOptions: MenuActionItem[] = [
-    {
-      label: t("menus.notes.optText"),
-      icon: <MdTextFields size={"1.5em"} color="#a285d1" />,
-      onClick: () => setEditorMode("MARKDOWN")
-    },
-    {
-      label: t("menus.notes.optFlowchart"),
-      icon: <RiFlowChart size={"1.4em"} color="#a285d1" />,
-      onClick: () => setEditorMode("FLOWCHART")
-    },
-    {
-      label: t("menus.notes.optFile"),
-      icon: <MdInsertDriveFile size={"1.4em"} color="#a285d1" />,
-      onClick: () => setShowUploadModal(true)
-    }
-  ]
+  const createNoteOptions = getCreateNoteOptions(
+    t,
+    setEditorMode,
+    setShowUploadModal
+  )
 
   return (
     <>
@@ -143,4 +131,28 @@ export function SidebarFooter(): JSX.Element {
       </div>
     </>
   )
+}
+
+function getCreateNoteOptions(
+  t: (s: string) => string,
+  setEditorMode: (mode: EditorMode) => void,
+  setShowUploadModal: (flag: boolean) => void
+): MenuActionItem[] {
+  return [
+    {
+      label: t("menus.notes.optText"),
+      icon: <MdTextFields size={"1.5em"} color="#a285d1" />,
+      onClick: () => setEditorMode("MARKDOWN")
+    },
+    {
+      label: t("menus.notes.optFlowchart"),
+      icon: <RiFlowChart size={"1.4em"} color="#a285d1" />,
+      onClick: () => setEditorMode("FLOWCHART")
+    },
+    {
+      label: t("menus.notes.optFile"),
+      icon: <MdInsertDriveFile size={"1.4em"} color="#a285d1" />,
+      onClick: () => setShowUploadModal(true)
+    }
+  ]
 }
