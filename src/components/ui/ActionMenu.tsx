@@ -49,7 +49,9 @@ export function ActionMenu({
         >
           {header && (
             <>
-              <DropdownMenu.Label className={styles.menuLabel}>{header}</DropdownMenu.Label>
+              <DropdownMenu.Label className={styles.menuLabel}>
+                {header}
+              </DropdownMenu.Label>
               <DropdownMenu.Separator className={styles.menuSeparator} />
             </>
           )}
@@ -59,7 +61,7 @@ export function ActionMenu({
               key={`${item.label}-${index}`}
               className={clsx(styles.menuItem, item.className)}
               onSelect={item.onClick}
-              onClick={(isolateEvents ? (e) => e.stopPropagation() : undefined)}
+              onClick={isolateEvents ? (e) => e.stopPropagation() : undefined}
               style={item.style}
             >
               <div className={styles.iconWrapper}>{item.icon}</div>
