@@ -192,6 +192,7 @@
     }
   },
   "warnings": {
+    "noAccessToken": "Nenhum access token encontrado! Redirecionando para a página inicial...",
     "noteCreation": {
       "noFiles": "Arquivo não encontrado."
     },
@@ -200,6 +201,7 @@
     "sessionExpired": "Sua sessão expirou! Faça login novamente."
   },
   "errors": {
+    "logout": "Erro ao sair",
     "userFetch": "Erro ao buscar usuários",
     "userUpdate": "Erro ao atualizar usuário",
     "cnpjLookup": "Erro ao consultar CNPJ",
@@ -256,6 +258,9 @@
     "select": {
       "searchPlaceholder": "Buscar...",
       "noResults": "Nenhum resultado."
+    },
+    "settings": {
+      "signout": "Sair"
     },
     "notes": {
       "opts": {

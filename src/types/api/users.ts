@@ -20,6 +20,10 @@ export interface UpdateUserRequestPayload {
   suspended?: boolean
 }
 
+export interface LogoutRequestPayload {
+  access_token: string
+}
+
 export interface ConfirmRequestPayload {
   email: string
   code: string

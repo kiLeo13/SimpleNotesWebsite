@@ -13,7 +13,8 @@ import {
   type SignupRequestPayload,
   type UserResponseData,
   type ListUsersResponseData,
-  type UpdateUserRequestPayload
+  type UpdateUserRequestPayload,
+  type LogoutRequestPayload
 } from "../types/api/users"
 
 import apiClient from "./apiClient"
@@ -71,8 +72,8 @@ export const userService = {
     return safeApiCall(() => apiClient.get(`/users/${id}`), UserResponseSchema)
   },
 
-  logout: async (): Promise<ApiResponse<void>> => {
-    return safeApiCall(() => apiClient.post("/users/logout"), VoidSchema)
+  logout: async (payload: LogoutRequestPayload): Promise<ApiResponse<void>> => {
+    return safeApiCall(() => apiClient.post("/users/logout", payload), VoidSchema)
   },
 
   updateUser: async (

@@ -15,6 +15,7 @@ import { RiFlowChart } from "react-icons/ri"
 import { FaUsers } from "react-icons/fa"
 import { FaGear } from "react-icons/fa6"
 import { DarkWrapper } from "../DarkWrapper"
+import { MdOutlineLogout } from "react-icons/md"
 import { CreateNoteModalForm } from "../modals/notes/creations/uploads/CreateNoteModalForm"
 import { UserManagementPopover } from "../modals/users/management/UserManagementPopover"
 import { AlgorithmCalculator } from "../modals/global/algorithm/AlgorithmCalculator"
@@ -26,11 +27,15 @@ import { Button } from "../ui/buttons/Button"
 import { Permission } from "@/models/Permission"
 import { useTranslation } from "react-i18next"
 import { usePermission } from "@/hooks/usePermission"
+import { userService } from "@/services/userService"
+import { toasts } from "@/utils/toastUtils"
 
 import styles from "./SidebarFooter.module.css"
+import { useNavigate } from "react-router-dom"
 
 export function SidebarFooter(): JSX.Element {
   const { t } = useTranslation()
+  const navigate = useNavigate()
 
   // Permissions
   const canCreate = usePermission(Permission.CreateNotes)
@@ -48,6 +53,24 @@ export function SidebarFooter(): JSX.Element {
   const closeEditor = () => setEditorMode(null)
   const handleShowLookup = () => setLookingUp(true)
 
+  const handleSignout = async () => {
+    const accessToken = localStorage.getItem("access_token")
+    if (!accessToken) {
+      toasts.warning(t("warnings.noAccessToken"))
+      navigate("/login")
+      return
+    }
+
+    const resp = await userService.logout({ access_token: accessToken })
+    if (!resp.success) {
+      toasts.apiError(t("errors.logout"), resp)
+    }
+    localStorage.removeItem("id_token")
+    localStorage.removeItem("access_token")
+    navigate("/login")
+  }
+
+  const settingsOptions = getSettingsOptions(t, handleSignout)
   const createNoteOptions = getCreateNoteOptions(
     t,
     setEditorMode,
@@ -77,12 +100,14 @@ export function SidebarFooter(): JSX.Element {
 
       <div className={styles.footer}>
         {/* Settings */}
-        <AppTooltip label={t("tooltips.labels.settings")}>
-          <button className={styles.button}>
-            <FaGear size={"0.5em"} />
-            <Ripple />
-          </button>
-        </AppTooltip>
+        <ActionMenu items={settingsOptions}>
+          <AppTooltip label={t("tooltips.labels.settings")}>
+            <button className={styles.button}>
+              <FaGear size={"0.5em"} />
+              <Ripple />
+            </button>
+          </AppTooltip>
+        </ActionMenu>
 
         <div className={styles.buttonsContainer}>
           {/* Algorithm Calculator */}
@@ -103,11 +128,7 @@ export function SidebarFooter(): JSX.Element {
 
           {canCreate && (
             // Create Note Action Menu
-            <ActionMenu
-              header={t("tooltips.labels.createNote")}
-              items={createNoteOptions}
-              side="right"
-            >
+            <ActionMenu items={createNoteOptions} side="right">
               <AppTooltip label={t("tooltips.labels.createNote")}>
                 <button className={styles.button}>
                   <MdOutlineFileUpload size={"0.8em"} />
@@ -131,6 +152,19 @@ export function SidebarFooter(): JSX.Element {
       </div>
     </>
   )
+}
+
+function getSettingsOptions(
+  t: (s: string) => string,
+  signout: () => void
+): MenuActionItem[] {
+  return [
+    {
+      label: t("menus.settings.signout"),
+      icon: <MdOutlineLogout size={"1.4em"} color="#a285d1" />,
+      onClick: signout
+    }
+  ]
 }
 
 function getCreateNoteOptions(
