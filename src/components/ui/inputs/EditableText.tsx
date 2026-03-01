@@ -4,16 +4,19 @@ import {
   type ComponentProps,
   type FormEvent,
   type KeyboardEvent,
-  type FocusEvent
+  type FocusEvent,
+  type ClipboardEvent
 } from "react"
+import clsx from "clsx"
 
-// Omit "onChange" because standard div onChange is different from what we need here
 type EditableTextProps = Omit<
   ComponentProps<"div">,
-  "onChange" | "contentEditable"
+  "onChange" | "contentEditable" | "onPaste"
 > & {
   value: string
   editable?: boolean
+  minLength?: number
+  maxLength?: number
   onChange: (value: string) => void
   onSave: (value: string) => void
   onCancel?: () => void
@@ -22,6 +25,8 @@ type EditableTextProps = Omit<
 export function EditableText({
   value,
   editable = false,
+  minLength = 0,
+  maxLength,
   onChange,
   onSave,
   onCancel,
@@ -33,8 +38,14 @@ export function EditableText({
   const ref = useRef<HTMLDivElement>(null)
   const ignoreNextBlur = useRef(false)
 
-  // We sync the DOM with the prop only if they are different.
-  // This prevents the cursor from jumping to the start while typing.
+  const isValid = (() => {
+    const len = value.trim().length
+    if (!!maxLength && len > maxLength) return false
+    if (!!minLength && len < minLength) return false
+    return true
+  })()
+
+  // Sync the DOM with the prop only if they are different.
   useEffect(() => {
     if (ref.current && ref.current.innerText !== value) {
       ref.current.innerText = value
@@ -42,8 +53,24 @@ export function EditableText({
   }, [value])
 
   const handleInput = (e: FormEvent<HTMLDivElement>) => {
-    const nextText = e.currentTarget.innerText
-    onChange(nextText)
+    onChange(e.currentTarget.innerText)
+  }
+
+  // Intercept paste to force plain text only
+  const handlePaste = (e: ClipboardEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    let text = e.clipboardData.getData("text/plain")
+
+    if (maxLength) {
+      const currentText = ref.current?.innerText || ""
+      const selectionLength = window.getSelection()?.toString().length || 0
+      const spaceLeft = maxLength - currentText.length + selectionLength
+
+      if (spaceLeft <= 0) return
+      text = text.slice(0, spaceLeft)
+    }
+
+    document.execCommand("insertText", false, text)
   }
 
   const handleBlur = (e: FocusEvent<HTMLDivElement>) => {
@@ -53,25 +80,44 @@ export function EditableText({
       return
     }
 
-    onSave(e.currentTarget.innerText)
+    if (isValid) {
+      onSave(e.currentTarget.innerText)
+    } else {
+      // If invalid, we revert the visual state via onCancel
+      onCancel?.()
+    }
     onBlur?.(e)
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter") {
       e.preventDefault()
-      ref.current?.blur()
+      if (isValid) {
+        ref.current?.blur()
+      } else {
+        ignoreNextBlur.current = true
+        onCancel?.()
+        ref.current?.blur()
+      }
     }
 
     if (e.key === "Escape") {
       e.preventDefault()
       ignoreNextBlur.current = true
-
-      // Revert the text visually immediately
       if (ref.current) ref.current.innerText = value
-
       onCancel?.()
       ref.current?.blur()
+    }
+
+    if (maxLength) {
+      const isControlKey =
+        e.key.length > 1 || e.ctrlKey || e.metaKey || e.altKey
+      const hasSelection = window.getSelection()?.toString().length !== 0
+      const currentLength = ref.current?.innerText.length || 0
+
+      if (!isControlKey && !hasSelection && currentLength >= maxLength) {
+        e.preventDefault()
+      }
     }
 
     onKeyDown?.(e)
@@ -80,10 +126,11 @@ export function EditableText({
   return (
     <div
       ref={ref}
-      className={className}
+      className={clsx(className, !isValid && "invalid")}
       contentEditable={editable}
       suppressContentEditableWarning
       onInput={handleInput}
+      onPaste={handlePaste}
       onBlur={handleBlur}
       onKeyDown={handleKeyDown}
       role={editable ? "textbox" : undefined}

@@ -84,6 +84,8 @@ export function UserEntry({ user }: UserEntryProps): JSX.Element {
             <EditableText
               value={draftName}
               onChange={setDraftName}
+              minLength={2}
+              maxLength={80}
               onSave={handleSave}
               editable={canEditProfile}
               className={clsx(
