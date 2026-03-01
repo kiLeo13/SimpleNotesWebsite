@@ -8,6 +8,7 @@
   box-sizing: border-box;
   width: 100%;
   transition: background-color 150ms;
+  animation: insideoutUsers 100ms ease-in-out forwards;
 }
 
 .userRow:hover {
@@ -87,4 +88,14 @@
   font-size: 0.8em;
   font-weight: 450;
   color: rgb(104, 95, 116);
+}
+
+@keyframes insideoutUsers {
+  from {
+    scale: 0.97;
+  }
+
+  to {
+    scale: 1;
+  }
 }
