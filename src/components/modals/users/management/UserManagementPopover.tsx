@@ -1,12 +1,15 @@
-import { useState, type JSX, type ReactNode } from "react"
+import { useState, type ChangeEvent, type JSX, type ReactNode } from "react"
 import type { UserResponseData } from "@/types/api/users"
 
 import * as Popover from "@radix-ui/react-popover"
 
 import { UserEntry } from "./UserEntry"
+import { IoSearchSharp } from "react-icons/io5"
+import { Permission } from "@/models/Permission"
 import { LoaderContainer } from "@/components/LoaderContainer"
 import { userService } from "@/services/userService"
 import { useTranslation } from "react-i18next"
+import { matchSorter } from "match-sorter"
 import { toasts } from "@/utils/toastUtils"
 
 import styles from "./UserManagementPopover.module.css"
@@ -19,8 +22,14 @@ export function UserManagementPopover({
   children
 }: UserManagementPopoverProps): JSX.Element {
   const { t } = useTranslation()
+  const [search, setSearch] = useState("")
   const [users, setUsers] = useState<UserResponseData[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const filteredUsers = toFilteredUsers(users, search)
+
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value)
+  }
 
   const handleOpenChange = async (isOpen: boolean) => {
     if (!isOpen) return
@@ -52,6 +61,18 @@ export function UserManagementPopover({
             <h3 className={styles.title}>
               {t("modals.usersMng.title", { val: users.length })}
             </h3>
+            <div className={styles.searchContainer}>
+              <IoSearchSharp className={styles.searchIcon} size={"1.4em"} />
+              <input
+                className={styles.searchInput}
+                value={search}
+                onChange={handleSearchChange}
+                type="text"
+                name="user-search"
+                placeholder={t("placeholders.search")}
+                autoComplete="off"
+              />
+            </div>
           </div>
 
           <div className={styles.division} />
@@ -63,9 +84,9 @@ export function UserManagementPopover({
                 loaderColor="#b79ed8"
               />
             ) : (
-              [...users]
-                .sort((u, au) => u.username.localeCompare(au.username))
-                .map((u) => <UserEntry key={u.id} user={u} />)
+              sortUsers(filteredUsers).map((u) => (
+                <UserEntry key={u.id} user={u} />
+              ))
             )}
           </div>
 
@@ -74,4 +95,28 @@ export function UserManagementPopover({
       </Popover.Portal>
     </Popover.Root>
   )
+}
+
+function sortUsers(users: UserResponseData[]): UserResponseData[] {
+  return users.sort((u, au) => {
+    const uIsAdmin = Permission.hasEffective(
+      u.permissions,
+      Permission.Administrator
+    )
+    const auIsAdmin = Permission.hasEffective(
+      au.permissions,
+      Permission.Administrator
+    )
+
+    if (uIsAdmin && !auIsAdmin) return -1
+    if (!uIsAdmin && auIsAdmin) return 1
+
+    return u.username.localeCompare(au.username)
+  })
+}
+
+function toFilteredUsers(users: UserResponseData[], search: string) {
+  if (!search.trim()) return users
+
+  return matchSorter(users, search, { keys: ["username"] })
 }
