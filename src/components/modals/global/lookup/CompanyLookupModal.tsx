@@ -129,7 +129,7 @@ export function CompanyLookupModal({
                 isLoading={isLoading}
                 loaderProps={{ scale: "0.8" }}
                 disabled={isDisabled}
-                onClick={() => !errorMessage && throttledSend(cnpj)} 
+                onClick={() => !errorMessage && throttledSend(cnpj)}
               >
                 <IoSearchSharp
                   className={styles.sendIcon}
