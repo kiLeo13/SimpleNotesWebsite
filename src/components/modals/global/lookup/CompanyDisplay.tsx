@@ -45,6 +45,7 @@ export function CompanyDisplay({ company }: CompanyDisplayProps): JSX.Element {
     : t("labels.cacheMiss")
   const regStatus = company.registration.status
   const isActive = regStatus === "ACTIVE"
+  const hasPartners = company.partners.length > 0
   const searchedPartners = toFilteredPartners(search, company.partners)
 
   useEffect(() => {
@@ -63,18 +64,20 @@ export function CompanyDisplay({ company }: CompanyDisplayProps): JSX.Element {
             <h2 className={styles.partnersTitle}>
               {t("labels.partners", { val: company.partners.length })}
             </h2>
-            <div className={styles.searchContainer}>
-              <IoSearchSharp className={styles.searchIcon} />
-              <input
-                className={styles.partnerSearchInput}
-                value={search}
-                onChange={handleSearchChange}
-                type="text"
-                placeholder={t("placeholders.search")}
-                autoComplete="off"
-                id="partner-search"
-              />
-            </div>
+            {hasPartners && (
+              <div className={styles.searchContainer}>
+                <IoSearchSharp className={styles.searchIcon} />
+                <input
+                  className={styles.partnerSearchInput}
+                  value={search}
+                  onChange={handleSearchChange}
+                  type="text"
+                  placeholder={t("placeholders.search")}
+                  autoComplete="off"
+                  id="partner-search"
+                />
+              </div>
+            )}
           </header>
 
           <ul className={styles.partnerList}>
@@ -215,7 +218,6 @@ function toFilteredPartners(
 }
 
 function formatAddress(address: CompanyAddress): string {
-  // 1. Sanitize inputs to guarantee we only work with clean strings
   const streetType = address.type.trim()
   const streetName = address.streetName.trim()
   const number = address.number.trim()
