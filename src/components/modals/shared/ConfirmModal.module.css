@@ -99,7 +99,7 @@
 
 .cancel:hover:not(:disabled) {
   background-color: rgba(189, 161, 255, 0.05);
-  color: #f4f4f5;
+  color: #cfcfd8;
 }
 
 .confirm {
