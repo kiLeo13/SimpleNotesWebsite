@@ -18,7 +18,9 @@ const Registry = {
   NoteDeleted: createEvent("NOTE_DELETED", NoteBaseSchema.pick({ id: true })),
 
   // Users
-  UserUpdated: createEvent("USER_UPDATED", UserResponseSchema)
+  UserCreated: createEvent("USER_CREATED", UserResponseSchema),
+  UserUpdated: createEvent("USER_UPDATED", UserResponseSchema),
+  UserDeleted: createEvent("USER_DELETED", z.object({ id: z.number() }))
 }
 
 export interface EventDefinition<S extends z.ZodTypeAny> {
