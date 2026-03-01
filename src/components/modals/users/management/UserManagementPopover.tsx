@@ -7,10 +7,9 @@ import { UserEntry } from "./UserEntry"
 import { IoSearchSharp } from "react-icons/io5"
 import { Permission } from "@/models/Permission"
 import { LoaderContainer } from "@/components/LoaderContainer"
-import { userService } from "@/services/userService"
+import { useUsersStore } from "@/stores/useUsersStore"
 import { useTranslation } from "react-i18next"
 import { matchSorter } from "match-sorter"
-import { toasts } from "@/utils/toastUtils"
 
 import styles from "./UserManagementPopover.module.css"
 
@@ -23,8 +22,10 @@ export function UserManagementPopover({
 }: UserManagementPopoverProps): JSX.Element {
   const { t } = useTranslation()
   const [search, setSearch] = useState("")
-  const [users, setUsers] = useState<UserResponseData[]>([])
-  const [isLoading, setIsLoading] = useState(false)
+
+  const users = useUsersStore((s) => s.users)
+  const storeState = useUsersStore((s) => s.state)
+  const ensureLoaded = useUsersStore((s) => s.ensureLoaded)
   const filteredUsers = toFilteredUsers(users, search)
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -34,15 +35,8 @@ export function UserManagementPopover({
   const handleOpenChange = async (isOpen: boolean) => {
     if (!isOpen) return
 
-    setIsLoading(true)
-    const resp = await userService.getUsers()
-    setIsLoading(false)
-
-    if (resp.success) {
-      setUsers(resp.data.users)
-    } else {
-      toasts.apiError(t("errors.userFetch"), resp)
-    }
+    // Ensure we have all users, or at least that we are fetching them
+    ensureLoaded()
   }
 
   return (
@@ -78,7 +72,7 @@ export function UserManagementPopover({
           <div className={styles.division} />
 
           <div className={styles.userList}>
-            {isLoading ? (
+            {storeState === "LOADING" ? (
               <LoaderContainer
                 className={styles.loader}
                 loaderColor="#b79ed8"
