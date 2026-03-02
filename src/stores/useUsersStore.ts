@@ -1,4 +1,4 @@
-import type { UserResponseData } from "@/types/api/users"
+import type { UserPresenceData, UserResponseData } from "@/types/api/users"
 
 import { userService } from "@/services/userService"
 import { create } from "zustand"
@@ -14,6 +14,7 @@ type UsersState = {
 
   addUser: (user: UserResponseData) => void
   updateUser: (user: UserResponseData) => void
+  updatePresence: (userId: number, presence: UserPresenceData) => void
   removeUser: (userId: number) => void
   getById: (userId: number) => UserResponseData | null
 }
@@ -76,6 +77,12 @@ export const useUsersStore = create<UsersState>((set, get) => ({
   updateUser(user) {
     set((state) => ({
       users: state.users.map((u) => (u.id === user.id ? user : u))
+    }))
+  },
+
+  updatePresence(userId, presence) {
+    set((state) => ({
+      users: state.users.map((u) => (u.id === userId ? { ...u, presence } : u))
     }))
   },
 
