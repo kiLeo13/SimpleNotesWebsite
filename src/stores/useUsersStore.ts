@@ -13,6 +13,7 @@ type UsersState = {
   ensureLoaded: () => Promise<void>
 
   addUser: (user: UserResponseData) => void
+  updateUser: (user: UserResponseData) => void
   removeUser: (userId: number) => void
   getById: (userId: number) => UserResponseData | null
 }
@@ -70,6 +71,12 @@ export const useUsersStore = create<UsersState>((set, get) => ({
 
       return { users: [...state.users, user] }
     })
+  },
+
+  updateUser(user) {
+    set((state) => ({
+      users: state.users.map((u) => (u.id === user.id ? user : u))
+    }))
   },
 
   removeUser(userId) {
