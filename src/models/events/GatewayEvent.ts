@@ -1,7 +1,7 @@
 import z from "zod"
 
 import { createEvent } from "./eventFactory"
-import { connKillSchema } from "@/types/websocket/events"
+import { connKillSchema, presenceUpdatedSchema } from "@/types/websocket/events"
 import { NoteBaseSchema, NoteResponseSchema } from "@/types/api/notes"
 import { UserResponseSchema } from "@/types/api/users"
 
@@ -20,7 +20,9 @@ const Registry = {
   // Users
   UserCreated: createEvent("USER_CREATED", UserResponseSchema),
   UserUpdated: createEvent("USER_UPDATED", UserResponseSchema),
-  UserDeleted: createEvent("USER_DELETED", z.object({ id: z.number() }))
+  UserDeleted: createEvent("USER_DELETED", z.object({ id: z.number() })),
+
+  PresenceUpdated: createEvent("PRESENCE_UPDATED", presenceUpdatedSchema)
 }
 
 export interface EventDefinition<S extends z.ZodTypeAny> {
