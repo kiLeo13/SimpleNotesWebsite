@@ -4,10 +4,6 @@
     "errors": {
       "chars": "Você só pode digitar exatamente {{val}} caracteres"
     },
-    "presence": {
-      "online": "Online",
-      "offline": "Offline"
-    },
     "companies": {
       "activity": {
         "active": "ATIVA",

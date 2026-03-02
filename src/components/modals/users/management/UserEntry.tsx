@@ -38,7 +38,6 @@ export function UserEntry({ user }: UserEntryProps): JSX.Element {
   const self = useSessionStore((state) => state.user)
   const isSelf = user.id === self?.id
   const isOnline = user.presence === "ONLINE"
-  const presenceLabel = `commons.presence.${user.presence.toLowerCase()}`
 
   const { canEditProfile, shouldRenderActions } = getUserCapabilities(
     self,
@@ -76,9 +75,7 @@ export function UserEntry({ user }: UserEntryProps): JSX.Element {
       <div className={styles.left}>
         <div className={styles.userIcon}>
           <IoPerson size={"1.3em"} color="#1e1724" />
-          <AppTooltip label={t(presenceLabel)}>
-            <div className={clsx(styles.presence, isOnline && styles.online)} />
-          </AppTooltip>
+          <div className={clsx(styles.presence, isOnline && styles.online)} />
         </div>
 
         <div className={styles.userData}>
