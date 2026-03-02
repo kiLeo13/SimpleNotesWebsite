@@ -86,6 +86,7 @@ function routeServerMessage(
     case ServerEvents.UserCreated.type:
     case ServerEvents.UserUpdated.type:
     case ServerEvents.UserDeleted.type:
+    case ServerEvents.PresenceUpdated.type:
       handleUserEvents(msg)
       break
 
@@ -139,7 +140,7 @@ function handleNoteEvents(msg: GatewayMessage) {
 }
 
 function handleUserEvents(msg: GatewayMessage) {
-  const { addUser, updateUser, removeUser } = useUsersStore.getState()
+  const { addUser, updateUser, updatePresence, removeUser } = useUsersStore.getState()
   const { user: self, setUser } = useSessionStore.getState()
 
   switch (msg.type) {
@@ -175,6 +176,10 @@ function handleUserEvents(msg: GatewayMessage) {
 
     case ServerEvents.UserDeleted.type:
       removeUser(msg.data.id)
+      break
+
+    case ServerEvents.PresenceUpdated.type:
+      updatePresence(msg.data.id, msg.data.presence)
       break
   }
 }
