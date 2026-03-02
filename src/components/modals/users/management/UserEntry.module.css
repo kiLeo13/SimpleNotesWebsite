@@ -40,6 +40,7 @@
   border-radius: 9999px;
   border: 3px solid rgb(29, 25, 34);
   background-color: rgb(83, 83, 83);
+  transition: background-color 300ms;
 }
 
 .presence.online {
