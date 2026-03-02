@@ -22,12 +22,28 @@
 }
 
 .userIcon {
+  position: relative;
   display: flex;
   align-items: center;
   background-color: rgba(204, 174, 228, 0.2);
   padding: 5px;
   aspect-ratio: 1;
   border-radius: 9999px;
+}
+
+.presence {
+  position: absolute;
+  height: 8px;
+  width:  8px;
+  bottom: -1px;
+  right: -1px;
+  border-radius: 9999px;
+  border: 3px solid rgb(29, 25, 34);
+  background-color: rgb(83, 83, 83);
+}
+
+.presence.online {
+  background-color: rgb(65, 156, 65);
 }
 
 .userData {
