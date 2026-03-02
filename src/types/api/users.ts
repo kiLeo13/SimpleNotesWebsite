@@ -52,12 +52,15 @@ export const CheckUserStatusSchema = z.object({
   status: z.enum(["AVAILABLE", "TAKEN", "VERIFYING"])
 })
 
+export const presenceSchema = z.enum(["ONLINE", "OFFLINE"])
+
 // Users
 export const UserResponseSchema = z
   .object({
     id: z.number(),
     username: z.string(),
     permissions: z.number(),
+    presence: presenceSchema,
     is_verified: z.boolean().optional(),
     suspended: z.boolean().optional(),
     created_at: z.string(),
@@ -67,6 +70,7 @@ export const UserResponseSchema = z
     id: data.id,
     username: data.username,
     permissions: data.permissions,
+    presence: data.presence,
     isVerified: data.is_verified,
     suspended: data.suspended,
     createdAt: data.created_at,
@@ -86,5 +90,6 @@ export type LoginResponseData = z.infer<typeof LoginResponseSchema>
 export type CheckUserStatusData = z.infer<typeof CheckUserStatusSchema>
 
 // Users
+export type UserPresenceData = z.infer<typeof presenceSchema>
 export type UserResponseData = z.infer<typeof UserResponseSchema>
 export type ListUsersResponseData = z.infer<typeof ListUserResponseSchema>

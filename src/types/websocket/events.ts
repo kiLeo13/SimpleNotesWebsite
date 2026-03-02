@@ -1,5 +1,7 @@
 import z from "zod"
 
+import { presenceSchema } from "../api/users"
+
 const connKillCodeSchema = z.enum([
   "SUSPENDED_ACCOUNT",
   "IDLE_TIMEOUT",
@@ -10,6 +12,11 @@ const connKillCodeSchema = z.enum([
 export const connKillSchema = z.object({
   code: connKillCodeSchema,
   reason: z.string().optional()
+})
+
+export const presenceUpdatedSchema = z.object({
+  id: z.number(),
+  presence: presenceSchema
 })
 
 export type ConnectionKillCode = z.infer<typeof connKillCodeSchema>
