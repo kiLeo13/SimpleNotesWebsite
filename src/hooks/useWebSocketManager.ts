@@ -1,19 +1,19 @@
-import type { ConnectionKill } from "@/types/websocket/events"
-
 import useWebSocket from "react-use-websocket"
 
-import { useEffect, useRef } from "react"
-import { useNoteStore } from "../stores/useNotesStore"
-import { socketBus } from "@/services/socketBus"
 import {
   gatewayMessageSchema,
   ServerEvents,
   type GatewayMessage
 } from "../models/events/GatewayEvent"
-import { useSessionStore } from "@/stores/useSessionStore"
-import { toasts } from "@/utils/toastUtils"
-import { useTranslation } from "react-i18next"
 import { Permission } from "@/models/Permission"
+import { KillCodeBehaviors } from "@/types/websocket/events"
+import { toasts } from "@/utils/toastUtils"
+import { useEffect, useRef } from "react"
+import { useSessionStore } from "@/stores/useSessionStore"
+import { useUsersStore } from "@/stores/useUsersStore"
+import { useNoteStore } from "../stores/useNotesStore"
+import { socketBus } from "@/services/socketBus"
+import { useTranslation } from "react-i18next"
 
 const WS_URL = import.meta.env.VITE_WS_URL
 
@@ -22,6 +22,7 @@ export function useWebSocketManager() {
   const { getIdToken, logout } = useSessionStore()
   const token = getIdToken()
   const isFatal = useRef(false)
+
   const socketUrl = token
     ? `${WS_URL}?token=${encodeURIComponent(token)}`
     : null
@@ -33,19 +34,16 @@ export function useWebSocketManager() {
     },
     reconnectAttempts: 5,
     reconnectInterval: 3000,
-
     heartbeat: {
       message: JSON.stringify({ type: "ping" }),
       returnMessage: JSON.stringify({ type: "ACK" }),
       timeout: 80_000,
       interval: 60_000
     },
-
     onOpen: () => {
       console.log("[WS] Connected")
       isFatal.current = false
     },
-
     onError: (e) => console.error("[WS] Error:", e)
   })
 
@@ -53,7 +51,7 @@ export function useWebSocketManager() {
     if (lastJsonMessage) {
       const result = gatewayMessageSchema.safeParse(lastJsonMessage)
       if (result.success) {
-        handleServerMessage(result.data, isFatal, logout, t)
+        routeServerMessage(result.data, isFatal, logout, t)
       } else {
         console.error("[WS] Invalid message received:", result.error)
       }
@@ -63,16 +61,58 @@ export function useWebSocketManager() {
   return { readyState }
 }
 
-function handleServerMessage(
+// ----------------------------------------
+// Event Router
+// ----------------------------------------
+
+function routeServerMessage(
   msg: GatewayMessage,
   fatalRef: React.RefObject<boolean>,
   logoutAction: () => void,
   t: (s: string) => string
 ) {
-  const { addNote, updateNote, removeNote, getNoteById, fetchNotes } = useNoteStore.getState()
-  const { user: self, setUser } = useSessionStore.getState()
-  const selfHasAdmin = Permission.hasEffective(self?.permissions || 0, Permission.Administrator)
+  // Always emit to the event bus first
   socketBus.emit(msg.type, msg.data)
+
+  switch (msg.type) {
+    // Note Events
+    case ServerEvents.NoteCreated.type:
+    case ServerEvents.NoteUpdated.type:
+    case ServerEvents.NoteDeleted.type:
+      handleNoteEvents(msg)
+      break
+
+    // User Events
+    case ServerEvents.UserCreated.type:
+    case ServerEvents.UserUpdated.type:
+    case ServerEvents.UserDeleted.type:
+      handleUserEvents(msg)
+      break
+
+    // System Events
+    case ServerEvents.SessionExpired.type:
+    case ServerEvents.ConnectionKill.type:
+      handleSystemEvents(msg, fatalRef, logoutAction, t)
+      break
+
+    default:
+      console.warn(`[WS] Unhandled message type: ${msg.type}`)
+      break
+  }
+}
+
+// ----------------------------------------
+// Domain Handlers
+// ----------------------------------------
+
+function handleNoteEvents(msg: GatewayMessage) {
+  const { addNote, updateNote, removeNote, getNoteById, fetchNotes } =
+    useNoteStore.getState()
+  const { user: self } = useSessionStore.getState()
+  const selfHasAdmin = Permission.hasEffective(
+    self?.permissions || 0,
+    Permission.Administrator
+  )
 
   switch (msg.type) {
     case ServerEvents.NoteCreated.type:
@@ -84,9 +124,6 @@ function handleServerMessage(
       const oldNote = getNoteById(newNote.id)
       const hasVisibilityChanged = oldNote?.visibility !== newNote.visibility
 
-      // If the note's visibility changed, we need to refetch the notes
-      // to ensure the UI reflects the correct set of notes based on the new visibility.
-      // Except if user is admin, since they can see all notes regardless of any constraints.
       if (hasVisibilityChanged && !selfHasAdmin) {
         fetchNotes()
       } else {
@@ -98,18 +135,57 @@ function handleServerMessage(
     case ServerEvents.NoteDeleted.type:
       removeNote(msg.data.id)
       break
+  }
+}
+
+function handleUserEvents(msg: GatewayMessage) {
+  const { addUser, updateUser, removeUser } = useUsersStore.getState()
+  const { user: self, setUser } = useSessionStore.getState()
+
+  switch (msg.type) {
+    case ServerEvents.UserCreated.type:
+      addUser(msg.data)
+      break
 
     case ServerEvents.UserUpdated.type: {
-      const newSelf = msg.data
-      if (!selfHasAdmin && Permission.changed(self?.permissions || 0, newSelf.permissions, Permission.SeeHiddenNotes)) {
-        // If the user's permission to see hidden notes changed, we need to refetch the notes.
-        fetchNotes()
-      }
+      const updatedUser = msg.data
 
-      setUser(newSelf)
+      updateUser(updatedUser)
+
+      if (self && self.id === updatedUser.id) {
+        const selfHasAdmin = Permission.hasEffective(
+          self.permissions,
+          Permission.Administrator
+        )
+        const permissionChanged = Permission.changed(
+          self.permissions,
+          updatedUser.permissions,
+          Permission.SeeHiddenNotes
+        )
+
+        // Refetch notes if our own view permissions changed
+        if (!selfHasAdmin && permissionChanged) {
+          useNoteStore.getState().fetchNotes()
+        }
+
+        setUser(updatedUser)
+      }
       break
     }
 
+    case ServerEvents.UserDeleted.type:
+      removeUser(msg.data.id)
+      break
+  }
+}
+
+function handleSystemEvents(
+  msg: GatewayMessage,
+  fatalRef: React.RefObject<boolean>,
+  logoutAction: () => void,
+  t: (s: string, params?: unknown) => string
+) {
+  switch (msg.type) {
     case ServerEvents.SessionExpired.type:
       fatalRef.current = true
       console.warn("[WS] Session expired. Logging out.")
@@ -117,35 +193,44 @@ function handleServerMessage(
       logoutAction()
       break
 
-    case ServerEvents.ConnectionKill.type:
-      handleConnectionKill(msg.data, logoutAction, fatalRef, t)
-      break
+    case ServerEvents.ConnectionKill.type: {
+      const { code, reason } = msg.data
+      console.warn(`[WS] Connection Killed. Code: ${code}`)
 
-    default:
+      const behavior = KillCodeBehaviors[code]
+      if (!behavior.shouldReconnect) {
+        fatalRef.current = true
+      }
+
+      if (code === "IDLE_TIMEOUT") {
+        console.log("[WS] Idle timeout. Preparing to auto-reconnect...")
+        toasts.warning(t("warnings.reconnectingIdle"))
+        return
+      }
+
+      if (code === "SUSPENDED_ACCOUNT") {
+        toasts.error(
+          t("errors.accountSuspended", {
+            reason: reason || t("warnings.unspecified")
+          })
+        )
+      }
+
+      if (!behavior.shouldReconnect) {
+        logoutAction()
+        unmount()
+      }
       break
+    }
   }
 }
 
-function handleConnectionKill(
-  msg: ConnectionKill,
-  logoutAction: () => void,
-  fatalRef: React.RefObject<boolean>,
-  t: (s: string, params?: unknown) => string
-) {
-  const code = msg.code
-  const reason = msg.reason || t("warnings.unspecified")
+// ----------------------------------------
+// Helpers
+// ----------------------------------------
 
-  console.warn(`[WS] Connection Killed. Code: ${code}`)
-
-  if (code === "IDLE_TIMEOUT") {
-    console.log("[WS] Idle timeout. Preparing to auto-reconnect...")
-    toasts.warning(t("warnings.reconnectingIdle"))
-    return
-  }
-
-  if (code === "SUSPENDED") {
-    fatalRef.current = true
-    toasts.error(t("errors.accountSuspended", { reason: reason }))
-    logoutAction()
-  }
+function unmount() {
+  localStorage.removeItem("id_token")
+  localStorage.removeItem("access_token")
+  window.location.reload()
 }
