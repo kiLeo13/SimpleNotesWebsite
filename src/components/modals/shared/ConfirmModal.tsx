@@ -113,7 +113,7 @@ export function ConfirmModal({
           disabled={isButtonDisabled}
           onClick={handleConfirmClick}
         >
-          {confirmLabel || t("common.confirm")}
+          {confirmLabel || t("commons.confirm")}
         </Button>
       </div>
     </div>

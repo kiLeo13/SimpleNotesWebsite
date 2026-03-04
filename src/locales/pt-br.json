@@ -13,6 +13,7 @@
       }
     },
     "save": "Salvar",
+    "confirm": "Confirmar",
     "cancel": "Cancelar",
     "delete": "Excluir",
     "typeToConfirm": "Digite \"{{val}}\" para confirmar."
