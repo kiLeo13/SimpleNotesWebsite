@@ -1,4 +1,5 @@
 import type { NoteResponseData } from "@/types/api/notes"
+import { ActionMenu, type MenuActionItem } from "../ui/ActionMenu"
 import {
   useEffect,
   useRef,
@@ -15,13 +16,14 @@ import { FaPenToSquare } from "react-icons/fa6"
 import { Permission } from "@/models/Permission"
 import { SlOptions } from "react-icons/sl"
 import { UpdateNoteModal } from "../modals/notes/updates/UpdateNoteModal"
-import { DeleteNoteModal } from "../modals/notes/updates/DeleteNoteModal"
+import { ConfirmModal } from "../modals/shared/ConfirmModal"
 import { FaTrashAlt } from "react-icons/fa"
 import { Ripple } from "../ui/effects/Ripple"
-import { ActionMenu, type MenuActionItem } from "../ui/ActionMenu"
 import { usePermission } from "@/hooks/usePermission"
 import { useTranslation } from "react-i18next"
 import { useNoteStore } from "@/stores/useNotesStore"
+import { noteService } from "@/services/noteService"
+import { toasts } from "@/utils/toastUtils"
 
 import styles from "./SidebarNote.module.css"
 
@@ -71,6 +73,18 @@ export function SidebarNote({ note, onClick }: SidebarNoteProps): JSX.Element {
     return () => observer.disconnect()
   }, [])
 
+  const handleDeletion = async () => {
+    const resp = await noteService.deleteNote(note.id)
+
+    if (resp) {
+      toasts.success(t("modals.delNote.toasts.success"), {
+        style: { color: "#b9be66ff" }
+      })
+    } else {
+      toasts.apiError(t("modals.delNote.toasts.error"), resp)
+    }
+  }
+
   return (
     <div
       onClick={onClick}
@@ -99,7 +113,16 @@ export function SidebarNote({ note, onClick }: SidebarNoteProps): JSX.Element {
       </DarkWrapper>
 
       <DarkWrapper open={isDeleting} onOpenChange={setIsDeleting}>
-        <DeleteNoteModal note={note!} setIsDeleting={setIsDeleting} />
+        <ConfirmModal
+          title={t("modals.delNote.title")}
+          description={t("modals.delNote.subtitle")}
+          intent="danger"
+          strategy="type_to_confirm"
+          validationString={note.name}
+          confirmLabel={t("modals.delNote.buttons.confirm")}
+          onConfirm={handleDeletion}
+          onClose={() => setIsDeleting(false)}
+        />
       </DarkWrapper>
     </div>
   )
