@@ -37,7 +37,7 @@ export function UserEntry({ user }: UserEntryProps): JSX.Element {
 
   const self = useSessionStore((state) => state.user)
   const isSelf = user.id === self?.id
-  const isOnline = user.presence === "ONLINE"
+  const isOnline = user.presence === "ONLINE" || user.id == self?.id
 
   const { canEditProfile, shouldRenderActions } = getUserCapabilities(
     self,
