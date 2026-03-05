@@ -203,6 +203,7 @@
   },
   "errors": {
     "logout": "Erro ao sair",
+    "verifyEmail": "Erro ao verificar e-mail",
     "userFetch": "Erro ao buscar usuários",
     "userUpdate": "Erro ao atualizar usuário",
     "cnpjLookup": "Erro ao consultar CNPJ",
