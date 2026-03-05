@@ -110,6 +110,7 @@ export function ConfirmModal({
           className={styles.confirm}
           cooldown={cooldownDuration || 0}
           isLoading={isLoading}
+          loaderProps={{ scale: 0.8 }}
           disabled={isButtonDisabled}
           onClick={handleConfirmClick}
         >
