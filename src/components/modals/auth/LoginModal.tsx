@@ -7,22 +7,23 @@ import RequiredHint from "@/components/hints/RequiredHint"
 import { AlreadyAuthWarn } from "@/components/warns/AlreadyAuthWarn"
 import { FaArrowRight } from "react-icons/fa"
 import { Link, useNavigate } from "react-router-dom"
+import { DarkWrapper } from "@/components/DarkWrapper"
 import { LoaderWrapper } from "@/components/loader/LoaderWrapper"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useAsync } from "@/hooks/useAsync"
 import { hasSession } from "@/utils/authutils"
-import { userService } from "@/services/userService"
 import { displayFormsErrors } from "@/utils/errorHandlerUtils"
+import { useSessionStore } from "@/stores/useSessionStore"
 import { useTranslation } from "react-i18next"
 
 import styles from "./AuthModal.module.css"
-import { DarkWrapper } from "@/components/DarkWrapper"
 
 export function LoginModal(): JSX.Element {
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const login = useSessionStore((s) => s.login)
+
   const [showWarn, setShowWarn] = useState(hasSession)
-  const [login, isLoading] = useAsync(userService.login)
+  const [isLoading, setIsLoading] = useState(false)
   const {
     register,
     handleSubmit,
@@ -33,14 +34,14 @@ export function LoginModal(): JSX.Element {
   })
 
   const onSubmit: SubmitHandler<LoginFormFields> = async (data) => {
+    setIsLoading(true)
     const resp = await login(data)
+    setIsLoading(false)
     if (!resp.success) {
       displayFormsErrors(resp.errors, setError)
       return
     }
 
-    localStorage.setItem("access_token", resp.data.accessToken)
-    localStorage.setItem("id_token", resp.data.idToken)
     navigate("/")
   }
 
@@ -66,7 +67,9 @@ export function LoginModal(): JSX.Element {
               placeholder={t("modals.auth.emailPlh")}
             />
             {!!errors.email && (
-              <span className={styles.authInputError}>{errors.email?.message}</span>
+              <span className={styles.authInputError}>
+                {errors.email?.message}
+              </span>
             )}
           </div>
 
@@ -76,9 +79,15 @@ export function LoginModal(): JSX.Element {
               {t("modals.auth.pwd")}
               <RequiredHint />
             </label>
-            <input className={styles.authFormInput} {...register("password")} type="password" />
+            <input
+              className={styles.authFormInput}
+              {...register("password")}
+              type="password"
+            />
             {!!errors.password && (
-              <span className={styles.authInputError}>{errors.password?.message}</span>
+              <span className={styles.authInputError}>
+                {errors.password?.message}
+              </span>
             )}
           </div>
 
@@ -86,16 +95,28 @@ export function LoginModal(): JSX.Element {
           <div className={styles.authFormFooterContainer}>
             <div className={styles.authFooterContents}>
               <LoaderWrapper isLoading={isLoading} loaderProps={{ scale: 0.8 }}>
-                <button disabled={isLoading} className={styles.submitButton} type="submit">
+                <button
+                  disabled={isLoading}
+                  className={styles.submitButton}
+                  type="submit"
+                >
                   {t("modals.auth.login")}
                 </button>
               </LoaderWrapper>
-              <Link draggable="false" className={styles.modalSwitcher} to="/register">
+              <Link
+                draggable="false"
+                className={styles.modalSwitcher}
+                to="/register"
+              >
                 <span>{t("modals.auth.newAcc")}</span>
                 <FaArrowRight />
               </Link>
             </div>
-            {!!errors.root && <span className={styles.authInputError}>{errors.root.message}</span>}
+            {!!errors.root && (
+              <span className={styles.authInputError}>
+                {errors.root.message}
+              </span>
+            )}
           </div>
         </form>
       </div>

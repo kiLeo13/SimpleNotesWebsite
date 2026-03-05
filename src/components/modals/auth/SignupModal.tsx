@@ -1,6 +1,10 @@
 import { signupSchema, type SignupFormFields } from "@/types/forms/users"
 import { useCallback, useMemo, useState, type JSX } from "react"
-import { useForm, type SubmitHandler, type UseFormSetError } from "react-hook-form"
+import {
+  useForm,
+  type SubmitHandler,
+  type UseFormSetError
+} from "react-hook-form"
 
 import RequiredHint from "@/components/hints/RequiredHint"
 
@@ -54,7 +58,10 @@ export function SignupModal(): JSX.Element {
     }
   }, [getFieldState, getValues, setError, t])
 
-  const debouncedEmailCheck = useMemo(() => debounce(handleEmailCheck, 500), [handleEmailCheck])
+  const debouncedEmailCheck = useMemo(
+    () => debounce(handleEmailCheck, 500),
+    [handleEmailCheck]
+  )
 
   const onSubmit: SubmitHandler<SignupFormFields> = async (data) => {
     const statusResp = await status(data)
@@ -80,7 +87,10 @@ export function SignupModal(): JSX.Element {
     <>
       {isEmailVerifying && (
         <DarkWrapper>
-          <VerificationModal email={getValues("email")} />
+          <VerificationModal
+            email={getValues("email")}
+            password={getValues("password")}
+          />
         </DarkWrapper>
       )}
 
@@ -98,7 +108,9 @@ export function SignupModal(): JSX.Element {
               autoComplete="name"
             />
             {!!errors.username && (
-              <span className={styles.authInputError}>{errors.username.message}</span>
+              <span className={styles.authInputError}>
+                {errors.username.message}
+              </span>
             )}
           </div>
 
@@ -119,7 +131,9 @@ export function SignupModal(): JSX.Element {
               placeholder={t("modals.auth.emailPlh")}
             />
             {!!errors.email && (
-              <span className={styles.authInputError}>{errors.email.message}</span>
+              <span className={styles.authInputError}>
+                {errors.email.message}
+              </span>
             )}
           </div>
 
@@ -147,23 +161,37 @@ export function SignupModal(): JSX.Element {
               )}
             </div>
             {!!errors.password && (
-              <span className={styles.authInputError}>{errors.password.message}</span>
+              <span className={styles.authInputError}>
+                {errors.password.message}
+              </span>
             )}
           </div>
 
           <div className={styles.authFormFooterContainer}>
             <div className={styles.authFooterContents}>
               <LoaderWrapper isLoading={isLoading} loaderProps={{ scale: 0.8 }}>
-                <button disabled={isLoading} className={styles.submitButton} type="submit">
+                <button
+                  disabled={isLoading}
+                  className={styles.submitButton}
+                  type="submit"
+                >
                   {t("modals.auth.verify")}
                 </button>
               </LoaderWrapper>
-              <Link draggable="false" className={styles.modalSwitcher} to="/login">
+              <Link
+                draggable="false"
+                className={styles.modalSwitcher}
+                to="/login"
+              >
                 <span>{t("modals.auth.hasAcc")}</span>
                 <FaArrowRight />
               </Link>
             </div>
-            {!!errors.root && <span className={styles.authInputError}>{errors.root.message}</span>}
+            {!!errors.root && (
+              <span className={styles.authInputError}>
+                {errors.root.message}
+              </span>
+            )}
           </div>
         </form>
       </div>

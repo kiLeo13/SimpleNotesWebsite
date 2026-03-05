@@ -2,27 +2,34 @@ import { useEffect, useRef, useState, type JSX } from "react"
 
 import RequiredHint from "@/components/hints/RequiredHint"
 
-import { LoaderContainer } from "@/components/LoaderContainer"
+import { Button } from "@/components/ui/buttons/Button"
 import { isOnlyDigit } from "@/utils/utils"
 import { useAsync } from "@/hooks/useAsync"
-import { useNavigate } from "react-router-dom"
 import { userService } from "@/services/userService"
+import { useSessionStore } from "@/stores/useSessionStore"
 import { useTranslation } from "react-i18next"
+import { useNavigate } from "react-router-dom"
 import { isNumber } from "lodash-es"
+import { toasts } from "@/utils/toastUtils"
 
 import authStyles from "../../AuthModal.module.css"
 import styles from "./VerificationModal.module.css"
 
 type VerificationModalProps = {
   email: string
+  password: string
 }
 
-export function VerificationModal({ email }: VerificationModalProps): JSX.Element {
-  const navigate = useNavigate()
+export function VerificationModal({
+  email,
+  password
+}: VerificationModalProps): JSX.Element {
   const { t } = useTranslation()
   const [code, setCode] = useState("")
-  const [error, setError] = useState<string | null>(null)
   const [verify, isLoading] = useAsync(userService.verifyEmail)
+
+  const navigate = useNavigate()
+  const login = useSessionStore((s) => s.login)
   const codeInRef = useRef<HTMLInputElement>(null)
   const isValid = isNumber(code) || code.length === 6
 
@@ -37,19 +44,22 @@ export function VerificationModal({ email }: VerificationModalProps): JSX.Elemen
     }
   }
 
-  // We are not using React Hook form here, I mean, its just 1 field XD
   const verifyHandler = async (e: React.FormEvent) => {
     e.preventDefault()
-    const response = await verify({ code: code, email: email })
+    const resp = await verify({ code: code, email: email })
 
-    if (!response.success) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      for (const [_, messages] of Object.entries(response.errors)) {
-        setError(messages.join(", "))
-      }
+    if (!resp.success) {
+      toasts.apiError(t("errors.verifyEmail"), resp)
       return
     }
-    navigate("/login")
+
+    const loginResp = await login({ email: email, password: password })
+    if (!loginResp.success) {
+      toasts.apiError(t("errors.verifyEmail"), loginResp)
+      return
+    }
+
+    navigate("/")
   }
 
   return (
@@ -86,17 +96,19 @@ export function VerificationModal({ email }: VerificationModalProps): JSX.Elemen
             onChange={codeTypeHandler}
             value={code}
           />
-          {error && <span className={authStyles.authInputError}>{error}</span>}
         </div>
         <footer className={styles.verifyFooter}>
-          <button
-            disabled={isLoading || !isValid}
+          <Button
             className={authStyles.submitButton}
+            disabled={isLoading || !isValid}
+            isLoading={isLoading}
             type="submit"
+            loaderProps={{
+              scale: 0.7
+            }}
           >
             {t("modals.verify.confirm")}
-            {isLoading && <LoaderContainer scale="0.7" />}
-          </button>
+          </Button>
         </footer>
       </form>
     </div>
