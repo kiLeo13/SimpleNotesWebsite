@@ -1,6 +1,11 @@
-import type { UserResponseData } from "@/types/api/users"
-import { userService } from "@/services/userService"
+import type { ApiResponse } from "@/types/api/api"
+import type {
+  LoginRequestPayload,
+  LoginResponseData,
+  UserResponseData
+} from "@/types/api/users"
 
+import { userService } from "@/services/userService"
 import { create } from "zustand"
 
 type SessionState = {
@@ -9,6 +14,7 @@ type SessionState = {
   getIdToken: () => string | null
   getAccessToken: () => string | null
 
+  login: (data: LoginRequestPayload) => Promise<ApiResponse<LoginResponseData>>
   logout: () => void
   setUser: (user: UserResponseData) => void
   updateUser: (updates: Partial<UserResponseData>) => void
@@ -23,6 +29,15 @@ export const useSessionStore = create<SessionState>((set, get) => ({
 
   getAccessToken() {
     return localStorage.getItem("access_token")
+  },
+
+  async login(data) {
+    const resp = await userService.login(data)
+    if (resp.success) {
+      localStorage.setItem("access_token", resp.data.accessToken)
+      localStorage.setItem("id_token", resp.data.idToken)
+    }
+    return resp
   },
 
   /**
