@@ -1,6 +1,6 @@
 import z from "zod"
 
-export type NoteVisibility = "PUBLIC" | "ORG" | "PRIVATE"
+export type NoteVisibility = "PUBLIC" | "PRIVATE"
 
 export type NoteType = "MARKDOWN" | "FLOWCHART" | "REFERENCE"
 
@@ -30,7 +30,7 @@ export const NoteBaseSchema = z.object({
   id: z.number(),
   name: z.string(),
   tags: z.array(z.string()),
-  visibility: z.enum(["PUBLIC", "ORG", "PRIVATE"]),
+  visibility: z.enum(["PUBLIC", "PRIVATE"]),
   note_type: z.enum(["MARKDOWN", "FLOWCHART", "REFERENCE"]),
   created_by_id: z.number(),
   content_size: z.number(),

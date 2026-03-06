@@ -14,7 +14,6 @@ const t = i18n.t
 
 export const VISIBILITY_OPTIONS = [
   { label: "notes.visibility.public", value: "PUBLIC" },
-  { label: "notes.visibility.org", value: "ORG" },
   { label: "notes.visibility.private", value: "PRIVATE" }
 ]
 
@@ -24,7 +23,7 @@ const baseNoteSchema = z.object({
     .min(2, t("errors.string.min", { count: 2 }))
     .max(80, t("errors.string.max", { count: 80 })),
 
-  visibility: z.enum(["PUBLIC", "ORG", "PRIVATE"], t("errors.enum.invalid")),
+  visibility: z.enum(["PUBLIC", "PRIVATE"], t("errors.enum.invalid")),
 
   tags: z
     .array(

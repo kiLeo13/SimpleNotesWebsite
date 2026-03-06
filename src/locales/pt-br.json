@@ -21,7 +21,6 @@
   "notes": {
     "visibility": {
       "public": "Público",
-      "org": "Organização",
       "private": "Oculto"
     }
   },
