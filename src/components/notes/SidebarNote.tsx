@@ -96,7 +96,7 @@ export function SidebarNote({ note, onClick }: SidebarNoteProps): JSX.Element {
       ref={elementRef}
     >
       <span className={styles.noteItemTitle}>{note.name}</span>
-      <Ripple />
+      <Ripple duration={600} />
 
       {(canEdit || canDelete) && (
         <ActionMenu items={noteOpts} side="right" align="center">
