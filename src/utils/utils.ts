@@ -63,8 +63,14 @@ export function formatTimestamp(timestamp: string): string {
   return dayjs(timestamp).format("DD/MM/YYYY [às] HH:mm")
 }
 
-export function formatDate(iso: string): string {
-  return dayjs(iso).format("DD/MM/YYYY")
+export function formatDate(iso: string | false | undefined): string | null {
+  if (typeof iso !== "string" || !iso.trim()) return null
+  
+  const parsed = dayjs(iso)
+
+  if (!parsed.isValid()) return null
+  
+  return parsed.format("DD/MM/YYYY")
 }
 
 export function inRange(value: number, min: number, max: number): boolean {
