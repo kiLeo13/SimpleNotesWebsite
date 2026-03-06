@@ -14,7 +14,7 @@ export const regStatusSchema = z.enum([
 const registrationSchema = z.object({
   status: regStatusSchema,
   reason: z.string(),
-  date: z.iso.date()
+  date: z.string().optional()
 })
 
 const companyAddressSchema = z

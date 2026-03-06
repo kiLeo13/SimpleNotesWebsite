@@ -140,7 +140,7 @@ export function CompanyDisplay({ company }: CompanyDisplayProps): JSX.Element {
                 {t("labels.companyStartDate")}
               </span>
               <span className={styles.listItemValue}>
-                {formatDate(company.startDate)}
+                {formatDate(company.startDate) || notn}
               </span>
             </li>
 
@@ -169,7 +169,7 @@ export function CompanyDisplay({ company }: CompanyDisplayProps): JSX.Element {
                 {t("labels.regStatusDate")}
               </span>
               <span className={styles.listItemValue}>
-                {formatDate(company.registration.date)}
+                {formatDate(company.registration.date) || notn}
               </span>
             </li>
 
