@@ -1,8 +1,10 @@
 import z from "zod"
 
-export type NoteVisibility = "PUBLIC" | "PRIVATE"
+export const noteVisibilitySchema = z.enum(["PUBLIC", "PRIVATE"])
+export type NoteVisibility = z.infer<typeof noteVisibilitySchema>
 
-export type NoteType = "MARKDOWN" | "FLOWCHART" | "REFERENCE"
+export const noteTypeSchema = z.enum(["MARKDOWN", "FLOWCHART", "REFERENCE"])
+export type NoteType = z.infer<typeof noteTypeSchema>
 
 // --- REQUEST PAYLOADS ---
 interface BaseNotePayload {
@@ -30,8 +32,8 @@ export const NoteBaseSchema = z.object({
   id: z.number(),
   name: z.string(),
   tags: z.array(z.string()),
-  visibility: z.enum(["PUBLIC", "PRIVATE"]),
-  note_type: z.enum(["MARKDOWN", "FLOWCHART", "REFERENCE"]),
+  visibility: noteVisibilitySchema,
+  note_type: noteTypeSchema,
   created_by_id: z.number(),
   content_size: z.number(),
   created_at: z.string(),
@@ -39,12 +41,12 @@ export const NoteBaseSchema = z.object({
 })
 
 const TextNoteSchema = NoteBaseSchema.extend({
-  note_type: z.enum(["MARKDOWN", "FLOWCHART"])
+  note_type: noteTypeSchema.extract(["MARKDOWN", "FLOWCHART"])
 })
 
 // Specific Schema for File Notes (PDFs, Images)
 const ReferenceNoteSchema = NoteBaseSchema.extend({
-  note_type: z.literal("REFERENCE"),
+  note_type: noteTypeSchema.extract(["REFERENCE"]),
   // Reference notes usually contain a filename/UUID in 'content'
   content: z.string()
 })
