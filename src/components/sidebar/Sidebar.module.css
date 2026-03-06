@@ -4,23 +4,10 @@
   display: grid;
   grid-template-rows: auto 1fr auto;
   height: 100vh;
-  width: 300px;
+  width: 100%;
   padding: var(--sidebar-padding);
   padding-bottom: 0;
   box-sizing: border-box;
-  transition: width 0.3s;
-}
-
-@media (min-width: 1600px) {
-  .leftMenu {
-    width: 360px;
-  }
-}
-
-@media (max-width: 800px) {
-  .leftMenu {
-    width: 230px;
-  }
 }
 
 .menuUpperControls {

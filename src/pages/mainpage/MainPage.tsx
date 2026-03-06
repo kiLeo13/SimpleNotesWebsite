@@ -1,5 +1,11 @@
 import { useEffect, type JSX } from "react"
 
+import {
+  Group,
+  Panel,
+  Separator,
+  useDefaultLayout
+} from "react-resizable-panels"
 import { Sidebar } from "@/components/sidebar/Sidebar"
 import { EmptyDisplay } from "@/components/board/EmptyDisplay"
 import { ContentBoard } from "@/components/board/ContentBoard"
@@ -20,10 +26,16 @@ export function MainPage(): JSX.Element {
   const shownNote = useNoteStore((state) => state.shownNote)
   const isRendering = useNoteStore((state) => state.isRendering)
   const closeNote = useNoteStore((state) => state.closeNote)
-  const showRenderingLoader = isRendering && !shownNote?.content?.endsWith("mp4")
+  const showRenderingLoader =
+    isRendering && !shownNote?.content?.endsWith("mp4")
 
   // Init WebSocket
   useWebSocketManager()
+
+  const { defaultLayout, onLayoutChanged } = useDefaultLayout({
+    id: "notes-layout-persistence",
+    storage: localStorage
+  })
 
   useEffect(() => {
     const loadSelfUser = async () => {
@@ -58,15 +70,33 @@ export function MainPage(): JSX.Element {
     <>
       <title>{`${t("app.title")} - Anotações`}</title>
 
-      <div className={styles.container}>
-        <Sidebar />
+      <Group
+        orientation="horizontal"
+        className={styles.container}
+        defaultLayout={defaultLayout}
+        onLayoutChanged={onLayoutChanged}
+        resizeTargetMinimumSize={{ fine: 0, coarse: 0 }}
+        disableCursor
+      >
+        <Panel
+          defaultSize={300}
+          minSize={250}
+          maxSize={400}
+          className={styles.sidebarPanel}
+        >
+          <Sidebar />
+        </Panel>
 
-        <main className={styles.mainContent}>
-          {shownNote ? <ContentBoard note={shownNote} /> : <EmptyDisplay />}
+        <Separator className={styles.resizeHandle} />
 
-          {showRenderingLoader && <LoaderContainer />}
-        </main>
-      </div>
+        <Panel minSize={30}>
+          <main className={styles.mainContent}>
+            {shownNote ? <ContentBoard note={shownNote} /> : <EmptyDisplay />}
+
+            {showRenderingLoader && <LoaderContainer />}
+          </main>
+        </Panel>
+      </Group>
     </>
   )
 }

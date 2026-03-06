@@ -1,9 +1,33 @@
 .container {
   position: fixed;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-rows: 100%;
+  display: flex;
   inset: 0;
+}
+
+.resizeHandle {
+  position: relative;
+  width: 4px;
+  margin: 0 -2px;
+  background-color: transparent;
+  cursor: e-resize;
+  outline: none;
+  transition: background-color 200ms ease-in-out;
+  z-index: 10;
+}
+
+.resizeHandle[data-separator="hover"] {
+  background-color: rgb(68, 53, 83);
+  transition: background-color 200ms ease-in-out 300ms;
+}
+
+/* 
+ * We slightly tweak the color (from 83 to 84) to force a "style recalculation".
+ * Browsers ignore a 0s transition if the target color is identical to 
+ * a pending hover transition, so this tiny change triggers an instant update.
+ */
+.resizeHandle[data-separator="active"] {
+  background-color: rgb(68, 53, 84);
+  transition: background-color 200ms ease-in-out;
 }
 
 .mainContent {
@@ -15,8 +39,8 @@
   width: 100%;
   overflow: hidden;
   background-color: var(--main-background-color);
-  /* 
-   * Allows the grid/flex item to shrink below its content size. 
+  /*
+   * Allows the flex item to shrink below its content size. 
    * Without this, a long string forces the div to grow endlessly (for markdowns).
    */
   min-width: 0;
