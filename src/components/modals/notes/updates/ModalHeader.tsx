@@ -1,5 +1,5 @@
 import type { JSX } from "react"
-import type { FullNoteResponseData, NoteType } from "@/types/api/notes"
+import type { NoteResponseData, NoteType } from "@/types/api/notes"
 
 import { MdHeadphones, MdImage } from "react-icons/md"
 import { LuClapperboard } from "react-icons/lu"
@@ -13,11 +13,13 @@ import { ext } from "@/utils/utils"
 import styles from "./ModalHeader.module.css"
 
 type UpdateModalHeaderProps = {
-  note: FullNoteResponseData | null
+  note: NoteResponseData | null
 }
 
 export function ModalHeader({ note }: UpdateModalHeaderProps): JSX.Element {
   const { t } = useTranslation()
+
+  const contentStr = note?.note_type === "REFERENCE" ? note.content : undefined
 
   return (
     <header className={styles.header}>
@@ -25,7 +27,7 @@ export function ModalHeader({ note }: UpdateModalHeaderProps): JSX.Element {
 
       <h3 className={styles.subtitle}>
         <span className={styles.noteName}>
-          {resolveIcon(note?.content, note?.note_type)}
+          {resolveIcon(contentStr, note?.note_type)}
           <span>{note?.name}</span>
         </span>
       </h3>

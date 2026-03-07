@@ -1,5 +1,5 @@
 import type { JSX } from "react"
-import type { FullNoteResponseData } from "@/types/api/notes"
+import type { NoteResponseData } from "@/types/api/notes"
 
 import clsx from "clsx"
 
@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next"
 import styles from "./ModalNoteFileView.module.css"
 
 type ModalNoteFileViewProps = {
-  note: FullNoteResponseData | null
+  note: NoteResponseData | null
 }
 
 export function ModalNoteFileView({ note }: ModalNoteFileViewProps): JSX.Element {
@@ -18,7 +18,9 @@ export function ModalNoteFileView({ note }: ModalNoteFileViewProps): JSX.Element
 
   const hasFileName = ["FLOWCHART", "MARKDOWN"].includes(note?.note_type ?? "")
   const sizeView = getPrettySize(note?.content_size ?? 0)
-  const nameView = normalizeFileName(note?.content, hasFileName, t)
+
+  const contentStr = note?.note_type === "REFERENCE" ? note.content : undefined
+  const nameView = normalizeFileName(contentStr, hasFileName, t)
 
   return (
     <div className={styles.container}>

@@ -1,4 +1,4 @@
-import type { FullNoteResponseData } from "@/types/api/notes"
+import type { NoteResponseData } from "@/types/api/notes"
 import type { UserResponseData } from "@/types/api/users"
 import {
   useFormContext,
@@ -31,9 +31,10 @@ import { noteService } from "@/services/noteService"
 import { toasts } from "@/utils/toastUtils"
 
 import styles from "./UpdateNoteForm.module.css"
+import { useUsersStore } from "@/stores/useUsersStore"
 
 type UpdateNoteFormProps = {
-  note: FullNoteResponseData | null
+  note: NoteResponseData | null
   handleSubmit: UseFormHandleSubmit<UpdateNoteFormFields>
   setIsPatching: (show: boolean) => void
 }
@@ -49,6 +50,7 @@ export function UpdateNoteForm({
   const { t } = useTranslation()
 
   // Local UI
+  const getUserById = useUsersStore((s) => s.getById)
   const [author, setAuthor] = useState<UserResponseData | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -80,18 +82,23 @@ export function UpdateNoteForm({
   }
 
   useEffect(() => {
-    const fetchAuthor = async (note: FullNoteResponseData) => {
+    const fetchAuthor = async (note: NoteResponseData) => {
+      const cached = getUserById(note.created_by_id)
+      if (cached) {
+        setAuthor(cached)
+        return
+      }
+
       const resp = await userService.getUserById(note.created_by_id)
       if (!resp.success) {
         toasts.apiError(t("errors.noteAuthor"), resp)
         return
       }
-
       setAuthor(resp.data)
     }
 
     if (note) fetchAuthor(note)
-  }, [note, t])
+  }, [note, t, getUserById])
 
   return (
     <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>

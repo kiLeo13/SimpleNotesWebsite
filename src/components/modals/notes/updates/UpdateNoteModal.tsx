@@ -1,14 +1,15 @@
-import type { FullNoteResponseData } from "@/types/api/notes"
-import { useEffect, useState, type JSX } from "react"
-import { updateNoteSchema, type UpdateNoteFormFields } from "@/types/forms/notes"
+import { useEffect, type JSX } from "react"
+import {
+  updateNoteSchema,
+  type UpdateNoteFormFields
+} from "@/types/forms/notes"
 
 import { FormProvider, useForm } from "react-hook-form"
 import { ModalHeader } from "./ModalHeader"
-import { DarkWrapper } from "@/components/DarkWrapper"
 import { IoMdClose } from "react-icons/io"
 import { UpdateNoteForm } from "./UpdateNoteForm"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { noteService } from "@/services/noteService"
+import { useNoteStore } from "@/stores/useNotesStore"
 import { useTranslation } from "react-i18next"
 import { toasts } from "@/utils/toastUtils"
 
@@ -19,61 +20,53 @@ type UpdateNoteModalProps = {
   setIsPatching: (flag: boolean) => void
 }
 
-export function UpdateNoteModal({ noteId, setIsPatching }: UpdateNoteModalProps): JSX.Element {
+export function UpdateNoteModal({
+  noteId,
+  setIsPatching
+}: UpdateNoteModalProps): JSX.Element {
   const { t } = useTranslation()
 
-  const [note, setNote] = useState<FullNoteResponseData | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const handleCloseModal = () => setIsPatching(false)
+  const getNoteById = useNoteStore((s) => s.getNoteById)
+  const note = getNoteById(noteId)
+
   const methods = useForm<UpdateNoteFormFields>({
     resolver: zodResolver(updateNoteSchema),
     mode: "onChange",
     defaultValues: {
-      name: "",
-      visibility: "PUBLIC",
-      tags: []
+      name: note?.name || "",
+      visibility: note?.visibility || "PUBLIC",
+      tags: note?.tags || []
     }
   })
   const { handleSubmit, reset } = methods
 
   useEffect(() => {
-    const fetchNote = async () => {
-      setIsLoading(true)
-      const resp = await noteService.fetchNote(noteId)
-      setIsLoading(false)
-
-      if (resp.success) {
-        setNote(resp.data)
-
-        reset({
-          name: resp.data.name,
-          visibility: resp.data.visibility,
-          tags: resp.data.tags || []
-        })
-      } else {
-        toasts.apiError(t("updateNoteModal.fetchError"), resp)
-        setIsPatching(false)
-      }
+    if (!note) {
+      toasts.error(t("updateNoteModal.fetchError"))
+      setIsPatching(false)
+    } else {
+      reset({
+        name: note.name,
+        visibility: note.visibility,
+        tags: note.tags || []
+      })
     }
-    fetchNote()
-  }, [noteId, setIsPatching, reset, t])
+  }, [note, reset, setIsPatching, t])
 
   return (
     <div className={styles.container}>
-      {isLoading && (
-        <DarkWrapper>
-          <div className="loader" />
-        </DarkWrapper>
-      )}
-
-      <div className={styles.close} onClick={handleCloseModal}>
+      <div className={styles.close} onClick={() => setIsPatching(false)}>
         <IoMdClose color="rgba(94, 76, 121, 1)" size={"24px"} />
       </div>
 
       <ModalHeader note={note} />
 
       <FormProvider {...methods}>
-        <UpdateNoteForm note={note} handleSubmit={handleSubmit} setIsPatching={setIsPatching} />
+        <UpdateNoteForm
+          note={note}
+          handleSubmit={handleSubmit}
+          setIsPatching={setIsPatching}
+        />
       </FormProvider>
     </div>
   )
