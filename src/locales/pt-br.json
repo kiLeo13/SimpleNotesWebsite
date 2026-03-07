@@ -210,6 +210,10 @@
     "cnpjNotFound": "CNPJ não encontrado",
     "accountSuspended": "Sua conta foi suspensa. Motivo: {{reason}}",
     "noteAuthor": "Erro ao buscar autor da anotação",
+    "notes": {
+      "notFound": "Nota não encontrada",
+      "cantOpen": "Não foi possível abrir nota"
+    },
     "tags": {
       "min": "Cada item precisa ter pelo menos {{val}} caracteres",
       "max": "Cada item pode ter no máximo {{val}} caracteres",
