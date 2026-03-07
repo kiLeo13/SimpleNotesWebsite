@@ -116,7 +116,7 @@ export const useNoteStore = create<NotesState>((set, get) => ({
     set({ shownNote: null, isFetchingNote: true, isRendering: false })
 
     const loadResp = await ensureLoaded()
-    if (!loadResp?.success) {
+    if (loadResp && !loadResp.success) {
       set({ isFetchingNote: false })
       return loadResp
     }
