@@ -1,13 +1,22 @@
-import type { FullNoteResponseData, NoteResponseData } from "@/types/api/notes"
+import type {
+  FullNoteResponseData,
+  ListNoteResponseData,
+  NoteResponseData
+} from "@/types/api/notes"
+import type { ApiErrorResponse, ApiResponse } from "@/types/api/api"
 
 import { noteService } from "@/services/noteService"
-import { toasts } from "@/utils/toastUtils"
 import { create } from "zustand"
+
+export type NotesStoreState = "NONE" | "LOADING" | "READY" | "ERROR"
 
 type NotesState = {
   notes: NoteResponseData[]
-  isLoading: boolean
+  state: NotesStoreState
+  _fetchPromise: Promise<ApiResponse<ListNoteResponseData> | void> | null
+
   shownNote: FullNoteResponseData | null
+  isFetchingNote: boolean
   isRendering: boolean
 
   addNote: (note: NoteResponseData) => void
@@ -15,8 +24,10 @@ type NotesState = {
   removeNote: (noteId: number) => void
   getNoteById: (noteId: number) => NoteResponseData | null
 
-  fetchNotes: () => Promise<void>
-  openNote: (note: NoteResponseData) => Promise<void>
+  ensureLoaded: () => Promise<ApiResponse<ListNoteResponseData> | void>
+  reload: () => void
+
+  openNote: (noteId: number) => Promise<ApiErrorResponse | void>
   closeNote: () => void
 
   setRendering: (flag: boolean) => void
@@ -24,8 +35,10 @@ type NotesState = {
 
 export const useNoteStore = create<NotesState>((set, get) => ({
   notes: [],
-  isLoading: false,
+  state: "NONE",
+  _fetchPromise: null,
   shownNote: null,
+  isFetchingNote: false,
   isRendering: false,
 
   addNote: (note) => {
@@ -54,43 +67,89 @@ export const useNoteStore = create<NotesState>((set, get) => ({
     return note || null
   },
 
-  fetchNotes: async () => {
-    set({ isLoading: true })
-    const resp = await noteService.listNotes()
+  ensureLoaded() {
+    const { state, _fetchPromise } = get()
+    if (state === "READY") return Promise.resolve()
+    if (_fetchPromise) return _fetchPromise
 
-    set({
-      notes: resp.success ? resp.data.notes : [],
-      isLoading: false
-    })
+    const promise = (async () => {
+      set({ state: "LOADING" })
+
+      const resp = await noteService.listNotes()
+      if (resp.success) {
+        set({ notes: resp.data.notes, state: "READY" })
+      } else {
+        set({ state: "ERROR" })
+      }
+      return resp
+    })()
+
+    set({ _fetchPromise: promise.finally(() => set({ _fetchPromise: null })) })
+    return promise
   },
 
-  openNote: async (note) => {
-    const { shownNote } = get()
-    if (shownNote?.id === note.id) return
+  async reload() {
+    const { state } = get()
+    if (state !== "READY") return
 
-    set({ isRendering: true })
+    // Since this function is just a reload function, if something fails
+    // we just do nothing... sad day, right?
+    set({ state: "LOADING" })
+    try {
+      const resp = await noteService.listNotes()
+      if (resp.success) {
+        set({ notes: resp.data.notes })
+      }
+    } catch (error) {
+      console.error(error)
+    } finally {
+      set({ state: "READY" })
+    }
+  },
 
-    // We don't need to fetch reference notes content (binary files),
-    // as we just show the metadata or a download button.
-    if (note.note_type === "REFERENCE") {
-      set({ shownNote: note as FullNoteResponseData, isRendering: false })
+  openNote: async (noteId) => {
+    const { shownNote, ensureLoaded } = get()
+
+    if (shownNote?.id === noteId) return
+
+    set({ shownNote: null, isFetchingNote: true, isRendering: false })
+
+    const loadResp = await ensureLoaded()
+    if (!loadResp?.success) {
+      set({ isFetchingNote: false })
+      return loadResp
+    }
+
+    // Find the base metadata from our sidebar list
+    const baseNote = get().notes.find((n) => n.id === noteId)
+    if (!baseNote) {
+      set({ isFetchingNote: false })
+      return {
+        success: false,
+        statusCode: 404,
+        errors: { root: ["notFound"] }
+      }
+    }
+
+    if (baseNote.note_type === "REFERENCE") {
+      set({
+        shownNote: baseNote as FullNoteResponseData,
+        isFetchingNote: false
+      })
       return
     }
 
-    const resp = await noteService.fetchNote(note.id)
+    const resp = await noteService.fetchNote(noteId)
     if (!resp.success) {
-      set({ isRendering: false })
-      toasts.apiError("Não foi possível encontrar nota completa", resp)
-      return
+      set({ isFetchingNote: false })
+      return resp
     }
 
-    // We turn off rendering immediately for text-based notes (Markdown and Mermaid).
-    // For binary files (like PDF/Images), we leave it true so the specific UI component
     const isTextBased = ["MARKDOWN", "FLOWCHART"].includes(resp.data.note_type)
-
     set({
       shownNote: resp.data,
-      ...(isTextBased && { isRendering: false })
+      isFetchingNote: false,
+      isRendering: !isTextBased
     })
   },
 

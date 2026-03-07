@@ -6,6 +6,7 @@ import { SidebarFooter } from "./SidebarFooter"
 import { PiListMagnifyingGlass } from "react-icons/pi"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useNoteStore } from "@/stores/useNotesStore"
+import { useSearchParams } from "react-router-dom"
 import { matchSorter } from "match-sorter"
 import { throttle } from "lodash-es"
 import { useTranslation } from "react-i18next"
@@ -15,19 +16,22 @@ import styles from "./Sidebar.module.css"
 export function Sidebar(): JSX.Element {
   const { t } = useTranslation()
 
-  const notes = useNoteStore((state) => state.notes)
-  const isLoading = useNoteStore((state) => state.isLoading)
-  const fetchNotes = useNoteStore((state) => state.fetchNotes)
-  const openNote = useNoteStore((state) => state.openNote)
-
   const [search, setSearch] = useState("")
+  const [, setSearchParams] = useSearchParams()
+
+  const notes = useNoteStore((s) => s.notes)
+  const notesState = useNoteStore((s) => s.state)
+  const ensureLoaded = useNoteStore((s) => s.ensureLoaded)
+  const reloadNotes = useNoteStore((s) => s.reload)
+
+  const isLoading = notesState === "LOADING"
   const searchRef = useRef<HTMLInputElement>(null)
   const filteredNotes = toFilteredNotes(search, notes)
   const resultCount = filteredNotes.length
 
   useEffect(() => {
-    fetchNotes()
-  }, [fetchNotes])
+    ensureLoaded()
+  }, [ensureLoaded])
 
   const handleSearch: ChangeEventHandler<HTMLInputElement> = (e) => {
     setSearch(e.target.value)
@@ -40,12 +44,12 @@ export function Sidebar(): JSX.Element {
   }
 
   const handleOpenNote = (n: NoteResponseData) => {
-    openNote(n)
+    setSearchParams({ id: n.id.toString() })
   }
 
   const throttledLoadNotes = useMemo(
-    () => throttle(fetchNotes, 5000, { leading: true, trailing: false }),
-    [fetchNotes]
+    () => throttle(reloadNotes, 5000, { leading: true, trailing: false }),
+    [reloadNotes]
   )
 
   useEffect(() => {
