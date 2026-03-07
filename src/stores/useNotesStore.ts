@@ -28,6 +28,7 @@ type NotesState = {
   reload: () => void
 
   openNote: (noteId: number) => Promise<ApiErrorResponse | void>
+  renderNote: (note: FullNoteResponseData) => void
   closeNote: () => void
 
   setRendering: (flag: boolean) => void
@@ -148,6 +149,16 @@ export const useNoteStore = create<NotesState>((set, get) => ({
     const isTextBased = ["MARKDOWN", "FLOWCHART"].includes(resp.data.note_type)
     set({
       shownNote: resp.data,
+      isFetchingNote: false,
+      isRendering: !isTextBased
+    })
+  },
+
+  renderNote(note) {
+    const isTextBased = ["MARKDOWN", "FLOWCHART"].includes(note.note_type)
+
+    set({
+      shownNote: note,
       isFetchingNote: false,
       isRendering: !isTextBased
     })
