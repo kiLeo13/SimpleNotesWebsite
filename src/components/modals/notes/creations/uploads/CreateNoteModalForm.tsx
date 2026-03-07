@@ -37,7 +37,7 @@ export function CreateNoteModalForm({
 }: CreateNoteModalFormProps): JSX.Element {
   const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
-  const openNote = useNoteStore((state) => state.openNote)
+  const renderNote = useNoteStore((state) => state.renderNote)
   const methods = useForm<FileNoteFormFields>({
     resolver: zodResolver(uploadSchema),
     defaultValues: {
@@ -75,7 +75,7 @@ export function CreateNoteModalForm({
 
     if (resp.success) {
       toasts.success(t("createNoteModal.toasts.success"))
-      openNote(resp.data)
+      renderNote(resp.data)
       setShowUploadModal(false)
     } else {
       toasts.apiError(t("createNoteModal.toasts.error"), resp)
@@ -87,7 +87,7 @@ export function CreateNoteModalForm({
   return (
     <div className={styles.container}>
       <div className={styles.close} onClick={handleCloseModal}>
-        <IoMdClose color="rgba(94, 76, 121, 1)" size={"24px"} />
+        <IoMdClose color="#5e4c79" size={"24px"} />
       </div>
 
       <FormProvider {...methods}>

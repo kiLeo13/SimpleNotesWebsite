@@ -41,7 +41,7 @@ export function CreateEditorModal({
 }: CreateEditorModalProps): JSX.Element {
   const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
-  const openNote = useNoteStore((state) => state.openNote)
+  const renderNote = useNoteStore((state) => state.renderNote)
   const isChart = mode === "FLOWCHART"
   const methods = useForm<TextNoteFormFields>({
     resolver: zodResolver(editorSchema),
@@ -71,7 +71,7 @@ export function CreateEditorModal({
 
     if (resp.success) {
       toasts.success(t("createNoteModal.toasts.success"))
-      openNote(resp.data)
+      renderNote(resp.data)
       onClose()
     } else {
       toasts.apiError(t("createNoteModal.toasts.error"), resp)

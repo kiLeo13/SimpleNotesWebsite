@@ -107,7 +107,7 @@ function routeServerMessage(
 // ----------------------------------------
 
 function handleNoteEvents(msg: GatewayMessage) {
-  const { addNote, updateNote, removeNote, getNoteById, fetchNotes } =
+  const { addNote, updateNote, removeNote, getNoteById, reload } =
     useNoteStore.getState()
   const { user: self } = useSessionStore.getState()
   const selfHasAdmin = Permission.hasEffective(
@@ -126,7 +126,7 @@ function handleNoteEvents(msg: GatewayMessage) {
       const hasVisibilityChanged = oldNote?.visibility !== newNote.visibility
 
       if (hasVisibilityChanged && !selfHasAdmin) {
-        fetchNotes()
+        reload()
       } else {
         updateNote(newNote)
       }
@@ -140,7 +140,8 @@ function handleNoteEvents(msg: GatewayMessage) {
 }
 
 function handleUserEvents(msg: GatewayMessage) {
-  const { addUser, updateUser, updatePresence, removeUser } = useUsersStore.getState()
+  const { addUser, updateUser, updatePresence, removeUser } =
+    useUsersStore.getState()
   const { user: self, setUser } = useSessionStore.getState()
 
   switch (msg.type) {
@@ -166,7 +167,7 @@ function handleUserEvents(msg: GatewayMessage) {
 
         // Refetch notes if our own view permissions changed
         if (!selfHasAdmin && permissionChanged) {
-          useNoteStore.getState().fetchNotes()
+          useNoteStore.getState().reload()
         }
 
         setUser(updatedUser)
