@@ -96,6 +96,10 @@ export function isAlphanumeric(s: string): boolean {
   return /^[\p{L}\p{N}]+$/u.test(s)
 }
 
+export function isNumeric(s: string): boolean {
+  return /^\d+$/.test(s)
+}
+
 /**
  * Resolves the extension of a given file.
  * Returns `undefined` if none is provided (if the file does not have a `.` character).
