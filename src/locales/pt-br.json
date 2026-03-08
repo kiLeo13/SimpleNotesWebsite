@@ -28,6 +28,11 @@
     "title": "ZenKeep"
   },
   "labels": {
+    "zoom": {
+      "in": "Ampliar",
+      "out": "Reduzir",
+      "reset": "Redefinir"
+    },
     "partner": {
       "name": "Nome:",
       "role": "Qualificação:",

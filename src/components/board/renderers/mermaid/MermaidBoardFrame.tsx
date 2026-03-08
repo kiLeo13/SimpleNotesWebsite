@@ -8,9 +8,12 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch"
 import { MdOutlineZoomIn, MdOutlineZoomOut } from "react-icons/md"
 import { TbMaximize } from "react-icons/tb"
 import { toasts } from "@/utils/toastUtils"
+import { useTranslation } from "react-i18next"
 import { useEffect, useState, useMemo } from "react"
 
 import styles from "./MermaidBoardFrame.module.css"
+import { AppTooltip } from "@/components/ui/AppTooltip"
+import { Button } from "@/components/ui/buttons/Button"
 
 mermaid.initialize({
   startOnLoad: false,
@@ -27,6 +30,8 @@ export function MermaidBoardFrame({
   diagram,
   warnOnFail = true
 }: MermaidBoardFrameProps) {
+  const { t } = useTranslation()
+
   const [svgString, setSvgString] = useState("")
   const [failed, setFailed] = useState(false)
 
@@ -89,24 +94,30 @@ export function MermaidBoardFrame({
           {({ zoomIn, zoomOut, resetTransform }) => (
             <>
               <div className={styles.controlPanel}>
-                <button
-                  className={styles.controlButton}
-                  onClick={() => zoomIn()}
-                >
-                  <MdOutlineZoomIn size={"1.7em"} />
-                </button>
-                <button
-                  className={styles.controlButton}
-                  onClick={() => zoomOut()}
-                >
-                  <MdOutlineZoomOut size={"1.7em"} />
-                </button>
-                <button
-                  className={styles.controlButton}
-                  onClick={() => resetTransform()}
-                >
-                  <TbMaximize size={"1.6em"} />
-                </button>
+                <AppTooltip label={t("labels.zoom.in")} side="left">
+                  <Button
+                    className={styles.controlButton}
+                    onClick={() => zoomIn()}
+                  >
+                    <MdOutlineZoomIn size={"1.7em"} />
+                  </Button>
+                </AppTooltip>
+                <AppTooltip label={t("labels.zoom.out")} side="left">
+                  <Button
+                    className={styles.controlButton}
+                    onClick={() => zoomOut()}
+                  >
+                    <MdOutlineZoomOut size={"1.7em"} />
+                  </Button>
+                </AppTooltip>
+                <AppTooltip label={t("labels.zoom.reset")} side="left">
+                  <Button
+                    className={styles.controlButton}
+                    onClick={() => resetTransform()}
+                  >
+                    <TbMaximize size={"1.6em"} />
+                  </Button>
+                </AppTooltip>
               </div>
 
               <TransformComponent
