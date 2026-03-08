@@ -6,14 +6,14 @@ import parse, { attributesToProps } from "html-react-parser"
 import { Element, domToReact } from "html-react-parser"
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch"
 import { MdOutlineZoomIn, MdOutlineZoomOut } from "react-icons/md"
+import { AppTooltip } from "@/components/ui/AppTooltip"
+import { Button } from "@/components/ui/buttons/Button"
 import { TbMaximize } from "react-icons/tb"
 import { toasts } from "@/utils/toastUtils"
 import { useTranslation } from "react-i18next"
 import { useEffect, useState, useMemo } from "react"
 
 import styles from "./MermaidBoardFrame.module.css"
-import { AppTooltip } from "@/components/ui/AppTooltip"
-import { Button } from "@/components/ui/buttons/Button"
 
 mermaid.initialize({
   startOnLoad: false,
