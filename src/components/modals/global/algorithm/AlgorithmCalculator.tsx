@@ -1,7 +1,12 @@
 import type { JSX } from "react"
 import type { Node, NodeTypes } from "reactflow"
 
-import ReactFlow, { Controls, Background, useNodesState, useEdgesState } from "reactflow"
+import ReactFlow, {
+  Controls,
+  Background,
+  useNodesState,
+  useEdgesState
+} from "reactflow"
 import { IoMdClose } from "react-icons/io"
 import { InputNode } from "@/components/flows/InputNode"
 import { AlgoExplanation } from "./AlgoExplanation"
@@ -21,16 +26,18 @@ type AlgorithmCalculatorProps = {
 
 const nodeTypes: NodeTypes = {
   inputNode: InputNode,
-  resultNode: ResultNode,
+  resultNode: ResultNode
 }
 
-export function AlgorithmCalculator({ setShowAlgoCalc }: AlgorithmCalculatorProps): JSX.Element {
+export function AlgorithmCalculator({
+  setShowAlgoCalc
+}: AlgorithmCalculatorProps): JSX.Element {
   const { t } = useTranslation()
   const handleCloseModal = () => setShowAlgoCalc(false)
 
   // State
-  const [lotteryPrize, setLotteryPrize] = useState<number | ''>(20282)
-  const [groupSize, setGroupSize] = useState<number | ''>(600)
+  const [lotteryPrize, setLotteryPrize] = useState<number | "">(20282)
+  const [groupSize, setGroupSize] = useState<number | "">(600)
 
   // React Flow Hooks
   const [nodes, setNodes, onNodesChange] = useNodesState([])
@@ -44,9 +51,15 @@ export function AlgorithmCalculator({ setShowAlgoCalc }: AlgorithmCalculatorProp
     let step3_mult: number | null = null
     let step4_final: number | null = null
 
-    if (typeof lotteryPrize === 'number' && typeof groupSize === 'number' && groupSize > 0) {
+    if (
+      typeof lotteryPrize === "number" &&
+      typeof groupSize === "number" &&
+      groupSize > 0
+    ) {
       step1_div = lotteryPrize / groupSize
-      step1_div_formatted = truncateDecimals(step1_div, 6).toFixed(6).replace('.', ',')
+      step1_div_formatted = truncateDecimals(step1_div, 6)
+        .toFixed(6)
+        .replace(".", ",")
       step2_decimal = getDecimalPart(step1_div)
       step3_mult = step2_decimal * groupSize
       step4_final = Math.round(step3_mult)
@@ -54,62 +67,64 @@ export function AlgorithmCalculator({ setShowAlgoCalc }: AlgorithmCalculatorProp
 
     const newNodes: Node[] = [
       {
-        id: 'n-input-prize',
-        type: 'inputNode',
+        id: "n-input-prize",
+        type: "inputNode",
         position: { x: 250, y: 0 },
         data: {
-          label: t('modals.algoCalc.nodes.lotteryPrize'),
+          label: t("modals.algoCalc.nodes.lotteryPrize"),
           value: lotteryPrize,
           onChange: setLotteryPrize
-        },
+        }
       },
       {
-        id: 'n-input-size',
-        type: 'inputNode',
+        id: "n-input-size",
+        type: "inputNode",
         position: { x: 550, y: 0 },
         data: {
-          label: t('modals.algoCalc.nodes.groupSize'),
+          label: t("modals.algoCalc.nodes.groupSize"),
           value: groupSize,
           onChange: setGroupSize
-        },
+        }
       },
       {
-        id: 'n-calc-div',
-        type: 'resultNode',
+        id: "n-calc-div",
+        type: "resultNode",
         position: { x: 400, y: 150 },
         data: {
-          label: t('modals.algoCalc.nodes.initialDiv'),
-          formula: `${lotteryPrize || '?'} ÷ ${groupSize || '?'}`,
-          value: step1_div_formatted,
-        },
+          label: t("modals.algoCalc.nodes.initialDiv"),
+          formula: `${lotteryPrize || "?"} ÷ ${groupSize || "?"}`,
+          value: step1_div_formatted
+        }
       },
       {
-        id: 'n-calc-decimal',
-        type: 'resultNode',
+        id: "n-calc-decimal",
+        type: "resultNode",
         position: { x: 400, y: 300 },
         data: {
-          label: t('modals.algoCalc.nodes.isolatingDecimal'),
-          formula: t('modals.algoCalc.nodes.discardInteger'),
-          value: step2_decimal ? step2_decimal.toFixed(6).replace('.', ',') : null,
-        },
+          label: t("modals.algoCalc.nodes.isolatingDecimal"),
+          formula: t("modals.algoCalc.nodes.discardInteger"),
+          value: step2_decimal
+            ? step2_decimal.toFixed(6).replace(".", ",")
+            : null
+        }
       },
       {
-        id: 'n-calc-mult',
-        type: 'resultNode',
+        id: "n-calc-mult",
+        type: "resultNode",
         position: { x: 400, y: 450 },
         data: {
-          label: t('modals.algoCalc.nodes.groupMult'),
-          formula: `${step2_decimal ? step2_decimal.toFixed(6).replace('.', ',') : '?'} x ${groupSize || '?'}`,
-          value: step3_mult ? step3_mult.toFixed(6).replace('.', ',') : null,
-        },
+          label: t("modals.algoCalc.nodes.groupMult"),
+          formula: `${step2_decimal ? step2_decimal.toFixed(6).replace(".", ",") : "?"} x ${groupSize || "?"}`,
+          value: step3_mult ? step3_mult.toFixed(6).replace(".", ",") : null
+        }
       },
       {
-        id: 'n-result-final',
-        type: 'resultNode',
+        id: "n-result-final",
+        type: "resultNode",
         position: { x: 400, y: 600 },
         data: {
-          label: t('modals.algoCalc.nodes.keyStone'),
-          formula: t('modals.algoCalc.nodes.roundingRule'),
+          label: t("modals.algoCalc.nodes.keyStone"),
+          formula: t("modals.algoCalc.nodes.roundingRule"),
           value: step4_final,
           highlight: true
         }
@@ -139,7 +154,11 @@ export function AlgorithmCalculator({ setShowAlgoCalc }: AlgorithmCalculatorProp
             nodesDraggable={false}
             zoomOnDoubleClick={false}
           >
-            <Controls className={styles.customControls} showInteractive={false} />
+            <Controls
+              className={styles.customControls}
+              showInteractive={false}
+              fitViewOptions={{ duration: 400 }}
+            />
             <Background color="#403a56" gap={24} size={1} />
           </ReactFlow>
         </div>
