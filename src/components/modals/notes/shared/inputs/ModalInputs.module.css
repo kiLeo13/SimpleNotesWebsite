@@ -17,7 +17,13 @@
   border: 2px dashed rgb(102, 74, 146);
   height: 100px;
   cursor: pointer;
+  outline: none !important;
   transition: all 300ms cubic-bezier(0.25, 0.1, 0.25, 1.5);
+}
+
+.fileInputWrapper.invalid {
+  outline: none;
+  border: 2px dashed rgb(238, 54, 54);
 }
 
 .fileInputWrapper.dragging {
@@ -35,11 +41,6 @@
  */
 .fileInputWrapper.dragging * {
   pointer-events: none;
-}
-
-.fileInputWrapper.dragging.invalid {
-  outline: none;
-  border: 2px dashed rgb(144, 130, 155);
 }
 
 .label {
