@@ -6,7 +6,7 @@ import parse, { attributesToProps } from "html-react-parser"
 import { Element, domToReact } from "html-react-parser"
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch"
 import { MdOutlineZoomIn, MdOutlineZoomOut } from "react-icons/md"
-import { GrRevert } from "react-icons/gr"
+import { TbMaximize } from "react-icons/tb"
 import { toasts } from "@/utils/toastUtils"
 import { useEffect, useState, useMemo } from "react"
 
@@ -23,13 +23,16 @@ type MermaidBoardFrameProps = {
   warnOnFail?: boolean
 }
 
-export function MermaidBoardFrame({ diagram, warnOnFail = true }: MermaidBoardFrameProps) {
+export function MermaidBoardFrame({
+  diagram,
+  warnOnFail = true
+}: MermaidBoardFrameProps) {
   const [svgString, setSvgString] = useState("")
   const [failed, setFailed] = useState(false)
 
   useEffect(() => {
     const renderChart = async () => {
-      // Don't try to render if the string is too short 
+      // Don't try to render if the string is too short
       // or doesn't start with a keyword.
       if (!diagram || diagram.length < 5) return
 
@@ -86,14 +89,23 @@ export function MermaidBoardFrame({ diagram, warnOnFail = true }: MermaidBoardFr
           {({ zoomIn, zoomOut, resetTransform }) => (
             <>
               <div className={styles.controlPanel}>
-                <button className={styles.controlButton} onClick={() => zoomIn()}>
+                <button
+                  className={styles.controlButton}
+                  onClick={() => zoomIn()}
+                >
                   <MdOutlineZoomIn size={"1.7em"} />
                 </button>
-                <button className={styles.controlButton} onClick={() => zoomOut()}>
+                <button
+                  className={styles.controlButton}
+                  onClick={() => zoomOut()}
+                >
                   <MdOutlineZoomOut size={"1.7em"} />
                 </button>
-                <button className={styles.controlButton} onClick={() => resetTransform()}>
-                  <GrRevert size={"1.7em"} />
+                <button
+                  className={styles.controlButton}
+                  onClick={() => resetTransform()}
+                >
+                  <TbMaximize size={"1.6em"} />
                 </button>
               </div>
 
