@@ -2,6 +2,8 @@ import { Handle, Position, type NodeProps } from "reactflow"
 
 import clsx from "clsx"
 
+import { useTranslation } from "react-i18next"
+
 import styles from "./Nodes.module.css"
 
 type InputNodeProps = {
@@ -16,6 +18,8 @@ export function InputNode({
   isConnectable,
   selected
 }: NodeProps<InputNodeProps>) {
+  const { t } = useTranslation()
+
   return (
     <div
       className={clsx(
@@ -40,7 +44,7 @@ export function InputNode({
         onChange={(evt) =>
           data.onChange(evt.target.value === "" ? "" : Number(evt.target.value))
         }
-        placeholder="Digite aqui..."
+        placeholder={t("placeholders.typeHere")}
       />
 
       <Handle

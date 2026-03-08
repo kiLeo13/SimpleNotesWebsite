@@ -245,7 +245,8 @@
     }
   },
   "placeholders": {
-    "search": "Pesquisar..."
+    "search": "Pesquisar...",
+    "typeHere": "Digite aqui..."
   },
   "tooltips": {
     "warnings": {
