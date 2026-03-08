@@ -18,6 +18,7 @@ import { formatDate, formatMoney } from "@/utils/utils"
 import { matchSorter } from "match-sorter"
 
 import styles from "./CompanyDisplay.module.css"
+import { GoogleMaps } from "@/components/icons/GoogleMaps"
 
 // Just a replacement for companies with no trade name.
 // "notn" stands for "No Trade Name" :D
@@ -30,6 +31,8 @@ const i18nRegStatus: Record<RegistrationStatus, string> = {
   UNKNOWN: "commons.unknown"
 }
 
+const MAPS_URL = "https://www.google.com/maps/search/?api=1&query="
+
 type CompanyDisplayProps = {
   company: CompanyResponse
 }
@@ -37,6 +40,10 @@ type CompanyDisplayProps = {
 export function CompanyDisplay({ company }: CompanyDisplayProps): JSX.Element {
   const { t } = useTranslation()
   const [search, setSearch] = useState("")
+
+  const addressString = formatAddress(company.address)
+  const encondedAddress = encodeURIComponent(addressString)
+  const mapsSearchUrl = MAPS_URL + encondedAddress
 
   const initialRender = useRef(true)
 
@@ -198,7 +205,22 @@ export function CompanyDisplay({ company }: CompanyDisplayProps): JSX.Element {
                 {t("labels.companyAddress")}
               </span>
               <span className={styles.listItemValue}>
-                {formatAddress(company.address)}
+                <div className={styles.addressContainer}>
+                  <span className={styles.addressText}>{addressString}</span>
+
+                  {isActive && (
+                    <a
+                      href={mapsSearchUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title={t("labels.openInGoogleMaps")}
+                      className={styles.mapsButton}
+                    >
+                      <GoogleMaps className={styles.mapsIcon} />
+                      <span>{t("labels.openInMaps")}</span>
+                    </a>
+                  )}
+                </div>
               </span>
             </li>
           </ul>

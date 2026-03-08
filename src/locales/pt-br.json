@@ -28,6 +28,8 @@
     "title": "ZenKeep"
   },
   "labels": {
+    "openInGoogleMaps": "Abrir no Google Maps",
+    "openInMaps": "Abrir no Maps",
     "zoom": {
       "in": "Ampliar",
       "out": "Reduzir",

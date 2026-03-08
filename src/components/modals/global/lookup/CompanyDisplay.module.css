@@ -192,3 +192,53 @@
 .generic.warning .division {
   border-color: rgb(131, 130, 111);
 }
+
+.addressContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Keeps the button aligned to the left */
+  gap: 8px; /* Space between the text and the button */
+}
+
+.addressText {
+  line-height: 1.4;
+}
+
+.mapsButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background-color: rgba(150, 150, 255, 0.15); /* Matches your headerTitle bg */
+  border: 1px solid rgba(150, 150, 255, 0.3);
+  border-radius: 6px;
+  color: rgb(168, 164, 179);
+  text-decoration: none;
+  font-size: 0.9em;
+  font-weight: 500;
+  transition: all 300ms ease;
+  cursor: pointer;
+}
+
+.mapsButton:hover {
+  background-color: rgba(150, 150, 255, 0.25);
+  color: white;
+}
+
+.mapsIcon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+/* Maps button styles for the warning state */
+.generic.warning .mapsButton {
+  background-color: rgba(255, 255, 80, 0.1);
+  border-color: rgba(216, 216, 110, 0.3);
+  color: rgb(216, 190, 116); /* Matches your warning text */
+}
+
+.generic.warning .mapsButton:hover {
+  background-color: rgba(255, 255, 80, 0.2);
+  color: rgb(236, 210, 136);
+}
