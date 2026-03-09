@@ -1,0 +1,56 @@
+.noteLink {
+  cursor: pointer;
+  color: #a69bc7;
+  background-color: #a78bfa26;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.asd {
+  position: relative;
+  display: flex;
+}
+
+.noteLink:hover {
+  color: #baade2;
+  background-color: rgba(167, 139, 250, 0.25);
+  border-radius: 4px;
+}
+
+.unknownNote {
+  color: #6d6780;
+  cursor: not-allowed;
+  text-transform: lowercase;
+  background-color: #8a75ac4d;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.popoverContent {
+  outline: none;
+  border-radius: 8px;
+  background-color: var(--modal-bg-color);
+  z-index: 100;
+  box-sizing: border-box;
+  box-shadow:
+  0 10px 25px -5px rgba(0, 0, 0, 0.5),
+    0 8px 10px -6px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--modal-border-color);
+  animation: slideUpAndFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.popoverArrow {
+  fill: var(--modal-border-color);
+}
+
+@keyframes slideUpAndFade {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

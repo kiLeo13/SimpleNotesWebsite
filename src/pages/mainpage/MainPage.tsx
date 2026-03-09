@@ -136,7 +136,6 @@ export function MainPage(): JSX.Element {
 
         <Panel minSize={30}>
           <main className={styles.mainContent}>
-            {/* 4. Logic hierarchy: Fetching Network -> Rendering Content -> Empty */}
             {isFetchingNote ? (
               <LoaderContainer />
             ) : shownNote ? (
