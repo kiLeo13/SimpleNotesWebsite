@@ -26,12 +26,12 @@ import { FaEye } from "react-icons/fa6"
 import { ModalSelectInput } from "../shared/inputs/ModalSelectInput"
 import { userService } from "@/services/userService"
 import { formatLocalTimestamp, getDirtyValues } from "@/utils/utils"
+import { useUsersStore } from "@/stores/useUsersStore"
 import { useTranslation } from "react-i18next"
 import { noteService } from "@/services/noteService"
 import { toasts } from "@/utils/toastUtils"
 
 import styles from "./UpdateNoteForm.module.css"
-import { useUsersStore } from "@/stores/useUsersStore"
 
 type UpdateNoteFormProps = {
   note: NoteResponseData | null
@@ -189,6 +189,7 @@ export function UpdateNoteForm({
       </ModalActionRow>
 
       <ModalFooter
+        noteId={note?.id || 0}
         exists={!!note}
         isDirty={isDirty}
         isValid={isValid}

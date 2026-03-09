@@ -1,7 +1,12 @@
 .footer {
   display: flex;
-  justify-content: end;
+  align-items: center;
+  justify-content: space-between;
   gap: 8px;
+}
+
+.noteId {
+  color: rgb(66, 57, 80);
 }
 
 .button {

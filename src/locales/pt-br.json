@@ -31,7 +31,8 @@
   "labels": {
     "notes": {
       "refNoteNotFound": "Nota #{{id}} não foi encontrada",
-      "openFull": "Ir para Nota"
+      "openFull": "Ir para Nota",
+      "id": "ID: {{id}}"
     },
     "openInGoogleMaps": "Abrir no Google Maps",
     "openInMaps": "Abrir no Maps",
