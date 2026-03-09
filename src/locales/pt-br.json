@@ -1,5 +1,6 @@
 {
   "commons": {
+    "notFound": "Não encontrado",
     "unknown": "Desconhecido",
     "errors": {
       "chars": "Você só pode digitar exatamente {{val}} caracteres"
@@ -28,6 +29,10 @@
     "title": "ZenKeep"
   },
   "labels": {
+    "notes": {
+      "refNoteNotFound": "Nota #{{id}} não foi encontrada",
+      "openFull": "Ir para Nota"
+    },
     "openInGoogleMaps": "Abrir no Google Maps",
     "openInMaps": "Abrir no Maps",
     "zoom": {
