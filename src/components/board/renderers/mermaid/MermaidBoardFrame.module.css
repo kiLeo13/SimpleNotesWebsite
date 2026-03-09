@@ -1,7 +1,12 @@
+/* 
+ * In the NoteFrame popover, the flex-column layout was overflowing (hiding)
+ * by the giant size of the Mermaid SVG.
+ * By making it absolute and pinning it, we force the canvas to strictly 
+ * respect all boundaries.
+ */
 .mermaidFrame {
-  position: relative;
-  height: 100%;
-  width: 100%;
+  position: absolute;
+  inset: 0;
   overflow: hidden;
 }
 
