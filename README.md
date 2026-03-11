@@ -4,27 +4,27 @@
 
 # ✨ ZenKeep
 
-ZenKeep is a lightweight, high-performance web application designed to streamline note-taking and file management, inspired by the clean and responsive UI of ChatGPT.
+ZenKeep is a lightweight, high-performance web application designed to streamline note-taking and file management, inspired by the interface of ChatGPT.
 
 -----
 
 ## ❓ The Problem
 
-Traditional cloud storage services, while powerful, can become slow and cumbersome when dealing with deeply nested folder structures. This complexity often leads to a decrease in productivity when all you need is quick access to your notes and files.
+Traditional cloud storage services, while powerful, can become slow when dealing with deeply nested folder structures. This complexity often leads to a decrease in productivity when all you need is quick access to your notes and files.
 
 ## 💡 The Solution
 
-ZenKeep provides a simple, single-page application (SPA) where your notes are immediately accessible from a left-side navigation bar. This design eliminates the need to click through multiple folders, allowing you to create, view, and manage your content with exceptional speed. While initially built for internal company use to boost productivity, it's designed to be useful for anyone.
+ZenKeep provides a simple SPA where your notes are immediately accessible from a left-side navigation bar. This design eliminates the need to click through multiple folders, allowing you to create, view, and manage your content easily. While initially built for internal company use to boost productivity, it's designed to be useful for anyone.
 
 -----
 
 ## ⚙ Architecture Overview
 
-The project is built on a modern, cloud-native architecture designed for scalability, security, and low cost, primarily leveraging AWS and Cloudflare services.
+The project is built on a cloud-native architecture, primarily leveraging AWS and Cloudflare services.
 
 ### Frontend
 
-  * **Hosting:** The frontend is a **React + TypeScript** Single-Page Application (SPA) hosted on **Cloudflare Pages**. This provides global content distribution through its CDN for faster access times, DDoS protection, and managed TLS/SSL.
+  * **Hosting:** The frontend is a **React + TypeScript** Single-Page Application hosted on **Cloudflare Pages**. This provides global content distribution through its CDN for faster access times, DDoS protection, and managed TLS/SSL.
   * **Deployment:** A CI/CD workflow is automatically triggered by Cloudflare whenever code is pushed to the `master` branch on GitHub.
 
 ### Backend
@@ -84,44 +84,6 @@ The backend deployment is automated using **Docker** and **WatchTower**.
 * **Networking & API:** AWS API Gateway
 * **Security & Identity:** AWS Cognito, AWS IAM
 * **Configuration & Secrets:** AWS SSM Parameter Store
-
-### Backend
-
-* **Language:** **Golang**
-* **Framework & Libraries:**
-    * [Echo v4](https://github.com/labstack/echo) - High-performance, extensible Go web framework.
-    * [Gorm](https://github.com/go-gorm/gorm) - The fantastic ORM library for Go.
-    * [AWS SDK for Go v2](https://github.com/aws/aws-sdk-go-v2) - Official AWS SDK for Go.
-    * [go-playground/validator](https://github.com/go-playground/validator) - For struct validation.
-    * [golang-jwt/jwt](https://github.com/golang-jwt/jwt) - For JWT parsing and validation.
-
-### Frontend
-
-The frontend is a modern, responsive Single-Page Application built with **React** and **TypeScript**.
-
-* **Editor & Code Rendering:**
-    * [CodeMirror](https://github.com/codemirror/dev) - In-browser code editor foundation.
-    * [@uiw/react-codemirror](https://github.com/uiwjs/react-codemirror) - React bindings for CodeMirror.
-    * [@codemirror/lang-markdown](https://github.com/codemirror/lang-markdown) - Markdown language support.
-    * [@codemirror/language-data](https://github.com/codemirror/language-data) - Language metadata for CodeMirror.
-    * [@uiw/codemirror-theme-vscode](https://github.com/uiwjs/react-codemirror) - VS Code–like theme.
-    * [highlight.js](https://github.com/highlightjs/highlight.js) - Syntax highlighting engine.
-    * [marked-highlight](https://github.com/markedjs/marked-highlight) - Highlight integration for Markdown parsing.
-
-* **UI Components & Primitives:**
-    * [Radix UI](https://github.com/radix-ui/primitives) - Accessible, unstyled UI primitives.
-        * Dialog, Dropdown Menu, Tooltip
-
-* **Styling & Assets:**
-    * [Fontsource](https://github.com/fontsource/fontsource) - Self-hosted webfonts.
-        * Monaspace Neon
-
-* **Content Enhancements:**
-    * [remark-emoji](https://github.com/rhysd/remark-emoji) - Emoji support in Markdown.
-    * [twemoji](https://github.com/twitter/twemoji) - Consistent emoji rendering.
-
-* **Utilities:**
-    * [lodash-es](https://github.com/lodash/lodash) - Utility helpers (ES module build).
 
 ### Database
 
