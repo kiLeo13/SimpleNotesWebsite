@@ -17,10 +17,6 @@
   cursor: pointer;
 }
 
-.trigger:hover {
-  border-color: #5c4791;
-}
-
 .trigger:focus,
 .trigger[data-state="open"] {
   border-color: #5c4791;
