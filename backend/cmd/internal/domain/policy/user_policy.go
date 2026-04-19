@@ -1,0 +1,110 @@
+package policy
+
+import (
+	"simplenotes/cmd/internal/domain/entity"
+	"simplenotes/cmd/internal/utils/apierror"
+)
+
+const (
+	admin       = entity.PermissionAdministrator
+	mngUsers    = entity.PermissionManageUsers
+	delUsers    = entity.PermissionDeleteUsers
+	mngPerms    = entity.PermissionManagePerms
+	punishUsers = entity.PermissionPunishUsers
+)
+
+// UserPolicy encapsulates all business rules for user manipulation.
+// It returns apierror.ErrorResponse directly for seamless integration with handlers.
+type UserPolicy struct{}
+
+func NewUserPolicy() *UserPolicy {
+	return &UserPolicy{}
+}
+
+// CanUpdateProfile checks if 'actor' can update mutable fields of 'target'
+func (p *UserPolicy) CanUpdateProfile(actor, target *entity.User) apierror.ErrorResponse {
+	if actor.ID == target.ID {
+		return nil
+	}
+
+	// Admin Immunity
+	if target.Permissions.Has(admin) {
+		return forbiddenError("Administrators cannot be modified")
+	}
+
+	if !actor.Permissions.HasEffective(mngUsers) {
+		return permError(mngUsers)
+	}
+	return nil
+}
+
+// CanUpdatePermissions checks if 'actor' can change 'target' permissions to 'newPerms'
+func (p *UserPolicy) CanUpdatePermissions(actor, target *entity.User, newPerms entity.Permission) apierror.ErrorResponse {
+	// Actor must have ManagePerms
+	if !actor.Permissions.HasEffective(mngPerms) {
+		return permError(mngPerms)
+	}
+
+	// Admin Immunity
+	if target.Permissions.Has(admin) {
+		return forbiddenError("Administrators cannot be modified")
+	}
+
+	// Cannot grant Admin via API
+	if newPerms.Has(admin) {
+		return forbiddenError("Cannot grant administrator privileges")
+	}
+
+	isActorAdmin := actor.Permissions.Has(admin)
+	if !isActorAdmin {
+		// Non-Admins cannot change the state of 'Manage Permissions'
+		wasPermManager := target.Permissions.Has(entity.PermissionManagePerms)
+		isPermManager := newPerms.Has(entity.PermissionManagePerms)
+
+		if wasPermManager != isPermManager {
+			return apierror.NewForbiddenError("Only admins can grant/revoke 'Manage Permissions'")
+		}
+	}
+	return nil
+}
+
+// CanPunishUser checks if 'actor' can suspend/ban 'target'.
+func (p *UserPolicy) CanPunishUser(actor, target *entity.User) apierror.ErrorResponse {
+	if !actor.Permissions.HasEffective(punishUsers) {
+		return permError(punishUsers)
+	}
+
+	if actor.ID == target.ID {
+		return forbiddenError("Cannot punish yourself")
+	}
+
+	// Users with Admin and PermissionManagePerms are immune
+	if target.Permissions.Has(admin) ||
+		target.Permissions.Has(mngPerms) {
+		return forbiddenError("Target user is immune to punishment actions")
+	}
+	return nil
+}
+
+// CanDeleteUser checks if 'actor' can soft-delete 'target'.
+func (p *UserPolicy) CanDeleteUser(actor, target *entity.User) apierror.ErrorResponse {
+	// Capability Check
+	if !actor.Permissions.HasEffective(delUsers) {
+		return permError(delUsers)
+	}
+
+	// Admin Immunity
+	if target.Permissions.Has(admin) {
+		return forbiddenError("Administrators cannot be deleted")
+	}
+
+	return nil
+}
+
+func permError(perm entity.Permission) *apierror.APIError {
+	return apierror.NewPermissionError(int64(perm))
+}
+
+func forbiddenError(msg string) *apierror.APIError {
+	return apierror.NewForbiddenError(msg)
+}

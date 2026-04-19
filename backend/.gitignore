@@ -1,0 +1,22 @@
+node_modules/
+
+# IDE files
+.vscode/
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Workspace files
+go.work
+go.work.sum
+.gocache/
+
+.env
+.idea/
+
+# Database files
+*.db

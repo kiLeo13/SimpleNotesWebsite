@@ -2,16 +2,55 @@
 
 ## Purpose
 
-This repository is a frontend-only `React + TypeScript + Vite` SPA for ZenKeep / SimpleNotes.
-Use this file as the first stop before reading the codebase in depth.
+This repository is the SimpleNotes monorepo.
+It contains the React frontend in `frontend/` and the Go backend in `backend/`.
+Use this file as the single repo-level guide before reading code in depth.
 
 Primary goals for future agents:
 
-- Avoid re-scanning the entire repo.
-- Start from the smallest relevant slice.
-- Prefer store/service/type entry points over leaf UI files.
+- Avoid broad repo scans when a narrower read path will do.
+- Start from the smallest relevant slice of the monorepo.
+- Prefer store/service/type entry points in the frontend and handler/service/repository entry points in the backend.
+- Keep monorepo changes scoped so frontend and backend work do not accidentally bleed into each other.
+
+## Monorepo Layout
+
+- `frontend/`
+  React 19 + TypeScript + Vite SPA.
+- `backend/`
+  Go API with Echo, GORM, SQLite, AWS integrations, and websocket shims.
+- `.github/workflows/`
+  Repository-level automation. Backend deploy workflow lives here.
+- `AGENTS.md`
+  The only agent guidance file in the repo.
+- `ARCHITECTURE.md`
+  The only architecture overview file in the repo.
+
+## What To Read First
+
+For frontend work, read these in order:
+
+1. `frontend/package.json`
+2. `frontend/src/App.tsx`
+3. `frontend/src/pages/mainpage/MainPage.tsx`
+4. Relevant store in `frontend/src/stores/`
+5. Relevant service in `frontend/src/services/`
+6. Matching schema/type file in `frontend/src/types/`
+
+For backend work, read these in order:
+
+1. `backend/go.mod`
+2. `backend/cmd/api/main.go`
+3. Relevant handler in `backend/cmd/internal/http/handler/`
+4. Relevant service in `backend/cmd/internal/service/`
+5. Relevant repository in `backend/cmd/internal/domain/sqlite/repository/`
+6. Matching entity or contract file in `backend/cmd/internal/domain/entity/` or `backend/cmd/internal/contract/`
+
+That sequence usually gives enough context without spelunking the whole repo like a cursed cave system.
 
 ## Fast Project Summary
+
+### Frontend
 
 - Framework: `React 19` with `react-router-dom`
 - State: `zustand`
@@ -23,238 +62,245 @@ Primary goals for future agents:
   - Mermaid flowcharts
   - File/reference notes (`pdf`, image, video, audio)
 - i18n: `i18next`, currently `pt-BR` only
-- Styling: CSS modules plus global `src/index.css`
+- Styling: CSS modules plus global `frontend/src/index.css`
 
-## What To Read First
+### Backend
 
-For most tasks, read these in order:
-
-1. `package.json`
-2. `src/App.tsx`
-3. `src/pages/mainpage/MainPage.tsx`
-4. Relevant store in `src/stores/`
-5. Relevant service in `src/services/`
-6. Matching schema/type file in `src/types/`
-
-That path usually gives enough context without opening dozens of components.
+- Runtime: `Go`
+- HTTP framework: `Echo`
+- Persistence: `SQLite` via `GORM`
+- Auth/storage/integration: AWS Cognito, S3, API Gateway websocket support, SSM
+- Background jobs:
+  - stale websocket connection cleanup
+  - expired company cache cleanup
+- Deployment artifact: Docker image built from `backend/Dockerfile`
 
 ## High-Signal Index
 
-### App Shell And Routing
+### Frontend App Shell And Routing
 
-- `src/main.tsx`: React bootstrap, `BrowserRouter`, global CSS.
-- `src/App.tsx`: route table and toaster setup.
-- `src/pages/mainpage/ProtectedRoute.tsx`: auth gate based on local JWT presence.
+- `frontend/src/main.tsx`: React bootstrap, `BrowserRouter`, global CSS.
+- `frontend/src/App.tsx`: route table and toaster setup.
+- `frontend/src/pages/mainpage/ProtectedRoute.tsx`: auth gate based on local JWT presence.
 
-### Main Screen Flow
+### Frontend Main Screen Flow
 
-- `src/pages/mainpage/MainPage.tsx`: main authenticated screen.
+- `frontend/src/pages/mainpage/MainPage.tsx`: main authenticated screen.
   - Reads `?id=` query param.
   - Opens/closes notes.
   - Initializes websocket manager.
   - Loads current user.
   - Renders sidebar + content board layout.
-- `src/components/sidebar/Sidebar.tsx`: note search, note list, sidebar reload shortcuts.
-- `src/components/board/ContentBoard.tsx`: dispatches note rendering by note type/file extension.
+- `frontend/src/components/sidebar/Sidebar.tsx`: note search, note list, sidebar reload shortcuts.
+- `frontend/src/components/board/ContentBoard.tsx`: dispatches note rendering by note type/file extension.
 
-### Stores
+### Frontend Stores
 
-- `src/stores/useSessionStore.ts`
+- `frontend/src/stores/useSessionStore.ts`
   - Stores current user.
   - Persists/retrieves JWTs from `localStorage`.
   - Handles login/logout helpers.
-- `src/stores/useNotesStore.ts`
+- `frontend/src/stores/useNotesStore.ts`
   - Central source for note list and currently opened note.
   - Handles list caching, note fetch, note open/close, render loading state.
   - Start here for note bugs.
-- `src/stores/useUsersStore.ts`
+- `frontend/src/stores/useUsersStore.ts`
   - User list cache and presence updates.
 
-### Services
+### Frontend Services
 
-- `src/services/apiClient.ts`
+- `frontend/src/services/apiClient.ts`
   - Axios instance.
   - Injects `id_token` into `Authorization`.
   - Redirects to `/login` on `401`.
-- `src/services/safeApiCall.ts`
+- `frontend/src/services/safeApiCall.ts`
   - Shared API wrapper with Zod parsing and normalized error handling.
-- `src/services/noteService.ts`
+- `frontend/src/services/noteService.ts`
   - CRUD for notes.
   - Upload vs editor note creation logic.
   - File extension/size constants.
-- `src/services/userService.ts`
+- `frontend/src/services/userService.ts`
   - Auth and user management requests.
-- `src/services/i18n.ts`
+- `frontend/src/services/i18n.ts`
   - i18n bootstrap.
-- `src/services/socketBus.ts`
+- `frontend/src/services/socketBus.ts`
   - Internal pub/sub for websocket events.
 
-### Websocket / Realtime
+### Frontend Websocket / Realtime
 
-- `src/hooks/useWebSocketManager.ts`
+- `frontend/src/hooks/useWebSocketManager.ts`
   - Main websocket connection lifecycle.
   - Routes socket events into stores and toast/logout behavior.
-  - Start here for realtime sync issues.
-- `src/models/events/GatewayEvent.ts`
+- `frontend/src/models/events/GatewayEvent.ts`
   - Server event registry and discriminated union schema.
-- `src/types/websocket/events.ts`
+- `frontend/src/types/websocket/events.ts`
   - Kill codes and presence payload schemas.
 
-### API Contracts And Validation
+### Backend Entrypoints
 
-- `src/types/api/notes.ts`: note payloads and response schemas.
-- `src/types/api/users.ts`: auth/user payloads and response schemas.
-- `src/types/api/api.ts`: common API response types.
-- `src/types/forms/notes.ts`: note creation/update form schemas.
-- `src/types/forms/users.ts`: user form schemas.
+- `backend/cmd/api/main.go`: main API process bootstrap.
+- `backend/infrastructure/aws/lambda/ws-connect-shim/index.mjs`: websocket connect shim.
+- `backend/infrastructure/aws/lambda/ws-message-shim/index.mjs`: websocket message shim.
 
-### Auth / Permissions
+### Backend HTTP Flow
 
-- `src/utils/authutils.ts`: token validity/session checks.
-- `src/models/Permission.ts`: permission bitmask model and helpers.
-- `src/hooks/usePermission.ts`: permission-aware UI logic.
+- `backend/cmd/internal/http/handler/`: Echo route handlers.
+- `backend/cmd/internal/http/middleware/auth_middleware.go`: resolves authenticated user by `sub_uuid`.
+- `backend/cmd/internal/service/`: application services and background jobs.
+- `backend/cmd/internal/domain/sqlite/repository/`: SQLite-backed repositories.
 
-### Note Rendering
+### Backend Persistence And Domain
 
-- `src/components/board/renderers/`
-  - Media/file note viewers.
-- `src/components/board/renderers/mermaid/MermaidBoardFrame.tsx`
-  - Mermaid rendering path.
-- `src/components/board/renderers/TextBoardFrame.tsx`
-  - Text note viewer wrapper.
-- `src/components/displays/markdowns/MarkdownDisplay.tsx`
-  - Markdown renderer with rehype/remark pipeline.
-- `src/components/displays/markdowns/remarkCustomDirectives.ts`
-  - Custom directives:
-  - `:note[id=...]`
-  - `:tooltip[...]{content=...}`
-
-### Note Creation / Editing
-
-- `src/components/modals/notes/creations/editors/CreateEditorModal.tsx`
-  - Markdown / flowchart creation.
-- `src/components/modals/notes/creations/editors/LivePreview.tsx`
-  - Editor preview path.
-- `src/components/modals/notes/creations/uploads/CreateNoteModalForm.tsx`
-  - File upload note creation.
-- `src/components/modals/notes/updates/`
-  - Existing note metadata update flow.
-
-### User Management
-
-- `src/components/modals/users/management/`
-  - User admin UI, permissions, suspension, deletion.
-
-### Misc Feature Areas
-
-- `src/components/modals/global/lookup/`
-  - Company/CNPJ lookup UI.
-- `src/components/modals/global/algorithm/`
-  - Algorithm calculator/flow explanation UI.
-
-## Environment And Config
-
-- `.env`
-  - `VITE_API_BASE_URL`
-  - `VITE_WS_URL`
-- `vite.config.ts`
-  - `@` alias to `src`
-  - React compiler Babel plugin enabled
-- `tsconfig.app.json`
-  - strict mode enabled
-  - alias path mapping for `@/*`
-- `eslint.config.js`
-  - lint rules
-
-Do not copy environment values into docs or comments unless explicitly needed.
+- `backend/cmd/internal/domain/sqlite/db.go`: SQLite bootstrap and automigration.
+- `backend/cmd/internal/domain/entity/`: GORM entities and schema tags.
+- `backend/cmd/internal/contract/`: API contracts.
+- `backend/cmd/internal/domain/events/events.go`: event payloads.
 
 ## Practical Read Paths By Task
 
-### If The Task Is About Auth
+### If The Task Is About Frontend Auth
 
 Read:
 
-1. `src/pages/auth/`
-2. `src/stores/useSessionStore.ts`
-3. `src/services/userService.ts`
-4. `src/utils/authutils.ts`
-5. `src/types/api/users.ts`
+1. `frontend/src/pages/auth/`
+2. `frontend/src/stores/useSessionStore.ts`
+3. `frontend/src/services/userService.ts`
+4. `frontend/src/utils/authutils.ts`
+5. `frontend/src/types/api/users.ts`
 
-### If The Task Is About Notes CRUD
+### If The Task Is About Frontend Notes CRUD
 
 Read:
 
-1. `src/stores/useNotesStore.ts`
-2. `src/services/noteService.ts`
-3. `src/types/api/notes.ts`
-4. `src/types/forms/notes.ts`
+1. `frontend/src/stores/useNotesStore.ts`
+2. `frontend/src/services/noteService.ts`
+3. `frontend/src/types/api/notes.ts`
+4. `frontend/src/types/forms/notes.ts`
 5. Relevant modal or board component
 
-### If The Task Is About Rendering A Note
+### If The Task Is About Frontend Realtime Updates
 
 Read:
 
-1. `src/components/board/ContentBoard.tsx`
-2. Relevant file in `src/components/board/renderers/`
-3. `src/components/displays/markdowns/MarkdownDisplay.tsx`
-4. `src/stores/useNotesStore.ts`
-
-### If The Task Is About Realtime Updates
-
-Read:
-
-1. `src/hooks/useWebSocketManager.ts`
-2. `src/models/events/GatewayEvent.ts`
-3. `src/types/websocket/events.ts`
+1. `frontend/src/hooks/useWebSocketManager.ts`
+2. `frontend/src/models/events/GatewayEvent.ts`
+3. `frontend/src/types/websocket/events.ts`
 4. Affected zustand store
 
-### If The Task Is About Permissions
+### If The Task Is About Backend Auth Or User Resolution
 
 Read:
 
-1. `src/models/Permission.ts`
-2. `src/hooks/usePermission.ts`
-3. `src/stores/useSessionStore.ts`
-4. Affected admin/user-management component
+1. `backend/cmd/internal/http/middleware/auth_middleware.go`
+2. `backend/cmd/internal/service/user_service.go`
+3. `backend/cmd/internal/domain/sqlite/repository/user_repository.go`
+4. `backend/cmd/internal/domain/entity/user.go`
+5. `backend/cmd/internal/contract/user_contract.go`
+
+### If The Task Is About Backend Notes
+
+Read:
+
+1. `backend/cmd/internal/http/handler/note_routes.go`
+2. `backend/cmd/internal/service/note_service.go`
+3. `backend/cmd/internal/domain/sqlite/repository/note_repository.go`
+4. `backend/cmd/internal/domain/entity/note.go`
+5. `backend/cmd/internal/contract/note_contract.go`
+
+### If The Task Is About Backend Audit Logs
+
+Read:
+
+1. `backend/cmd/internal/http/handler/audit_routes.go`
+2. `backend/cmd/internal/service/audit_service.go`
+3. `backend/cmd/internal/service/audit_helpers.go`
+4. `backend/cmd/internal/domain/sqlite/repository/audit_repository.go`
+5. `backend/cmd/internal/service/audit_integration_test.go`
+
+### If The Task Is About Backend Realtime
+
+Read:
+
+1. `backend/cmd/internal/http/handler/websocket_routes.go`
+2. `backend/cmd/internal/service/websocket_service.go`
+3. `backend/cmd/internal/domain/sqlite/repository/connection_repository.go`
+4. `backend/cmd/internal/domain/entity/connection.go`
+5. `backend/infrastructure/aws/lambda/ws-connect-shim/index.mjs`
+
+## Environment And Config
+
+### Frontend
+
+- `frontend/.env`
+  - `VITE_API_BASE_URL`
+  - `VITE_WS_URL`
+- `frontend/vite.config.ts`
+  - `@` alias to `src`
+  - React compiler Babel plugin enabled
+- `frontend/tsconfig.app.json`
+  - strict mode enabled
+  - alias path mapping for `@/*`
+- `frontend/eslint.config.js`
+  - lint rules
+
+### Backend
+
+- `backend/.env`
+  Local development values. Treat as sensitive.
+- `backend/docker-compose.yml`
+  Local container wiring.
+- `backend/Dockerfile`
+  Production image build definition.
+- `backend/go.mod`
+  Go module boundary for backend code.
+
+Do not copy environment values into docs or comments unless explicitly needed.
+
+## Important Behavior Notes
+
+- The frontend currently sends `id_token` in API requests even though auth data also includes `access_token`.
+- `frontend/src/pages/mainpage/ProtectedRoute.tsx` only checks local token validity; it does not fetch the user.
+- `frontend/src/pages/mainpage/MainPage.tsx` drives note opening via query param `?id=`.
+- `frontend/src/stores/useNotesStore.ts` treats `REFERENCE` notes differently from text notes.
+- Backend startup loads config, initializes SQLite, wires AWS-backed dependencies, starts background jobs, and serves Echo on port `7070`.
+- Backend websocket events can mutate frontend-visible state through the websocket pipeline, so frontend and backend changes around realtime need to be checked together.
+
+## Workflow Notes
+
+- Backend container publishing workflow lives at `.github/workflows/backend-ci-deploy.yml`.
+- The backend workflow should only trigger when backend files or that workflow file change.
+- There is no separate backend-local workflow file anymore. Keep repo automation at the root.
 
 ## Token-Saving Guidance
 
 Usually safe to skip on first pass:
 
-- `node_modules/`
-- Most `*.module.css` files
-- `public/` unless asset work is requested
-- `src/locales/pt-br.json` unless changing copy or translation keys
-- Leaf modal/input components until the relevant store/service/schema is understood
+- `frontend/node_modules/`
+- Most `frontend/*.module.css` descendants unless styling is the task
+- `frontend/public/` unless asset work is requested
+- `frontend/src/locales/pt-br.json` unless changing copy or translation keys
+- Backend implementation areas unrelated to the feature at hand
 
 Prefer reading:
 
-- Store before UI
-- Service before debugging network behavior
-- Zod schema before changing payload/response handling
-- Main container component before leaf children
-
-## Important Behavior Notes
-
-- Auth uses both `access_token` and `id_token`, but API requests currently attach `id_token`.
-- `ProtectedRoute` only checks local token validity; it does not fetch the user.
-- `MainPage` drives note opening via query param `?id=`.
-- `useNotesStore.openNote()` treats `REFERENCE` notes differently from text notes.
-- Websocket events can mutate both notes and users state directly through store singletons.
-- Markdown supports custom directives transformed into custom HTML tags/components.
-- The repo is frontend-only; backend behavior is inferred from typed contracts and README notes.
+- Frontend store before UI
+- Frontend service before debugging network behavior
+- Backend handler before route behavior
+- Backend service before repository tweaks
+- Backend repository before schema/index changes
+- Zod schema or Go contract before changing payload handling
 
 ## Known Repo Quirks
 
-- README text has encoding artifacts, so trust source files more than README wording.
-- `.env` is committed locally in this workspace; treat it as sensitive.
-- Some features are internal/admin-oriented and hidden behind permission bitmasks.
-- There are many UI components; most tasks do not require reading all of them.
+- The root README has encoding artifacts, so trust source files more than README wording when they disagree.
+- The frontend move already happened, so older assumptions that the SPA lives at repo root are stale.
+- The backend import preserved history under `backend/`, which is what we want. No need to reinvent that wheel with file-copy chaos.
+- Some features are internal/admin-oriented and hidden behind permission bitmasks or backend policy checks.
 
 ## Suggested Workflow For Future Agents
 
 1. Read this file.
-2. Identify the feature area from the index above.
-3. Open the store, service, and type/schema first.
-4. Only then open the smallest relevant UI component chain.
-5. Avoid broad repo-wide scans unless the task is truly cross-cutting.
+2. Identify whether the task is in `frontend/`, `backend/`, or both.
+3. Open the relevant store/service/type or handler/service/repository chain first.
+4. Keep diffs scoped to the affected package unless the change is intentionally cross-cutting.
+5. Update the root docs when the monorepo layout or cross-project behavior changes.

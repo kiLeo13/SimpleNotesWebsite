@@ -1,0 +1,79 @@
+package events
+
+import "simplenotes/cmd/internal/contract"
+
+type SocketEvent interface {
+	GetType() contract.EventType
+}
+
+type Ack struct{}
+
+func (*Ack) GetType() contract.EventType {
+	return contract.EventAck
+}
+
+type ConnectionKill struct {
+	Code   contract.KillCode `json:"code"`
+	Reason *string           `json:"reason,omitempty"`
+}
+
+func (e *ConnectionKill) GetType() contract.EventType {
+	return contract.EventConnectionKill
+}
+
+type NoteCreated struct {
+	*contract.NoteResponse
+}
+
+func (e *NoteCreated) GetType() contract.EventType {
+	return contract.EventNoteCreated
+}
+
+type NoteUpdated struct {
+	*contract.NoteResponse
+}
+
+func (e *NoteUpdated) GetType() contract.EventType {
+	return contract.EventNoteUpdated
+}
+
+type NoteDeleted struct {
+	NoteID int `json:"id"`
+}
+
+func (e *NoteDeleted) GetType() contract.EventType {
+	return contract.EventNoteDeleted
+}
+
+type UserCreated struct {
+	*contract.UserResponse
+}
+
+func (e *UserCreated) GetType() contract.EventType {
+	return contract.EventUserCreated
+}
+
+type UserUpdated struct {
+	*contract.UserResponse
+}
+
+func (e *UserUpdated) GetType() contract.EventType {
+	return contract.EventUserUpdated
+}
+
+type UserDeleted struct {
+	UserID int `json:"id"`
+}
+
+func (e *UserDeleted) GetType() contract.EventType {
+	return contract.EventUserDeleted
+}
+
+type PresenceUpdated struct {
+	UserID   int                   `json:"id"`
+	Presence contract.UserPresence `json:"presence"`
+}
+
+func (p *PresenceUpdated) GetType() contract.EventType {
+	return contract.EventPresenceUpdated
+}

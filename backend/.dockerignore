@@ -1,0 +1,13 @@
+# .dockerignore
+.git
+.gitignore
+README.md
+LICENSE
+.vscode
+*.local
+*.env
+*.pem
+tmp
+build
+.DS_Store
+/infrastructure
