@@ -1,4 +1,4 @@
-<img align="right" src="https://github.com/kiLeo13/SimpleNotesWebsite/blob/master/public/favicon.png?raw=true" height="100" width="100">
+<img align="right" src="https://github.com/kiLeo13/SimpleNotesWebsite/blob/master/frontend/public/favicon.png?raw=true" height="100" width="100">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/kiLeo13/SimpleNotesWebsite/blob/master/LICENSE)
 
