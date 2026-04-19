@@ -3,9 +3,9 @@ package middleware
 import (
 	"github.com/labstack/echo/v4"
 	"net/http"
-	"simplenotes/cmd/internal/domain/entity"
-	"simplenotes/cmd/internal/utils"
-	"simplenotes/cmd/internal/utils/apierror"
+	"zenkeep/cmd/internal/domain/entity"
+	"zenkeep/cmd/internal/utils"
+	"zenkeep/cmd/internal/utils/apierror"
 )
 
 type UserRepository interface {

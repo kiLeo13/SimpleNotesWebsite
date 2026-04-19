@@ -3,19 +3,19 @@ package main
 import (
 	"context"
 	"os"
-	"simplenotes/cmd/internal/domain/policy"
-	"simplenotes/cmd/internal/domain/sqlite"
-	"simplenotes/cmd/internal/domain/sqlite/repository"
-	"simplenotes/cmd/internal/http/handler"
-	mdlware "simplenotes/cmd/internal/http/middleware"
-	cognitoclient "simplenotes/cmd/internal/infrastructure/aws/cognito"
-	"simplenotes/cmd/internal/infrastructure/aws/storage"
-	"simplenotes/cmd/internal/infrastructure/aws/websocket"
-	"simplenotes/cmd/internal/infrastructure/minhareceita"
-	"simplenotes/cmd/internal/service"
-	"simplenotes/cmd/internal/service/jobs"
-	"simplenotes/cmd/internal/utils"
-	"simplenotes/cmd/internal/utils/validators"
+	"zenkeep/cmd/internal/domain/policy"
+	"zenkeep/cmd/internal/domain/sqlite"
+	"zenkeep/cmd/internal/domain/sqlite/repository"
+	"zenkeep/cmd/internal/http/handler"
+	mdlware "zenkeep/cmd/internal/http/middleware"
+	cognitoclient "zenkeep/cmd/internal/infrastructure/aws/cognito"
+	"zenkeep/cmd/internal/infrastructure/aws/storage"
+	"zenkeep/cmd/internal/infrastructure/aws/websocket"
+	"zenkeep/cmd/internal/infrastructure/minhareceita"
+	"zenkeep/cmd/internal/service"
+	"zenkeep/cmd/internal/service/jobs"
+	"zenkeep/cmd/internal/utils"
+	"zenkeep/cmd/internal/utils/validators"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -27,7 +27,7 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
-const envVarsPrefix = "/simplenotes/prod/"
+const envVarsPrefix = "/zenkeep/prod/"
 
 func main() {
 	validate := validator.New()

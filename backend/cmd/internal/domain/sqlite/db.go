@@ -3,7 +3,7 @@ package sqlite
 import (
 	"os"
 	"path/filepath"
-	"simplenotes/cmd/internal/domain/entity"
+	"zenkeep/cmd/internal/domain/entity"
 	"time"
 
 	"github.com/glebarez/sqlite"

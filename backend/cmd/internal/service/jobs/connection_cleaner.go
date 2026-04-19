@@ -2,13 +2,13 @@ package jobs
 
 import (
 	"context"
-	"simplenotes/cmd/internal/contract"
-	"simplenotes/cmd/internal/domain/entity"
+	"zenkeep/cmd/internal/contract"
+	"zenkeep/cmd/internal/domain/entity"
 	"time"
 
-	"simplenotes/cmd/internal/domain/events"
-	"simplenotes/cmd/internal/service"
-	"simplenotes/cmd/internal/utils"
+	"zenkeep/cmd/internal/domain/events"
+	"zenkeep/cmd/internal/service"
+	"zenkeep/cmd/internal/utils"
 
 	"github.com/labstack/gommon/log"
 )

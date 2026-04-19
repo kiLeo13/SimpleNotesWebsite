@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/labstack/gommon/log"
-	"simplenotes/cmd/internal/utils"
+	"zenkeep/cmd/internal/utils"
 )
 
 const (

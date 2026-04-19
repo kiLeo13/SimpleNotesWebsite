@@ -2,13 +2,13 @@ package service
 
 import (
 	"context"
-	"simplenotes/cmd/internal/contract"
-	"simplenotes/cmd/internal/domain/entity"
-	"simplenotes/cmd/internal/domain/events"
-	"simplenotes/cmd/internal/domain/policy"
-	cognitoclient "simplenotes/cmd/internal/infrastructure/aws/cognito"
-	"simplenotes/cmd/internal/utils"
-	"simplenotes/cmd/internal/utils/apierror"
+	"zenkeep/cmd/internal/contract"
+	"zenkeep/cmd/internal/domain/entity"
+	"zenkeep/cmd/internal/domain/events"
+	"zenkeep/cmd/internal/domain/policy"
+	cognitoclient "zenkeep/cmd/internal/infrastructure/aws/cognito"
+	"zenkeep/cmd/internal/utils"
+	"zenkeep/cmd/internal/utils/apierror"
 	"strconv"
 
 	"github.com/go-playground/validator/v10"

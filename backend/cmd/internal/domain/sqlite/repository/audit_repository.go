@@ -2,7 +2,7 @@ package repository
 
 import (
 	"gorm.io/gorm"
-	"simplenotes/cmd/internal/domain/entity"
+	"zenkeep/cmd/internal/domain/entity"
 )
 
 type AuditLogFilter struct {

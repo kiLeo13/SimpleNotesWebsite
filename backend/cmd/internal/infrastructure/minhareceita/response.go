@@ -1,7 +1,7 @@
 package minhareceita
 
 import (
-	"simplenotes/cmd/internal/domain/entity"
+	"zenkeep/cmd/internal/domain/entity"
 	"strings"
 )
 

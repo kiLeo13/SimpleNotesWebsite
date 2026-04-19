@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"regexp"
-	"simplenotes/cmd/internal/utils/apierror"
+	"zenkeep/cmd/internal/utils/apierror"
 	"slices"
 	"strings"
 	"time"

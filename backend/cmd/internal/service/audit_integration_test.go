@@ -10,13 +10,13 @@ import (
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
 
-	"simplenotes/cmd/internal/contract"
-	"simplenotes/cmd/internal/domain/entity"
-	"simplenotes/cmd/internal/domain/policy"
-	"simplenotes/cmd/internal/domain/sqlite/repository"
-	cognitoclient "simplenotes/cmd/internal/infrastructure/aws/cognito"
-	"simplenotes/cmd/internal/utils"
-	"simplenotes/cmd/internal/utils/validators"
+	"zenkeep/cmd/internal/contract"
+	"zenkeep/cmd/internal/domain/entity"
+	"zenkeep/cmd/internal/domain/policy"
+	"zenkeep/cmd/internal/domain/sqlite/repository"
+	cognitoclient "zenkeep/cmd/internal/infrastructure/aws/cognito"
+	"zenkeep/cmd/internal/utils"
+	"zenkeep/cmd/internal/utils/validators"
 )
 
 type sequenceAuditIDGenerator struct {

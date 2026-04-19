@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This repository is the SimpleNotes monorepo.
+This repository is the ZenKeep monorepo.
 It contains the React frontend in `frontend/` and the Go backend in `backend/`.
 Use this file as the single repo-level guide before reading code in depth.
 

@@ -2,8 +2,8 @@ version: "3.8"
 
 services:
   app:
-    image: ghcr.io/kileo13/simplenotes:latest
-    container_name: simplenotes_app
+    image: ghcr.io/kileo13/zenkeep:latest
+    container_name: zenkeep_app
     restart: unless-stopped
     ports:
       - "7070:7070"
@@ -18,7 +18,7 @@ services:
       timeout: 5s
       retries: 3
     volumes:
-      - /home/admin/SimpleNotesServer:/data
+      - /home/admin/ZenKeepServer:/data
 
   watchtower:
     image: containrrr/watchtower:latest

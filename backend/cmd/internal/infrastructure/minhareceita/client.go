@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"simplenotes/cmd/internal/domain/entity"
+	"zenkeep/cmd/internal/domain/entity"
 )
 
 var (

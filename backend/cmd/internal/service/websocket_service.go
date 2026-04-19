@@ -2,12 +2,12 @@ package service
 
 import (
 	"context"
-	"simplenotes/cmd/internal/contract"
-	"simplenotes/cmd/internal/domain/entity"
-	"simplenotes/cmd/internal/domain/events"
-	"simplenotes/cmd/internal/infrastructure/aws/websocket"
-	"simplenotes/cmd/internal/utils"
-	"simplenotes/cmd/internal/utils/apierror"
+	"zenkeep/cmd/internal/contract"
+	"zenkeep/cmd/internal/domain/entity"
+	"zenkeep/cmd/internal/domain/events"
+	"zenkeep/cmd/internal/infrastructure/aws/websocket"
+	"zenkeep/cmd/internal/utils"
+	"zenkeep/cmd/internal/utils/apierror"
 	"time"
 
 	"github.com/labstack/gommon/log"

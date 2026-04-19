@@ -1,9 +1,9 @@
 package service
 
 import (
-	"simplenotes/cmd/internal/domain/entity"
-	"simplenotes/cmd/internal/domain/policy"
-	"simplenotes/cmd/internal/utils/apierror"
+	"zenkeep/cmd/internal/domain/entity"
+	"zenkeep/cmd/internal/domain/policy"
+	"zenkeep/cmd/internal/utils/apierror"
 )
 
 // userUpdater acts as a "Change Set" context.

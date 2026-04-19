@@ -1,6 +1,6 @@
 package events
 
-import "simplenotes/cmd/internal/contract"
+import "zenkeep/cmd/internal/contract"
 
 type SocketEvent interface {
 	GetType() contract.EventType

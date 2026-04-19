@@ -3,8 +3,8 @@ package repository
 import (
 	"errors"
 	"gorm.io/gorm"
-	"simplenotes/cmd/internal/domain/entity"
-	"simplenotes/cmd/internal/utils"
+	"zenkeep/cmd/internal/domain/entity"
+	"zenkeep/cmd/internal/utils"
 )
 
 type DefaultUserRepository struct {

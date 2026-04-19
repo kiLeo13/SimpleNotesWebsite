@@ -1,4 +1,4 @@
-module simplenotes
+module zenkeep
 
 go 1.24.0
 

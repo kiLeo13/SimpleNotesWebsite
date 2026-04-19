@@ -3,10 +3,10 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
-	"simplenotes/cmd/internal/contract"
-	"simplenotes/cmd/internal/infrastructure/aws/websocket"
-	"simplenotes/cmd/internal/utils"
-	"simplenotes/cmd/internal/utils/apierror"
+	"zenkeep/cmd/internal/contract"
+	"zenkeep/cmd/internal/infrastructure/aws/websocket"
+	"zenkeep/cmd/internal/utils"
+	"zenkeep/cmd/internal/utils/apierror"
 
 	"github.com/labstack/echo/v4"
 )

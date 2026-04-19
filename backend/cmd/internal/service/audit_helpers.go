@@ -2,7 +2,7 @@ package service
 
 import (
 	"encoding/json"
-	"simplenotes/cmd/internal/domain/entity"
+	"zenkeep/cmd/internal/domain/entity"
 	"strconv"
 )
 

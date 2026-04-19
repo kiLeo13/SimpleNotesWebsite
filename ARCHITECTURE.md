@@ -2,7 +2,7 @@
 
 ## Overview
 
-SimpleNotes is a monorepo with two deployable applications:
+ZenKeep is a monorepo with two deployable applications:
 
 - `frontend/`: a React + TypeScript + Vite single-page application for note browsing, editing, and realtime collaboration.
 - `backend/`: a Go API that exposes REST endpoints through Echo, persists data in SQLite through GORM, and integrates with AWS services for authentication, storage, and websocket delivery.

@@ -31,5 +31,5 @@ jobs:
           file: ./backend/Dockerfile
           push: true
           tags: |
-            ghcr.io/kileo13/simplenotes:latest
-            ghcr.io/kileo13/simplenotes:${{ github.sha }}
+            ghcr.io/kileo13/zenkeep:latest
+            ghcr.io/kileo13/zenkeep:${{ github.sha }}

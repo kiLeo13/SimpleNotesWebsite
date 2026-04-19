@@ -1,8 +1,8 @@
 package policy
 
 import (
-	"simplenotes/cmd/internal/domain/entity"
-	"simplenotes/cmd/internal/utils/apierror"
+	"zenkeep/cmd/internal/domain/entity"
+	"zenkeep/cmd/internal/utils/apierror"
 )
 
 const (

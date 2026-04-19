@@ -3,8 +3,8 @@ package utils
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
-	"simplenotes/cmd/internal/domain/entity"
-	"simplenotes/cmd/internal/utils/apierror"
+	"zenkeep/cmd/internal/domain/entity"
+	"zenkeep/cmd/internal/utils/apierror"
 )
 
 func GetUserFromContext(c echo.Context) (*entity.User, apierror.ErrorResponse) {
