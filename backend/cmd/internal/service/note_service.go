@@ -289,7 +289,6 @@ func (n *NoteService) DeleteNote(actor *entity.User, noteId int) apierror.ErrorR
 			SubjectType: entity.AuditSubjectNote,
 			SubjectID:   strconv.Itoa(note.ID),
 			Source:      entity.AuditSourceHTTPAPI,
-			Changes:     buildNoteDeleteAuditChanges(note),
 		})
 	})
 	if err != nil {
@@ -429,7 +428,6 @@ func toTagsArray(tags string) []string {
 func buildNoteCreateAuditChanges(note *entity.Note) []*entity.AuditLogChange {
 	return []*entity.AuditLogChange{
 		newAuditCreateValue("name", entity.AuditValueTypeString, note.Name),
-		newAuditCreateValue("created_by_id", entity.AuditValueTypeInt, strconv.Itoa(note.CreatedByID)),
 		newAuditCreateValue("tags", entity.AuditValueTypeStringArray, auditJSONString(toTagsArray(note.Tags))),
 		newAuditCreateValue("note_type", entity.AuditValueTypeEnum, string(note.NoteType)),
 		newAuditCreateValue("content_size", entity.AuditValueTypeInt, strconv.Itoa(note.ContentSize)),
@@ -443,15 +441,4 @@ func buildNoteUpdateAuditChanges(before, after *entity.Note) []*entity.AuditLogC
 	appendAuditEnumChange(&changes, "visibility", string(before.Visibility), string(after.Visibility))
 	appendAuditStringArrayChange(&changes, "tags", toTagsArray(before.Tags), toTagsArray(after.Tags))
 	return changes
-}
-
-func buildNoteDeleteAuditChanges(note *entity.Note) []*entity.AuditLogChange {
-	return []*entity.AuditLogChange{
-		newAuditDeleteValue("name", entity.AuditValueTypeString, note.Name),
-		newAuditDeleteValue("created_by_id", entity.AuditValueTypeInt, strconv.Itoa(note.CreatedByID)),
-		newAuditDeleteValue("tags", entity.AuditValueTypeStringArray, auditJSONString(toTagsArray(note.Tags))),
-		newAuditDeleteValue("note_type", entity.AuditValueTypeEnum, string(note.NoteType)),
-		newAuditDeleteValue("content_size", entity.AuditValueTypeInt, strconv.Itoa(note.ContentSize)),
-		newAuditDeleteValue("visibility", entity.AuditValueTypeEnum, string(note.Visibility)),
-	}
 }
