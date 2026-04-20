@@ -92,6 +92,7 @@ That sequence usually gives enough context without spelunking the whole repo lik
   - Loads current user.
   - Renders sidebar + content board layout.
 - `frontend/src/components/sidebar/Sidebar.tsx`: note search, note list, sidebar reload shortcuts.
+- `frontend/src/components/sidebar/SidebarFooter.tsx`: footer action hub for utility modals and permission-gated audit log access.
 - `frontend/src/components/board/ContentBoard.tsx`: dispatches note rendering by note type/file extension.
 
 ### Frontend Stores
@@ -119,6 +120,10 @@ That sequence usually gives enough context without spelunking the whole repo lik
   - CRUD for notes.
   - Upload vs editor note creation logic.
   - File extension/size constants.
+- `frontend/src/services/auditService.ts`
+  - Audit log listing client.
+  - Uses `limit` + `before_id` cursor pagination against `/audit-logs`.
+  - Supports actor/action/subject filters used by the audit modal.
 - `frontend/src/services/userService.ts`
   - Auth and user management requests.
 - `frontend/src/services/i18n.ts`
@@ -186,6 +191,16 @@ Read:
 2. `frontend/src/models/events/GatewayEvent.ts`
 3. `frontend/src/types/websocket/events.ts`
 4. Affected zustand store
+
+### If The Task Is About Frontend Audit Logs
+
+Read:
+
+1. `frontend/src/components/sidebar/SidebarFooter.tsx`
+2. `frontend/src/components/modals/global/audit/AuditLogsModal.tsx`
+3. `frontend/src/services/auditService.ts`
+4. `frontend/src/types/api/audit.ts`
+5. `frontend/src/models/Permission.ts`
 
 ### If The Task Is About Backend Auth Or User Resolution
 
@@ -261,8 +276,12 @@ Do not copy environment values into docs or comments unless explicitly needed.
 - The frontend currently sends `id_token` in API requests even though auth data also includes `access_token`.
 - `frontend/src/pages/mainpage/ProtectedRoute.tsx` only checks local token validity; it does not fetch the user.
 - `frontend/src/pages/mainpage/MainPage.tsx` drives note opening via query param `?id=`.
+- Audit logs are opened from `SidebarFooter`, auto-apply frontend filters on change, and page through `/audit-logs` in chunks of `50` using `next_before_id`.
+- The audit modal resolves actor names from `useUsersStore` first and falls back to `userService.getUserById` for users that are no longer present in the active list.
+- Company lookup audit events are recorded for both hits and misses, with `found` and `cache_hit` change rows describing the outcome.
 - `frontend/src/stores/useNotesStore.ts` treats `REFERENCE` notes differently from text notes.
 - Backend startup loads config, initializes SQLite, wires AWS-backed dependencies, starts background jobs, and serves Echo on port `7070`.
+- Backend audit log reads are protected by `PermissionReadAuditLogs`; admins still inherit access through effective permission checks.
 - Backend websocket events can mutate frontend-visible state through the websocket pipeline, so frontend and backend changes around realtime need to be checked together.
 
 ## Workflow Notes

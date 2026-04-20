@@ -45,8 +45,11 @@ Important frontend behavior:
 
 - Auth state is stored locally and route protection is client-side.
 - The currently opened note is driven by the `?id=` query parameter.
+- Search-enabled custom selects move focus directly into their filter input when opened.
 - Notes can render as markdown, Mermaid flowcharts, or reference/file views.
 - Realtime updates come through the websocket manager and fan into stores.
+- Audit logs are surfaced through a permission-gated modal in the sidebar footer, auto-apply frontend filters on change, resolve actor and user-subject names through the users store plus on-demand user fetches, and page through the backend with cursor-style `next_before_id` pagination.
+- Frontend audit event metadata is owned by `frontend/src/components/modals/global/audit/AuditLogEvent.ts`, while `frontend/src/components/modals/global/audit/auditPresentation.ts` formats UI copy from that registry. Each supported audit event declares whether the UI should allow row expansion through an `expands` flag.
 
 ## Backend Architecture
 
@@ -98,7 +101,10 @@ Current audit coverage includes:
 
 - note create, update, and delete
 - user update, suspend/unsuspend, and delete
-- company lookup by CNPJ
+- company lookup by CNPJ, including not-found lookups with outcome metadata
+
+Audit log reads are exposed through `GET /audit-logs`.
+That endpoint is protected by the dedicated `PermissionReadAuditLogs` bit and returns the newest entries first with `limit` and `before_id` pagination.
 
 ## Frontend/Backend Integration
 
@@ -107,6 +113,7 @@ That creates a few important cross-project seams:
 
 - authentication tokens issued by the backend auth stack are stored and consumed by the frontend session store
 - note contracts must stay aligned between frontend `types/` and backend `contract/` plus service behavior
+- audit log contracts and permission bit offsets must stay aligned between frontend `types/models` and backend `contract/entity` layers
 - websocket event shapes must stay aligned between backend event emitters and frontend event schemas
 - file and reference note handling depends on both backend storage behavior and frontend renderer support
 

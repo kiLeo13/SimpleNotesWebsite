@@ -32,12 +32,7 @@ export function AuditLogEntry({
   const { t } = useTranslation()
   const detailsId = `audit-log-details-${entry.id}`
   const event = AuditLogEvent.getByActionType(entry.actionType)
-  const summary = getAuditSummary(
-    entry,
-    actorLabel,
-    resolveUserLabel,
-    t
-  )
+  const summary = getAuditSummary(entry, actorLabel, resolveUserLabel, t)
   const canExpand = event.expands
 
   const entryContent = (
