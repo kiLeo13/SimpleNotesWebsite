@@ -45,7 +45,7 @@ Important frontend behavior:
 
 - Auth state is stored locally and route protection is client-side.
 - The currently opened note is driven by the `?id=` query parameter.
-- Search-enabled custom selects move focus directly into their filter input when opened.
+- Search-enabled custom selects move focus directly into their filter input when opened, and that autofocus is managed in the component after the menu opens instead of relying on undocumented Radix props.
 - Notes can render as markdown, Mermaid flowcharts, or reference/file views.
 - Realtime updates come through the websocket manager and fan into stores.
 - Audit logs are surfaced through a permission-gated modal in the sidebar footer, auto-apply frontend filters on change, resolve actor and user-subject names through the users store plus on-demand user fetches, and page through the backend with cursor-style `next_before_id` pagination.

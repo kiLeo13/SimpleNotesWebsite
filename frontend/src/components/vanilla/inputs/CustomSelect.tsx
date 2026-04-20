@@ -1,4 +1,4 @@
-import React, { useState, useMemo, forwardRef, useRef } from "react"
+import React, { useEffect, useState, useMemo, forwardRef, useRef } from "react"
 
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import clsx from "clsx"
@@ -48,6 +48,16 @@ export const CustomSelect = forwardRef<HTMLButtonElement, CustomSelectProps>(
     const [searchTerm, setSearchTerm] = useState("")
     const [isOpen, setIsOpen] = useState(false)
     const searchInputRef = useRef<HTMLInputElement>(null)
+
+    useEffect(() => {
+      if (!isOpen || !hasSearch) return
+
+      const timeoutId = window.setTimeout(() => {
+        searchInputRef.current?.focus()
+      }, 0)
+
+      return () => window.clearTimeout(timeoutId)
+    }, [hasSearch, isOpen])
 
     const filteredOptions = useMemo(() => {
       if (!hasSearch || !searchTerm) return options
@@ -104,12 +114,6 @@ export const CustomSelect = forwardRef<HTMLButtonElement, CustomSelectProps>(
             className={styles.content}
             sideOffset={5}
             align="start"
-            onOpenAutoFocus={(event) => {
-              if (!hasSearch) return
-
-              event.preventDefault()
-              searchInputRef.current?.focus()
-            }}
             onCloseAutoFocus={(e) => e.preventDefault()}
           >
             {hasSearch && (
@@ -151,7 +155,9 @@ export const CustomSelect = forwardRef<HTMLButtonElement, CustomSelectProps>(
                   </DropdownMenu.Item>
                 ))
               ) : (
-                <div className={styles.noResults}>{t("menus.select.noResults")}</div>
+                <div className={styles.noResults}>
+                  {t("menus.select.noResults")}
+                </div>
               )}
             </div>
           </DropdownMenu.Content>
