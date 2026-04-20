@@ -85,9 +85,74 @@
     "deleteUsers": "Apagar Usuários",
     "managePerms": "Gerenciar Permissões",
     "punishUsers": "Moderar Usuários",
-    "lookup": "Realizar Consultas"
+    "lookup": "Realizar Consultas",
+    "readAuditLogs": "Ler Logs de Auditoria"
   },
   "modals": {
+    "audit": {
+      "title": "Registros",
+      "loading": "Carregando o rastro de auditoria mais recente...",
+      "loadError": "Não foi possível carregar os logs agora. Tente novamente em instantes.",
+      "retry": "Tentar novamente",
+      "empty": "Nenhum registro encontrado.",
+      "loadMoreHint": "Role para continuar carregando eventos antigos.",
+      "endReached": "Você chegou ao fim dos logs disponíveis.",
+      "noChanges": "Este evento não registrou alterações detalhadas.",
+      "emptyValue": "Sem valor",
+      "system": "Sistema",
+      "loadingActor": "Carregando usuário #{{id}}",
+      "unknownActor": "Usuário #{{id}}",
+      "filters": {
+        "actor": "Ator",
+        "action": "Ação",
+        "subject": "Alvo",
+        "subjectId": "ID do Alvo",
+        "subjectIdPlaceholder": "Ex: 42 ou 12345678000195",
+        "allActors": "Todos os atores",
+        "allActions": "Todas as ações",
+        "allSubjects": "Todos os alvos",
+        "apply": "Aplicar",
+        "clear": "Limpar"
+      },
+      "labels": {
+        "oldValue": "Valor Anterior",
+        "newValue": "Novo Valor"
+      },
+      "actions": {
+        "noteCreate": "Nota criada",
+        "noteUpdate": "Nota atualizada",
+        "noteDelete": "Nota excluída",
+        "userUpdate": "Usuário atualizado",
+        "userSuspend": "Usuário suspenso",
+        "userUnsuspend": "Suspensão removida",
+        "userDelete": "Usuário excluído",
+        "companyLookup": "Consulta de empresa"
+      },
+      "subjects": {
+        "note": "Nota",
+        "user": "Usuário",
+        "company": "Empresa"
+      },
+      "summary": {
+        "noteCreate": "{{actor}} criou a nota #{{subjectId}}",
+        "noteUpdate": "{{actor}} editou a nota #{{subjectId}}",
+        "noteDelete": "{{actor}} excluiu a nota #{{subjectId}}",
+        "userUpdate": "{{actor}} atualizou o usuário {{username}}",
+        "userSuspend": "{{actor}} suspendeu o usuário {{username}}",
+        "userUnsuspend": "{{actor}} removeu a suspensão do usuário {{username}}",
+        "userDelete": "{{actor}} excluiu o usuário {{username}}",
+        "companyLookup": "{{actor}} consultou a empresa {{subjectId}}",
+        "fallback": "{{actor}} executou {{action}} em {{subjectType}} #{{subjectId}}"
+      },
+      "change": {
+        "created": "Definiu {{field}} como {{newValue}}",
+        "deleted": "Removeu {{field}} (antes: {{oldValue}})",
+        "updated": "Alterou {{field}} de {{oldValue}} para {{newValue}}"
+      },
+      "sources": {
+        "httpApi": "HTTP API"
+      }
+    },
     "lookup": {
       "title": "Consultar Pessoa Jurídica",
       "headerLabel": "Informe o CNPJ"
@@ -218,6 +283,7 @@
     "verifyEmail": "Erro ao verificar e-mail",
     "userFetch": "Erro ao buscar usuários",
     "userUpdate": "Erro ao atualizar usuário",
+    "auditLogs": "Erro ao carregar logs de auditoria",
     "cnpjLookup": "Erro ao consultar CNPJ",
     "invalidCnpj": "CNPJ inválido",
     "cnpjNotFound": "CNPJ não encontrado",
@@ -267,6 +333,7 @@
     },
     "labels": {
       "algoCalc": "Pedra Chave",
+      "auditLogs": "Registro de Auditoria",
       "usersMng": "Gerenciar Usuários",
       "createNote": "Criar Nota",
       "lookup": "Consultar",

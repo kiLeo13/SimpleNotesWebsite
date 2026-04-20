@@ -16,9 +16,11 @@ import { FaUsers } from "react-icons/fa"
 import { FaGear } from "react-icons/fa6"
 import { DarkWrapper } from "../DarkWrapper"
 import { MdOutlineLogout } from "react-icons/md"
+import { MdOutlineHistory } from "react-icons/md"
 import { CreateNoteModalForm } from "../modals/notes/creations/uploads/CreateNoteModalForm"
 import { UserManagementPopover } from "../modals/users/management/UserManagementPopover"
 import { AlgorithmCalculator } from "../modals/global/algorithm/AlgorithmCalculator"
+import { AuditLogsModal } from "../modals/global/audit/AuditLogsModal"
 import { CompanyLookupModal } from "../modals/global/lookup/CompanyLookupModal"
 import { BiNetworkChart } from "react-icons/bi"
 import { AppTooltip } from "../ui/AppTooltip"
@@ -41,16 +43,19 @@ export function SidebarFooter(): JSX.Element {
   const canCreate = usePermission(Permission.CreateNotes)
   const canManageUsers = usePermission(Permission.ManageUsers)
   const canLookup = usePermission(Permission.PerformLookup)
+  const canReadAuditLogs = usePermission(Permission.ReadAuditLogs)
 
   // States
   const [showUploadModal, setShowUploadModal] = useState(false)
   const [editorMode, setEditorMode] = useState<EditorMode | null>(null)
   const [showAlgoCalc, setShowAlgoCalc] = useState(false)
+  const [showAuditLogs, setShowAuditLogs] = useState(false)
   const [lookingUp, setLookingUp] = useState(false)
 
   // Handlers
   const handleShowAlgo = () => setShowAlgoCalc(true)
   const closeEditor = () => setEditorMode(null)
+  const handleShowAuditLogs = () => setShowAuditLogs(true)
   const handleShowLookup = () => setLookingUp(true)
 
   const handleSignout = async () => {
@@ -94,6 +99,12 @@ export function SidebarFooter(): JSX.Element {
         <AlgorithmCalculator setShowAlgoCalc={setShowAlgoCalc} />
       </DarkWrapper>
 
+      {showAuditLogs && (
+        <DarkWrapper open={showAuditLogs} onOpenChange={setShowAuditLogs}>
+          <AuditLogsModal setShowAuditLogs={setShowAuditLogs} />
+        </DarkWrapper>
+      )}
+
       <DarkWrapper open={lookingUp} onOpenChange={setLookingUp}>
         <CompanyLookupModal setLookingUp={setLookingUp} />
       </DarkWrapper>
@@ -122,6 +133,18 @@ export function SidebarFooter(): JSX.Element {
             <AppTooltip label={t("tooltips.labels.lookup")}>
               <Button className={styles.button} onClick={handleShowLookup}>
                 <BiNetworkChart size={"0.7em"} />
+              </Button>
+            </AppTooltip>
+          )}
+
+          {canReadAuditLogs && (
+            <AppTooltip label={t("tooltips.labels.auditLogs")}>
+              <Button
+                className={styles.button}
+                onClick={handleShowAuditLogs}
+                aria-label={t("tooltips.labels.auditLogs")}
+              >
+                <MdOutlineHistory size={"0.75em"} />
               </Button>
             </AppTooltip>
           )}

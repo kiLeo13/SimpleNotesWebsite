@@ -1,0 +1,98 @@
+.entry {
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.entryButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  background-color: transparent;
+  border: none;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 16px;
+  border-radius: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.entryButton.expanded {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.entryLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.entryIcon {
+  background-color: rgba(0, 0, 0, 0.035);
+}
+
+.entryMain {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.entrySummary {
+  margin: 0;
+  color: #aca4b3;
+  font-size: 0.96rem;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.entryMeta {
+  margin: 0;
+  color: #76727c;
+  font-size: 0.82rem;
+}
+
+.chevron {
+  color: #b8bec9;
+  transform: rotate(-90deg);
+  transition: transform 0.2s ease;
+}
+
+.chevron[data-expanded="true"] {
+  transform: rotate(0deg);
+}
+
+.entryDetails {
+  padding: 16px;
+}
+
+.detailMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  user-select: text;
+  margin-bottom: 12px;
+}
+
+.metaChip {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background-color: rgba(20, 22, 25, 0.65);
+  color: #c4cad4;
+  font-size: 0.78rem;
+}
+
+.changesList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+}
+
+.emptyDetails {
+  margin: 0;
+  color: #aeb4bf;
+}

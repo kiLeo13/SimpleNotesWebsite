@@ -1,0 +1,22 @@
+.change {
+  padding: 12px 14px;
+  border-radius: 12px;
+  background-color: rgba(20, 22, 25, 0.55);
+}
+
+.changeSummary {
+  margin: 0 0 6px;
+  color: #eff2f6;
+  line-height: 1.45;
+}
+
+.changeValues {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.changeValue {
+  color: #adb4bf;
+  font-size: 0.82rem;
+}
