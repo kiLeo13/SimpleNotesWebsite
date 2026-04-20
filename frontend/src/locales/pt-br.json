@@ -99,6 +99,7 @@
       "endReached": "Você chegou ao fim dos logs disponíveis.",
       "noChanges": "Este evento não registrou alterações detalhadas.",
       "emptyValue": "Sem valor",
+      "emptyArray": "(vazio)",
       "system": "Sistema",
       "loadingActor": "Carregando usuário #{{id}}",
       "unknownActor": "Usuário #{{id}}",

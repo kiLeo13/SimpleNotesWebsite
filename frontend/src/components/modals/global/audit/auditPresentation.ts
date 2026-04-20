@@ -46,21 +46,40 @@ export function getAuditActionOptions(t: AuditTranslate): AuditSelectOption[] {
 export function getAuditSubjectOptions(t: AuditTranslate): AuditSelectOption[] {
   return [
     { value: "", label: t("modals.audit.filters.allSubjects") },
-    ...Object.entries(AUDIT_SUBJECT_LABEL_KEYS).map(([subjectType, labelKey]) => ({
-      value: subjectType,
-      label: t(labelKey)
-    }))
+    ...Object.entries(AUDIT_SUBJECT_LABEL_KEYS).map(
+      ([subjectType, labelKey]) => ({
+        value: subjectType,
+        label: t(labelKey)
+      })
+    )
   ]
 }
 
 export function formatAuditValue(
   value: string | undefined,
+  dataType: string,
   t: AuditTranslate
 ): string {
   if (value == null || value === "") {
     return t("modals.audit.emptyValue")
   }
 
+  if (dataType === "STRING_ARRAY") {
+    return formatStringArray(t, value)
+  }
+
+  return value
+}
+
+function formatStringArray(t: AuditTranslate, value: string): string {
+  try {
+    const arr = JSON.parse(value)
+    if (Array.isArray(arr)) {
+      return arr.length === 0 ? t("modals.audit.emptyArray") : arr.join(", ")
+    }
+  } catch {
+    // Ignore JSON parse errors
+  }
   return value
 }
 
@@ -84,7 +103,8 @@ export function getAuditSummary(
   resolveUserLabel: AuditUserLabelResolver,
   t: AuditTranslate
 ): string {
-  return getAuditEntryPresentation(entry, actorLabel, resolveUserLabel, t).summary
+  return getAuditEntryPresentation(entry, actorLabel, resolveUserLabel, t)
+    .summary
 }
 
 export function getChangeSummary(
@@ -94,21 +114,21 @@ export function getChangeSummary(
   if (change.oldValue == null && change.newValue != null) {
     return t("modals.audit.change.created", {
       field: getFieldNamePretty(t, change.fieldName),
-      newValue: formatAuditValue(change.newValue, t)
+      newValue: formatAuditValue(change.newValue, change.valueType, t)
     })
   }
 
   if (change.oldValue != null && change.newValue == null) {
     return t("modals.audit.change.deleted", {
       field: getFieldNamePretty(t, change.fieldName),
-      oldValue: formatAuditValue(change.oldValue, t)
+      oldValue: formatAuditValue(change.oldValue, change.valueType, t)
     })
   }
 
   return t("modals.audit.change.updated", {
     field: getFieldNamePretty(t, change.fieldName),
-    oldValue: formatAuditValue(change.oldValue, t),
-    newValue: formatAuditValue(change.newValue, t)
+    oldValue: formatAuditValue(change.oldValue, change.valueType, t),
+    newValue: formatAuditValue(change.newValue, change.valueType, t)
   })
 }
 
