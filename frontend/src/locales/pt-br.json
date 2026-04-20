@@ -144,6 +144,17 @@
         "companyLookup": "{{actor}} consultou a empresa {{subjectId}}",
         "fallback": "{{actor}} executou {{action}} em {{subjectType}} #{{subjectId}}"
       },
+      "fields": {
+        "username": "nome",
+        "name": "nome",
+        "created_by_id": "autor",
+        "note_type": "tipo de nota",
+        "content_size": "tamanho do conteúdo",
+        "visibility": "visibilidade",
+        "tags": "palavras-chave",
+        "email": "e-mail",
+        "permissions": "permissões"
+      },
       "change": {
         "created": "Definiu {{field}} como {{newValue}}",
         "deleted": "Removeu {{field}} (antes: {{oldValue}})",

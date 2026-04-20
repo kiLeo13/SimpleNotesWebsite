@@ -93,20 +93,20 @@ export function getChangeSummary(
 ): string {
   if (change.oldValue == null && change.newValue != null) {
     return t("modals.audit.change.created", {
-      field: change.fieldName,
+      field: getFieldNamePretty(t, change.fieldName),
       newValue: formatAuditValue(change.newValue, t)
     })
   }
 
   if (change.oldValue != null && change.newValue == null) {
     return t("modals.audit.change.deleted", {
-      field: change.fieldName,
+      field: getFieldNamePretty(t, change.fieldName),
       oldValue: formatAuditValue(change.oldValue, t)
     })
   }
 
   return t("modals.audit.change.updated", {
-    field: change.fieldName,
+    field: getFieldNamePretty(t, change.fieldName),
     oldValue: formatAuditValue(change.oldValue, t),
     newValue: formatAuditValue(change.newValue, t)
   })
@@ -118,4 +118,10 @@ export function getAuditSourceLabel(source: string, t: AuditTranslate): string {
   }
 
   return labels[source] ?? source
+}
+
+function getFieldNamePretty(t: AuditTranslate, fieldName: string): string {
+  const fieldLabelKey = `modals.audit.fields.${fieldName}`
+  const translated = t(fieldLabelKey)
+  return translated !== fieldLabelKey ? translated : fieldName
 }
