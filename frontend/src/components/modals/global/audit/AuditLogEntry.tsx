@@ -87,10 +87,12 @@ export function AuditLogEntry({
             <p className={styles.emptyDetails}>{t("modals.audit.noChanges")}</p>
           ) : (
             <div className={styles.changesList}>
-              {entry.changes.map((change) => (
+              {entry.changes.map((change, index) => (
                 <AuditLogChangeRow
                   key={`${entry.id}-${change.id}`}
                   change={change}
+                  displayCode={index + 1}
+                  event={event}
                 />
               ))}
             </div>

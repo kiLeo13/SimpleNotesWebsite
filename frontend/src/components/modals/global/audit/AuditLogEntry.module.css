@@ -43,7 +43,7 @@
 .entrySummary {
   margin: 0;
   color: #aca4b3;
-  font-size: 0.96rem;
+  font-size: 16px;
   font-weight: 400;
   line-height: 1.45;
 }
@@ -65,7 +65,8 @@
 }
 
 .entryDetails {
-  padding: 16px;
+  padding-top: 6px;
+  padding-bottom: 14px;
 }
 
 .detailMeta {
@@ -87,7 +88,6 @@
 .changesList {
   display: flex;
   flex-direction: column;
-  gap: 10px;
   margin: 0;
   padding: 0;
 }

@@ -1,22 +1,28 @@
-.change {
-  padding: 12px 14px;
-  border-radius: 12px;
-  background-color: rgba(20, 22, 25, 0.55);
-}
-
-.changeSummary {
-  margin: 0 0 6px;
-  color: #eff2f6;
-  line-height: 1.45;
-}
-
-.changeValues {
+.changeRow {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+  align-items: center;
+  margin-top: 8px;
+  margin-left: 25px;
 }
 
-.changeValue {
-  color: #adb4bf;
-  font-size: 0.82rem;
+.code {
+  color: var(--code-color);
+  font-weight: 700;
+  font-size: 12px;
+  font-family: var(--font-code);
+}
+
+.dash {
+  margin: 0 10px;
+}
+
+.change {
+  font-size: 15px;
+  font-weight: 400;
+  color: #c5c3c9;
+}
+
+.summary {
+  margin: 0;
+  line-height: 1.45;
 }

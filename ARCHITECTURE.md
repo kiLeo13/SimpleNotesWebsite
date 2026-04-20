@@ -50,6 +50,7 @@ Important frontend behavior:
 - Realtime updates come through the websocket manager and fan into stores.
 - Audit logs are surfaced through a permission-gated modal in the sidebar footer, auto-apply frontend filters on change, resolve actor and user-subject names through the users store plus on-demand user fetches, and page through the backend with cursor-style `next_before_id` pagination.
 - Frontend audit event metadata is owned by `frontend/src/components/modals/global/audit/AuditLogEvent.ts`, while `frontend/src/components/modals/global/audit/auditPresentation.ts` formats UI copy from that registry. Each supported audit event declares whether the UI should allow row expansion through an `expands` flag.
+- Expanded audit entries render their change rows with a local sequential code (`1..n`) per event, and the visible code accent still derives from the frontend event metadata.
 
 ## Backend Architecture
 
