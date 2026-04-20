@@ -46,6 +46,9 @@ const (
 	// PermissionPerformLookup allows users to call endpoints outside the
 	// general platform scope. Like CNPJ/places/IP lookups.
 	PermissionPerformLookup
+
+	// PermissionReadAuditLogs allows viewing audit trail events.
+	PermissionReadAuditLogs
 )
 
 // Has checks if the permission bitmask contains ALL bits

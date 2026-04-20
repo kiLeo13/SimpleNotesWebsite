@@ -15,6 +15,7 @@ import (
 	"zenkeep/cmd/internal/domain/policy"
 	"zenkeep/cmd/internal/domain/sqlite/repository"
 	cognitoclient "zenkeep/cmd/internal/infrastructure/aws/cognito"
+	"zenkeep/cmd/internal/infrastructure/minhareceita"
 	"zenkeep/cmd/internal/utils"
 	"zenkeep/cmd/internal/utils/validators"
 )
@@ -272,6 +273,71 @@ func TestGetCompanyByCNPJCreatesAuditEvent(t *testing.T) {
 	}
 }
 
+func TestGetCompanyByCNPJNotFoundStillCreatesAuditEvent(t *testing.T) {
+	db := newTestDB(t)
+
+	auditRepo := repository.NewAuditRepository(db)
+	auditSvc := newTestAuditService(t, db, 3500)
+	companyRepo := repository.NewCompanyRepository(db)
+	userRepo := repository.NewUserRepository(db)
+	miscSvc := NewMiscService(&fakeLookupClient{
+		err: minhareceita.ErrNotFound,
+	}, companyRepo, auditSvc)
+
+	actor := &entity.User{
+		ID:          100,
+		Username:    "lookup-not-found",
+		Email:       "lookup-not-found@example.com",
+		Permissions: entity.PermissionPerformLookup,
+		Active:      true,
+		CreatedAt:   utils.NowUTC(),
+		UpdatedAt:   utils.NowUTC(),
+	}
+	if err := userRepo.Save(actor); err != nil {
+		t.Fatalf("save actor: %v", err)
+	}
+
+	resp, apierr := miscSvc.GetCompanyByCNPJ(actor, "00000000000000")
+	if apierr == nil {
+		t.Fatal("expected not found api error")
+	}
+	if apierr.Code() != 404 {
+		t.Fatalf("expected 404 status code, got %d", apierr.Code())
+	}
+	if resp != nil {
+		t.Fatal("expected nil company response")
+	}
+
+	events, err := auditRepo.List(&repository.AuditLogFilter{
+		Limit:      10,
+		ActionType: auditActionPtr(entity.AuditActionCompanyLookup),
+	})
+	if err != nil {
+		t.Fatalf("list audit logs: %v", err)
+	}
+	if len(events) != 1 {
+		t.Fatalf("expected 1 company lookup audit event, got %d", len(events))
+	}
+	if events[0].SubjectID != "00000000000000" {
+		t.Fatalf("unexpected company subject id: %s", events[0].SubjectID)
+	}
+	if len(events[0].Changes) != 2 {
+		t.Fatalf("expected 2 lookup attributes, got %d", len(events[0].Changes))
+	}
+
+	changesByField := map[string]*entity.AuditLogChange{}
+	for _, change := range events[0].Changes {
+		changesByField[change.FieldName] = change
+	}
+
+	if changesByField["found"] == nil || changesByField["found"].NewValue == nil || *changesByField["found"].NewValue != "false" {
+		t.Fatalf("expected found=false change, got %+v", changesByField["found"])
+	}
+	if changesByField["cache_hit"] == nil || changesByField["cache_hit"].NewValue == nil || *changesByField["cache_hit"].NewValue != "false" {
+		t.Fatalf("expected cache_hit=false change, got %+v", changesByField["cache_hit"])
+	}
+}
+
 func TestAuditServiceGetAuditLogsPaginatesByBeforeID(t *testing.T) {
 	db := newTestDB(t)
 	auditSvc := newTestAuditService(t, db, 4000)
@@ -292,7 +358,7 @@ func TestAuditServiceGetAuditLogsPaginatesByBeforeID(t *testing.T) {
 	}
 
 	actor := &entity.User{
-		Permissions: entity.PermissionManageUsers,
+		Permissions: entity.PermissionReadAuditLogs,
 	}
 
 	page1, apierr := auditSvc.GetAuditLogs(actor, &contract.AuditLogListRequest{Limit: 2})
@@ -320,6 +386,23 @@ func TestAuditServiceGetAuditLogsPaginatesByBeforeID(t *testing.T) {
 	}
 	if len(page2.Entries) != 1 {
 		t.Fatalf("expected 1 entry on page 2, got %d", len(page2.Entries))
+	}
+}
+
+func TestAuditServiceGetAuditLogsRequiresReadAuditLogsPermission(t *testing.T) {
+	db := newTestDB(t)
+	auditSvc := newTestAuditService(t, db, 5000)
+
+	actor := &entity.User{
+		Permissions: entity.PermissionManageUsers,
+	}
+
+	_, apierr := auditSvc.GetAuditLogs(actor, &contract.AuditLogListRequest{Limit: 10})
+	if apierr == nil {
+		t.Fatal("expected permission error")
+	}
+	if apierr.Code() != 403 {
+		t.Fatalf("expected 403 status code, got %d", apierr.Code())
 	}
 }
 

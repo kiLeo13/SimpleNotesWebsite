@@ -4,12 +4,12 @@ import (
 	"context"
 	"errors"
 	"github.com/labstack/gommon/log"
+	"strconv"
 	"zenkeep/cmd/internal/contract"
 	"zenkeep/cmd/internal/domain/entity"
 	"zenkeep/cmd/internal/infrastructure/minhareceita"
 	"zenkeep/cmd/internal/utils"
 	"zenkeep/cmd/internal/utils/apierror"
-	"strconv"
 )
 
 type CompanyLookupClient interface {
@@ -27,6 +27,12 @@ type MiscService struct {
 	AuditService  *AuditService
 }
 
+type companyLookupResult struct {
+	company   *entity.Company
+	found     bool
+	fromCache bool
+}
+
 func NewMiscService(client CompanyLookupClient, companyRepo CompanyRepository, auditService *AuditService) *MiscService {
 	return &MiscService{
 		ReceitaClient: client,
@@ -40,47 +46,66 @@ func (u *MiscService) GetCompanyByCNPJ(actor *entity.User, cnpj string) (*contra
 		return nil, apierror.UserMissingPermsError
 	}
 
-	company, fromCache, err := u.findCompany(cnpj)
-	if err != nil {
-		return nil, err
+	result, apierr := u.findCompany(cnpj)
+	if apierr != nil && apierr.Code() != apierror.NotFoundError.Code() {
+		return nil, apierr
 	}
 
-	u.recordCompanyLookup(actor, cnpj, company != nil, fromCache)
-	return toCompanyResp(company, fromCache), nil
+	u.recordCompanyLookup(actor, cnpj, result.found, result.fromCache)
+
+	if apierr != nil {
+		return nil, apierr
+	}
+
+	return toCompanyResp(result.company, result.fromCache), nil
 }
 
 // findCompany is a utility function that will try to resolve the CNPJ into a company.
-// It returns the company, a boolean (true = cached, false = API fetch) and a possible error response.
-func (u *MiscService) findCompany(cnpj string) (*entity.Company, bool, apierror.ErrorResponse) {
+// It returns the lookup result, including whether it was found and whether it came from cache.
+func (u *MiscService) findCompany(cnpj string) (*companyLookupResult, apierror.ErrorResponse) {
 	cached, err := u.CompanyRepo.FindByCNPJ(cnpj)
 	if err != nil {
 		log.Errorf("failed to find company by cnpj %s: %v", cnpj, err)
-		return nil, false, apierror.InternalServerError
+		return nil, apierror.InternalServerError
 	}
 
-	// If we have some kind of cache
 	if cached != nil {
 		if cached.Found {
-			return cached, true, nil
-		} else {
-			return nil, false, apierror.NotFoundError
+			return &companyLookupResult{
+				company:   cached,
+				found:     true,
+				fromCache: true,
+			}, nil
 		}
+
+		return &companyLookupResult{
+			found:     false,
+			fromCache: true,
+		}, apierror.NotFoundError
 	}
 
-	// Cache miss
 	apiCompany, apierr := u.fetchFromAPI(cnpj)
 	if apierr != nil {
-		return nil, false, apierr
+		if apierr.Code() == apierror.NotFoundError.Code() {
+			return &companyLookupResult{
+				found:     false,
+				fromCache: false,
+			}, apierr
+		}
+
+		return nil, apierr
 	}
 
 	err = u.CompanyRepo.Save(apiCompany)
 	if err != nil {
-		// We don't return a 500 here, since we have the data we need
-		// and only the cache has failed. We can just log it and proceed.
 		log.Errorf("failed to save company cache for CNPJ %s: %v", cnpj, err)
 	}
 
-	return apiCompany, false, nil
+	return &companyLookupResult{
+		company:   apiCompany,
+		found:     true,
+		fromCache: false,
+	}, nil
 }
 
 func (u *MiscService) fetchFromAPI(cnpj string) (*entity.Company, apierror.ErrorResponse) {

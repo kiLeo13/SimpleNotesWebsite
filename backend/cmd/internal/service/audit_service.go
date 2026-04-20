@@ -133,8 +133,8 @@ func (a *AuditService) Record(tx *gorm.DB, event *entity.AuditLogEvent) error {
 }
 
 func (a *AuditService) GetAuditLogs(actor *entity.User, req *contract.AuditLogListRequest) (*contract.AuditLogListResponse, apierror.ErrorResponse) {
-	if !actor.Permissions.HasEffective(entity.PermissionManageUsers) {
-		return nil, apierror.NewPermissionError(int64(entity.PermissionManageUsers))
+	if !actor.Permissions.HasEffective(entity.PermissionReadAuditLogs) {
+		return nil, apierror.NewPermissionError(int64(entity.PermissionReadAuditLogs))
 	}
 
 	filter, apierr := a.toAuditFilter(req)
