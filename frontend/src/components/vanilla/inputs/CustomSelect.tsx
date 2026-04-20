@@ -1,4 +1,4 @@
-import React, { useState, useMemo, forwardRef } from "react"
+import React, { useState, useMemo, forwardRef, useRef } from "react"
 
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import clsx from "clsx"
@@ -47,6 +47,7 @@ export const CustomSelect = forwardRef<HTMLButtonElement, CustomSelectProps>(
 
     const [searchTerm, setSearchTerm] = useState("")
     const [isOpen, setIsOpen] = useState(false)
+    const searchInputRef = useRef<HTMLInputElement>(null)
 
     const filteredOptions = useMemo(() => {
       if (!hasSearch || !searchTerm) return options
@@ -58,6 +59,9 @@ export const CustomSelect = forwardRef<HTMLButtonElement, CustomSelectProps>(
     const selectedOption = useMemo(() => {
       return options.find((opt) => opt.value === value)
     }, [options, value])
+
+    const shouldKeepSearchFocus = () =>
+      hasSearch && document.activeElement === searchInputRef.current
 
     const handleSelect = (selectedValue: string) => {
       onChange(selectedValue)
@@ -100,13 +104,19 @@ export const CustomSelect = forwardRef<HTMLButtonElement, CustomSelectProps>(
             className={styles.content}
             sideOffset={5}
             align="start"
+            onOpenAutoFocus={(event) => {
+              if (!hasSearch) return
+
+              event.preventDefault()
+              searchInputRef.current?.focus()
+            }}
             onCloseAutoFocus={(e) => e.preventDefault()}
           >
             {hasSearch && (
               <div className={styles.searchWrapper}>
                 <FiSearch className={styles.searchIcon} />
                 <input
-                  autoFocus
+                  ref={searchInputRef}
                   type="text"
                   className={styles.searchInput}
                   placeholder={t("menus.select.searchPlaceholder")}
@@ -122,6 +132,11 @@ export const CustomSelect = forwardRef<HTMLButtonElement, CustomSelectProps>(
                   <DropdownMenu.Item
                     key={option.value}
                     className={styles.item}
+                    onPointerMove={(event) => {
+                      if (shouldKeepSearchFocus()) {
+                        event.preventDefault()
+                      }
+                    }}
                     onSelect={() => handleSelect(option.value)}
                   >
                     <div className={styles.itemLeft}>
