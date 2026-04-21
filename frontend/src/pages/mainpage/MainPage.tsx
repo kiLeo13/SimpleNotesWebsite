@@ -127,7 +127,7 @@ export function MainPage(): JSX.Element {
       >
         <Panel
           defaultSize={300}
-          minSize={250}
+          minSize={300}
           maxSize={400}
           className={styles.sidebarPanel}
         >
