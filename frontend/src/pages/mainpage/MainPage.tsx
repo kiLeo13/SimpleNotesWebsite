@@ -1,4 +1,5 @@
 import { useEffect, type JSX } from "react"
+import { useNavigate } from "@tanstack/react-router"
 
 import {
   Group,
@@ -17,15 +18,14 @@ import { isNumeric } from "@/utils/utils"
 import { useSessionStore } from "@/stores/useSessionStore"
 import { useTranslation } from "react-i18next"
 import { useWebSocketManager } from "@/hooks/useWebSocketManager"
-import { useSearchParams } from "react-router-dom"
+import { indexRouteApi } from "@/router/indexRouteApi"
 
 import styles from "./MainPage.module.css"
 
 export function MainPage(): JSX.Element {
   const { t } = useTranslation()
-
-  const [searchParams, setSearchParams] = useSearchParams()
-  const activeNoteId = searchParams.get("id")
+  const { id: activeNoteId } = indexRouteApi.useSearch()
+  const navigate = useNavigate({ from: "/" })
 
   const setUser = useSessionStore((s) => s.setUser)
   const shownNote = useNoteStore((s) => s.shownNote)
@@ -47,13 +47,13 @@ export function MainPage(): JSX.Element {
 
       const isNum = isNumeric(activeNoteId)
       if (!isNum) {
-        setSearchParams(
-          (prev) => {
-            prev.delete("id")
-            return prev
-          },
-          { replace: true }
-        )
+        void navigate({
+          replace: true,
+          search: (prev) => ({
+            ...prev,
+            id: undefined
+          })
+        })
         return
       }
 
@@ -67,17 +67,17 @@ export function MainPage(): JSX.Element {
         toasts.apiError(t("errors.notes.cantOpen"), resp)
       }
 
-      setSearchParams(
-        (prev) => {
-          prev.delete("id")
-          return prev
-        },
-        { replace: true }
-      )
+      void navigate({
+        replace: true,
+        search: (prev) => ({
+          ...prev,
+          id: undefined
+        })
+      })
     }
 
-    handleNotesLoad()
-  }, [activeNoteId, openNote, closeNote, setSearchParams, t])
+    void handleNotesLoad()
+  }, [activeNoteId, closeNote, navigate, openNote, t])
 
   const { defaultLayout, onLayoutChanged } = useDefaultLayout({
     id: "notes-layout-persistence",
@@ -101,15 +101,17 @@ export function MainPage(): JSX.Element {
     const handleGlobalClose = (e: KeyboardEvent) => {
       const key = e.key?.toLowerCase()
       if (key && key === "escape" && !isInput(e.target as HTMLElement)) {
-        setSearchParams((prev) => {
-          prev.delete("id")
-          return prev
+        void navigate({
+          search: (prev) => ({
+            ...prev,
+            id: undefined
+          })
         })
       }
     }
     window.addEventListener("keydown", handleGlobalClose)
     return () => window.removeEventListener("keydown", handleGlobalClose)
-  }, [setSearchParams])
+  }, [navigate])
 
   return (
     <>

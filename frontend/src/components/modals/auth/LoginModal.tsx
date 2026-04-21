@@ -1,12 +1,12 @@
 import { useState, type JSX } from "react"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { loginSchema, type LoginFormFields } from "@/types/forms/users"
+import { Link, useNavigate } from "@tanstack/react-router"
 
 import RequiredHint from "@/components/hints/RequiredHint"
 
 import { AlreadyAuthWarn } from "@/components/warns/AlreadyAuthWarn"
 import { FaArrowRight } from "react-icons/fa"
-import { Link, useNavigate } from "react-router-dom"
 import { DarkWrapper } from "@/components/DarkWrapper"
 import { LoaderWrapper } from "@/components/loader/LoaderWrapper"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -42,7 +42,7 @@ export function LoginModal(): JSX.Element {
       return
     }
 
-    navigate("/")
+    void navigate({ to: "/" })
   }
 
   return (

@@ -1,12 +1,12 @@
 import type { ChangeEventHandler, JSX, KeyboardEventHandler } from "react"
 import type { NoteResponseData } from "@/types/api/notes"
 
+import { useNavigate } from "@tanstack/react-router"
 import { SidebarNote } from "../notes/SidebarNote"
 import { SidebarFooter } from "./SidebarFooter"
 import { PiListMagnifyingGlass } from "react-icons/pi"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useNoteStore } from "@/stores/useNotesStore"
-import { useSearchParams } from "react-router-dom"
 import { matchSorter } from "match-sorter"
 import { throttle } from "lodash-es"
 import { useTranslation } from "react-i18next"
@@ -15,9 +15,9 @@ import styles from "./Sidebar.module.css"
 
 export function Sidebar(): JSX.Element {
   const { t } = useTranslation()
+  const navigate = useNavigate({ from: "/" })
 
   const [search, setSearch] = useState("")
-  const [, setSearchParams] = useSearchParams()
 
   const notes = useNoteStore((s) => s.notes)
   const notesState = useNoteStore((s) => s.state)
@@ -44,7 +44,12 @@ export function Sidebar(): JSX.Element {
   }
 
   const handleOpenNote = (n: NoteResponseData) => {
-    setSearchParams({ id: n.id.toString() })
+    void navigate({
+      search: (prev) => ({
+        ...prev,
+        id: n.id.toString()
+      })
+    })
   }
 
   const throttledLoadNotes = useMemo(

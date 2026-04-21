@@ -1,7 +1,7 @@
 import { useEffect, useState, type JSX } from "react"
 import type { NoteResponseData, FullNoteResponseData } from "@/types/api/notes"
 
-import { Link } from "react-router-dom"
+import { Link } from "@tanstack/react-router"
 import { ContentBoard } from "@/components/board/ContentBoard"
 import { AppTooltip } from "@/components/ui/AppTooltip"
 import { FiExternalLink } from "react-icons/fi"
@@ -62,7 +62,11 @@ export function NoteFrame({ baseNote }: NoteFrameProps): JSX.Element {
       <div className={styles.frameHeader}>
         <span className={styles.noteTitle}>{baseNote.name}</span>
         <AppTooltip label={t("labels.notes.openFull")} side="right">
-          <Link to={`/?id=${baseNote.id}`} className={styles.redirectLink}>
+          <Link
+            to="/"
+            search={{ id: baseNote.id.toString() }}
+            className={styles.redirectLink}
+          >
             <FiExternalLink />
           </Link>
         </AppTooltip>

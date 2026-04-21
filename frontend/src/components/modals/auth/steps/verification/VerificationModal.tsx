@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type JSX } from "react"
+import { useNavigate } from "@tanstack/react-router"
 
 import RequiredHint from "@/components/hints/RequiredHint"
 
@@ -8,7 +9,6 @@ import { useAsync } from "@/hooks/useAsync"
 import { userService } from "@/services/userService"
 import { useSessionStore } from "@/stores/useSessionStore"
 import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router-dom"
 import { isNumber } from "lodash-es"
 import { toasts } from "@/utils/toastUtils"
 
@@ -59,7 +59,7 @@ export function VerificationModal({
       return
     }
 
-    navigate("/")
+    void navigate({ to: "/" })
   }
 
   return (

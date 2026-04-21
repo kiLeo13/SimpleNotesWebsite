@@ -1,5 +1,6 @@
 import { signupSchema, type SignupFormFields } from "@/types/forms/users"
 import { useCallback, useMemo, useState, type JSX } from "react"
+import { Link } from "@tanstack/react-router"
 import {
   useForm,
   type SubmitHandler,
@@ -10,7 +11,6 @@ import RequiredHint from "@/components/hints/RequiredHint"
 
 import { VerificationModal } from "./steps/verification/VerificationModal"
 import { FaArrowRight } from "react-icons/fa"
-import { Link } from "react-router-dom"
 import { DarkWrapper } from "@/components/DarkWrapper"
 import { PasswordRules } from "./passwords/PasswordRules"
 import { LoaderWrapper } from "@/components/loader/LoaderWrapper"
