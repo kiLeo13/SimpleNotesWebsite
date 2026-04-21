@@ -140,6 +140,7 @@ When a change crosses one of those seams, validate both sides instead of trustin
 The frontend is intended to be built from `frontend/` and deployed independently from the backend.
 Its build inputs and package metadata now live entirely within that directory.
 The Vite build now runs TanStack Router route generation before TypeScript compilation so the generated route tree stays aligned with `frontend/src/routes/`.
+Production assets are emitted with hash-only filenames so downloaded chunks do not expose component or feature names.
 
 ### Backend
 
