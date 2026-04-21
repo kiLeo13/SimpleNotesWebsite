@@ -31,11 +31,13 @@ Primary goals for future agents:
 For frontend work, read these in order:
 
 1. `frontend/package.json`
-2. `frontend/src/App.tsx`
-3. `frontend/src/pages/mainpage/MainPage.tsx`
-4. Relevant store in `frontend/src/stores/`
-5. Relevant service in `frontend/src/services/`
-6. Matching schema/type file in `frontend/src/types/`
+2. `frontend/src/main.tsx`
+3. `frontend/src/router.tsx`
+4. Relevant route in `frontend/src/routes/`
+5. `frontend/src/pages/mainpage/MainPage.tsx`
+6. Relevant store in `frontend/src/stores/`
+7. Relevant service in `frontend/src/services/`
+8. Matching schema/type file in `frontend/src/types/`
 
 For backend work, read these in order:
 
@@ -52,7 +54,7 @@ That sequence usually gives enough context without spelunking the whole repo lik
 
 ### Frontend
 
-- Framework: `React 19` with `react-router-dom`
+- Framework: `React 19` with `@tanstack/react-router`
 - State: `zustand`
 - Forms/validation: `react-hook-form` + `zod`
 - API client: `axios`
@@ -79,21 +81,26 @@ That sequence usually gives enough context without spelunking the whole repo lik
 
 ### Frontend App Shell And Routing
 
-- `frontend/src/main.tsx`: React bootstrap, `BrowserRouter`, global CSS.
-- `frontend/src/App.tsx`: route table and toaster setup.
-- `frontend/src/pages/mainpage/ProtectedRoute.tsx`: auth gate based on local JWT presence.
+- `frontend/src/main.tsx`: React bootstrap, `RouterProvider`, and global CSS.
+- `frontend/src/router.tsx`: TanStack Router creation and router-wide defaults.
+- `frontend/src/routes/__root.tsx`: root route shell with toaster and outlet.
+- `frontend/src/routes/index.tsx`: authenticated home route with typed search params and auth redirect.
+- `frontend/src/routes/login.tsx`: login screen route.
+- `frontend/src/routes/register.tsx`: signup screen route.
+- `frontend/src/routeTree.gen.ts`: generated TanStack route tree. Do not hand-edit it unless you enjoy arguing with the generator.
 
 ### Frontend Main Screen Flow
 
 - `frontend/src/pages/mainpage/MainPage.tsx`: main authenticated screen.
-  - Reads `?id=` query param.
+  - Reads typed `?id=` search params from the TanStack index route.
   - Opens/closes notes.
   - Initializes websocket manager.
   - Loads current user.
   - Renders sidebar + content board layout.
 - `frontend/src/components/sidebar/Sidebar.tsx`: note search, note list, sidebar reload shortcuts.
-- `frontend/src/components/sidebar/SidebarFooter.tsx`: footer action hub for utility modals and permission-gated audit log access.
-- `frontend/src/components/board/ContentBoard.tsx`: dispatches note rendering by note type/file extension.
+- `frontend/src/components/sidebar/SidebarFooter.tsx`: footer action hub for utility modals and permission-gated audit log access. Heavy modal bodies are loaded on demand.
+- `frontend/src/components/board/ContentBoard.tsx`: dispatches note rendering by note type/file extension. Renderer frames are loaded on demand.
+- `frontend/src/utils/createAsyncComponent.tsx`: shared `import()`-based async component helper for modal and renderer boundaries without `React.lazy`.
 
 ### Frontend Stores
 
@@ -251,12 +258,14 @@ Read:
   - `VITE_WS_URL`
 - `frontend/vite.config.ts`
   - `@` alias to `src`
+  - TanStack Router Vite plugin with route generation and auto code splitting
   - React compiler Babel plugin enabled
 - `frontend/tsconfig.app.json`
   - strict mode enabled
   - alias path mapping for `@/*`
 - `frontend/eslint.config.js`
   - lint rules
+  - ignores generated `frontend/src/routeTree.gen.ts`
 
 ### Backend
 
@@ -274,12 +283,13 @@ Do not copy environment values into docs or comments unless explicitly needed.
 ## Important Behavior Notes
 
 - The frontend currently sends `id_token` in API requests even though auth data also includes `access_token`.
-- `frontend/src/pages/mainpage/ProtectedRoute.tsx` only checks local token validity; it does not fetch the user.
-- `frontend/src/pages/mainpage/MainPage.tsx` drives note opening via query param `?id=`.
+- Route protection is handled in TanStack Router route guards instead of a dedicated `ProtectedRoute` wrapper.
+- `frontend/src/pages/mainpage/MainPage.tsx` drives note opening via typed `?id=` search params on the `/` route.
 - Audit logs are opened from `SidebarFooter`, auto-apply frontend filters on change, and page through `/audit-logs` in chunks of `50` using `next_before_id`.
 - The audit modal resolves actor names from `useUsersStore` first and falls back to `userService.getUserById` for users that are no longer present in the active list.
 - Company lookup audit events are recorded for both hits and misses, with `found` and `cache_hit` change rows describing the outcome.
 - `frontend/src/stores/useNotesStore.ts` treats `REFERENCE` notes differently from text notes.
+- Sidebar utility modals and board renderer frames are lazy-loaded with plain `import()` helpers so the app shell does not eagerly pull the whole circus into the entry bundle.
 - Backend startup loads config, initializes SQLite, wires AWS-backed dependencies, starts background jobs, and serves Echo on port `7070`.
 - Backend audit log reads are protected by `PermissionReadAuditLogs`; admins still inherit access through effective permission checks.
 - Backend websocket events can mutate frontend-visible state through the websocket pipeline, so frontend and backend changes around realtime need to be checked together.

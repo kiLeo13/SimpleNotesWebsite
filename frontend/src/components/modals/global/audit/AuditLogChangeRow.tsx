@@ -19,15 +19,17 @@ export function AuditLogChangeRow({
   event
 }: AuditLogChangeRowProps): JSX.Element {
   const { t } = useTranslation()
+  const codeColor = event.codeColor ?? "inherit"
   const codeStyles = {
-    color: event.codeColor
-  } satisfies CSSProperties
+    color: codeColor,
+    "--code-color": codeColor
+  } satisfies CSSProperties & Record<"--code-color", string>
 
   return (
     <div className={styles.changeRow}>
       <div className={styles.code} style={codeStyles}>
-        {String(displayCode).padStart(2, '0')}
-        <span className={styles.dash}>—</span>
+        {displayCode}
+        <span className={styles.dash}> - </span>
       </div>
       <div className={styles.change}>
         <p className={styles.summary}>{getChangeSummary(change, t)}</p>

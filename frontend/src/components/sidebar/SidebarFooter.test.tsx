@@ -30,25 +30,13 @@ vi.mock("@/hooks/usePermission", () => ({
   usePermission: (permission: Permission) => mockUsePermission(permission)
 }))
 
-vi.mock("react-router-dom", async () => {
-  const actual = await vi.importActual<typeof import("react-router-dom")>(
-    "react-router-dom"
-  )
-
-  return {
-    ...actual,
-    useNavigate: () => vi.fn()
-  }
-})
+vi.mock("@tanstack/react-router", () => ({
+  useNavigate: () => vi.fn()
+}))
 
 vi.mock("../DarkWrapper", () => ({
-  DarkWrapper: ({
-    children,
-    open
-  }: {
-    children: ReactNode
-    open?: boolean
-  }) => (open ? <>{children}</> : null)
+  DarkWrapper: ({ children, open }: { children: ReactNode; open?: boolean }) =>
+    open ? <>{children}</> : null
 }))
 
 vi.mock("../ui/ActionMenu", () => ({
@@ -68,7 +56,9 @@ vi.mock("../modals/notes/creations/uploads/CreateNoteModalForm", () => ({
 }))
 
 vi.mock("../modals/users/management/UserManagementPopover", () => ({
-  UserManagementPopover: ({ children }: { children: ReactNode }) => <>{children}</>
+  UserManagementPopover: ({ children }: { children: ReactNode }) => (
+    <>{children}</>
+  )
 }))
 
 vi.mock("../modals/global/algorithm/AlgorithmCalculator", () => ({
@@ -112,12 +102,12 @@ describe("SidebarFooter", () => {
     ).toBeInTheDocument()
   })
 
-  it("opens the audit logs modal when the audit button is clicked", () => {
+  it("opens the audit logs modal when the audit button is clicked", async () => {
     render(<SidebarFooter />)
 
     fireEvent.click(screen.getByRole("button", { name: "Logs de Auditoria" }))
 
-    expect(screen.getByText("Audit Logs Modal")).toBeInTheDocument()
+    expect(await screen.findByText("Audit Logs Modal")).toBeInTheDocument()
   })
 
   it("hides the audit logs button without the audit permission", () => {
