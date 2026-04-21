@@ -1,9 +1,7 @@
 import { useState, type JSX } from "react"
+import { useNavigate } from "@tanstack/react-router"
 import { ActionMenu, type MenuActionItem } from "../ui/ActionMenu"
-import {
-  CreateEditorModal,
-  type EditorMode
-} from "../modals/notes/creations/editors/CreateEditorModal"
+import type { EditorMode } from "../modals/notes/creations/editors/CreateEditorModal"
 
 import { CgController } from "react-icons/cg"
 import {
@@ -17,23 +15,49 @@ import { FaGear } from "react-icons/fa6"
 import { DarkWrapper } from "../DarkWrapper"
 import { MdOutlineLogout } from "react-icons/md"
 import { MdOutlineHistory } from "react-icons/md"
-import { CreateNoteModalForm } from "../modals/notes/creations/uploads/CreateNoteModalForm"
 import { UserManagementPopover } from "../modals/users/management/UserManagementPopover"
-import { AlgorithmCalculator } from "../modals/global/algorithm/AlgorithmCalculator"
-import { AuditLogsModal } from "../modals/global/audit/AuditLogsModal"
-import { CompanyLookupModal } from "../modals/global/lookup/CompanyLookupModal"
 import { BiNetworkChart } from "react-icons/bi"
 import { AppTooltip } from "../ui/AppTooltip"
 import { Ripple } from "../ui/effects/Ripple"
 import { Button } from "../ui/buttons/Button"
+import { LoaderContainer } from "@/components/LoaderContainer"
 import { Permission } from "@/models/Permission"
+import { createAsyncComponent } from "@/utils/createAsyncComponent"
 import { useTranslation } from "react-i18next"
 import { usePermission } from "@/hooks/usePermission"
 import { userService } from "@/services/userService"
 import { toasts } from "@/utils/toastUtils"
 
 import styles from "./SidebarFooter.module.css"
-import { useNavigate } from "react-router-dom"
+
+const CreateEditorModal = createAsyncComponent(
+  () => import("../modals/notes/creations/editors/CreateEditorModal"),
+  (module) => module.CreateEditorModal
+)
+
+const CreateNoteModalForm = createAsyncComponent(
+  () => import("../modals/notes/creations/uploads/CreateNoteModalForm"),
+  (module) => module.CreateNoteModalForm
+)
+
+const AlgorithmCalculator = createAsyncComponent(
+  () => import("../modals/global/algorithm/AlgorithmCalculator"),
+  (module) => module.AlgorithmCalculator
+)
+
+const AuditLogsModal = createAsyncComponent(
+  () => import("../modals/global/audit/AuditLogsModal"),
+  (module) => module.AuditLogsModal
+)
+
+const CompanyLookupModal = createAsyncComponent(
+  () => import("../modals/global/lookup/CompanyLookupModal"),
+  (module) => module.CompanyLookupModal
+)
+
+const modalLoaderFallback = (
+  <LoaderContainer scale={0.9} loaderColor="#b79ed8" />
+)
 
 export function SidebarFooter(): JSX.Element {
   const { t } = useTranslation()
@@ -62,7 +86,7 @@ export function SidebarFooter(): JSX.Element {
     const accessToken = localStorage.getItem("access_token")
     if (!accessToken) {
       toasts.warning(t("warnings.noAccessToken"))
-      navigate("/login")
+      void navigate({ to: "/login" })
       return
     }
 
@@ -72,7 +96,7 @@ export function SidebarFooter(): JSX.Element {
     }
     localStorage.removeItem("id_token")
     localStorage.removeItem("access_token")
-    navigate("/login")
+    void navigate({ to: "/login" })
   }
 
   const settingsOptions = getSettingsOptions(t, handleSignout)
@@ -85,29 +109,53 @@ export function SidebarFooter(): JSX.Element {
   return (
     <>
       {/* File Upload Modal */}
-      <DarkWrapper open={showUploadModal} onOpenChange={setShowUploadModal}>
-        <CreateNoteModalForm setShowUploadModal={setShowUploadModal} />
-      </DarkWrapper>
-
-      {/* Split-Screen Editor Modal */}
-      <DarkWrapper open={!!editorMode} onOpenChange={closeEditor}>
-        <CreateEditorModal mode={editorMode!} onClose={closeEditor} />
-      </DarkWrapper>
-
-      {/* Utility Modals */}
-      <DarkWrapper open={showAlgoCalc} onOpenChange={setShowAlgoCalc}>
-        <AlgorithmCalculator setShowAlgoCalc={setShowAlgoCalc} />
-      </DarkWrapper>
-
-      {showAuditLogs && (
-        <DarkWrapper open={showAuditLogs} onOpenChange={setShowAuditLogs}>
-          <AuditLogsModal setShowAuditLogs={setShowAuditLogs} />
+      {showUploadModal && (
+        <DarkWrapper open={showUploadModal} onOpenChange={setShowUploadModal}>
+          <CreateNoteModalForm
+            loadingFallback={modalLoaderFallback}
+            setShowUploadModal={setShowUploadModal}
+          />
         </DarkWrapper>
       )}
 
-      <DarkWrapper open={lookingUp} onOpenChange={setLookingUp}>
-        <CompanyLookupModal setLookingUp={setLookingUp} />
-      </DarkWrapper>
+      {/* Split-Screen Editor Modal */}
+      {editorMode && (
+        <DarkWrapper open={!!editorMode} onOpenChange={closeEditor}>
+          <CreateEditorModal
+            loadingFallback={modalLoaderFallback}
+            mode={editorMode}
+            onClose={closeEditor}
+          />
+        </DarkWrapper>
+      )}
+
+      {/* Utility Modals */}
+      {showAlgoCalc && (
+        <DarkWrapper open={showAlgoCalc} onOpenChange={setShowAlgoCalc}>
+          <AlgorithmCalculator
+            loadingFallback={modalLoaderFallback}
+            setShowAlgoCalc={setShowAlgoCalc}
+          />
+        </DarkWrapper>
+      )}
+
+      {showAuditLogs && (
+        <DarkWrapper open={showAuditLogs} onOpenChange={setShowAuditLogs}>
+          <AuditLogsModal
+            loadingFallback={modalLoaderFallback}
+            setShowAuditLogs={setShowAuditLogs}
+          />
+        </DarkWrapper>
+      )}
+
+      {lookingUp && (
+        <DarkWrapper open={lookingUp} onOpenChange={setLookingUp}>
+          <CompanyLookupModal
+            loadingFallback={modalLoaderFallback}
+            setLookingUp={setLookingUp}
+          />
+        </DarkWrapper>
+      )}
 
       <div className={styles.footer}>
         {/* Settings */}

@@ -1,5 +1,6 @@
 import { useEffect, useRef, type ComponentProps, type JSX } from "react"
 import ReactMarkdown, { type Components } from "react-markdown"
+import "highlight.js/styles/github-dark.css"
 
 import remarkGfm from "remark-gfm"
 import remarkEmoji from "remark-emoji"
@@ -79,7 +80,6 @@ export function MarkdownDisplay({
             // Custom components
             "note-ref": NoteReference,
             "custom-tooltip": CustomTooltip
-
           } as Partial<Components> & Record<string, React.ElementType>
         }
       >

@@ -5,8 +5,11 @@ import { DocumentBoardFrame } from "./renderers/DocumentBoardFrame"
 import { ImageBoardFrame } from "./renderers/ImageBoardFrame"
 import { VideoBoardFrame } from "./renderers/VideoBoardFrame"
 import { AudioBoardFrame } from "./renderers/AudioBoardFrame"
-import { TextBoardFrame } from "./renderers/TextBoardFrame"
-import { MermaidBoardFrame } from "./renderers/mermaid/MermaidBoardFrame"
+import {
+  AsyncMermaidBoardFrame,
+  AsyncTextBoardFrame,
+  BoardFrameLoaderFallback
+} from "./lazyBoardFrames"
 import { ext } from "@/utils/utils"
 import { useNoteStore } from "@/stores/useNotesStore"
 
@@ -14,17 +17,17 @@ type ContentBoardProps = {
   note: FullNoteResponseData
 }
 
-const BASE_ROUTE = 'https://d26143aouxq3ma.cloudfront.net/attachments'
+const BASE_ROUTE = "https://d26143aouxq3ma.cloudfront.net/attachments"
 
 export function ContentBoard({ note }: ContentBoardProps): JSX.Element {
   const setRendering = useNoteStore((state) => state.setRendering)
-  
-  const isFlowchart = note.note_type === 'FLOWCHART'
-  const isReference = note.note_type === 'REFERENCE'
+
+  const isFlowchart = note.note_type === "FLOWCHART"
+  const isReference = note.note_type === "REFERENCE"
   const fileExt = !isReference ? "" : ext(note.content) || "pdf"
 
-  const route = (!isReference) ? "" : `${BASE_ROUTE}/${note.content}`
-  
+  const route = !isReference ? "" : `${BASE_ROUTE}/${note.content}`
+
   const hideLoading = () => setRendering(false)
 
   useEffect(() => {
@@ -32,7 +35,12 @@ export function ContentBoard({ note }: ContentBoardProps): JSX.Element {
   }, [setRendering])
 
   if (isFlowchart) {
-    return <MermaidBoardFrame diagram={note.content} />
+    return (
+      <AsyncMermaidBoardFrame
+        diagram={note.content}
+        loadingFallback={<BoardFrameLoaderFallback />}
+      />
+    )
   }
 
   if (fileExt === "pdf") {
@@ -51,5 +59,10 @@ export function ContentBoard({ note }: ContentBoardProps): JSX.Element {
     return <AudioBoardFrame onCanPlay={hideLoading} url={route} />
   }
 
-  return <TextBoardFrame markdown={note.content} />
+  return (
+    <AsyncTextBoardFrame
+      markdown={note.content}
+      loadingFallback={<BoardFrameLoaderFallback />}
+    />
+  )
 }

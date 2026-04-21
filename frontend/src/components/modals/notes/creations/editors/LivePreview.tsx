@@ -3,8 +3,11 @@ import type { EditorMode } from "./CreateEditorModal"
 
 import clsx from "clsx"
 
-import { MermaidBoardFrame } from "@/components/board/renderers/mermaid/MermaidBoardFrame"
-import { TextBoardFrame } from "@/components/board/renderers/TextBoardFrame"
+import {
+  AsyncMermaidBoardFrame,
+  AsyncTextBoardFrame,
+  BoardFrameLoaderFallback
+} from "@/components/board/lazyBoardFrames"
 import { FaEye } from "react-icons/fa"
 import { FaMarkdown } from "react-icons/fa"
 import { useTranslation } from "react-i18next"
@@ -22,7 +25,9 @@ export function LivePreview({ mode, content }: LivePreviewProps): JSX.Element {
 
   return (
     <div className={styles.previewPanel}>
-      <div className={clsx(styles.topInfos, isFlowchart && styles.modeFlowchart)}>
+      <div
+        className={clsx(styles.topInfos, isFlowchart && styles.modeFlowchart)}
+      >
         {mode === "MARKDOWN" && (
           <a
             className={clsx(styles.topItem, styles.docs)}
@@ -45,10 +50,17 @@ export function LivePreview({ mode, content }: LivePreviewProps): JSX.Element {
       </div>
 
       {mode === "FLOWCHART" ? (
-        <MermaidBoardFrame diagram={content} warnOnFail={false} />
+        <AsyncMermaidBoardFrame
+          diagram={content}
+          warnOnFail={false}
+          loadingFallback={<BoardFrameLoaderFallback />}
+        />
       ) : (
         <div className={styles.textView}>
-          <TextBoardFrame markdown={content} />
+          <AsyncTextBoardFrame
+            markdown={content}
+            loadingFallback={<BoardFrameLoaderFallback />}
+          />
         </div>
       )}
     </div>
