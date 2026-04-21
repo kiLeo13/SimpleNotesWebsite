@@ -3,7 +3,6 @@ import { useNavigate } from "@tanstack/react-router"
 import { ActionMenu, type MenuActionItem } from "../ui/ActionMenu"
 import type { EditorMode } from "../modals/notes/creations/editors/CreateEditorModal"
 
-import { CgController } from "react-icons/cg"
 import {
   MdInsertDriveFile,
   MdOutlineFileUpload,
@@ -16,8 +15,9 @@ import { DarkWrapper } from "../DarkWrapper"
 import { MdOutlineLogout } from "react-icons/md"
 import { MdOutlineHistory } from "react-icons/md"
 import { UserManagementPopover } from "../modals/users/management/UserManagementPopover"
-import { BiNetworkChart } from "react-icons/bi"
+import { CgController } from "react-icons/cg"
 import { AppTooltip } from "../ui/AppTooltip"
+import { BsBuildingFill } from "react-icons/bs";
 import { Ripple } from "../ui/effects/Ripple"
 import { Button } from "../ui/buttons/Button"
 import { LoaderContainer } from "@/components/LoaderContainer"
@@ -178,9 +178,9 @@ export function SidebarFooter(): JSX.Element {
           </AppTooltip>
 
           {canLookup && (
-            <AppTooltip label={t("tooltips.labels.lookup")}>
+            <AppTooltip label={t("tooltips.labels.companyLookup")}>
               <Button className={styles.button} onClick={handleShowLookup}>
-                <BiNetworkChart size={"0.7em"} />
+                <BsBuildingFill size={"0.65em"} />
               </Button>
             </AppTooltip>
           )}

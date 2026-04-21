@@ -348,7 +348,7 @@
       "auditLogs": "Registro de Auditoria",
       "usersMng": "Gerenciar Usuários",
       "createNote": "Criar Nota",
-      "lookup": "Consultar",
+      "companyLookup": "Consultar CNPJ",
       "settings": "Configurações"
     }
   },
