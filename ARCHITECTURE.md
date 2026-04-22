@@ -48,6 +48,7 @@ Important frontend behavior:
 - The currently opened note is driven by the typed `?id=` search parameter on the `/` route.
 - Search-enabled custom selects move focus directly into their filter input when opened, and that autofocus is managed in the component after the menu opens instead of relying on undocumented Radix props.
 - Notes can render as markdown, Mermaid flowcharts, or reference/file views.
+- Sidebar note rows expose menu actions for all users to copy the note ID and download the note without opening a new tab. Markdown notes download as `.md`, reference notes download the stored attachment file, and Mermaid flowcharts export through the shared Mermaid SVG renderer as `.svg`.
 - Heavy optional UI is loaded on demand instead of from the permanent shell:
   - Sidebar utility modals are imported only when opened.
   - Board renderers are imported only when the active note needs them.
