@@ -11,6 +11,10 @@ vi.mock("react-i18next", () => ({
         return "Salvar"
       }
 
+      if (key === "updateNoteModal.actions") {
+        return "Ações"
+      }
+
       return key
     }
   })
@@ -24,8 +28,12 @@ vi.mock("@/components/loader/LoaderWrapper", () => ({
   LoaderWrapper: ({ children }: { children: ReactNode }) => <>{children}</>
 }))
 
+vi.mock("@/components/ui/AppTooltip", () => ({
+  AppTooltip: ({ children }: { children: ReactNode }) => <>{children}</>
+}))
+
 describe("ModalFooter", () => {
-  it("renders only the save action without exposing the note ID", () => {
+  it("renders the left action rail with only the save action", () => {
     render(
       <ModalFooter
         exists
@@ -35,7 +43,11 @@ describe("ModalFooter", () => {
       />
     )
 
-    expect(screen.getByRole("button", { name: "Salvar" })).toBeInTheDocument()
+    const rail = screen.getByRole("toolbar", { name: "Ações" })
+    const saveButton = screen.getByRole("button", { name: "Salvar" })
+
+    expect(rail).toBeInTheDocument()
+    expect(saveButton).toBeDisabled()
     expect(screen.queryByText(/ID:/i)).not.toBeInTheDocument()
   })
 })
