@@ -13,6 +13,7 @@ import clsx from "clsx"
 import { AppTooltip } from "../ui/AppTooltip"
 import { DarkWrapper } from "../DarkWrapper"
 import { FaPenToSquare } from "react-icons/fa6"
+import { MdDownload } from "react-icons/md"
 import { Permission } from "@/models/Permission"
 import { SlOptions } from "react-icons/sl"
 import { UpdateNoteModal } from "../modals/notes/updates/UpdateNoteModal"
@@ -24,8 +25,13 @@ import { useTranslation } from "react-i18next"
 import { useNoteStore } from "@/stores/useNotesStore"
 import { noteService } from "@/services/noteService"
 import { toasts } from "@/utils/toastUtils"
+import {
+  copyTextToClipboard,
+  downloadNoteToDevice
+} from "@/utils/noteDownloads"
 
 import styles from "./SidebarNote.module.css"
+import { IdentificationIcon } from "../icons/IdentificationIcon"
 
 type SidebarNoteProps = {
   note: NoteResponseData
@@ -46,18 +52,43 @@ export function SidebarNote({ note, onClick }: SidebarNoteProps): JSX.Element {
   const canDelete = usePermission(Permission.DeleteNotes)
   const shownNote = useNoteStore((state) => state.shownNote)
   const isOpen = shownNote?.id === note.id
+  const handleMenuTriggerClick: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.stopPropagation()
+  }
+
+  const copyNoteId = async () => {
+    try {
+      await copyTextToClipboard(note.id.toString())
+    } catch (error) {
+      console.error("Failed to copy note ID:", error)
+      toasts.error(t("sidebar.notes.toasts.copyIdError"))
+    }
+  }
+
+  const downloadNote = async () => {
+    const result = await downloadNoteToDevice(note, noteService.fetchNote)
+    if (result.success) {
+      return
+    }
+
+    if (result.reason === "api") {
+      toasts.apiError(t("sidebar.notes.toasts.downloadError"), result.error)
+      return
+    }
+
+    console.error("Failed to download note:", result.error)
+    toasts.error(t("sidebar.notes.toasts.downloadError"))
+  }
+
   const noteOpts = getMenuOptions(
     canEdit,
     canDelete,
     t,
+    () => void downloadNote(),
+    () => void copyNoteId(),
     setIsPatching,
     setIsDeleting
   )
-
-  const handleClick: MouseEventHandler<HTMLButtonElement> = (e) => {
-    e.stopPropagation()
-    setIsPatching(true)
-  }
 
   useEffect(() => {
     const element = elementRef.current
@@ -98,15 +129,18 @@ export function SidebarNote({ note, onClick }: SidebarNoteProps): JSX.Element {
       <span className={styles.noteItemTitle}>{note.name}</span>
       <Ripple duration={600} />
 
-      {(canEdit || canDelete) && (
-        <ActionMenu items={noteOpts} side="right" align="center">
-          <AppTooltip label={t("sidebar.notes.options")}>
-            <button onClick={handleClick} className={styles.patch}>
-              <SlOptions size={"1.2em"} color="#9a83b4ff" />
-            </button>
-          </AppTooltip>
-        </ActionMenu>
-      )}
+      <ActionMenu items={noteOpts} side="right" align="center">
+        <AppTooltip label={t("sidebar.notes.options")}>
+          <button
+            type="button"
+            onClick={handleMenuTriggerClick}
+            className={styles.patch}
+            aria-label={t("sidebar.notes.options")}
+          >
+            <SlOptions size={"1.2em"} color="#9a83b4ff" />
+          </button>
+        </AppTooltip>
+      </ActionMenu>
 
       <DarkWrapper open={isPatching} onOpenChange={setIsPatching}>
         <UpdateNoteModal noteId={note.id} setIsPatching={setIsPatching} />
@@ -131,11 +165,14 @@ export function SidebarNote({ note, onClick }: SidebarNoteProps): JSX.Element {
 function getMenuOptions(
   canEdit: boolean,
   canDelete: boolean,
-  t: (s: string) => string,
+  t: (s: string, opts?: Record<string, unknown>) => string,
+  onDownload: () => void,
+  onCopyId: () => void,
   setIsPatching: (b: boolean) => void,
   setIsDeleting: (b: boolean) => void
 ): MenuActionItem[] {
   const menuOptions: MenuActionItem[] = []
+
   if (canEdit) {
     menuOptions.push({
       label: t("menus.notes.opts.edit"),
@@ -150,5 +187,19 @@ function getMenuOptions(
       onClick: () => setIsDeleting(true)
     })
   }
+
+  menuOptions.push(
+    {
+      label: t("menus.notes.opts.download"),
+      icon: <MdDownload size={"1.3em"} color="#a285d1" />,
+      onClick: onDownload
+    },
+    {
+      label: t("menus.notes.opts.copyId"),
+      icon: <IdentificationIcon size={"1.3em"} color="#a285d1" />,
+      onClick: onCopyId
+    }
+  )
+
   return menuOptions
 }

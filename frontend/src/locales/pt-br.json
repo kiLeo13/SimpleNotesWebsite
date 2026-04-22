@@ -70,9 +70,14 @@
       "title": "Notas",
       "noResults": "Parece não ter nada aqui...",
       "options": "Opções",
+      "download": "Baixar nota",
       "search": "Pesquisar",
       "oneFound": "1 item",
-      "manyFound": "{{val}} itens"
+      "manyFound": "{{val}} itens",
+      "toasts": {
+        "copyIdError": "Não foi possível copiar o ID da nota.",
+        "downloadError": "Não foi possível baixar a nota."
+      }
     }
   },
   "perms": {
@@ -362,6 +367,8 @@
     },
     "notes": {
       "opts": {
+        "download": "Baixar",
+        "copyId": "Copiar ID",
         "edit": "Editar",
         "delete": "Excluir"
       },
