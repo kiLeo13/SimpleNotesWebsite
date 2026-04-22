@@ -17,7 +17,7 @@ import { MdOutlineHistory } from "react-icons/md"
 import { UserManagementPopover } from "../modals/users/management/UserManagementPopover"
 import { CgController } from "react-icons/cg"
 import { AppTooltip } from "../ui/AppTooltip"
-import { BsBuildingFill } from "react-icons/bs";
+import { BsBuildingFill } from "react-icons/bs"
 import { Ripple } from "../ui/effects/Ripple"
 import { Button } from "../ui/buttons/Button"
 import { LoaderContainer } from "@/components/LoaderContainer"
@@ -28,7 +28,7 @@ import { usePermission } from "@/hooks/usePermission"
 import { userService } from "@/services/userService"
 import { toasts } from "@/utils/toastUtils"
 
-import styles from "./SidebarFooter.module.css"
+import styles from "./SidebarRail.module.css"
 
 const CreateEditorModal = createAsyncComponent(
   () => import("../modals/notes/creations/editors/CreateEditorModal"),
@@ -59,28 +59,22 @@ const modalLoaderFallback = (
   <LoaderContainer scale={0.9} loaderColor="#b79ed8" />
 )
 
-export function SidebarFooter(): JSX.Element {
+export function SidebarRail(): JSX.Element {
   const { t } = useTranslation()
   const navigate = useNavigate()
 
-  // Permissions
   const canCreate = usePermission(Permission.CreateNotes)
   const canManageUsers = usePermission(Permission.ManageUsers)
   const canLookup = usePermission(Permission.PerformLookup)
   const canReadAuditLogs = usePermission(Permission.ReadAuditLogs)
 
-  // States
   const [showUploadModal, setShowUploadModal] = useState(false)
   const [editorMode, setEditorMode] = useState<EditorMode | null>(null)
   const [showAlgoCalc, setShowAlgoCalc] = useState(false)
   const [showAuditLogs, setShowAuditLogs] = useState(false)
   const [lookingUp, setLookingUp] = useState(false)
 
-  // Handlers
-  const handleShowAlgo = () => setShowAlgoCalc(true)
   const closeEditor = () => setEditorMode(null)
-  const handleShowAuditLogs = () => setShowAuditLogs(true)
-  const handleShowLookup = () => setLookingUp(true)
 
   const handleSignout = async () => {
     const accessToken = localStorage.getItem("access_token")
@@ -94,6 +88,7 @@ export function SidebarFooter(): JSX.Element {
     if (!resp.success) {
       toasts.apiError(t("errors.logout"), resp)
     }
+
     localStorage.removeItem("id_token")
     localStorage.removeItem("access_token")
     void navigate({ to: "/login" })
@@ -108,7 +103,6 @@ export function SidebarFooter(): JSX.Element {
 
   return (
     <>
-      {/* File Upload Modal */}
       {showUploadModal && (
         <DarkWrapper open={showUploadModal} onOpenChange={setShowUploadModal}>
           <CreateNoteModalForm
@@ -118,7 +112,6 @@ export function SidebarFooter(): JSX.Element {
         </DarkWrapper>
       )}
 
-      {/* Split-Screen Editor Modal */}
       {editorMode && (
         <DarkWrapper open={!!editorMode} onOpenChange={closeEditor}>
           <CreateEditorModal
@@ -129,7 +122,6 @@ export function SidebarFooter(): JSX.Element {
         </DarkWrapper>
       )}
 
-      {/* Utility Modals */}
       {showAlgoCalc && (
         <DarkWrapper open={showAlgoCalc} onOpenChange={setShowAlgoCalc}>
           <AlgorithmCalculator
@@ -157,70 +149,85 @@ export function SidebarFooter(): JSX.Element {
         </DarkWrapper>
       )}
 
-      <div className={styles.footer}>
-        {/* Settings */}
-        <ActionMenu items={settingsOptions}>
-          <AppTooltip label={t("tooltips.labels.settings")}>
-            <button className={styles.button}>
-              <FaGear size={"0.5em"} />
-              <Ripple />
-            </button>
-          </AppTooltip>
-        </ActionMenu>
-
-        <div className={styles.buttonsContainer}>
-          {/* Algorithm Calculator */}
-          <AppTooltip label={t("tooltips.labels.algoCalc")}>
-            <button className={styles.button} onClick={handleShowAlgo}>
-              <CgController size={"0.7em"} />
-              <Ripple />
-            </button>
-          </AppTooltip>
-
-          {canLookup && (
-            <AppTooltip label={t("tooltips.labels.companyLookup")}>
-              <Button className={styles.button} onClick={handleShowLookup}>
-                <BsBuildingFill size={"0.65em"} />
-              </Button>
-            </AppTooltip>
-          )}
-
-          {canReadAuditLogs && (
-            <AppTooltip label={t("tooltips.labels.auditLogs")}>
-              <Button
-                className={styles.button}
-                onClick={handleShowAuditLogs}
-                aria-label={t("tooltips.labels.auditLogs")}
-              >
-                <MdOutlineHistory size={"0.75em"} />
-              </Button>
-            </AppTooltip>
-          )}
-
+      <aside className={styles.rail}>
+        <div className={styles.topActions}>
           {canCreate && (
-            // Create Note Action Menu
-            <ActionMenu items={createNoteOptions} side="right">
-              <AppTooltip label={t("tooltips.labels.createNote")}>
-                <button className={styles.button}>
-                  <MdOutlineFileUpload size={"0.8em"} />
+            <ActionMenu items={createNoteOptions} side="right" align="center">
+              <AppTooltip label={t("tooltips.labels.createNote")} side="right">
+                <button
+                  className={styles.button}
+                  aria-label={t("tooltips.labels.createNote")}
+                >
+                  <MdOutlineFileUpload size={"0.9em"} />
                   <Ripple />
                 </button>
               </AppTooltip>
             </ActionMenu>
           )}
 
-          {/* User Management Popover */}
           {canManageUsers && (
             <UserManagementPopover>
-              <AppTooltip label={t("tooltips.labels.usersMng")}>
-                <Button className={styles.button}>
-                  <FaUsers size={"0.7em"} />
+              <AppTooltip label={t("tooltips.labels.usersMng")} side="right">
+                <Button
+                  className={styles.button}
+                  aria-label={t("tooltips.labels.usersMng")}
+                >
+                  <FaUsers size={"0.8em"} />
                 </Button>
               </AppTooltip>
             </UserManagementPopover>
           )}
+
+          <AppTooltip label={t("tooltips.labels.algoCalc")} side="right">
+            <button
+              className={styles.button}
+              aria-label={t("tooltips.labels.algoCalc")}
+              onClick={() => setShowAlgoCalc(true)}
+            >
+              <CgController size={"0.85em"} />
+              <Ripple />
+            </button>
+          </AppTooltip>
+
+          {canLookup && (
+            <AppTooltip label={t("tooltips.labels.companyLookup")} side="right">
+              <Button
+                className={styles.button}
+                aria-label={t("tooltips.labels.companyLookup")}
+                onClick={() => setLookingUp(true)}
+              >
+                <BsBuildingFill size={"0.8em"} />
+              </Button>
+            </AppTooltip>
+          )}
+
+          {canReadAuditLogs && (
+            <AppTooltip label={t("tooltips.labels.auditLogs")} side="right">
+              <Button
+                className={styles.button}
+                aria-label={t("tooltips.labels.auditLogs")}
+                onClick={() => setShowAuditLogs(true)}
+              >
+                <MdOutlineHistory size={"0.9em"} />
+              </Button>
+            </AppTooltip>
+          )}
         </div>
-      </div>
+
+        <div className={styles.bottomActions}>
+          <ActionMenu items={settingsOptions} side="right" align="center">
+            <AppTooltip label={t("tooltips.labels.settings")} side="right">
+              <button
+                className={styles.button}
+                aria-label={t("tooltips.labels.settings")}
+              >
+                <FaGear size={"0.8em"} />
+                <Ripple />
+              </button>
+            </AppTooltip>
+          </ActionMenu>
+        </div>
+      </aside>
     </>
   )
 }

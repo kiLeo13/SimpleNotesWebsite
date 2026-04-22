@@ -3,7 +3,7 @@ import type { NoteResponseData } from "@/types/api/notes"
 
 import { useNavigate } from "@tanstack/react-router"
 import { SidebarNote } from "../notes/SidebarNote"
-import { SidebarFooter } from "./SidebarFooter"
+import { SidebarRail } from "./SidebarRail"
 import { PiListMagnifyingGlass } from "react-icons/pi"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useNoteStore } from "@/stores/useNotesStore"
@@ -77,58 +77,61 @@ export function Sidebar(): JSX.Element {
   })
 
   return (
-    <nav className={styles.leftMenu}>
-      <div className={styles.menuUpperControls}>
-        <input
-          className={styles.searchInput}
-          disabled={isLoading}
-          type="text"
-          name="noteSearch" // Just to remove browser warnings
-          placeholder={t("sidebar.notes.search")}
-          autoComplete="off"
-          ref={searchRef}
-          onKeyDown={handleKeyboard}
-          onChange={handleSearch}
-          value={search}
-        />
-        <div className={styles.menuDivider} />
-        <span className={styles.noteListHeader}>
-          <span className={styles.noteListTitle}>
-            {t("sidebar.notes.title")}
-          </span>
-          <span className={styles.noteListCount}>
-            {resultCount === 1
-              ? t("sidebar.notes.oneFound")
-              : t("sidebar.notes.manyFound", { val: resultCount })}
-          </span>
-        </span>
-      </div>
-      <div className={styles.menuLowerItems}>
-        <div className={styles.sidebarLoaderContainer}>
-          {isLoading && <div className="loader" />}
-        </div>
+    <nav className={styles.sidebarLayout}>
+      <SidebarRail />
 
-        {resultCount === 0 && !isLoading && (
-          <div className={styles.noResultsContainer}>
-            <PiListMagnifyingGlass size={"3em"} color="#61586b67" />
-            <span className={styles.noResultsText}>
-              {t("sidebar.notes.noResults")}
+      <div className={styles.leftMenu}>
+        <div className={styles.menuUpperControls}>
+          <input
+            className={styles.searchInput}
+            disabled={isLoading}
+            type="text"
+            name="noteSearch" // Just to remove browser warnings
+            placeholder={t("sidebar.notes.search")}
+            autoComplete="off"
+            ref={searchRef}
+            onKeyDown={handleKeyboard}
+            onChange={handleSearch}
+            value={search}
+          />
+          <div className={styles.menuDivider} />
+          <span className={styles.noteListHeader}>
+            <span className={styles.noteListTitle}>
+              {t("sidebar.notes.title")}
             </span>
+            <span className={styles.noteListCount}>
+              {resultCount === 1
+                ? t("sidebar.notes.oneFound")
+                : t("sidebar.notes.manyFound", { val: resultCount })}
+            </span>
+          </span>
+        </div>
+        <div className={styles.menuLowerItems}>
+          <div className={styles.sidebarLoaderContainer}>
+            {isLoading && <div className="loader" />}
           </div>
-        )}
 
-        {!isLoading &&
-          filteredNotes.map((n) => {
-            return (
-              <SidebarNote
-                onClick={() => handleOpenNote(n)}
-                key={n.id}
-                note={n}
-              />
-            )
-          })}
+          {resultCount === 0 && !isLoading && (
+            <div className={styles.noResultsContainer}>
+              <PiListMagnifyingGlass size={"3em"} color="#61586b67" />
+              <span className={styles.noResultsText}>
+                {t("sidebar.notes.noResults")}
+              </span>
+            </div>
+          )}
+
+          {!isLoading &&
+            filteredNotes.map((n) => {
+              return (
+                <SidebarNote
+                  onClick={() => handleOpenNote(n)}
+                  key={n.id}
+                  note={n}
+                />
+              )
+            })}
+        </div>
       </div>
-      <SidebarFooter />
     </nav>
   )
 }

@@ -96,9 +96,9 @@ That sequence usually gives enough context without spelunking the whole repo lik
   - Opens/closes notes.
   - Initializes websocket manager.
   - Loads current user.
-  - Renders sidebar + content board layout.
+  - Renders the resizable notes sidebar + content board layout.
 - `frontend/src/components/sidebar/Sidebar.tsx`: note search, note list, sidebar reload shortcuts.
-- `frontend/src/components/sidebar/SidebarFooter.tsx`: footer action hub for utility modals and permission-gated audit log access. Heavy modal bodies are loaded on demand.
+- `frontend/src/components/sidebar/SidebarRail.tsx`: fixed left utility rail for note creation, utility modals, user management, and settings. Heavy modal bodies are loaded on demand.
 - `frontend/src/components/board/ContentBoard.tsx`: dispatches note rendering by note type/file extension. Renderer frames are loaded on demand.
 - `frontend/src/utils/createAsyncComponent.tsx`: shared `import()`-based async component helper for modal and renderer boundaries without `React.lazy`.
 
@@ -203,7 +203,7 @@ Read:
 
 Read:
 
-1. `frontend/src/components/sidebar/SidebarFooter.tsx`
+1. `frontend/src/components/sidebar/SidebarRail.tsx`
 2. `frontend/src/components/modals/global/audit/AuditLogsModal.tsx`
 3. `frontend/src/services/auditService.ts`
 4. `frontend/src/types/api/audit.ts`
@@ -285,7 +285,7 @@ Do not copy environment values into docs or comments unless explicitly needed.
 - The frontend currently sends `id_token` in API requests even though auth data also includes `access_token`.
 - Route protection is handled in TanStack Router route guards instead of a dedicated `ProtectedRoute` wrapper.
 - `frontend/src/pages/mainpage/MainPage.tsx` drives note opening via typed `?id=` search params on the `/` route.
-- Audit logs are opened from `SidebarFooter`, auto-apply frontend filters on change, and page through `/audit-logs` in chunks of `50` using `next_before_id`.
+- Audit logs are opened from `SidebarRail`, auto-apply frontend filters on change, and page through `/audit-logs` in chunks of `50` using `next_before_id`.
 - The audit modal resolves actor names from `useUsersStore` first and falls back to `userService.getUserById` for users that are no longer present in the active list.
 - Company lookup audit events are recorded for both hits and misses, with `found` and `cache_hit` change rows describing the outcome.
 - `frontend/src/stores/useNotesStore.ts` treats `REFERENCE` notes differently from text notes.

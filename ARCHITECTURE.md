@@ -48,13 +48,15 @@ Important frontend behavior:
 - The currently opened note is driven by the typed `?id=` search parameter on the `/` route.
 - Search-enabled custom selects move focus directly into their filter input when opened, and that autofocus is managed in the component after the menu opens instead of relying on undocumented Radix props.
 - Notes can render as markdown, Mermaid flowcharts, or reference/file views.
+- The update-note modal keeps its primary actions in a slim left-side rail so save and future note actions do not bloat the bottom edge of the form as the editor grows.
+- The notes sidebar keeps its utility actions in a fixed non-resizable left rail inside the sidebar panel, while note search and the note list occupy the remaining resizable sidebar width.
 - Sidebar note rows expose menu actions for all users to copy the note ID and download the note without opening a new tab. Markdown notes download as `.md`, reference notes download the stored attachment file, and Mermaid flowcharts export through the shared Mermaid SVG renderer as `.svg`.
 - Heavy optional UI is loaded on demand instead of from the permanent shell:
   - Sidebar utility modals are imported only when opened.
   - Board renderers are imported only when the active note needs them.
   - Markdown syntax highlighting styles now load from the markdown renderer path instead of the app root.
 - Realtime updates come through the websocket manager and fan into stores.
-- Audit logs are surfaced through a permission-gated modal in the sidebar footer, auto-apply frontend filters on change, resolve actor and user-subject names through the users store plus on-demand user fetches, and page through the backend with cursor-style `next_before_id` pagination.
+- Audit logs are surfaced through a permission-gated modal in that sidebar rail, auto-apply frontend filters on change, resolve actor and user-subject names through the users store plus on-demand user fetches, and page through the backend with cursor-style `next_before_id` pagination.
 - Frontend audit event metadata is owned by `frontend/src/components/modals/global/audit/AuditLogEvent.ts`, while `frontend/src/components/modals/global/audit/auditPresentation.ts` formats UI copy from that registry. Each supported audit event declares whether the UI should allow row expansion through an `expands` flag.
 - Expanded audit entries render their change rows with a local sequential code (`1..n`) per event, and the visible code accent still derives from the frontend event metadata.
 
