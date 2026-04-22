@@ -11,6 +11,8 @@ import (
 	"io"
 	"mime/multipart"
 	"path/filepath"
+	"strconv"
+	"strings"
 	"zenkeep/cmd/internal/contract"
 	"zenkeep/cmd/internal/domain/entity"
 	"zenkeep/cmd/internal/domain/events"
@@ -18,8 +20,6 @@ import (
 	"zenkeep/cmd/internal/infrastructure/aws/storage"
 	"zenkeep/cmd/internal/utils"
 	"zenkeep/cmd/internal/utils/apierror"
-	"strconv"
-	"strings"
 
 	"gorm.io/gorm"
 )
@@ -140,7 +140,7 @@ func (n *NoteService) CreateTextNote(actor *entity.User, req *contract.TextNoteR
 
 	// I cannot reuse the same response since gateway events should not include the
 	// `content` if it's not a REFERENCE type (the payload gets too big ^^).
-	go n.dispatchNoteCreateEvent(toNoteResponse(note, false))
+	go n.dispatchNoteCreateEvent(note)
 	return toNoteResponse(note, true), nil
 }
 
@@ -197,7 +197,7 @@ func (n *NoteService) CreateFileNote(actor *entity.User, req *contract.NoteReque
 	}
 
 	resp := toNoteResponse(note, true)
-	go n.dispatchNoteCreateEvent(resp)
+	go n.dispatchNoteCreateEvent(note)
 	return resp, nil
 }
 
@@ -257,7 +257,7 @@ func (n *NoteService) UpdateNote(actor *entity.User, noteId int, req *contract.U
 	}
 
 	resp := toNoteResponse(note, false)
-	go n.dispatchNoteUpdateEvent(resp)
+	go n.dispatchNoteUpdateEvent(&before, note)
 	return resp, nil
 }
 
@@ -296,26 +296,81 @@ func (n *NoteService) DeleteNote(actor *entity.User, noteId int) apierror.ErrorR
 		return apierror.InternalServerError
 	}
 
-	go n.dispatchNoteDeleteEvent(note.ID)
+	go n.dispatchNoteDeleteEvent(note)
 	return nil
 }
 
-func (n *NoteService) dispatchNoteCreateEvent(note *contract.NoteResponse) {
-	n.WSService.Broadcast(context.Background(), &events.NoteCreated{
-		NoteResponse: note,
+func (n *NoteService) dispatchNoteCreateEvent(note *entity.Note) {
+	resp := toNoteResponse(note, false)
+	n.WSService.BroadcastSupplier(context.Background(), func(userID int) events.SocketEvent {
+		recipient, ok := n.findNoteRecipient(userID)
+		if !ok || !n.canRecipientSeeNote(note, recipient) {
+			return nil
+		}
+
+		return &events.NoteCreated{
+			NoteResponse: resp,
+		}
 	})
 }
 
-func (n *NoteService) dispatchNoteUpdateEvent(note *contract.NoteResponse) {
-	n.WSService.Broadcast(context.Background(), &events.NoteUpdated{
-		NoteResponse: note,
+func (n *NoteService) dispatchNoteUpdateEvent(before, after *entity.Note) {
+	resp := toNoteResponse(after, false)
+	n.WSService.BroadcastSupplier(context.Background(), func(userID int) events.SocketEvent {
+		recipient, ok := n.findNoteRecipient(userID)
+		if !ok {
+			return nil
+		}
+
+		couldSeeBefore := n.canRecipientSeeNote(before, recipient)
+		canSeeAfter := n.canRecipientSeeNote(after, recipient)
+
+		switch {
+		case couldSeeBefore && canSeeAfter:
+			return &events.NoteUpdated{
+				NoteResponse: resp,
+			}
+		case couldSeeBefore && !canSeeAfter:
+			return &events.NoteDeleted{
+				NoteID: after.ID,
+			}
+		case !couldSeeBefore && canSeeAfter:
+			return &events.NoteCreated{
+				NoteResponse: resp,
+			}
+		default:
+			return nil
+		}
 	})
 }
 
-func (n *NoteService) dispatchNoteDeleteEvent(noteID int) {
-	n.WSService.Broadcast(context.Background(), &events.NoteDeleted{
-		NoteID: noteID,
+func (n *NoteService) dispatchNoteDeleteEvent(note *entity.Note) {
+	n.WSService.BroadcastSupplier(context.Background(), func(userID int) events.SocketEvent {
+		recipient, ok := n.findNoteRecipient(userID)
+		if !ok || !n.canRecipientSeeNote(note, recipient) {
+			return nil
+		}
+
+		return &events.NoteDeleted{
+			NoteID: note.ID,
+		}
 	})
+}
+
+func (n *NoteService) findNoteRecipient(userID int) (*entity.User, bool) {
+	recipient, err := n.UserRepo.FindActiveByID(userID)
+	if err != nil {
+		log.Errorf("failed to find websocket recipient (%d): %v", userID, err)
+		return nil, false
+	}
+	if recipient == nil {
+		return nil, false
+	}
+	return recipient, true
+}
+
+func (n *NoteService) canRecipientSeeNote(note *entity.Note, recipient *entity.User) bool {
+	return n.NotePolicy.CanSee(note, recipient) == nil
 }
 
 // handleNoteUpload tries to upload the note to S3 and already generates the
