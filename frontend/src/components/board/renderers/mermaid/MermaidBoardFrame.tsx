@@ -1,6 +1,5 @@
 import type { DOMNode } from "html-react-parser"
 
-import mermaid from "mermaid"
 import parse, { attributesToProps } from "html-react-parser"
 
 import { Element, domToReact } from "html-react-parser"
@@ -10,16 +9,11 @@ import { AppTooltip } from "@/components/ui/AppTooltip"
 import { Button } from "@/components/ui/buttons/Button"
 import { TbMaximize } from "react-icons/tb"
 import { toasts } from "@/utils/toastUtils"
+import { renderMermaidToSvg } from "@/utils/mermaid"
 import { useTranslation } from "react-i18next"
 import { useEffect, useState, useMemo } from "react"
 
 import styles from "./MermaidBoardFrame.module.css"
-
-mermaid.initialize({
-  startOnLoad: false,
-  theme: "dark",
-  securityLevel: "loose"
-})
 
 type MermaidBoardFrameProps = {
   diagram: string
@@ -42,11 +36,8 @@ export function MermaidBoardFrame({
       if (!diagram || diagram.length < 5) return
 
       try {
-        const uniqueId = `mermaid-${Math.random().toString(36).substring(2, 9)}`
-
         setFailed(false)
-        const { svg } = await mermaid.render(uniqueId, diagram)
-        setSvgString(svg)
+        setSvgString(await renderMermaidToSvg(diagram))
       } catch (err) {
         if (warnOnFail) {
           console.error("Mermaid rendering error:", err)

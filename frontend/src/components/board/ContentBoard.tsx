@@ -10,14 +10,13 @@ import {
   AsyncTextBoardFrame,
   BoardFrameLoaderFallback
 } from "./lazyBoardFrames"
+import { getReferenceNoteUrl } from "@/utils/noteFiles"
 import { ext } from "@/utils/utils"
 import { useNoteStore } from "@/stores/useNotesStore"
 
 type ContentBoardProps = {
   note: FullNoteResponseData
 }
-
-const BASE_ROUTE = "https://d26143aouxq3ma.cloudfront.net/attachments"
 
 export function ContentBoard({ note }: ContentBoardProps): JSX.Element {
   const setRendering = useNoteStore((state) => state.setRendering)
@@ -26,7 +25,7 @@ export function ContentBoard({ note }: ContentBoardProps): JSX.Element {
   const isReference = note.note_type === "REFERENCE"
   const fileExt = !isReference ? "" : ext(note.content) || "pdf"
 
-  const route = !isReference ? "" : `${BASE_ROUTE}/${note.content}`
+  const route = !isReference ? "" : getReferenceNoteUrl(note.content)
 
   const hideLoading = () => setRendering(false)
 
