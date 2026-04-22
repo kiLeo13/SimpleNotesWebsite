@@ -129,7 +129,6 @@ function makeBaseNote(
     name: "Note",
     tags: [],
     visibility: "PUBLIC" as const,
-    note_type: "MARKDOWN" as const,
     created_by_id: 1,
     content_size: 12,
     created_at: "2026-04-21T10:00:00.000Z",
@@ -139,9 +138,8 @@ function makeBaseNote(
   if (overrides.note_type === "REFERENCE") {
     return {
       ...base,
-      note_type: "REFERENCE",
-      content: "attachments/file.pdf",
-      ...overrides
+      ...overrides,
+      content: overrides.content ?? "attachments/file.pdf"
     }
   }
 
@@ -160,12 +158,10 @@ function makeFullNote(
     name: "Note",
     tags: [],
     visibility: "PUBLIC",
-    note_type: "MARKDOWN",
     created_by_id: 1,
     content_size: 12,
     created_at: "2026-04-21T10:00:00.000Z",
     updated_at: "2026-04-21T10:00:00.000Z",
-    content: "",
     ...overrides
   }
 }
