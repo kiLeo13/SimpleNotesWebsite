@@ -65,6 +65,7 @@
   color: rgb(160, 157, 167);
   font-weight: 500;
   font-size: 1.4em;
+  user-select: none;
 }
 
 .noteListCount {
@@ -74,6 +75,7 @@
   margin-right: -8px;
   border-radius: 9999px;
   cursor: default;
+  user-select: none;
   transition:
     background-color 150ms,
     color 150ms;
