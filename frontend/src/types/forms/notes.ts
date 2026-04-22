@@ -1,4 +1,4 @@
-import z from "zod"
+import { z } from "zod"
 
 import i18n from "@/services/i18n"
 
@@ -17,7 +17,7 @@ export const VISIBILITY_OPTIONS = [
   { label: "notes.visibility.private", value: "PRIVATE" }
 ]
 
-const baseNoteSchema = z.object({
+const baseNoteFormSchema = z.object({
   name: z
     .string()
     .min(2, t("errors.string.min", { count: 2 }))
@@ -36,7 +36,7 @@ const baseNoteSchema = z.object({
     .max(50, t("errors.tags.array.max", { val: 50 }))
 })
 
-export const uploadSchema = baseNoteSchema.extend({
+export const uploadNoteFormSchema = baseNoteFormSchema.extend({
   mode: z.literal("UPLOAD"),
   file: z
     .instanceof(FileList, { error: t("errors.file.required") })
@@ -55,7 +55,7 @@ export const uploadSchema = baseNoteSchema.extend({
     )
 })
 
-export const editorSchema = baseNoteSchema.extend({
+export const editorNoteFormSchema = baseNoteFormSchema.extend({
   mode: z.literal("EDITOR"),
   content: z
     .string()
@@ -63,16 +63,19 @@ export const editorSchema = baseNoteSchema.extend({
     .max(1_000_000, t("errors.content.max", { val: 1_000_000 }))
 })
 
-export const createNoteSchema = z.discriminatedUnion("mode", [uploadSchema, editorSchema])
+export const createNoteFormSchema = z.discriminatedUnion("mode", [
+  uploadNoteFormSchema,
+  editorNoteFormSchema
+])
 
-export const updateNoteSchema = baseNoteSchema.pick({
+export const updateNoteFormSchema = baseNoteFormSchema.pick({
   name: true,
   tags: true,
   visibility: true
 })
 
-export type FileNoteFormFields = z.infer<typeof uploadSchema>
-export type TextNoteFormFields = z.infer<typeof editorSchema>
-export type NoteFormFields = z.infer<typeof createNoteSchema>
+export type FileNoteFormFields = z.infer<typeof uploadNoteFormSchema>
+export type TextNoteFormFields = z.infer<typeof editorNoteFormSchema>
+export type NoteFormFields = z.infer<typeof createNoteFormSchema>
 
-export type UpdateNoteFormFields = z.infer<typeof updateNoteSchema>
+export type UpdateNoteFormFields = z.infer<typeof updateNoteFormSchema>

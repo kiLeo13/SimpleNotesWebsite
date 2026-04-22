@@ -1,26 +1,26 @@
-import z from "zod"
+import { z } from "zod"
 
-import { presenceSchema } from "../api/users"
+import { userPresenceSchema } from "../api/users"
 
-const connKillCodeSchema = z.enum([
+const connectionKillCodeSchema = z.enum([
   "SUSPENDED_ACCOUNT",
   "IDLE_TIMEOUT",
   "DELETED",
   "LOGOUT"
 ])
 
-export const connKillSchema = z.object({
-  code: connKillCodeSchema,
+export const connectionKillSchema = z.object({
+  code: connectionKillCodeSchema,
   reason: z.string().optional()
 })
 
-export const presenceUpdatedSchema = z.object({
+export const presenceUpdatedEventSchema = z.object({
   id: z.number(),
-  presence: presenceSchema
+  presence: userPresenceSchema
 })
 
-export type ConnectionKillCode = z.infer<typeof connKillCodeSchema>
-export type ConnectionKill = z.infer<typeof connKillSchema>
+export type ConnectionKillCode = z.infer<typeof connectionKillCodeSchema>
+export type ConnectionKill = z.infer<typeof connectionKillSchema>
 
 // ---- Helpers ----
 
@@ -28,7 +28,7 @@ type CodeBehavior = {
   shouldReconnect: boolean
 }
 
-export const KillCodeBehaviors: Record<ConnectionKillCode, CodeBehavior> = {
+export const connectionKillBehaviors: Record<ConnectionKillCode, CodeBehavior> = {
   SUSPENDED_ACCOUNT: { shouldReconnect: false },
   DELETED: { shouldReconnect: false },
   LOGOUT: { shouldReconnect: false },

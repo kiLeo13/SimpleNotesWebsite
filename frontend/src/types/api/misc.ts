@@ -1,4 +1,4 @@
-import z from "zod"
+import { z } from "zod"
 
 // --------------------------------------------------
 // API Responses
@@ -11,7 +11,7 @@ export const regStatusSchema = z.enum([
   "UNKNOWN"
 ])
 
-const registrationSchema = z.object({
+const companyRegistrationSchema = z.object({
   status: regStatusSchema,
   reason: z.string(),
   date: z.string().optional()
@@ -51,7 +51,7 @@ const companyPartnerSchema = z
     ageRange: p.age_range
   }))
 
-export const companySchema = z
+export const companyResponseSchema = z
   .object({
     cnpj: z.string(),
     legal_name: z.string(),
@@ -60,7 +60,7 @@ export const companySchema = z
     company_size: z.string(),
     business_start_date: z.iso.date(),
     share_capital: z.number(),
-    registration: registrationSchema,
+    registration: companyRegistrationSchema,
     address: companyAddressSchema,
     partners: z.array(companyPartnerSchema),
     cached: z.boolean()
@@ -83,4 +83,4 @@ export const companySchema = z
 export type RegistrationStatus = z.infer<typeof regStatusSchema>
 export type CompanyAddress = z.infer<typeof companyAddressSchema>
 export type CompanyPartner = z.infer<typeof companyPartnerSchema>
-export type CompanyResponse = z.infer<typeof companySchema>
+export type CompanyResponse = z.infer<typeof companyResponseSchema>

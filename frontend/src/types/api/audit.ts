@@ -16,7 +16,7 @@ export const auditSubjectTypeSchema = z.enum(["NOTE", "USER", "COMPANY"])
 export type AuditActionType = z.infer<typeof auditActionTypeSchema>
 export type AuditSubjectType = z.infer<typeof auditSubjectTypeSchema>
 
-const AuditLogChangeSchema = z
+const auditLogChangeSchema = z
   .object({
     id: z.number(),
     field_name: z.string(),
@@ -32,7 +32,7 @@ const AuditLogChangeSchema = z
     valueType: data.value_type
   }))
 
-const AuditLogEntrySchema = z
+const auditLogEntrySchema = z
   .object({
     id: z.string(),
     actor_user_id: z.number().optional(),
@@ -41,7 +41,7 @@ const AuditLogEntrySchema = z
     subject_id: z.string(),
     source: z.string(),
     occurred_at: z.string(),
-    changes: z.array(AuditLogChangeSchema)
+    changes: z.array(auditLogChangeSchema)
   })
   .transform((data) => ({
     id: data.id,
@@ -54,9 +54,9 @@ const AuditLogEntrySchema = z
     changes: data.changes
   }))
 
-export const AuditLogListResponseSchema = z
+export const auditLogListResponseSchema = z
   .object({
-    entries: z.array(AuditLogEntrySchema),
+    entries: z.array(auditLogEntrySchema),
     next_before_id: z.string().optional()
   })
   .transform((data) => ({
@@ -64,6 +64,6 @@ export const AuditLogListResponseSchema = z
     nextBeforeId: data.next_before_id
   }))
 
-export type AuditLogChangeData = z.infer<typeof AuditLogChangeSchema>
-export type AuditLogEntryData = z.infer<typeof AuditLogEntrySchema>
-export type AuditLogListResponseData = z.infer<typeof AuditLogListResponseSchema>
+export type AuditLogChangeData = z.infer<typeof auditLogChangeSchema>
+export type AuditLogEntryData = z.infer<typeof auditLogEntrySchema>
+export type AuditLogListResponseData = z.infer<typeof auditLogListResponseSchema>

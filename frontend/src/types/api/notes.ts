@@ -1,4 +1,4 @@
-import z from "zod"
+import { z } from "zod"
 
 export const noteVisibilitySchema = z.enum(["PUBLIC", "PRIVATE"])
 export type NoteVisibility = z.infer<typeof noteVisibilitySchema>
@@ -28,7 +28,7 @@ export interface UpdateNoteRequestPayload {
 }
 
 // --- API Responses ---
-export const NoteBaseSchema = z.object({
+export const noteBaseSchema = z.object({
   id: z.number(),
   name: z.string(),
   tags: z.array(z.string()),
@@ -40,31 +40,46 @@ export const NoteBaseSchema = z.object({
   updated_at: z.string()
 })
 
-const TextNoteSchema = NoteBaseSchema.extend({
-  note_type: noteTypeSchema.extract(["MARKDOWN", "FLOWCHART"])
+const markdownNoteResponseSchema = noteBaseSchema.extend({
+  note_type: z.literal("MARKDOWN")
+})
+
+const flowchartNoteResponseSchema = noteBaseSchema.extend({
+  note_type: z.literal("FLOWCHART")
 })
 
 // Specific Schema for File Notes (PDFs, Images)
-const ReferenceNoteSchema = NoteBaseSchema.extend({
-  note_type: noteTypeSchema.extract(["REFERENCE"]),
+const referenceNoteResponseSchema = noteBaseSchema.extend({
+  note_type: z.literal("REFERENCE"),
   // Reference notes usually contain a filename/UUID in 'content'
   content: z.string()
 })
 
-export const NoteResponseSchema = z.discriminatedUnion("note_type", [
-  TextNoteSchema,
-  ReferenceNoteSchema
+export const noteResponseSchema = z.discriminatedUnion("note_type", [
+  markdownNoteResponseSchema,
+  flowchartNoteResponseSchema,
+  referenceNoteResponseSchema
 ])
 
-export const FullNoteResponseSchema = NoteBaseSchema.extend({
+const markdownFullNoteResponseSchema = markdownNoteResponseSchema.extend({
   content: z.string()
 })
 
-export const ListNoteResponseSchema = z.object({
-  notes: z.array(NoteResponseSchema)
+const flowchartFullNoteResponseSchema = flowchartNoteResponseSchema.extend({
+  content: z.string()
+})
+
+export const fullNoteResponseSchema = z.discriminatedUnion("note_type", [
+  markdownFullNoteResponseSchema,
+  flowchartFullNoteResponseSchema,
+  referenceNoteResponseSchema
+])
+
+export const listNoteResponseSchema = z.object({
+  notes: z.array(noteResponseSchema)
 })
 
 // --- INFERRED TYPES ---
-export type NoteResponseData = z.infer<typeof NoteResponseSchema>
-export type FullNoteResponseData = z.infer<typeof FullNoteResponseSchema>
-export type ListNoteResponseData = z.infer<typeof ListNoteResponseSchema>
+export type NoteResponseData = z.infer<typeof noteResponseSchema>
+export type FullNoteResponseData = z.infer<typeof fullNoteResponseSchema>
+export type ListNoteResponseData = z.infer<typeof listNoteResponseSchema>

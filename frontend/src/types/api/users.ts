@@ -38,29 +38,29 @@ export interface CheckUserStatusPayload {
 // --------------------------------------------------
 
 // Auth
-const RawLoginResponse = z.object({
+const rawLoginResponseSchema = z.object({
   access_token: z.string(),
   id_token: z.string()
 })
 
-export const LoginResponseSchema = RawLoginResponse.transform((data) => ({
+export const loginResponseSchema = rawLoginResponseSchema.transform((data) => ({
   accessToken: data.access_token,
   idToken: data.id_token
 }))
 
-export const CheckUserStatusSchema = z.object({
+export const checkUserStatusResponseSchema = z.object({
   status: z.enum(["AVAILABLE", "TAKEN", "VERIFYING"])
 })
 
-export const presenceSchema = z.enum(["ONLINE", "OFFLINE"])
+export const userPresenceSchema = z.enum(["ONLINE", "OFFLINE"])
 
 // Users
-export const UserResponseSchema = z
+export const userResponseSchema = z
   .object({
     id: z.number(),
     username: z.string(),
     permissions: z.number(),
-    presence: presenceSchema,
+    presence: userPresenceSchema,
     is_verified: z.boolean().optional(),
     suspended: z.boolean().optional(),
     created_at: z.string(),
@@ -77,8 +77,8 @@ export const UserResponseSchema = z
     updatedAt: data.updated_at
   }))
 
-export const ListUserResponseSchema = z.object({
-  users: z.array(UserResponseSchema)
+export const listUsersResponseSchema = z.object({
+  users: z.array(userResponseSchema)
 })
 
 // ----------------------------------
@@ -86,10 +86,10 @@ export const ListUserResponseSchema = z.object({
 // ----------------------------------
 
 // Auth
-export type LoginResponseData = z.infer<typeof LoginResponseSchema>
-export type CheckUserStatusData = z.infer<typeof CheckUserStatusSchema>
+export type LoginResponseData = z.infer<typeof loginResponseSchema>
+export type CheckUserStatusData = z.infer<typeof checkUserStatusResponseSchema>
 
 // Users
-export type UserPresenceData = z.infer<typeof presenceSchema>
-export type UserResponseData = z.infer<typeof UserResponseSchema>
-export type ListUsersResponseData = z.infer<typeof ListUserResponseSchema>
+export type UserPresenceData = z.infer<typeof userPresenceSchema>
+export type UserResponseData = z.infer<typeof userResponseSchema>
+export type ListUsersResponseData = z.infer<typeof listUsersResponseSchema>

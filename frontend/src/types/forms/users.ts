@@ -1,7 +1,7 @@
 import i18n from "@/services/i18n"
 
-import { z } from "zod"
 import { hasCustom, hasDigits, hasLower, hasUpper } from "@/utils/pwdUtils"
+import { z } from "zod"
 
 const t = i18n.t
 
@@ -10,7 +10,7 @@ export const passwords = {
   maxLength: 64
 }
 
-export const signupSchema = z.object({
+export const signupFormSchema = z.object({
   username: z
     .string()
     .min(2, t('errors.string.min', { count: 2 }))
@@ -28,12 +28,12 @@ export const signupSchema = z.object({
     .refine((e) => hasCustom(e), t('errors.string.hasSpecial'))
 })
 
-export const loginSchema = signupSchema.pick({
+export const loginFormSchema = signupFormSchema.pick({
   email: true,
   password: true
 })
 
-export const confirmSchema = z.object({
+export const confirmSignupFormSchema = z.object({
   email: z.email(t('errors.email.invalid')),
 
   code: z
@@ -42,11 +42,11 @@ export const confirmSchema = z.object({
 })
 
 // No i18n for this, since we don't use it for forms
-export const checkUserStatusSchema = z.object({
+export const checkUserStatusFormSchema = z.object({
   email: z.email()
 })
 
-export type LoginFormFields = z.infer<typeof loginSchema>
-export type SignupFormFields = z.infer<typeof signupSchema>
-export type ConfirmFormFields = z.infer<typeof confirmSchema>
-export type CheckUserStatusFields = z.infer<typeof checkUserStatusSchema>
+export type LoginFormFields = z.infer<typeof loginFormSchema>
+export type SignupFormFields = z.infer<typeof signupFormSchema>
+export type ConfirmFormFields = z.infer<typeof confirmSignupFormSchema>
+export type CheckUserStatusFields = z.infer<typeof checkUserStatusFormSchema>

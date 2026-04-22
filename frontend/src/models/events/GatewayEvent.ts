@@ -1,28 +1,31 @@
-import z from "zod"
+import { z } from "zod"
 
 import { createEvent } from "./eventFactory"
-import { connKillSchema, presenceUpdatedSchema } from "@/types/websocket/events"
-import { NoteBaseSchema, NoteResponseSchema } from "@/types/api/notes"
-import { UserResponseSchema } from "@/types/api/users"
+import {
+  connectionKillSchema,
+  presenceUpdatedEventSchema
+} from "@/types/websocket/events"
+import { noteBaseSchema, noteResponseSchema } from "@/types/api/notes"
+import { userResponseSchema } from "@/types/api/users"
 
-const Registry = {
+const eventRegistry = {
   // System
   Ping: createEvent("ping", z.unknown()),
   Ack: createEvent("ACK", z.unknown()),
   SessionExpired: createEvent("SESSION_EXPIRED", z.unknown()),
-  ConnectionKill: createEvent("CONNECTION_KILL", connKillSchema),
+  ConnectionKill: createEvent("CONNECTION_KILL", connectionKillSchema),
 
   // Notes
-  NoteCreated: createEvent("NOTE_CREATED", NoteResponseSchema),
-  NoteUpdated: createEvent("NOTE_UPDATED", NoteResponseSchema),
-  NoteDeleted: createEvent("NOTE_DELETED", NoteBaseSchema.pick({ id: true })),
+  NoteCreated: createEvent("NOTE_CREATED", noteResponseSchema),
+  NoteUpdated: createEvent("NOTE_UPDATED", noteResponseSchema),
+  NoteDeleted: createEvent("NOTE_DELETED", noteBaseSchema.pick({ id: true })),
 
   // Users
-  UserCreated: createEvent("USER_CREATED", UserResponseSchema),
-  UserUpdated: createEvent("USER_UPDATED", UserResponseSchema),
+  UserCreated: createEvent("USER_CREATED", userResponseSchema),
+  UserUpdated: createEvent("USER_UPDATED", userResponseSchema),
   UserDeleted: createEvent("USER_DELETED", z.object({ id: z.number() })),
 
-  PresenceUpdated: createEvent("PRESENCE_UPDATED", presenceUpdatedSchema)
+  PresenceUpdated: createEvent("PRESENCE_UPDATED", presenceUpdatedEventSchema)
 }
 
 export interface EventDefinition<S extends z.ZodTypeAny> {
@@ -30,12 +33,15 @@ export interface EventDefinition<S extends z.ZodTypeAny> {
   schema: S
 }
 
-type AllEnvelopes = (typeof Registry)[keyof typeof Registry]["envelope"]
+type AllEnvelopes = (typeof eventRegistry)[keyof typeof eventRegistry]["envelope"]
 
-const schemas = Object.values(Registry).map((e) => e.envelope) as [AllEnvelopes, ...AllEnvelopes[]]
+const schemas = Object.values(eventRegistry).map((e) => e.envelope) as [
+  AllEnvelopes,
+  ...AllEnvelopes[]
+]
 
 // Exports
-export const ServerEvents = Registry
+export const serverEvents = eventRegistry
 
 export const gatewayMessageSchema = z.discriminatedUnion("type", schemas)
 

@@ -1,15 +1,15 @@
 import { z } from "zod"
 
-export interface GatewayEventDef<T extends string, S extends z.ZodTypeAny> {
+export interface GatewayEventDefinition<T extends string, S extends z.ZodTypeAny> {
   type: T
   schema: S
   envelope: z.ZodObject<{ type: z.ZodLiteral<T>; data: S }>
 }
 
-export function createEvent<T extends string, S extends z.ZodType>(
+export function createEvent<T extends string, S extends z.ZodTypeAny>(
   type: T,
   schema: S
-): GatewayEventDef<T, S> {
+): GatewayEventDefinition<T, S> {
   return {
     type,
     schema,

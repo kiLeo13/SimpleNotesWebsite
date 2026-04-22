@@ -1,9 +1,9 @@
-import z from "zod"
+import { z } from "zod"
 
 // API Response Data after transformation (schemas)
-export const VoidSchema = z.undefined()
+export const voidSchema = z.undefined()
   .or(z.null())
-  .or(z.literal(''))
+  .or(z.literal(""))
   .transform(() => undefined)
 
 // =====================
