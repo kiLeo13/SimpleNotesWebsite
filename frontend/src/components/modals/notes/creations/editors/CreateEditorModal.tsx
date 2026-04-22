@@ -2,7 +2,7 @@ import { type JSX, useMemo, useState } from "react"
 
 import { IoMdClose } from "react-icons/io"
 import {
-  editorSchema,
+  editorNoteFormSchema,
   VISIBILITY_OPTIONS,
   type NoteFormFields,
   type TextNoteFormFields
@@ -44,7 +44,7 @@ export function CreateEditorModal({
   const renderNote = useNoteStore((state) => state.renderNote)
   const isChart = mode === "FLOWCHART"
   const methods = useForm<TextNoteFormFields>({
-    resolver: zodResolver(editorSchema),
+    resolver: zodResolver(editorNoteFormSchema),
     defaultValues: {
       mode: "EDITOR",
       name: "",

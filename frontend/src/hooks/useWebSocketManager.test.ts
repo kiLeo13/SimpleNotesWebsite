@@ -4,7 +4,7 @@ import type { UserResponseData } from "@/types/api/users"
 import { beforeEach, describe, expect, it } from "vitest"
 
 import { handleNoteEvents } from "./useWebSocketManager"
-import { ServerEvents } from "@/models/events/GatewayEvent"
+import { serverEvents } from "@/models/events/GatewayEvent"
 import { useNoteStore } from "@/stores/useNotesStore"
 import { useSessionStore } from "@/stores/useSessionStore"
 
@@ -41,7 +41,7 @@ describe("handleNoteEvents", () => {
 
   it("ignores private create events for users without hidden-note access", () => {
     handleNoteEvents(
-      makeMessage(ServerEvents.NoteCreated.type, makeNote({ visibility: "PRIVATE" }))
+      makeMessage(serverEvents.NoteCreated.type, makeNote({ visibility: "PRIVATE" }))
     )
 
     expect(useNoteStore.getState().notes).toEqual([])
@@ -54,7 +54,7 @@ describe("handleNoteEvents", () => {
     })
 
     handleNoteEvents(
-      makeMessage(ServerEvents.NoteUpdated.type, makeNote({ visibility: "PRIVATE" }))
+      makeMessage(serverEvents.NoteUpdated.type, makeNote({ visibility: "PRIVATE" }))
     )
 
     expect(useNoteStore.getState().notes).toEqual([])
@@ -67,7 +67,7 @@ describe("handleNoteEvents", () => {
     })
 
     handleNoteEvents(
-      makeMessage(ServerEvents.NoteCreated.type, makeNote({ visibility: "PRIVATE" }))
+      makeMessage(serverEvents.NoteCreated.type, makeNote({ visibility: "PRIVATE" }))
     )
 
     expect(useNoteStore.getState().notes).toHaveLength(1)

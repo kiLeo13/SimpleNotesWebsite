@@ -2,11 +2,11 @@ import useWebSocket from "react-use-websocket"
 
 import {
   gatewayMessageSchema,
-  ServerEvents,
+  serverEvents,
   type GatewayMessage
 } from "../models/events/GatewayEvent"
 import { Permission } from "@/models/Permission"
-import { KillCodeBehaviors } from "@/types/websocket/events"
+import { connectionKillBehaviors } from "@/types/websocket/events"
 import { toasts } from "@/utils/toastUtils"
 import { useEffect, useRef } from "react"
 import { useSessionStore } from "@/stores/useSessionStore"
@@ -76,23 +76,23 @@ function routeServerMessage(
 
   switch (msg.type) {
     // Note Events
-    case ServerEvents.NoteCreated.type:
-    case ServerEvents.NoteUpdated.type:
-    case ServerEvents.NoteDeleted.type:
+    case serverEvents.NoteCreated.type:
+    case serverEvents.NoteUpdated.type:
+    case serverEvents.NoteDeleted.type:
       handleNoteEvents(msg)
       break
 
     // User Events
-    case ServerEvents.UserCreated.type:
-    case ServerEvents.UserUpdated.type:
-    case ServerEvents.UserDeleted.type:
-    case ServerEvents.PresenceUpdated.type:
+    case serverEvents.UserCreated.type:
+    case serverEvents.UserUpdated.type:
+    case serverEvents.UserDeleted.type:
+    case serverEvents.PresenceUpdated.type:
       handleUserEvents(msg)
       break
 
     // System Events
-    case ServerEvents.SessionExpired.type:
-    case ServerEvents.ConnectionKill.type:
+    case serverEvents.SessionExpired.type:
+    case serverEvents.ConnectionKill.type:
       handleSystemEvents(msg, fatalRef, logoutAction, t)
       break
 
@@ -115,7 +115,7 @@ export function handleNoteEvents(msg: GatewayMessage) {
   )
 
   switch (msg.type) {
-    case ServerEvents.NoteCreated.type:
+    case serverEvents.NoteCreated.type:
       if (shouldHideNoteFromClient(msg.data.visibility, canSeeHiddenNotes)) {
         removeNote(msg.data.id)
         break
@@ -123,7 +123,7 @@ export function handleNoteEvents(msg: GatewayMessage) {
       addNote(msg.data)
       break
 
-    case ServerEvents.NoteUpdated.type: {
+    case serverEvents.NoteUpdated.type: {
       if (shouldHideNoteFromClient(msg.data.visibility, canSeeHiddenNotes)) {
         removeNote(msg.data.id)
         break
@@ -132,7 +132,7 @@ export function handleNoteEvents(msg: GatewayMessage) {
       break
     }
 
-    case ServerEvents.NoteDeleted.type:
+    case serverEvents.NoteDeleted.type:
       removeNote(msg.data.id)
       break
   }
@@ -151,11 +151,11 @@ function handleUserEvents(msg: GatewayMessage) {
   const { user: self, setUser } = useSessionStore.getState()
 
   switch (msg.type) {
-    case ServerEvents.UserCreated.type:
+    case serverEvents.UserCreated.type:
       addUser(msg.data)
       break
 
-    case ServerEvents.UserUpdated.type: {
+    case serverEvents.UserUpdated.type: {
       const updatedUser = msg.data
 
       updateUser(updatedUser)
@@ -181,11 +181,11 @@ function handleUserEvents(msg: GatewayMessage) {
       break
     }
 
-    case ServerEvents.UserDeleted.type:
+    case serverEvents.UserDeleted.type:
       removeUser(msg.data.id)
       break
 
-    case ServerEvents.PresenceUpdated.type:
+    case serverEvents.PresenceUpdated.type:
       updatePresence(msg.data.id, msg.data.presence)
       break
   }
@@ -198,18 +198,18 @@ function handleSystemEvents(
   t: (s: string, params?: unknown) => string
 ) {
   switch (msg.type) {
-    case ServerEvents.SessionExpired.type:
+    case serverEvents.SessionExpired.type:
       fatalRef.current = true
       console.warn("[WS] Session expired. Logging out.")
       toasts.warning(t("warnings.sessionExpired"))
       logoutAction()
       break
 
-    case ServerEvents.ConnectionKill.type: {
+    case serverEvents.ConnectionKill.type: {
       const { code, reason } = msg.data
       console.warn(`[WS] Connection Killed. Code: ${code}`)
 
-      const behavior = KillCodeBehaviors[code]
+      const behavior = connectionKillBehaviors[code]
       if (!behavior.shouldReconnect) {
         fatalRef.current = true
       }

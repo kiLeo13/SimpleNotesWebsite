@@ -1,19 +1,19 @@
 import type { NoteFormFields } from "@/types/forms/notes"
 import type { ApiResponse } from "../types/api/api"
 import {
-  FullNoteResponseSchema,
-  ListNoteResponseSchema,
-  NoteResponseSchema,
   type CreateFileNotePayload,
   type CreateTextNotePayload,
   type FullNoteResponseData,
   type ListNoteResponseData,
   type NoteResponseData,
   type NoteType,
-  type UpdateNoteRequestPayload
+  type UpdateNoteRequestPayload,
+  fullNoteResponseSchema,
+  listNoteResponseSchema,
+  noteResponseSchema
 } from "../types/api/notes"
 
-import { VoidSchema } from "../types/api/api"
+import { voidSchema } from "../types/api/api"
 import { safeApiCall } from "./safeApiCall"
 
 import apiClient from "./apiClient"
@@ -59,7 +59,7 @@ export const noteService = {
   ): Promise<ApiResponse<FullNoteResponseData>> => {
     return safeApiCall(
       () => apiClient.post("/notes", payload),
-      FullNoteResponseSchema
+      fullNoteResponseSchema
     )
   },
 
@@ -75,7 +75,7 @@ export const noteService = {
   ): Promise<ApiResponse<NoteResponseData>> => {
     return safeApiCall(
       () => apiClient.patch(`/notes/${id}`, payload),
-      NoteResponseSchema
+      noteResponseSchema
     )
   },
 
@@ -87,7 +87,7 @@ export const noteService = {
   fetchNote: async (id: number): Promise<ApiResponse<FullNoteResponseData>> => {
     return safeApiCall(
       () => apiClient.get(`/notes/${id}`),
-      FullNoteResponseSchema
+      fullNoteResponseSchema
     )
   },
 
@@ -96,7 +96,7 @@ export const noteService = {
    * * @returns A promise resolving to a list of notes.
    */
   listNotes: async (): Promise<ApiResponse<ListNoteResponseData>> => {
-    return safeApiCall(() => apiClient.get("/notes"), ListNoteResponseSchema)
+    return safeApiCall(() => apiClient.get("/notes"), listNoteResponseSchema)
   },
 
   /**
@@ -105,7 +105,7 @@ export const noteService = {
    * @returns A promise resolving to void on success.
    */
   deleteNote: async (id: number): Promise<ApiResponse<void>> => {
-    return safeApiCall(() => apiClient.delete(`/notes/${id}`), VoidSchema)
+    return safeApiCall(() => apiClient.delete(`/notes/${id}`), voidSchema)
   },
 
   createNote: async (

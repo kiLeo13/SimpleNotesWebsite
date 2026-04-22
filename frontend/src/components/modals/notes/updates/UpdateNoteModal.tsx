@@ -1,6 +1,6 @@
 import { useEffect, type JSX } from "react"
 import {
-  updateNoteSchema,
+  updateNoteFormSchema,
   type UpdateNoteFormFields
 } from "@/types/forms/notes"
 
@@ -30,7 +30,7 @@ export function UpdateNoteModal({
   const note = getNoteById(noteId)
 
   const methods = useForm<UpdateNoteFormFields>({
-    resolver: zodResolver(updateNoteSchema),
+    resolver: zodResolver(updateNoteFormSchema),
     mode: "onChange",
     defaultValues: {
       name: note?.name || "",

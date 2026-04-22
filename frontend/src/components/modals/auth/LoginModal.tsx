@@ -1,6 +1,6 @@
 import { useState, type JSX } from "react"
 import { useForm, type SubmitHandler } from "react-hook-form"
-import { loginSchema, type LoginFormFields } from "@/types/forms/users"
+import { loginFormSchema, type LoginFormFields } from "@/types/forms/users"
 import { Link, useNavigate } from "@tanstack/react-router"
 
 import RequiredHint from "@/components/hints/RequiredHint"
@@ -30,7 +30,7 @@ export function LoginModal(): JSX.Element {
     setError,
     formState: { errors }
   } = useForm<LoginFormFields>({
-    resolver: zodResolver(loginSchema)
+    resolver: zodResolver(loginFormSchema)
   })
 
   const onSubmit: SubmitHandler<LoginFormFields> = async (data) => {

@@ -1,5 +1,5 @@
 import {
-  uploadSchema,
+  uploadNoteFormSchema,
   VISIBILITY_OPTIONS,
   type FileNoteFormFields
 } from "@/types/forms/notes"
@@ -39,7 +39,7 @@ export function CreateNoteModalForm({
   const [isLoading, setIsLoading] = useState(false)
   const renderNote = useNoteStore((state) => state.renderNote)
   const methods = useForm<FileNoteFormFields>({
-    resolver: zodResolver(uploadSchema),
+    resolver: zodResolver(uploadNoteFormSchema),
     defaultValues: {
       mode: "UPLOAD",
       name: "",

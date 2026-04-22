@@ -1,4 +1,4 @@
-import { signupSchema, type SignupFormFields } from "@/types/forms/users"
+import { signupFormSchema, type SignupFormFields } from "@/types/forms/users"
 import { useCallback, useMemo, useState, type JSX } from "react"
 import { Link } from "@tanstack/react-router"
 import {
@@ -40,7 +40,7 @@ export function SignupModal(): JSX.Element {
     formState: { errors }
   } = useForm<SignupFormFields>({
     mode: "onChange",
-    resolver: zodResolver(signupSchema)
+    resolver: zodResolver(signupFormSchema)
   })
   const { onBlur, ...passwordRest } = register("password")
   const { onChange, ...emailRest } = register("email")

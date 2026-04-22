@@ -1,9 +1,9 @@
 import type { ApiResponse } from "@/types/api/api"
 import {
-  AuditLogListResponseSchema,
   type AuditActionType,
   type AuditLogListResponseData,
-  type AuditSubjectType
+  type AuditSubjectType,
+  auditLogListResponseSchema
 } from "@/types/api/audit"
 
 import apiClient from "./apiClient"
@@ -40,7 +40,7 @@ export const auditService = {
 
     return safeApiCall(
       () => apiClient.get("/audit-logs", { params }),
-      AuditLogListResponseSchema
+      auditLogListResponseSchema
     )
   }
 }

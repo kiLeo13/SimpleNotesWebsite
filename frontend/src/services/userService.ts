@@ -1,10 +1,10 @@
-import { VoidSchema, type ApiResponse } from "../types/api/api"
+import { voidSchema, type ApiResponse } from "../types/api/api"
 
 import {
-  CheckUserStatusSchema,
-  LoginResponseSchema,
-  ListUserResponseSchema,
-  UserResponseSchema,
+  checkUserStatusResponseSchema,
+  listUsersResponseSchema,
+  loginResponseSchema,
+  userResponseSchema,
   type CheckUserStatusData,
   type CheckUserStatusPayload,
   type ConfirmRequestPayload,
@@ -29,7 +29,7 @@ export const userService = {
    * @returns The API response. If successful, it contains the apropriate tokens.
    */
   login: async (payload: LoginRequestPayload): Promise<ApiResponse<LoginResponseData>> => {
-    return safeApiCall(() => apiClient.post("/users/login", payload), LoginResponseSchema)
+    return safeApiCall(() => apiClient.post("/users/login", payload), loginResponseSchema)
   },
 
   /**
@@ -61,33 +61,36 @@ export const userService = {
   getUserStatus: async (
     payload: CheckUserStatusPayload
   ): Promise<ApiResponse<CheckUserStatusData>> => {
-    return safeApiCall(() => apiClient.post("/users/check-email", payload), CheckUserStatusSchema)
+    return safeApiCall(
+      () => apiClient.post("/users/check-email", payload),
+      checkUserStatusResponseSchema
+    )
   },
 
   getUsers: async (): Promise<ApiResponse<ListUsersResponseData>> => {
-    return safeApiCall(() => apiClient.get("/users"), ListUserResponseSchema)
+    return safeApiCall(() => apiClient.get("/users"), listUsersResponseSchema)
   },
 
   getUserById: async (id: number): Promise<ApiResponse<UserResponseData>> => {
-    return safeApiCall(() => apiClient.get(`/users/${id}`), UserResponseSchema)
+    return safeApiCall(() => apiClient.get(`/users/${id}`), userResponseSchema)
   },
 
   logout: async (payload: LogoutRequestPayload): Promise<ApiResponse<void>> => {
-    return safeApiCall(() => apiClient.post("/users/logout", payload), VoidSchema)
+    return safeApiCall(() => apiClient.post("/users/logout", payload), voidSchema)
   },
 
   updateUser: async (
     id: number,
     payload: UpdateUserRequestPayload
   ): Promise<ApiResponse<UserResponseData>> => {
-    return safeApiCall(() => apiClient.patch(`/users/${id}`, payload), UserResponseSchema)
+    return safeApiCall(() => apiClient.patch(`/users/${id}`, payload), userResponseSchema)
   },
 
   deleteUser: async (id: number): Promise<ApiResponse<void>> => {
-    return safeApiCall(() => apiClient.delete(`/users/${id}`), VoidSchema)
+    return safeApiCall(() => apiClient.delete(`/users/${id}`), voidSchema)
   },
 
   getSelfUser: async (): Promise<ApiResponse<UserResponseData>> => {
-    return safeApiCall(() => apiClient.get("/users/@me"), UserResponseSchema)
+    return safeApiCall(() => apiClient.get("/users/@me"), userResponseSchema)
   }
 }
