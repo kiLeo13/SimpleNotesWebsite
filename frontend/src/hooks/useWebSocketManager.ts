@@ -106,30 +106,29 @@ function routeServerMessage(
 // Domain Handlers
 // ----------------------------------------
 
-function handleNoteEvents(msg: GatewayMessage) {
-  const { addNote, updateNote, removeNote, getNoteById, reload } =
-    useNoteStore.getState()
+export function handleNoteEvents(msg: GatewayMessage) {
+  const { addNote, updateNote, removeNote } = useNoteStore.getState()
   const { user: self } = useSessionStore.getState()
-  const selfHasAdmin = Permission.hasEffective(
+  const canSeeHiddenNotes = Permission.hasEffective(
     self?.permissions || 0,
-    Permission.Administrator
+    Permission.SeeHiddenNotes
   )
 
   switch (msg.type) {
     case ServerEvents.NoteCreated.type:
+      if (shouldHideNoteFromClient(msg.data.visibility, canSeeHiddenNotes)) {
+        removeNote(msg.data.id)
+        break
+      }
       addNote(msg.data)
       break
 
     case ServerEvents.NoteUpdated.type: {
-      const newNote = msg.data
-      const oldNote = getNoteById(newNote.id)
-      const hasVisibilityChanged = oldNote?.visibility !== newNote.visibility
-
-      if (hasVisibilityChanged && !selfHasAdmin) {
-        reload()
-      } else {
-        updateNote(newNote)
+      if (shouldHideNoteFromClient(msg.data.visibility, canSeeHiddenNotes)) {
+        removeNote(msg.data.id)
+        break
       }
+      updateNote(msg.data)
       break
     }
 
@@ -137,6 +136,13 @@ function handleNoteEvents(msg: GatewayMessage) {
       removeNote(msg.data.id)
       break
   }
+}
+
+function shouldHideNoteFromClient(
+  visibility: "PUBLIC" | "PRIVATE",
+  canSeeHiddenNotes: boolean
+): boolean {
+  return visibility === "PRIVATE" && !canSeeHiddenNotes
 }
 
 function handleUserEvents(msg: GatewayMessage) {

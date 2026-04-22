@@ -44,7 +44,11 @@ export const useNoteStore = create<NotesState>((set, get) => ({
 
   addNote: (note) => {
     set((state) => ({
-      notes: [...state.notes, note]
+      notes: state.notes.some((existing) => existing.id === note.id)
+        ? state.notes.map((existing) =>
+            existing.id === note.id ? { ...existing, ...note } : existing
+          )
+        : [...state.notes, note]
     }))
   },
 
@@ -52,7 +56,11 @@ export const useNoteStore = create<NotesState>((set, get) => ({
     set((state) => ({
       notes: state.notes.map((n) =>
         n.id == newNote.id ? { ...n, ...newNote } : n
-      )
+      ),
+      shownNote:
+        state.shownNote?.id === newNote.id
+          ? ({ ...state.shownNote, ...newNote } as FullNoteResponseData)
+          : state.shownNote
     }))
   },
 
@@ -99,7 +107,10 @@ export const useNoteStore = create<NotesState>((set, get) => ({
     try {
       const resp = await noteService.listNotes()
       if (resp.success) {
-        set({ notes: resp.data.notes })
+        set((state) => ({
+          notes: resp.data.notes,
+          shownNote: reconcileShownNote(state.shownNote, resp.data.notes)
+        }))
       }
     } catch (error) {
       console.error(error)
@@ -168,3 +179,19 @@ export const useNoteStore = create<NotesState>((set, get) => ({
 
   setRendering: (flag) => set({ isRendering: flag })
 }))
+
+function reconcileShownNote(
+  shownNote: FullNoteResponseData | null,
+  notes: NoteResponseData[]
+): FullNoteResponseData | null {
+  if (!shownNote) {
+    return null
+  }
+
+  const nextNote = notes.find((note) => note.id === shownNote.id)
+  if (!nextNote) {
+    return null
+  }
+
+  return { ...shownNote, ...nextNote }
+}
