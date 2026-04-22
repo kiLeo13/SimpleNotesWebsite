@@ -9,6 +9,22 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import { noteService } from "@/services/noteService"
 import { useNoteStore } from "./useNotesStore"
 
+type MarkdownNote = {
+  id: number
+  name: string
+  tags: string[]
+  visibility: "PUBLIC" | "PRIVATE"
+  note_type: "MARKDOWN"
+  created_by_id: number
+  content_size: number
+  created_at: string
+  updated_at: string
+}
+
+type FullMarkdownNote = MarkdownNote & {
+  content: string
+}
+
 vi.mock("@/services/noteService", () => ({
   noteService: {
     listNotes: vi.fn()
@@ -74,14 +90,15 @@ function successListResponse(
 ): ApiResponse<ListNoteResponseData> {
   return {
     success: true,
+    statusCode: 200,
     data: { notes }
   }
 }
 
 function makeBaseNote(
-  overrides: Partial<NoteResponseData> = {}
+  overrides: Partial<MarkdownNote> = {}
 ): NoteResponseData {
-  return {
+  const note: MarkdownNote = {
     id: 42,
     name: "Architecture",
     tags: ["docs"],
@@ -93,14 +110,24 @@ function makeBaseNote(
     updated_at: "2026-04-21T10:00:00.000Z",
     ...overrides
   }
+  return note
 }
 
 function makeFullNote(
-  overrides: Partial<FullNoteResponseData> = {}
+  overrides: Partial<FullMarkdownNote> = {}
 ): FullNoteResponseData {
-  return {
-    ...makeBaseNote(),
+  const note: FullMarkdownNote = {
+    id: 42,
+    name: "Architecture",
+    tags: ["docs"],
+    visibility: "PUBLIC",
+    note_type: "MARKDOWN",
+    created_by_id: 7,
+    content_size: 128,
+    created_at: "2026-04-21T10:00:00.000Z",
+    updated_at: "2026-04-21T10:00:00.000Z",
     content: "# still here",
     ...overrides
   }
+  return note
 }

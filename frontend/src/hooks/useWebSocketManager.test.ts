@@ -8,6 +8,22 @@ import { ServerEvents } from "@/models/events/GatewayEvent"
 import { useNoteStore } from "@/stores/useNotesStore"
 import { useSessionStore } from "@/stores/useSessionStore"
 
+type MarkdownNote = {
+  id: number
+  name: string
+  tags: string[]
+  visibility: "PUBLIC" | "PRIVATE"
+  note_type: "MARKDOWN"
+  created_by_id: number
+  content_size: number
+  created_at: string
+  updated_at: string
+}
+
+type FullMarkdownNote = MarkdownNote & {
+  content: string
+}
+
 describe("handleNoteEvents", () => {
   beforeEach(() => {
     useNoteStore.setState({
@@ -80,9 +96,9 @@ function makeUser(permissions: number): UserResponseData {
 }
 
 function makeNote(
-  overrides: Partial<NoteResponseData> = {}
+  overrides: Partial<MarkdownNote> = {}
 ): NoteResponseData {
-  return {
+  const note: MarkdownNote = {
     id: 42,
     name: "Architecture",
     tags: ["docs"],
@@ -94,14 +110,24 @@ function makeNote(
     updated_at: "2026-04-21T10:00:00.000Z",
     ...overrides
   }
+  return note
 }
 
 function makeFullNote(
-  overrides: Partial<FullNoteResponseData> = {}
+  overrides: Partial<FullMarkdownNote> = {}
 ): FullNoteResponseData {
-  return {
-    ...makeNote(),
+  const note: FullMarkdownNote = {
+    id: 42,
+    name: "Architecture",
+    tags: ["docs"],
+    visibility: "PUBLIC",
+    note_type: "MARKDOWN",
+    created_by_id: 7,
+    content_size: 128,
+    created_at: "2026-04-21T10:00:00.000Z",
+    updated_at: "2026-04-21T10:00:00.000Z",
     content: "# still here",
     ...overrides
   }
+  return note
 }
