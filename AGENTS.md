@@ -138,6 +138,15 @@ That sequence usually gives enough context without spelunking the whole repo lik
 - `frontend/src/services/socketBus.ts`
   - Internal pub/sub for websocket events.
 
+### Type And Schema Conventions
+
+- Frontend TypeScript types, interfaces, and inferred aliases use `PascalCase`.
+- Frontend Zod runtime values use `camelCase`, with schema exports ending in `Schema`.
+- Prefer explicit discriminated-union variants over umbrella branches when a payload shape changes by discriminator value.
+- Keep frontend parsed contracts aligned with backend JSON keys on the wire, but only transform keys when the consuming UI model really needs a camelCase shape.
+- Backend exported domain and contract names should avoid shorthands like `Reg` or `Perms` in favor of full words such as `Registration` and `Permissions`.
+- Backend JSON field names remain snake_case on the wire even when Go struct fields are renamed for clarity.
+
 ### Frontend Websocket / Realtime
 
 - `frontend/src/hooks/useWebSocketManager.ts`

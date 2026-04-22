@@ -61,6 +61,13 @@ Important frontend behavior:
 - Frontend audit event metadata is owned by `frontend/src/components/modals/global/audit/AuditLogEvent.ts`, while `frontend/src/components/modals/global/audit/auditPresentation.ts` formats UI copy from that registry. Each supported audit event declares whether the UI should allow row expansion through an `expands` flag.
 - Expanded audit entries render their change rows with a local sequential code (`1..n`) per event, and the visible code accent still derives from the frontend event metadata.
 
+### Frontend Type Modeling
+
+- Zod schemas are exported as `camelCase` runtime values ending in `Schema`.
+- TypeScript types and interfaces stay in `PascalCase`.
+- Discriminated unions should use explicit per-variant schemas when the discriminator meaningfully changes the payload shape, especially for note and websocket event contracts.
+- Shared frontend/backend seams should keep transport keys in snake_case on the wire and only transform to camelCase in schemas that intentionally expose a UI-facing model.
+
 ### Frontend Routing And Code Splitting
 
 - `frontend/src/routes/__root.tsx` owns the app-wide shell concerns such as the toaster and outlet.
@@ -97,6 +104,11 @@ High-level startup flow:
   GORM entities and schema/index tags.
 - `backend/cmd/internal/contract/`
   Request and response contracts.
+
+### Backend Naming
+
+- Backend entity and contract types should prefer full domain words over abbreviations, such as `RegistrationStatus` and `Permissions`.
+- Renaming Go struct fields for clarity must not change the published JSON contract unless the API behavior is intentionally changing.
 
 ### Persistence Model
 
