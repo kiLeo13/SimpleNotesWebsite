@@ -246,6 +246,7 @@
   },
   "updateNoteModal": {
     "title": "Editar Nota",
+    "actions": "Ações",
     "author": "Autor",
     "creationTime": "Criação",
     "visibility": "Visibilidade",

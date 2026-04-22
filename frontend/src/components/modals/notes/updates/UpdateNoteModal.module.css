@@ -2,6 +2,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   background-color: rgb(30, 25, 37);
   border: 1px solid rgb(42, 36, 51);
   border-radius: 15px;
@@ -10,7 +11,7 @@
   box-sizing: border-box;
   max-height: 95vh;
   gap: 20px;
-  width: 520px;
+  width: min(592px, calc(100vw - 24px));
   animation: smoothToggleModal 300ms cubic-bezier(0.25, 0.1, 0.25, 1.5) forwards;
 }
 
