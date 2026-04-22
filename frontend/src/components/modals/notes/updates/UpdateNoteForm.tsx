@@ -189,7 +189,6 @@ export function UpdateNoteForm({
       </ModalActionRow>
 
       <ModalFooter
-        noteId={note?.id || 0}
         exists={!!note}
         isDirty={isDirty}
         isValid={isValid}
