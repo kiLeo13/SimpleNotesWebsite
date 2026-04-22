@@ -19,7 +19,6 @@ import { CgController } from "react-icons/cg"
 import { AppTooltip } from "../ui/AppTooltip"
 import { BsBuildingFill } from "react-icons/bs"
 import { Ripple } from "../ui/effects/Ripple"
-import { Button } from "../ui/buttons/Button"
 import { LoaderContainer } from "@/components/LoaderContainer"
 import { Permission } from "@/models/Permission"
 import { createAsyncComponent } from "@/utils/createAsyncComponent"
@@ -155,6 +154,7 @@ export function SidebarRail(): JSX.Element {
             <ActionMenu items={createNoteOptions} side="right" align="center">
               <AppTooltip label={t("tooltips.labels.createNote")} side="right">
                 <button
+                  type="button"
                   className={styles.button}
                   aria-label={t("tooltips.labels.createNote")}
                 >
@@ -168,18 +168,21 @@ export function SidebarRail(): JSX.Element {
           {canManageUsers && (
             <UserManagementPopover>
               <AppTooltip label={t("tooltips.labels.usersMng")} side="right">
-                <Button
+                <button
+                  type="button"
                   className={styles.button}
                   aria-label={t("tooltips.labels.usersMng")}
                 >
                   <FaUsers size={"0.8em"} />
-                </Button>
+                  <Ripple />
+                </button>
               </AppTooltip>
             </UserManagementPopover>
           )}
 
           <AppTooltip label={t("tooltips.labels.algoCalc")} side="right">
             <button
+              type="button"
               className={styles.button}
               aria-label={t("tooltips.labels.algoCalc")}
               onClick={() => setShowAlgoCalc(true)}
@@ -191,25 +194,29 @@ export function SidebarRail(): JSX.Element {
 
           {canLookup && (
             <AppTooltip label={t("tooltips.labels.companyLookup")} side="right">
-              <Button
+              <button
+                type="button"
                 className={styles.button}
                 aria-label={t("tooltips.labels.companyLookup")}
                 onClick={() => setLookingUp(true)}
               >
                 <BsBuildingFill size={"0.8em"} />
-              </Button>
+                <Ripple />
+              </button>
             </AppTooltip>
           )}
 
           {canReadAuditLogs && (
             <AppTooltip label={t("tooltips.labels.auditLogs")} side="right">
-              <Button
+              <button
+                type="button"
                 className={styles.button}
                 aria-label={t("tooltips.labels.auditLogs")}
                 onClick={() => setShowAuditLogs(true)}
               >
                 <MdOutlineHistory size={"0.9em"} />
-              </Button>
+                <Ripple />
+              </button>
             </AppTooltip>
           )}
         </div>
@@ -218,6 +225,7 @@ export function SidebarRail(): JSX.Element {
           <ActionMenu items={settingsOptions} side="right" align="center">
             <AppTooltip label={t("tooltips.labels.settings")} side="right">
               <button
+                type="button"
                 className={styles.button}
                 aria-label={t("tooltips.labels.settings")}
               >
