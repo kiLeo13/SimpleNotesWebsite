@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"strconv"
 	"zenkeep/cmd/internal/contract"
 	"zenkeep/cmd/internal/domain/entity"
 	"zenkeep/cmd/internal/domain/events"
@@ -9,7 +10,6 @@ import (
 	cognitoclient "zenkeep/cmd/internal/infrastructure/aws/cognito"
 	"zenkeep/cmd/internal/utils"
 	"zenkeep/cmd/internal/utils/apierror"
-	"strconv"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/gommon/log"
@@ -125,7 +125,7 @@ func (u *UserService) UpdateUser(actor *entity.User, targetId string, req *contr
 	before := *target
 
 	updater.setProfileString(req.Username, &target.Username)
-	updater.setPermissions(req.Perms)
+	updater.setPermissions(req.Permissions)
 	updater.setSuspended(req.Suspended)
 
 	if updater.err != nil {
@@ -231,7 +231,7 @@ func (u *UserService) Logout(actor *entity.User, req *contract.LogoutRequest) ap
 	return nil
 }
 
-func (u *UserService) CheckEmail(req *contract.UserStatusRequest) (*contract.EmailStatus, apierror.ErrorResponse) {
+func (u *UserService) CheckEmail(req *contract.CheckUserStatusRequest) (*contract.EmailStatus, apierror.ErrorResponse) {
 	utils.Sanitize(req)
 	if err := u.Validate.Struct(req); err != nil {
 		return nil, apierror.FromValidationError(err)
@@ -250,7 +250,7 @@ func (u *UserService) CheckEmail(req *contract.UserStatusRequest) (*contract.Ema
 	case !user.EmailVerified:
 		status = contract.EmailStatusVerifying
 	default:
-		status = contract.EmailStatusExists
+		status = contract.EmailStatusTaken
 	}
 	return &status, nil
 }
@@ -381,7 +381,7 @@ func (u *UserService) ConfirmSignup(req *contract.ConfirmSignupRequest) apierror
 	return nil
 }
 
-func (u *UserService) ResendConfirmation(req *contract.ResendConfirmRequest) apierror.ErrorResponse {
+func (u *UserService) ResendConfirmation(req *contract.ResendConfirmationRequest) apierror.ErrorResponse {
 	if err := u.Validate.Struct(req); err != nil {
 		return apierror.FromValidationError(err)
 	}
@@ -559,12 +559,12 @@ func toUserResponse(user, requester *entity.User, presence contract.UserPresence
 	}
 
 	resp := &contract.UserResponse{
-		ID:        user.ID,
-		Username:  user.Username,
-		Perms:     int64(user.Permissions),
-		Presence:  presence,
-		CreatedAt: utils.FormatEpoch(user.CreatedAt),
-		UpdatedAt: utils.FormatEpoch(user.UpdatedAt),
+		ID:          user.ID,
+		Username:    user.Username,
+		Permissions: int64(user.Permissions),
+		Presence:    presence,
+		CreatedAt:   utils.FormatEpoch(user.CreatedAt),
+		UpdatedAt:   utils.FormatEpoch(user.UpdatedAt),
 	}
 
 	hasMngUsers := requester.Permissions.HasEffective(entity.PermissionManageUsers)
@@ -581,11 +581,11 @@ func toUserResponse(user, requester *entity.User, presence contract.UserPresence
 
 func toDeletedUserResponse(user *entity.User) *contract.UserResponse {
 	return &contract.UserResponse{
-		ID:        user.ID,
-		Username:  "Deleted User",
-		Perms:     0,
-		CreatedAt: utils.FormatEpoch(0),
-		UpdatedAt: utils.FormatEpoch(0),
+		ID:          user.ID,
+		Username:    "Deleted User",
+		Permissions: 0,
+		CreatedAt:   utils.FormatEpoch(0),
+		UpdatedAt:   utils.FormatEpoch(0),
 	}
 }
 

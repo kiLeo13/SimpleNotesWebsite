@@ -17,13 +17,13 @@ type NoteResponse struct {
 	UpdatedAt   string   `json:"updated_at"`
 }
 
-type NoteRequest struct {
+type CreateFileNoteRequest struct {
 	Name       string   `json:"name" validate:"required,min=2,max=80"`
 	Visibility string   `json:"visibility" validate:"required,oneof=PUBLIC PRIVATE"`
 	Tags       []string `json:"tags" validate:"required,max=50,nodupes,dive,required,min=2,max=30,nospaces"`
 }
 
-type TextNoteRequest struct {
+type CreateTextNoteRequest struct {
 	Name       string   `json:"name" validate:"required,min=2,max=80"`
 	Content    string   `json:"content" validate:"required,max=1000000"`
 	NoteType   string   `json:"note_type" validate:"required,oneof=MARKDOWN FLOWCHART"`

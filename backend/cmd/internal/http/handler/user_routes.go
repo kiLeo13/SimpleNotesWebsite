@@ -2,11 +2,11 @@ package handler
 
 import (
 	"net/http"
+	"strings"
 	"zenkeep/cmd/internal/contract"
 	"zenkeep/cmd/internal/domain/entity"
 	"zenkeep/cmd/internal/utils"
 	"zenkeep/cmd/internal/utils/apierror"
-	"strings"
 
 	"github.com/labstack/echo/v4"
 )
@@ -17,11 +17,11 @@ type UserService interface {
 	UpdateUser(requester *entity.User, targetId string, req *contract.UpdateUserRequest) (*contract.UserResponse, apierror.ErrorResponse)
 	DeleteUser(requester *entity.User, targetId string) apierror.ErrorResponse
 	Logout(actor *entity.User, req *contract.LogoutRequest) apierror.ErrorResponse
-	CheckEmail(req *contract.UserStatusRequest) (*contract.EmailStatus, apierror.ErrorResponse)
+	CheckEmail(req *contract.CheckUserStatusRequest) (*contract.EmailStatus, apierror.ErrorResponse)
 	CreateUser(req *contract.CreateUserRequest) apierror.ErrorResponse
 	Login(req *contract.UserLoginRequest) (*contract.UserLoginResponse, apierror.ErrorResponse)
 	ConfirmSignup(req *contract.ConfirmSignupRequest) apierror.ErrorResponse
-	ResendConfirmation(req *contract.ResendConfirmRequest) apierror.ErrorResponse
+	ResendConfirmation(req *contract.ResendConfirmationRequest) apierror.ErrorResponse
 }
 
 type DefaultUserRoute struct {
@@ -121,7 +121,7 @@ func (u *DefaultUserRoute) Logout(c echo.Context) error {
 }
 
 func (u *DefaultUserRoute) CheckEmail(c echo.Context) error {
-	var req contract.UserStatusRequest
+	var req contract.CheckUserStatusRequest
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, apierror.MalformedBodyError)
 	}
@@ -175,7 +175,7 @@ func (u *DefaultUserRoute) ConfirmSignup(c echo.Context) error {
 }
 
 func (u *DefaultUserRoute) ResendConfirmation(c echo.Context) error {
-	var req contract.ResendConfirmRequest
+	var req contract.ResendConfirmationRequest
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, apierror.MalformedBodyError)
 	}

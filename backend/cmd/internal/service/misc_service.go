@@ -57,7 +57,7 @@ func (u *MiscService) GetCompanyByCNPJ(actor *entity.User, cnpj string) (*contra
 		return nil, apierr
 	}
 
-	return toCompanyResp(result.company, result.fromCache), nil
+	return toCompanyResponse(result.company, result.fromCache), nil
 }
 
 // findCompany is a utility function that will try to resolve the CNPJ into a company.
@@ -154,7 +154,7 @@ func (u *MiscService) recordCompanyLookup(actor *entity.User, cnpj string, found
 	}
 }
 
-func toCompanyResp(c *entity.Company, cached bool) *contract.CompanyResponse {
+func toCompanyResponse(c *entity.Company, cached bool) *contract.CompanyResponse {
 	return &contract.CompanyResponse{
 		CNPJ:              c.CNPJ,
 		LegalName:         c.LegalName,
@@ -164,9 +164,9 @@ func toCompanyResp(c *entity.Company, cached bool) *contract.CompanyResponse {
 		BusinessStartDate: c.BusinessStartDate,
 		ShareCapital:      c.ShareCapital,
 		Registration: &contract.CompanyRegistration{
-			Status: string(c.RegStatus),
-			Reason: c.RegReason,
-			Date:   c.RegDate,
+			Status: string(c.RegistrationStatus),
+			Reason: c.RegistrationReason,
+			Date:   c.RegistrationDate,
 		},
 		Address: &contract.CompanyAddress{
 			Type:         c.AddressType,
@@ -177,21 +177,21 @@ func toCompanyResp(c *entity.Company, cached bool) *contract.CompanyResponse {
 			City:         c.AddressCity,
 			Region:       c.AddressRegion,
 		},
-		Partners: toPartnersResponse(c.Partners),
+		Partners: toCompanyPartnerResponses(c.Partners),
 		Cached:   cached,
 	}
 }
 
-func toPartnersResponse(ps []*entity.CompanyPartner) []*contract.PartnerResponse {
-	partners := make([]*contract.PartnerResponse, len(ps))
+func toCompanyPartnerResponses(ps []*entity.CompanyPartner) []*contract.CompanyPartnerResponse {
+	partners := make([]*contract.CompanyPartnerResponse, len(ps))
 	for i, p := range ps {
-		partners[i] = toPartnerResp(p)
+		partners[i] = toCompanyPartnerResponse(p)
 	}
 	return partners
 }
 
-func toPartnerResp(p *entity.CompanyPartner) *contract.PartnerResponse {
-	return &contract.PartnerResponse{
+func toCompanyPartnerResponse(p *entity.CompanyPartner) *contract.CompanyPartnerResponse {
+	return &contract.CompanyPartnerResponse{
 		Name:     p.Name,
 		Role:     p.Role,
 		RoleCode: p.RoleCode,

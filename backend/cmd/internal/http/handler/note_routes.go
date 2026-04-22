@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"mime/multipart"
 	"net/http"
+	"strconv"
+	"strings"
 	"zenkeep/cmd/internal/contract"
 	"zenkeep/cmd/internal/domain/entity"
 	"zenkeep/cmd/internal/utils"
 	"zenkeep/cmd/internal/utils/apierror"
-	"strconv"
-	"strings"
 
 	"github.com/labstack/echo/v4"
 )
@@ -19,8 +19,8 @@ import (
 type NoteService interface {
 	GetAllNotes(actor *entity.User) ([]*contract.NoteResponse, apierror.ErrorResponse)
 	GetNoteByID(actor *entity.User, noteId int) (*contract.NoteResponse, apierror.ErrorResponse)
-	CreateTextNote(actor *entity.User, req *contract.TextNoteRequest) (*contract.NoteResponse, apierror.ErrorResponse)
-	CreateFileNote(actor *entity.User, req *contract.NoteRequest, fileHeader *multipart.FileHeader) (*contract.NoteResponse, apierror.ErrorResponse)
+	CreateTextNote(actor *entity.User, req *contract.CreateTextNoteRequest) (*contract.NoteResponse, apierror.ErrorResponse)
+	CreateFileNote(actor *entity.User, req *contract.CreateFileNoteRequest, fileHeader *multipart.FileHeader) (*contract.NoteResponse, apierror.ErrorResponse)
 	UpdateNote(actor *entity.User, noteId int, req *contract.UpdateNoteRequest) (*contract.NoteResponse, apierror.ErrorResponse)
 	DeleteNote(actor *entity.User, noteId int) apierror.ErrorResponse
 }
@@ -128,7 +128,7 @@ func (n *DefaultNoteRoute) createFromText(c echo.Context) error {
 		return c.JSON(cerr.Code(), cerr)
 	}
 
-	var req contract.TextNoteRequest
+	var req contract.CreateTextNoteRequest
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, apierror.MalformedBodyError)
 	}
@@ -151,7 +151,7 @@ func (n *DefaultNoteRoute) createFromFile(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, apierror.FormJSONRequiredError)
 	}
 
-	var req contract.NoteRequest
+	var req contract.CreateFileNoteRequest
 	if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
 		return c.JSON(http.StatusBadRequest, apierror.MalformedBodyError)
 	}

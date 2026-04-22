@@ -1,8 +1,8 @@
 package minhareceita
 
 import (
-	"zenkeep/cmd/internal/domain/entity"
 	"strings"
+	"zenkeep/cmd/internal/domain/entity"
 )
 
 type companyResponse struct {
@@ -54,9 +54,9 @@ func (c *companyResponse) ToDomain() *entity.Company {
 		CompanySize:         c.CompanySize,
 		BusinessStartDate:   c.BusinessStartDate,
 		ShareCapital:        c.ShareCapital,
-		RegStatus:           translateStatus(c.RegistrationStatus),
-		RegReason:           c.RegistrationStatusReason,
-		RegDate:             c.RegistrationStatusDate,
+		RegistrationStatus:  translateRegistrationStatus(c.RegistrationStatus),
+		RegistrationReason:  c.RegistrationStatusReason,
+		RegistrationDate:    c.RegistrationStatusDate,
 		AddressType:         c.AddressType,
 		AddressStreetName:   c.AddressStreetName,
 		AddressNumber:       c.AddressNumber,
@@ -68,17 +68,17 @@ func (c *companyResponse) ToDomain() *entity.Company {
 	}
 }
 
-func translateStatus(status string) entity.RegStatus {
+func translateRegistrationStatus(status string) entity.RegistrationStatus {
 	switch strings.ToUpper(status) {
 	case "ATIVA":
-		return entity.StatusActive
+		return entity.RegistrationStatusActive
 	case "BAIXADA":
-		return entity.StatusClosed
+		return entity.RegistrationStatusClosed
 	case "SUSPENSA":
-		return entity.StatusSuspended
+		return entity.RegistrationStatusSuspended
 	case "INAPTA":
-		return entity.StatusUnfit
+		return entity.RegistrationStatusUnfit
 	default:
-		return entity.StatusUnknown
+		return entity.RegistrationStatusUnknown
 	}
 }

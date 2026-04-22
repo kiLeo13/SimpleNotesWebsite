@@ -95,7 +95,7 @@ func (n *NoteService) GetNoteByID(actor *entity.User, noteId int) (*contract.Not
 	return toNoteResponse(note, true), nil
 }
 
-func (n *NoteService) CreateTextNote(actor *entity.User, req *contract.TextNoteRequest) (*contract.NoteResponse, apierror.ErrorResponse) {
+func (n *NoteService) CreateTextNote(actor *entity.User, req *contract.CreateTextNoteRequest) (*contract.NoteResponse, apierror.ErrorResponse) {
 	if !actor.Permissions.HasEffective(entity.PermissionCreateNotes) {
 		return nil, apierror.UserMissingPermsError
 	}
@@ -144,7 +144,7 @@ func (n *NoteService) CreateTextNote(actor *entity.User, req *contract.TextNoteR
 	return toNoteResponse(note, true), nil
 }
 
-func (n *NoteService) CreateFileNote(actor *entity.User, req *contract.NoteRequest, fileHeader *multipart.FileHeader) (*contract.NoteResponse, apierror.ErrorResponse) {
+func (n *NoteService) CreateFileNote(actor *entity.User, req *contract.CreateFileNoteRequest, fileHeader *multipart.FileHeader) (*contract.NoteResponse, apierror.ErrorResponse) {
 	if !actor.Permissions.HasEffective(entity.PermissionCreateNotes) {
 		return nil, apierror.UserMissingPermsError
 	}

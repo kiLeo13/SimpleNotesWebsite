@@ -1,13 +1,13 @@
 package entity
 
-type RegStatus string
+type RegistrationStatus string
 
 const (
-	StatusActive    RegStatus = "ACTIVE"
-	StatusClosed    RegStatus = "CLOSED"
-	StatusSuspended RegStatus = "SUSPENDED"
-	StatusUnfit     RegStatus = "UNFIT"
-	StatusUnknown   RegStatus = "UNKNOWN"
+	RegistrationStatusActive    RegistrationStatus = "ACTIVE"
+	RegistrationStatusClosed    RegistrationStatus = "CLOSED"
+	RegistrationStatusSuspended RegistrationStatus = "SUSPENDED"
+	RegistrationStatusUnfit     RegistrationStatus = "UNFIT"
+	RegistrationStatusUnknown   RegistrationStatus = "UNKNOWN"
 )
 
 type Company struct {
@@ -18,9 +18,9 @@ type Company struct {
 	CompanySize         string
 	BusinessStartDate   string
 	ShareCapital        int64
-	RegStatus           RegStatus
-	RegReason           string
-	RegDate             string
+	RegistrationStatus  RegistrationStatus
+	RegistrationReason  string
+	RegistrationDate    string
 	AddressType         string
 	AddressStreetName   string
 	AddressNumber       string

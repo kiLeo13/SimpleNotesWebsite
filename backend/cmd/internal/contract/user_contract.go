@@ -4,7 +4,7 @@ type EmailStatus string
 
 const (
 	EmailStatusAvailable EmailStatus = "AVAILABLE"
-	EmailStatusExists    EmailStatus = "TAKEN"
+	EmailStatusTaken     EmailStatus = "TAKEN"
 	EmailStatusVerifying EmailStatus = "VERIFYING"
 )
 
@@ -29,13 +29,13 @@ type UserLoginRequest struct {
 }
 
 type UpdateUserRequest struct {
-	Username  *string `json:"username" validate:"omitempty,min=2,max=80"`
-	Perms     *int64  `json:"permissions" validate:"omitempty,min=0"`
-	Suspended *bool   `json:"suspended" validate:"omitempty"`
+	Username    *string `json:"username" validate:"omitempty,min=2,max=80"`
+	Permissions *int64  `json:"permissions" validate:"omitempty,min=0"`
+	Suspended   *bool   `json:"suspended" validate:"omitempty"`
 }
 
 func (u *UpdateUserRequest) IsEmpty() bool {
-	return u.Username == nil && u.Perms == nil && u.Suspended == nil
+	return u.Username == nil && u.Permissions == nil && u.Suspended == nil
 }
 
 type LogoutRequest struct {
@@ -47,23 +47,23 @@ type ConfirmSignupRequest struct {
 	Code  string `json:"code" validate:"required,min=1,max=8"`
 }
 
-type ResendConfirmRequest struct {
+type ResendConfirmationRequest struct {
 	Email string `json:"email" validate:"required,email"`
 }
 
-type UserStatusRequest struct {
+type CheckUserStatusRequest struct {
 	Email string `json:"email" validate:"required,email"`
 }
 
 type UserResponse struct {
-	ID         int          `json:"id"`
-	Username   string       `json:"username"`
-	Perms      int64        `json:"permissions"`
-	Presence   UserPresence `json:"presence"`
-	IsVerified *bool        `json:"is_verified,omitempty"`
-	Suspended  *bool        `json:"suspended,omitempty"`
-	CreatedAt  string       `json:"created_at"`
-	UpdatedAt  string       `json:"updated_at"`
+	ID          int          `json:"id"`
+	Username    string       `json:"username"`
+	Permissions int64        `json:"permissions"`
+	Presence    UserPresence `json:"presence"`
+	IsVerified  *bool        `json:"is_verified,omitempty"`
+	Suspended   *bool        `json:"suspended,omitempty"`
+	CreatedAt   string       `json:"created_at"`
+	UpdatedAt   string       `json:"updated_at"`
 }
 
 type UserLoginResponse struct {

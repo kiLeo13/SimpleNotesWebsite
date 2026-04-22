@@ -1,17 +1,17 @@
 package contract
 
 type CompanyResponse struct {
-	CNPJ              string               `json:"cnpj"`
-	LegalName         string               `json:"legal_name"`
-	TradeName         string               `json:"trade_name"`
-	LegalNature       string               `json:"legal_nature"`
-	CompanySize       string               `json:"company_size"`
-	BusinessStartDate string               `json:"business_start_date"`
-	ShareCapital      int64                `json:"share_capital"`
-	Registration      *CompanyRegistration `json:"registration"`
-	Address           *CompanyAddress      `json:"address"`
-	Partners          []*PartnerResponse   `json:"partners"`
-	Cached            bool                 `json:"cached"`
+	CNPJ              string                    `json:"cnpj"`
+	LegalName         string                    `json:"legal_name"`
+	TradeName         string                    `json:"trade_name"`
+	LegalNature       string                    `json:"legal_nature"`
+	CompanySize       string                    `json:"company_size"`
+	BusinessStartDate string                    `json:"business_start_date"`
+	ShareCapital      int64                     `json:"share_capital"`
+	Registration      *CompanyRegistration      `json:"registration"`
+	Address           *CompanyAddress           `json:"address"`
+	Partners          []*CompanyPartnerResponse `json:"partners"`
+	Cached            bool                      `json:"cached"`
 }
 
 type CompanyRegistration struct {
@@ -30,7 +30,7 @@ type CompanyAddress struct {
 	Region       string `json:"region"`
 }
 
-type PartnerResponse struct {
+type CompanyPartnerResponse struct {
 	Name     string `json:"name"`
 	Role     string `json:"role"`
 	RoleCode int    `json:"role_code"`

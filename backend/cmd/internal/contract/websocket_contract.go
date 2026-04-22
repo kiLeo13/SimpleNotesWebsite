@@ -20,13 +20,13 @@ const (
 	EventPresenceUpdated EventType = "PRESENCE_UPDATED"
 )
 
-type KillCode string
+type ConnectionKillCode string
 
 const (
-	CodeSuspendedAccount KillCode = "SUSPENDED_ACCOUNT"
-	CodeIdleTimeout      KillCode = "IDLE_TIMEOUT"
-	CodeDeleted          KillCode = "DELETED"
-	CodeLogout           KillCode = "LOGOUT"
+	CodeSuspendedAccount ConnectionKillCode = "SUSPENDED_ACCOUNT"
+	CodeIdleTimeout      ConnectionKillCode = "IDLE_TIMEOUT"
+	CodeDeleted          ConnectionKillCode = "DELETED"
+	CodeLogout           ConnectionKillCode = "LOGOUT"
 )
 
 // IncomingSocketMessage is used for messages we receive from the users.
@@ -36,6 +36,6 @@ type IncomingSocketMessage struct {
 
 // OutgoingSocketMessage is what we send to the Client
 type OutgoingSocketMessage struct {
-	Type EventType   `json:"type"`
-	Data interface{} `json:"data,omitempty"`
+	Type EventType `json:"type"`
+	Data any       `json:"data,omitempty"`
 }
