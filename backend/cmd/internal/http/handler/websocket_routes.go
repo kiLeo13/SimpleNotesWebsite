@@ -12,7 +12,7 @@ import (
 )
 
 type WebSocketService interface {
-	RegisterConnection(userID int, connID string, exp int64) apierror.ErrorResponse
+	RegisterConnection(userID int, sessionID string, connID string, exp int64) apierror.ErrorResponse
 	RemoveConnection(connectionID string)
 	HandleMessage(msg *contract.IncomingSocketMessage, connID string)
 }
@@ -36,12 +36,17 @@ func (h *DefaultWSRoute) HandleConnect(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, apierror.NewMissingParamError("connectionId"))
 	}
 
+	sessionID := c.Request().Header.Get(websocket.HeaderSessionID)
+	if sessionID == "" {
+		return c.JSON(http.StatusBadRequest, apierror.NewMissingParamError("sessionId"))
+	}
+
 	token, err := utils.ParseTokenDataCtx(c)
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, apierror.InvalidAuthTokenError)
 	}
 
-	if apierr := h.WSService.RegisterConnection(user.ID, connID, token.Exp); apierr != nil {
+	if apierr := h.WSService.RegisterConnection(user.ID, sessionID, connID, token.Exp); apierr != nil {
 		return c.JSON(apierr.Code(), apierr)
 	}
 	return c.NoContent(http.StatusOK)

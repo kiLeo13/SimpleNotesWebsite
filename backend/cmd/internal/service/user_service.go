@@ -68,7 +68,7 @@ func (u *UserService) GetUsers(actor *entity.User) ([]*contract.UserResponse, ap
 	resp := make([]*contract.UserResponse, len(users))
 	for i, user := range users {
 		presence := contract.PresenceOffline
-		isOnline, _ := u.WSService.ConnRepo.IsOnline(user.ID)
+		isOnline, _ := u.WSService.ConnRepo.IsOnline(user.ID, utils.NowUTC())
 		if isOnline {
 			presence = contract.PresenceOnline
 		}
@@ -89,7 +89,7 @@ func (u *UserService) GetUser(actor *entity.User, rawId string) (*contract.UserR
 	}
 
 	presence := contract.PresenceOffline
-	isOnline, _ := u.WSService.ConnRepo.IsOnline(user.ID)
+	isOnline, _ := u.WSService.ConnRepo.IsOnline(user.ID, utils.NowUTC())
 	if isOnline {
 		presence = contract.PresenceOnline
 	}
@@ -158,7 +158,7 @@ func (u *UserService) UpdateUser(actor *entity.User, targetId string, req *contr
 	}
 
 	presence := contract.PresenceOffline
-	isOnline, _ := u.WSService.ConnRepo.IsOnline(target.ID)
+	isOnline, _ := u.WSService.ConnRepo.IsOnline(target.ID, utils.NowUTC())
 	if isOnline {
 		presence = contract.PresenceOnline
 	}
@@ -372,7 +372,7 @@ func (u *UserService) ConfirmSignup(req *contract.ConfirmSignupRequest) apierror
 	}
 
 	presence := contract.PresenceOffline
-	isOnline, _ := u.WSService.ConnRepo.IsOnline(user.ID)
+	isOnline, _ := u.WSService.ConnRepo.IsOnline(user.ID, utils.NowUTC())
 	if isOnline {
 		presence = contract.PresenceOnline
 	}

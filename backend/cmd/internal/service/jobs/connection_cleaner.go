@@ -2,9 +2,9 @@ package jobs
 
 import (
 	"context"
+	"time"
 	"zenkeep/cmd/internal/contract"
 	"zenkeep/cmd/internal/domain/entity"
-	"time"
 
 	"zenkeep/cmd/internal/domain/events"
 	"zenkeep/cmd/internal/service"
@@ -22,7 +22,7 @@ func NewConnectionCleaner(wsService *service.WebSocketService) *ConnectionCleane
 }
 
 func (c *ConnectionCleaner) Start(ctx context.Context) {
-	ticker := time.NewTicker(1 * time.Minute)
+	ticker := time.NewTicker(entity.CleanupInterval)
 	defer ticker.Stop()
 
 	log.Info("Connection cleaner cron started")
@@ -48,14 +48,10 @@ func (c *ConnectionCleaner) cleanup() {
 	}
 
 	if len(conns) == 0 {
-		return
+		log.Debug("Cleaner: no stale active connections found")
 	}
 
-	log.Infof("Cleaner: Found %d stale connections. Terminating...", len(conns))
-
-	affectedUsers := make(map[int]bool)
 	for _, conn := range conns {
-		affectedUsers[conn.UserID] = true
 		var envelope contract.OutgoingSocketMessage
 
 		if conn.ExpiresAt < now {
@@ -76,20 +72,21 @@ func (c *ConnectionCleaner) cleanup() {
 
 		_ = c.wsService.Gateway.DeleteConnection(bgCtx, conn.ConnectionID)
 
-		_ = c.wsService.ConnRepo.Delete(conn.ConnectionID)
-	}
-
-	for userID := range affectedUsers {
-		isOnline, _ := c.wsService.ConnRepo.IsOnline(userID)
-		if !isOnline {
-			c.dispatchPresenceEvent(userID, contract.PresenceOffline)
+		if conn.ExpiresAt < now {
+			c.wsService.DeleteConnection(conn.ConnectionID)
+			continue
 		}
-	}
-}
 
-func (c *ConnectionCleaner) dispatchPresenceEvent(userID int, presence contract.UserPresence) {
-	c.wsService.Broadcast(context.Background(), &events.PresenceUpdated{
-		UserID:   userID,
-		Presence: presence,
-	})
+		c.wsService.RemoveConnection(conn.ConnectionID)
+	}
+
+	expiredDisconnected, err := c.wsService.ConnRepo.FindExpiredDisconnected(now)
+	if err != nil {
+		log.Errorf("Cleaner: failed to fetch expired disconnected sessions: %v", err)
+		return
+	}
+
+	for _, conn := range expiredDisconnected {
+		c.wsService.DeleteConnection(conn.ConnectionID)
+	}
 }

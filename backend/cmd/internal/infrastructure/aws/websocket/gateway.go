@@ -10,6 +10,7 @@ import (
 )
 
 const HeaderConnectionID = "X-Connection-Id"
+const HeaderSessionID = "X-Session-Id"
 
 type GatewayClient interface {
 	PostToConnection(ctx context.Context, connID string, data interface{}) error

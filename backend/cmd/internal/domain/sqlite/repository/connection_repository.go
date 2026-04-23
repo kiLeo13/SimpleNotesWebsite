@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+
 	"gorm.io/gorm"
 	"zenkeep/cmd/internal/domain/entity"
 )
@@ -26,10 +27,17 @@ func (c *DefaultConnectionRepository) Delete(connID string) error {
 	return result.Error
 }
 
+func (c *DefaultConnectionRepository) DeleteBySessionID(sessionID string) error {
+	return c.db.
+		Where("session_id = ?", sessionID).
+		Delete(&entity.Connection{}).Error
+}
+
 func (c *DefaultConnectionRepository) FindByUserID(userID int) ([]string, error) {
 	var ids []string
 	result := c.db.Model(&entity.Connection{}).
 		Where("user_id = ?", userID).
+		Where("disconnected_at IS NULL").
 		Pluck("connection_id", &ids)
 
 	if result.Error != nil {
@@ -56,6 +64,7 @@ func (c *DefaultConnectionRepository) CountByUserID(userID int) (int64, error) {
 	var count int64
 	err := c.db.Model(&entity.Connection{}).
 		Where("user_id = ?", userID).
+		Where("disconnected_at IS NULL").
 		Count(&count).Error
 	if err != nil {
 		return 0, err
@@ -76,10 +85,34 @@ func (c *DefaultConnectionRepository) FindByID(connID string) (*entity.Connectio
 	return &conn, nil
 }
 
-func (c *DefaultConnectionRepository) IsOnline(userID int) (bool, error) {
+func (c *DefaultConnectionRepository) FindBySessionID(sessionID string) (*entity.Connection, error) {
+	var conn entity.Connection
+	err := c.db.First(&conn, "session_id = ?", sessionID).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	if err != nil {
+		return nil, err
+	}
+	return &conn, nil
+}
+
+func (c *DefaultConnectionRepository) IsOnline(userID int, now int64) (bool, error) {
 	var exists bool
 	err := c.db.
-		Raw("SELECT EXISTS(SELECT 1 FROM connections WHERE user_id = ?)", userID).
+		Raw(`
+			SELECT EXISTS(
+				SELECT 1
+				FROM connections
+				WHERE user_id = ?
+					AND expires_at >= ?
+					AND (
+						disconnected_at IS NULL
+						OR grace_expires_at >= ?
+					)
+			)
+		`, userID, now, now).
 		Scan(&exists).Error
 	if err != nil {
 		return false, err
@@ -91,15 +124,29 @@ func (c *DefaultConnectionRepository) FindAllConnIDs() ([]string, error) {
 	var ids []string
 	result := c.db.
 		Model(&entity.Connection{}).
+		Where("disconnected_at IS NULL").
 		Pluck("connection_id", &ids)
 	return ids, result.Error
 }
 
 func (c *DefaultConnectionRepository) FindAll() ([]*entity.Connection, error) {
 	var conns []*entity.Connection
-	result := c.db.Find(&conns)
+	result := c.db.
+		Where("disconnected_at IS NULL").
+		Find(&conns)
 	if result.Error != nil {
 		return nil, result.Error
+	}
+	return conns, nil
+}
+
+func (c *DefaultConnectionRepository) FindSessionsByUserID(userID int) ([]*entity.Connection, error) {
+	var conns []*entity.Connection
+	err := c.db.
+		Where("user_id = ?", userID).
+		Find(&conns).Error
+	if err != nil {
+		return nil, err
 	}
 	return conns, nil
 }
@@ -112,6 +159,7 @@ func (c *DefaultConnectionRepository) FetchIn(userIDs ...int) ([]*entity.Connect
 
 	err := c.db.
 		Where("user_id IN ?", userIDs).
+		Where("disconnected_at IS NULL").
 		Find(&conns).Error
 
 	if err != nil {
@@ -122,8 +170,27 @@ func (c *DefaultConnectionRepository) FetchIn(userIDs ...int) ([]*entity.Connect
 
 func (c *DefaultConnectionRepository) FindStale(now int64, heartbeatThreshold int64) ([]*entity.Connection, error) {
 	var conns []*entity.Connection
-	err := c.db.Where("expires_at < ?", now).
-		Or("last_heartbeat_at < ?", heartbeatThreshold).
+	err := c.db.
+		Where("disconnected_at IS NULL").
+		Where(
+			c.db.
+				Where("expires_at < ?", now).
+				Or("last_heartbeat_at < ?", heartbeatThreshold),
+		).
+		Find(&conns).Error
+
+	return conns, err
+}
+
+func (c *DefaultConnectionRepository) FindExpiredDisconnected(now int64) ([]*entity.Connection, error) {
+	var conns []*entity.Connection
+	err := c.db.
+		Where("disconnected_at IS NOT NULL").
+		Where(
+			c.db.
+				Where("expires_at < ?", now).
+				Or("grace_expires_at < ?", now),
+		).
 		Find(&conns).Error
 
 	return conns, err
@@ -132,5 +199,16 @@ func (c *DefaultConnectionRepository) FindStale(now int64, heartbeatThreshold in
 func (c *DefaultConnectionRepository) UpdateHeartbeat(connID string, now int64) error {
 	return c.db.Model(&entity.Connection{}).
 		Where("connection_id = ?", connID).
+		Where("disconnected_at IS NULL").
 		Update("last_heartbeat_at", now).Error
+}
+
+func (c *DefaultConnectionRepository) MarkDisconnected(connID string, disconnectedAt int64, graceExpiresAt int64) error {
+	return c.db.Model(&entity.Connection{}).
+		Where("connection_id = ?", connID).
+		Where("disconnected_at IS NULL").
+		Updates(map[string]any{
+			"disconnected_at":  disconnectedAt,
+			"grace_expires_at": graceExpiresAt,
+		}).Error
 }
