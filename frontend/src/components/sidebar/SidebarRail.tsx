@@ -21,6 +21,7 @@ import { BsBuildingFill } from "react-icons/bs"
 import { Ripple } from "../ui/effects/Ripple"
 import { LoaderContainer } from "@/components/LoaderContainer"
 import { Permission } from "@/models/Permission"
+import { clearSocketSessionId } from "@/services/socketSession"
 import { createAsyncComponent } from "@/utils/createAsyncComponent"
 import { useTranslation } from "react-i18next"
 import { usePermission } from "@/hooks/usePermission"
@@ -88,6 +89,7 @@ export function SidebarRail(): JSX.Element {
       toasts.apiError(t("errors.logout"), resp)
     }
 
+    clearSocketSessionId()
     localStorage.removeItem("id_token")
     localStorage.removeItem("access_token")
     void navigate({ to: "/login" })

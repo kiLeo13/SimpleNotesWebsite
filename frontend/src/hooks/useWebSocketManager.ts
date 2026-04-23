@@ -1,4 +1,4 @@
-import useWebSocket from "react-use-websocket"
+import useWebSocket, { ReadyState } from "react-use-websocket"
 
 import {
   gatewayMessageSchema,
@@ -9,6 +9,12 @@ import { Permission } from "@/models/Permission"
 import { connectionKillBehaviors } from "@/types/websocket/events"
 import { toasts } from "@/utils/toastUtils"
 import { useEffect, useRef } from "react"
+import { noteService } from "@/services/noteService"
+import {
+  buildSocketUrl,
+  clearSocketSessionId,
+  getOrCreateSocketSessionId
+} from "@/services/socketSession"
 import { useSessionStore } from "@/stores/useSessionStore"
 import { useUsersStore } from "@/stores/useUsersStore"
 import { useNoteStore } from "../stores/useNotesStore"
@@ -16,33 +22,55 @@ import { socketBus } from "@/services/socketBus"
 import { useTranslation } from "react-i18next"
 
 const WS_URL = import.meta.env.VITE_WS_URL
+const PING_INTERVAL_MS = 60_000
 
 export function useWebSocketManager() {
   const { t } = useTranslation()
   const { getIdToken, logout } = useSessionStore()
   const token = getIdToken()
   const isFatal = useRef(false)
+  const shouldResyncOnOpen = useRef(false)
+  const socketSessionId = useRef<string | null>(null)
 
-  const socketUrl = token
-    ? `${WS_URL}?token=${encodeURIComponent(token)}`
-    : null
+  if (token && socketSessionId.current === null) {
+    socketSessionId.current = getOrCreateSocketSessionId()
+  }
 
-  const { lastJsonMessage, readyState } = useWebSocket(socketUrl, {
+  if (!token) {
+    socketSessionId.current = null
+  }
+
+  const socketUrl =
+    token && socketSessionId.current
+      ? buildSocketUrl(WS_URL, token, socketSessionId.current)
+      : null
+
+  const { lastJsonMessage, readyState, sendJsonMessage } = useWebSocket(socketUrl, {
+    share: true,
     shouldReconnect: () => {
       if (isFatal.current || !token) return false
       return true
     },
-    reconnectAttempts: 5,
+    reconnectAttempts: 1000,
     reconnectInterval: 3000,
-    heartbeat: {
-      message: JSON.stringify({ type: "ping" }),
-      returnMessage: JSON.stringify({ type: "ACK" }),
-      timeout: 80_000,
-      interval: 60_000
-    },
     onOpen: () => {
       console.log("[WS] Connected")
       isFatal.current = false
+
+       if (shouldResyncOnOpen.current) {
+        shouldResyncOnOpen.current = false
+        void resyncRealtimeState()
+      }
+    },
+    onClose: (event) => {
+      if (isFatal.current || !token) {
+        return
+      }
+
+      shouldResyncOnOpen.current = true
+      console.warn(
+        `[WS] Closed. Code: ${event.code}. Reason: ${event.reason || "unspecified"}`
+      )
     },
     onError: (e) => console.error("[WS] Error:", e)
   })
@@ -57,6 +85,47 @@ export function useWebSocketManager() {
       }
     }
   }, [lastJsonMessage, logout, t])
+
+  useEffect(() => {
+    if (!token) {
+      return
+    }
+
+    const ping = () => {
+      if (document.visibilityState !== "visible") {
+        return
+      }
+
+      if (readyState !== ReadyState.OPEN) {
+        return
+      }
+
+      sendJsonMessage({ type: "ping" }, false)
+    }
+
+    ping()
+
+    const pingInterval = window.setInterval(ping, PING_INTERVAL_MS)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState !== "visible") {
+        return
+      }
+
+      if (readyState !== ReadyState.OPEN) {
+        shouldResyncOnOpen.current = true
+        return
+      }
+
+      sendJsonMessage({ type: "ping" }, false)
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+
+    return () => {
+      window.clearInterval(pingInterval)
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
+    }
+  }, [readyState, sendJsonMessage, token])
 
   return { readyState }
 }
@@ -88,6 +157,9 @@ function routeServerMessage(
     case serverEvents.UserDeleted.type:
     case serverEvents.PresenceUpdated.type:
       handleUserEvents(msg)
+      break
+
+    case serverEvents.Ack.type:
       break
 
     // System Events
@@ -173,7 +245,7 @@ function handleUserEvents(msg: GatewayMessage) {
 
         // Refetch notes if our own view permissions changed
         if (!selfHasAdmin && permissionChanged) {
-          useNoteStore.getState().reload()
+          void useNoteStore.getState().reload()
         }
 
         setUser(updatedUser)
@@ -242,7 +314,33 @@ function handleSystemEvents(
 // ----------------------------------------
 
 function unmount() {
+  clearSocketSessionId()
   localStorage.removeItem("id_token")
   localStorage.removeItem("access_token")
   window.location.reload()
+}
+
+async function resyncRealtimeState() {
+  const usersStore = useUsersStore.getState()
+  const notesStore = useNoteStore.getState()
+
+  await Promise.allSettled([
+    usersStore.reload(),
+    notesStore.reload()
+  ])
+
+  const { shownNote, renderNote, closeNote } = useNoteStore.getState()
+  if (!shownNote || shownNote.note_type === "REFERENCE") {
+    return
+  }
+
+  const resp = await noteService.fetchNote(shownNote.id)
+  if (!resp.success) {
+    if (resp.statusCode === 404) {
+      closeNote()
+    }
+    return
+  }
+
+  renderNote(resp.data)
 }

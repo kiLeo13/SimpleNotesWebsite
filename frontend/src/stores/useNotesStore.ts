@@ -25,7 +25,7 @@ type NotesState = {
   getNoteById: (noteId: number) => NoteResponseData | null
 
   ensureLoaded: () => Promise<ApiResponse<ListNoteResponseData> | void>
-  reload: () => void
+  reload: () => Promise<void>
 
   openNote: (noteId: number) => Promise<ApiErrorResponse | void>
   renderNote: (note: FullNoteResponseData) => void
@@ -99,7 +99,10 @@ export const useNoteStore = create<NotesState>((set, get) => ({
 
   async reload() {
     const { state } = get()
-    if (state !== "READY") return
+    if (state !== "READY") {
+      await get().ensureLoaded()
+      return
+    }
 
     // Since this function is just a reload function, if something fails
     // we just do nothing... sad day, right?

@@ -11,6 +11,7 @@ type UsersState = {
   _fetchPromise: Promise<void> | null
 
   ensureLoaded: () => Promise<void>
+  reload: () => Promise<void>
 
   addUser: (user: UserResponseData) => void
   updateUser: (user: UserResponseData) => void
@@ -59,6 +60,31 @@ export const useUsersStore = create<UsersState>((set, get) => ({
 
     set({ _fetchPromise: promise })
     return promise
+  },
+
+  async reload() {
+    const { state } = get()
+    if (state !== "READY") {
+      await get().ensureLoaded()
+      return
+    }
+
+    set({ state: "LOADING" })
+
+    try {
+      const resp = await userService.getUsers()
+      if (resp.success) {
+        set({
+          users: resp.data.users,
+          state: "READY"
+        })
+        return
+      }
+    } catch (error) {
+      console.error(error)
+    }
+
+    set({ state: "READY" })
   },
 
   addUser: (user) => {
