@@ -102,100 +102,98 @@ export function UpdateNoteForm({
 
   return (
     <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+      <ModalActionRow>
+        <ModalSection
+          label={
+            <ModalLabel
+              icon={<PiCrownFill color="#ada96dff" />}
+              title={t("updateNoteModal.author")}
+            />
+          }
+          input={
+            <BaseModalTextInput disabled value={author?.username ?? "-"} />
+          }
+        />
+        <ModalSection
+          label={
+            <ModalLabel
+              icon={<FaCalendarAlt color="#8ca1b4ff" />}
+              title={t("updateNoteModal.creationTime")}
+            />
+          }
+          input={
+            <BaseModalTextInput
+              disabled
+              value={getCreation(note?.created_at)}
+            />
+          }
+        />
+      </ModalActionRow>
+
+      <ModalActionRow>
+        <ModalSection
+          label={
+            <ModalLabel
+              icon={<FaEye color="#a085b3ff" />}
+              title={t("updateNoteModal.visibility")}
+            />
+          }
+          input={<ModalSelectInput name="visibility" options={viewOptions} />}
+        />
+        <ModalSection
+          label={
+            <ModalLabel
+              icon={<FaCalendarAlt color="#8ca1b4ff" />}
+              title={t("updateNoteModal.lastUpdate")}
+            />
+          }
+          input={
+            <BaseModalTextInput
+              disabled
+              value={getUpdate(note?.created_at, note?.updated_at)}
+            />
+          }
+        />
+      </ModalActionRow>
+
+      <ModalActionRow>
+        <ModalSection
+          label={<ModalLabel title={t("updateNoteModal.content")} required />}
+          input={<ModalNoteFileView note={note} />}
+        />
+      </ModalActionRow>
+
+      <div className={styles.division} />
+
+      <ModalActionRow>
+        <ModalSection
+          label={<ModalLabel title={t("updateNoteModal.name")} required />}
+          input={<ModalTextInput name="name" />}
+        />
+      </ModalActionRow>
+
+      <ModalActionRow>
+        <ModalSection
+          label={
+            <ModalLabel title={t("updateNoteModal.tags")} required={false} />
+          }
+          input={
+            <ModalArrayInput
+              name="tags"
+              minLength={2}
+              maxLength={30}
+              placeholder={t("updateNoteModal.tagsPlaceholder")}
+            />
+          }
+        />
+      </ModalActionRow>
+
       <ModalFooter
         exists={!!note}
         isDirty={isDirty}
         isValid={isValid}
         isLoading={isLoading}
       />
-
-      <div className={styles.content}>
-        <ModalActionRow>
-          <ModalSection
-            label={
-              <ModalLabel
-                icon={<PiCrownFill color="#ada96dff" />}
-                title={t("updateNoteModal.author")}
-              />
-            }
-            input={
-              <BaseModalTextInput disabled value={author?.username ?? "-"} />
-            }
-          />
-          <ModalSection
-            label={
-              <ModalLabel
-                icon={<FaCalendarAlt color="#8ca1b4ff" />}
-                title={t("updateNoteModal.creationTime")}
-              />
-            }
-            input={
-              <BaseModalTextInput
-                disabled
-                value={getCreation(note?.created_at)}
-              />
-            }
-          />
-        </ModalActionRow>
-
-        <ModalActionRow>
-          <ModalSection
-            label={
-              <ModalLabel
-                icon={<FaEye color="#a085b3ff" />}
-                title={t("updateNoteModal.visibility")}
-              />
-            }
-            input={<ModalSelectInput name="visibility" options={viewOptions} />}
-          />
-          <ModalSection
-            label={
-              <ModalLabel
-                icon={<FaCalendarAlt color="#8ca1b4ff" />}
-                title={t("updateNoteModal.lastUpdate")}
-              />
-            }
-            input={
-              <BaseModalTextInput
-                disabled
-                value={getUpdate(note?.created_at, note?.updated_at)}
-              />
-            }
-          />
-        </ModalActionRow>
-
-        <ModalActionRow>
-          <ModalSection
-            label={<ModalLabel title={t("updateNoteModal.content")} required />}
-            input={<ModalNoteFileView note={note} />}
-          />
-        </ModalActionRow>
-
-        <div className={styles.division} />
-
-        <ModalActionRow>
-          <ModalSection
-            label={<ModalLabel title={t("updateNoteModal.name")} required />}
-            input={<ModalTextInput name="name" />}
-          />
-        </ModalActionRow>
-
-        <ModalActionRow>
-          <ModalSection
-            label={
-              <ModalLabel title={t("updateNoteModal.tags")} required={false} />
-            }
-            input={
-              <ModalArrayInput
-                name="tags"
-                minLength={2}
-                maxLength={30}
-                placeholder={t("updateNoteModal.tagsPlaceholder")}
-              />
-            }
-          />
-        </ModalActionRow>
-      </div>
     </form>
   )
 }

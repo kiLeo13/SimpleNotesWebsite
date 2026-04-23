@@ -2,9 +2,7 @@ import type { JSX } from "react"
 
 import clsx from "clsx"
 
-import { AppTooltip } from "@/components/ui/AppTooltip"
 import { Button } from "@/components/ui/buttons/Button"
-import { LuSave } from "react-icons/lu"
 import { useTranslation } from "react-i18next"
 
 import styles from "./ModalFooter.module.css"
@@ -32,26 +30,18 @@ export function ModalFooter({
   const { t } = useTranslation()
 
   const canSubmit = exists && isDirty && isValid && !isLoading
-  const saveLabel = t("commons.save")
 
   return (
-    <div
-      className={styles.footer}
-      role="toolbar"
-      aria-label={t("updateNoteModal.actions")}
-    >
-      <AppTooltip label={saveLabel} side="right">
-        <Button
-          aria-label={saveLabel}
-          isLoading={isLoading}
-          loaderProps={{ scale: 0.8 }}
-          disabled={!canSubmit}
-          type="submit"
-          className={clsx(styles.button, styles.saveButton)}
-        >
-          <LuSave size={18} aria-hidden="true" />
-        </Button>
-      </AppTooltip>
-    </div>
+    <footer className={styles.footer}>
+      <Button
+        isLoading={isLoading}
+        loaderProps={{ scale: 0.8 }}
+        disabled={!canSubmit}
+        type="submit"
+        className={clsx(styles.button, styles.saveButton)}
+      >
+        {t("commons.save")}
+      </Button>
+    </footer>
   )
 }
