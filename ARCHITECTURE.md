@@ -56,7 +56,7 @@ Important frontend behavior:
   - Board renderers are imported only when the active note needs them.
   - Markdown syntax highlighting styles now load from the markdown renderer path instead of the app root.
 - Realtime updates come through the websocket manager and fan into stores.
-- The websocket client now identifies itself with a stable per-tab `session_id` stored in `sessionStorage`. Reconnects reuse that logical session so brief transport drops do not create duplicate backend sessions for the same tab.
+- The websocket client now identifies itself with a stable per-tab `session_id` stored in `sessionStorage`, and that identifier is generated with Web Crypto APIs instead of non-cryptographic randomness. Reconnects reuse that logical session so brief transport drops do not create duplicate backend sessions for the same tab.
 - Frontend websocket heartbeats are driven only while the document is visible. When a socket reconnects after a temporary drop, the client performs a lightweight users/notes resync before continuing with live events.
 - Note websocket delivery is permission-aware: recipients only receive note events for notes they can currently access. Visibility transitions are translated per recipient, so losing access becomes `NOTE_DELETED`, gaining access becomes `NOTE_CREATED`, and only users who can still see the note receive `NOTE_UPDATED`.
 - Audit logs are surfaced through a permission-gated modal in that sidebar rail, auto-apply frontend filters on change, resolve actor and user-subject names through the users store plus on-demand user fetches, and page through the backend with cursor-style `next_before_id` pagination.
