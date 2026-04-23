@@ -1,104 +1,184 @@
-<img align="right" src="https://github.com/kiLeo13/SimpleNotesWebsite/blob/master/frontend/public/favicon.png?raw=true" height="100" width="100">
+# ZenKeep
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+ZenKeep is a note-taking and internal file-management app built for fast access instead of deep folder archaeology.
+The project lives in a monorepo with a React frontend in `frontend/` and a Go backend in `backend/`.
 
-# ✨ ZenKeep
+The UI is intentionally simple: notes live close at hand, the main workspace stays focused, and realtime updates keep the app feeling alive without turning it into a circus.
 
-ZenKeep is a lightweight, high-performance web application designed to streamline note-taking and file management, inspired by the interface of ChatGPT.
+## What lives here
 
------
+- `frontend/`: React 19 + TypeScript + Vite single-page app
+- `backend/`: Go API with Echo, GORM, SQLite, AWS integrations, and websocket delivery
+- `.github/workflows/`: repository automation, including backend container publishing
+- `AGENTS.md` and `ARCHITECTURE.md`: repo-level guidance and architecture notes
 
-## ❓ The Problem
+## Architecture at a glance
 
-Traditional cloud storage services, while powerful, can become slow when dealing with deeply nested folder structures. This complexity often leads to a decrease in productivity when all you need is quick access to your notes and files.
+ZenKeep is split into a fairly practical setup:
 
-## 💡 The Solution
-
-ZenKeep provides a simple SPA where your notes are immediately accessible from a left-side navigation bar. This design eliminates the need to click through multiple folders, allowing you to create, view, and manage your content easily. While initially built for internal company use to boost productivity, it's designed to be useful for anyone.
-
------
-
-## ⚙ Architecture Overview
-
-The project is built on a cloud-native architecture, primarily leveraging AWS and Cloudflare services.
+- The frontend is a client-rendered SPA.
+- The backend is a Go API that handles auth, notes, files, audit logs, and realtime events.
+- AWS is used for identity, storage, secrets, and websocket infrastructure.
+- Cloudflare Pages is used for frontend hosting.
 
 ### Frontend
 
-  * **Hosting:** The frontend is a **React + TypeScript** Single-Page Application hosted on **Cloudflare Pages**. This provides global content distribution through its CDN for faster access times, DDoS protection, and managed TLS/SSL.
-  * **Deployment:** A CI/CD workflow is automatically triggered by Cloudflare whenever code is pushed to the `master` branch on GitHub.
+The frontend is built with React, TypeScript, Vite, TanStack Router, Zustand, Zod, and Axios.
+It connects to the API over HTTP and opens a websocket connection for presence and note updates.
+
+Important frontend behavior:
+
+- route protection is handled in the router
+- auth state is kept locally in the session store
+- notes can render as markdown, Mermaid diagrams, or file/reference views
+- websocket events are routed into the stores so note and user state stay in sync
 
 ### Backend
 
-  * **Compute:** The API backend is a multitenant application written in **Golang** and runs inside a Docker container on an **AWS EC2** instance.
-  * **API Gateway & Security:** **AWS API Gateway** acts as a reverse proxy. It handles TLS termination (HTTPS), manages authorization and rate-limiting, and securely routes requests to the EC2 instance.
-  * **Authentication:** User authentication is fully managed by **AWS Cognito**, which handles user sign-up, password hashing, email verification, and the generation/validation of JWTs.
-  * **File Storage:** All user-uploaded images and files are stored securely in an **AWS S3** bucket and served globally via the **AWS CloudFront** CDN for low-latency access.
-  * **Secrets Management:** All sensitive credentials, such as API keys and database connection details, are securely stored and encrypted using **AWS Systems Manager (SSM) Parameter Store**.
+The backend is a Go service built around Echo and GORM, with SQLite for persistence.
+It owns the application logic for notes, users, permissions, audit logging, file handling, and realtime delivery.
 
------
+On startup, the backend:
 
-## 🖥 How To Run & Deploy
+1. loads local `.env` values or production values from AWS SSM Parameter Store
+2. initializes SQLite and runs schema migration
+3. wires Cognito, S3 storage, websocket delivery, repositories, services, and handlers
+4. starts background cleanup jobs
+5. serves HTTP traffic on port `7070`
 
-### Local Setup
+### Realtime and AWS WebSocket API
 
-#### Backend (Docker)
+ZenKeep uses an AWS API Gateway WebSocket API for realtime traffic.
+This is one of the more important moving parts in the stack, so it deserves to be called out directly instead of being treated like a mysterious cloud blob.
 
-1.  Clone the repository from GitHub.
-2.  Build the Docker image:
-    ```bash
-    docker build -t zenkeep .
-    ```
+The flow looks like this:
 
-> [!Note]
-> Due to the project's deep integration with AWS services (Cognito, S3, SSM), it will not function correctly out-of-the-box in a local environment without extensive AWS configuration and credential setup.
+1. the frontend opens a websocket connection using `VITE_WS_URL`, sending the Cognito token in the connection query string
+2. API Gateway handles the websocket lifecycle routes: `$connect`, `$disconnect`, and `$default`
+3. those route events are forwarded to the backend endpoints under `/ws/connect`, `/ws/disconnect`, and `/ws/default`
+4. the backend registers and removes connection IDs in SQLite and processes incoming socket messages
+5. when the app needs to push an event back to connected users, the backend uses the AWS API Gateway Management API to post to those saved connection IDs
 
-#### Frontend (React)
+In practice, that powers things like:
 
-1. Navigate to the frontend's directory.
-2. Install dependencies:
-    ```bash
-    npm install
-    ```
-3. Run the local development server:
-    ```bash
-    npm run dev
-    ```
+- note create, update, and delete events
+- presence updates
+- session expiration handling
+- connection kill events such as suspended accounts or idle timeout flows
 
-### Deployment
+There are also AWS Lambda websocket shims in `backend/infrastructure/aws/lambda/` for the infrastructure side of the integration.
 
-The backend deployment is automated using **Docker** and **WatchTower**.
+## AWS services in use
 
-1.  The Golang application is built and pushed as a Docker image to GitHub Container Registry.
-2.  A WatchTower instance running on the EC2 server polls the registry every 5 minutes.
-3.  If a new image is detected, WatchTower automatically pulls the new version and restarts the container with the updated code.
+ZenKeep leans on a small set of AWS services that each have a pretty clear job:
 
------
+- `Cognito`: authentication, signup/login flows, and JWT issuance
+- `S3`: file and attachment storage
+- `CloudFront`: global delivery for stored files
+- `API Gateway`: HTTP edge/proxy behavior and websocket API lifecycle
+- `SSM Parameter Store`: production configuration and secrets
+- `EC2`: backend runtime host for the containerized API
 
-## 🔬 Technology Stack
+## Local development
 
-### Cloud & AWS Services
+Local development is split by package.
+Run frontend commands from `frontend/` and backend commands from `backend/`.
 
-* **Compute:** AWS EC2
-* **Storage:** AWS S3
-* **CDN:** AWS CloudFront, Cloudflare Pages
-* **Networking & API:** AWS API Gateway
-* **Security & Identity:** AWS Cognito, AWS IAM
-* **Configuration & Secrets:** AWS SSM Parameter Store
+### Frontend
 
-### Database
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-* **Database:** **SQLite** (mounted on a Docker bind mount for persistence).
+Useful frontend commands:
 
-### Containerization
+- `npm run build`
+- `npm run lint`
+- `npm run test`
 
-* **Tool:** **Docker**.
+### Backend
 
------
+The backend Go module lives in `backend/`.
+There is also a production-style container setup in `backend/docker-compose.yml`.
 
-## 🤔 Limitations & Security Notes
+If you want to work with the Go app directly:
 
-This project was designed to fit within free-tier cloud service limits. This has led to certain architectural decisions and limitations.
+```bash
+cd backend
+go run ./cmd/api
+```
 
-  * **API Security:** Communication between API Gateway and the EC2 instance is currently over HTTP, as a private VPC link is not used. To mitigate the risk of direct, unauthorized access to the EC2 IP, the API has a **middleware that performs a second layer of JWT validation** using the Cognito signature.
-  * **Content Delivery Security:** A planned improvement is to secure CloudFront-served content. This will be implemented using a **Lambda@Edge** function to validate a user's Cognito token before serving a private file from S3.
-  * **Authorization Tokens:** The application currently uses Cognito `id_token`s for authorization. This will be updated shortly to use properly scoped `access_token`s, in accordance with OAuth 2.0 best practices.
+If you want the production container shape:
+
+```bash
+cd backend
+docker compose up
+```
+
+One honest warning: local backend work is not fully plug-and-play unless the required AWS configuration exists.
+Cognito, S3, SSM, and the websocket gateway are part of the runtime shape, so a bare clone will not magically behave like production just because we believe in it really hard.
+
+## Deployment
+
+### Frontend deployment
+
+The frontend is intended to be built from `frontend/` and deployed independently, currently through Cloudflare Pages.
+
+### Backend deployment
+
+The backend is built into a Docker image from `backend/Dockerfile`.
+Repository automation publishes the backend container when backend files change, and the server-side `docker-compose.yml` is set up to run:
+
+- the `zenkeep` API container
+- `watchtower`, which polls for updated images and restarts the app container when needed
+
+The backend serves on port `7070`.
+
+## Useful things to know
+
+- The repo is a monorepo, but frontend and backend changes should stay scoped unless a contract actually crosses both sides.
+- SQLite is used as the application database and is persisted through a mounted data path in the deployed container setup.
+- Audit logs exist for important actions such as note changes, user management events, and company lookups.
+- The current frontend still sends Cognito `id_token` values for API authorization. That works with the current stack, but it is worth knowing because `access_token` use would be the more standard long-term direction.
+- The websocket connection store matters: if realtime behavior looks haunted, the connection lifecycle is one of the first places worth checking.
+
+## Tech stack
+
+### Frontend
+
+- React 19
+- TypeScript
+- Vite
+- TanStack Router
+- Zustand
+- Zod
+- Axios
+- react-use-websocket
+
+### Backend
+
+- Go 1.24+
+- Echo
+- GORM
+- SQLite
+- AWS SDK for Go v2
+
+### Infrastructure
+
+- AWS Cognito
+- AWS S3
+- AWS CloudFront
+- AWS API Gateway
+- AWS SSM Parameter Store
+- AWS EC2
+- Cloudflare Pages
+- Docker
+
+## Repo docs
+
+If you want the deeper version instead of the README tour:
+
+- `AGENTS.md` explains how to approach the repo without reading the entire planet first
+- `ARCHITECTURE.md` documents the current frontend/backend structure in more detail
