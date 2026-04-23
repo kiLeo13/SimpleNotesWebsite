@@ -224,6 +224,7 @@ func mustSaveConnection(t *testing.T, connRepo *repository.DefaultConnectionRepo
 	t.Helper()
 	if err := connRepo.Save(&entity.Connection{
 		ConnectionID:    connectionID(userID),
+		SessionID:       "session-user-" + strconv.Itoa(userID),
 		UserID:          userID,
 		ExpiresAt:       utils.NowUTC() + 60_000,
 		LastHeartbeatAt: utils.NowUTC(),
