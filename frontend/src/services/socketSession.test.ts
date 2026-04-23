@@ -45,4 +45,37 @@ describe("socketSession", () => {
     expect(parsed.searchParams.get("token")).toBe("token with spaces")
     expect(parsed.searchParams.get("session_id")).toBe("tab-7")
   })
+
+  it("falls back to Web Crypto random values when randomUUID is unavailable", () => {
+    const originalRandomUUID = globalThis.crypto.randomUUID
+    Object.defineProperty(globalThis.crypto, "randomUUID", {
+      configurable: true,
+      value: undefined
+    })
+
+    const getRandomValues = vi
+      .spyOn(globalThis.crypto, "getRandomValues")
+      .mockImplementation((array) => {
+        const view = array as Uint8Array
+        view.set([
+          0x00, 0x11, 0x22, 0x33,
+          0x44, 0x55, 0x66, 0x77,
+          0x88, 0x99, 0xaa, 0xbb,
+          0xcc, 0xdd, 0xee, 0xff
+        ])
+        return array
+      })
+
+    try {
+      const sessionId = getOrCreateSocketSessionId()
+
+      expect(sessionId).toBe("00112233-4455-4677-8899-aabbccddeeff")
+      expect(getRandomValues).toHaveBeenCalledTimes(1)
+    } finally {
+      Object.defineProperty(globalThis.crypto, "randomUUID", {
+        configurable: true,
+        value: originalRandomUUID
+      })
+    }
+  })
 })
