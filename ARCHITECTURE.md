@@ -56,6 +56,8 @@ Important frontend behavior:
   - Board renderers are imported only when the active note needs them.
   - Markdown syntax highlighting styles now load from the markdown renderer path instead of the app root.
 - Realtime updates come through the websocket manager and fan into stores.
+- The websocket client now identifies itself with a stable per-tab `session_id` stored in `sessionStorage`. Reconnects reuse that logical session so brief transport drops do not create duplicate backend sessions for the same tab.
+- Frontend websocket heartbeats are driven only while the document is visible. When a socket reconnects after a temporary drop, the client performs a lightweight users/notes resync before continuing with live events.
 - Note websocket delivery is permission-aware: recipients only receive note events for notes they can currently access. Visibility transitions are translated per recipient, so losing access becomes `NOTE_DELETED`, gaining access becomes `NOTE_CREATED`, and only users who can still see the note receive `NOTE_UPDATED`.
 - Audit logs are surfaced through a permission-gated modal in that sidebar rail, auto-apply frontend filters on change, resolve actor and user-subject names through the users store plus on-demand user fetches, and page through the backend with cursor-style `next_before_id` pagination.
 - Frontend audit event metadata is owned by `frontend/src/components/modals/global/audit/AuditLogEvent.ts`, while `frontend/src/components/modals/global/audit/auditPresentation.ts` formats UI copy from that registry. Each supported audit event declares whether the UI should allow row expansion through an `expands` flag.
@@ -127,6 +129,15 @@ Persisted entities include:
 The audit system stores one parent event with zero or more child change rows.
 Event IDs are application-generated `SonyFlake` `int64` values anchored at `2025-01-01T00:00:00Z`, then serialized as strings in API responses to avoid JavaScript precision issues.
 
+The `connections` table now models logical websocket sessions, not only raw API Gateway transport IDs. Each row stores:
+
+- the current API Gateway `connection_id`
+- a stable frontend-provided `session_id`
+- heartbeat timestamps for active transports
+- disconnect/grace timestamps for temporarily resumable sessions
+
+This allows the backend to keep a session logically online for a short reconnect window while still preventing duplicate active transports for the same browser tab.
+
 Current audit coverage includes:
 
 - note create, update, and delete
@@ -146,6 +157,7 @@ That creates a few important cross-project seams:
 - audit log contracts and permission bit offsets must stay aligned between frontend `types/models` and backend `contract/entity` layers
 - websocket event shapes must stay aligned between backend event emitters and frontend event schemas
 - file and reference note handling depends on both backend storage behavior and frontend renderer support
+- websocket reconnect semantics span both sides: the frontend must reconnect with the same `session_id`, and the backend must replace old transports for that session instead of stacking rows
 
 When a change crosses one of those seams, validate both sides instead of trusting the universe to be kind for once.
 
