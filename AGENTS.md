@@ -304,6 +304,7 @@ Do not copy environment values into docs or comments unless explicitly needed.
 - Backend websocket events can mutate frontend-visible state through the websocket pipeline, so frontend and backend changes around realtime need to be checked together.
 - Websocket presence is now tied to a logical per-tab `session_id` with a reconnect grace window, not just the raw API Gateway `connection_id`. Temporary disconnects should resume the same session instead of creating duplicate active connections.
 - The frontend only sends websocket pings while the tab is visible. Hidden-tab reconnect behavior is expected to rely on session resumption plus a post-reconnect state resync rather than nonstop background heartbeats.
+- The websocket connect path is intentionally strict: the frontend must provide `session_id`, the `$connect` shim must forward it as `X-Session-Id`, and the backend should reject connects that omit it rather than silently downgrading to transport-only sessions.
 
 ## Workflow Notes
 

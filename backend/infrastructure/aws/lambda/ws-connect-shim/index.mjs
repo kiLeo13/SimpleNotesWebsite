@@ -3,6 +3,16 @@ export const handler = async (event) => {
     const connectionId = event.requestContext.connectionId
     const token = (event.queryStringParameters || {}).token || ""
     const sessionId = (event.queryStringParameters || {}).session_id || ""
+
+    if (!sessionId) {
+        return {
+            statusCode: 400,
+            body: JSON.stringify({
+                message: "session_id is required"
+            })
+        }
+    }
+
     const headers = {
         "Content-Type": "application/json",
         "X-Connection-Id": connectionId,
