@@ -38,7 +38,7 @@ func (h *DefaultWSRoute) HandleConnect(c echo.Context) error {
 
 	sessionID := c.Request().Header.Get(websocket.HeaderSessionID)
 	if sessionID == "" {
-		return c.JSON(http.StatusBadRequest, apierror.NewMissingParamError("sessionId"))
+		sessionID = connID
 	}
 
 	token, err := utils.ParseTokenDataCtx(c)
