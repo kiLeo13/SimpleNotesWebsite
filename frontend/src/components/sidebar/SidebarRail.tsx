@@ -23,6 +23,7 @@ import { LoaderContainer } from "@/components/LoaderContainer"
 import { Permission } from "@/models/Permission"
 import { clearSocketSessionId } from "@/services/socketSession"
 import { createAsyncComponent } from "@/utils/createAsyncComponent"
+import { useRetainedModalValue } from "@/hooks/useModalPresence"
 import { useTranslation } from "react-i18next"
 import { usePermission } from "@/hooks/usePermission"
 import { userService } from "@/services/userService"
@@ -75,6 +76,8 @@ export function SidebarRail(): JSX.Element {
   const [lookingUp, setLookingUp] = useState(false)
 
   const closeEditor = () => setEditorMode(null)
+  const { renderedValue: renderedEditorMode } =
+    useRetainedModalValue(editorMode)
 
   const handleSignout = async () => {
     const accessToken = localStorage.getItem("access_token")
@@ -104,51 +107,63 @@ export function SidebarRail(): JSX.Element {
 
   return (
     <>
-      {showUploadModal && (
-        <DarkWrapper open={showUploadModal} onOpenChange={setShowUploadModal}>
-          <CreateNoteModalForm
-            loadingFallback={modalLoaderFallback}
-            setShowUploadModal={setShowUploadModal}
-          />
-        </DarkWrapper>
-      )}
+      <DarkWrapper
+        open={showUploadModal}
+        onOpenChange={setShowUploadModal}
+        animationPreset="pop"
+      >
+        <CreateNoteModalForm
+          loadingFallback={modalLoaderFallback}
+          setShowUploadModal={setShowUploadModal}
+        />
+      </DarkWrapper>
 
-      {editorMode && (
-        <DarkWrapper open={!!editorMode} onOpenChange={closeEditor}>
+      <DarkWrapper
+        open={!!editorMode}
+        onOpenChange={(open) => !open && closeEditor()}
+        animationPreset="slide-up"
+      >
+        {renderedEditorMode && (
           <CreateEditorModal
             loadingFallback={modalLoaderFallback}
-            mode={editorMode}
+            mode={renderedEditorMode}
             onClose={closeEditor}
           />
-        </DarkWrapper>
-      )}
+        )}
+      </DarkWrapper>
 
-      {showAlgoCalc && (
-        <DarkWrapper open={showAlgoCalc} onOpenChange={setShowAlgoCalc}>
-          <AlgorithmCalculator
-            loadingFallback={modalLoaderFallback}
-            setShowAlgoCalc={setShowAlgoCalc}
-          />
-        </DarkWrapper>
-      )}
+      <DarkWrapper
+        open={showAlgoCalc}
+        onOpenChange={setShowAlgoCalc}
+        animationPreset="slide-up"
+      >
+        <AlgorithmCalculator
+          loadingFallback={modalLoaderFallback}
+          setShowAlgoCalc={setShowAlgoCalc}
+        />
+      </DarkWrapper>
 
-      {showAuditLogs && (
-        <DarkWrapper open={showAuditLogs} onOpenChange={setShowAuditLogs}>
-          <AuditLogsModal
-            loadingFallback={modalLoaderFallback}
-            setShowAuditLogs={setShowAuditLogs}
-          />
-        </DarkWrapper>
-      )}
+      <DarkWrapper
+        open={showAuditLogs}
+        onOpenChange={setShowAuditLogs}
+        animationPreset="slide-up"
+      >
+        <AuditLogsModal
+          loadingFallback={modalLoaderFallback}
+          setShowAuditLogs={setShowAuditLogs}
+        />
+      </DarkWrapper>
 
-      {lookingUp && (
-        <DarkWrapper open={lookingUp} onOpenChange={setLookingUp}>
-          <CompanyLookupModal
-            loadingFallback={modalLoaderFallback}
-            setLookingUp={setLookingUp}
-          />
-        </DarkWrapper>
-      )}
+      <DarkWrapper
+        open={lookingUp}
+        onOpenChange={setLookingUp}
+        animationPreset="pop"
+      >
+        <CompanyLookupModal
+          loadingFallback={modalLoaderFallback}
+          setLookingUp={setLookingUp}
+        />
+      </DarkWrapper>
 
       <aside className={styles.rail}>
         <div className={styles.topActions}>

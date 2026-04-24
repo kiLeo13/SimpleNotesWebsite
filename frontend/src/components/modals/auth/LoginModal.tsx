@@ -47,7 +47,11 @@ export function LoginModal(): JSX.Element {
 
   return (
     <>
-      <DarkWrapper open={showWarn}>
+      <DarkWrapper
+        open={showWarn}
+        onOpenChange={setShowWarn}
+        animationPreset="pop"
+      >
         <AlreadyAuthWarn setShowWarn={setShowWarn} />
       </DarkWrapper>
 

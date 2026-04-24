@@ -13,6 +13,7 @@ import { AppTooltip } from "@/components/ui/AppTooltip"
 import { SuspendUserModal } from "./SuspendUserModal"
 import { DeleteUserModal } from "./DeleteUserModal"
 import { UserPermissionsSubMenu } from "./UserPermissionsSubMenu"
+import { useRetainedModalValue } from "@/hooks/useModalPresence"
 import { usePermission } from "@/hooks/usePermission"
 import { useSessionStore } from "@/stores/useSessionStore"
 import { useTranslation } from "react-i18next"
@@ -40,14 +41,21 @@ export function UserActions({ user }: UserActionsProps): JSX.Element | null {
     !Permission.hasEffective(user.permissions, Permission.Administrator)
 
   const handleCloseModal = () => setActiveModal("NONE")
+  const activeConfirmModal = activeModal === "NONE" ? null : activeModal
+  const { renderedValue: renderedConfirmModal } =
+    useRetainedModalValue(activeConfirmModal)
 
   return (
     <div className={styles.userActions}>
-      <DarkWrapper open={activeModal !== "NONE"} zIndex={50}>
-        {activeModal === "SUSPEND" && (
+      <DarkWrapper
+        open={activeModal !== "NONE"}
+        zIndex={50}
+        animationPreset="pop"
+      >
+        {renderedConfirmModal === "SUSPEND" && (
           <SuspendUserModal user={user} onClose={handleCloseModal} />
         )}
-        {activeModal === "DELETE" && (
+        {renderedConfirmModal === "DELETE" && (
           <DeleteUserModal user={user} onClose={handleCloseModal} />
         )}
       </DarkWrapper>

@@ -144,11 +144,19 @@ export function SidebarNote({ note, onClick }: SidebarNoteProps): JSX.Element {
         </AppTooltip>
       </ActionMenu>
 
-      <DarkWrapper open={isPatching} onOpenChange={setIsPatching}>
+      <DarkWrapper
+        open={isPatching}
+        onOpenChange={setIsPatching}
+        animationPreset="pop"
+      >
         <UpdateNoteModal noteId={note.id} setIsPatching={setIsPatching} />
       </DarkWrapper>
 
-      <DarkWrapper open={isDeleting} onOpenChange={setIsDeleting}>
+      <DarkWrapper
+        open={isDeleting}
+        onOpenChange={setIsDeleting}
+        animationPreset="pop"
+      >
         <ConfirmModal
           title={t("modals.delNote.title")}
           description={t("modals.delNote.subtitle")}

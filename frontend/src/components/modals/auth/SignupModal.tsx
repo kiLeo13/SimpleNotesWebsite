@@ -86,7 +86,7 @@ export function SignupModal(): JSX.Element {
   return (
     <>
       {isEmailVerifying && (
-        <DarkWrapper>
+        <DarkWrapper animationPreset="pop">
           <VerificationModal
             email={getValues("email")}
             password={getValues("password")}
