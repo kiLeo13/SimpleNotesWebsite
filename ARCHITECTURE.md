@@ -55,6 +55,8 @@ Important frontend behavior:
   - Sidebar utility modals are imported only when opened.
   - Board renderers are imported only when the active note needs them.
   - Markdown syntax highlighting styles now load from the markdown renderer path instead of the app root.
+- Modal entrance and exit motion is centralized in `frontend/src/components/DarkWrapper.tsx` and `DarkWrapper.module.css`.
+  Modal bodies should keep layout and visual styling only, while callers choose the shared `pop` or `slide-up` animation preset on the wrapper.
 - Realtime updates come through the websocket manager and fan into stores.
 - The websocket client now identifies itself with a stable per-tab `session_id` stored in `sessionStorage`, and that identifier is generated with Web Crypto APIs instead of non-cryptographic randomness. Reconnects reuse that logical session so brief transport drops do not create duplicate backend sessions for the same tab.
 - The `$connect` Lambda shim must forward that `session_id` as `X-Session-Id` to the Go API. The backend intentionally rejects connect requests that do not provide it, so frontend and connect-shim deployments need to stay in lockstep.

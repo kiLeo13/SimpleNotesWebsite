@@ -97,6 +97,7 @@ That sequence usually gives enough context without spelunking the whole repo lik
   - Initializes websocket manager.
   - Loads current user.
   - Renders the resizable notes sidebar + content board layout.
+- `frontend/src/components/DarkWrapper.tsx`: shared Radix dialog wrapper for modal overlay, focus trap, and modal open/close animation presets.
 - `frontend/src/components/sidebar/Sidebar.tsx`: note search, note list, sidebar reload shortcuts.
 - `frontend/src/components/sidebar/SidebarRail.tsx`: fixed left utility rail for note creation, utility modals, user management, and settings. Heavy modal bodies are loaded on demand.
 - `frontend/src/components/board/ContentBoard.tsx`: dispatches note rendering by note type/file extension. Renderer frames are loaded on demand.
@@ -299,6 +300,7 @@ Do not copy environment values into docs or comments unless explicitly needed.
 - Company lookup audit events are recorded for both hits and misses, with `found` and `cache_hit` change rows describing the outcome.
 - `frontend/src/stores/useNotesStore.ts` treats `REFERENCE` notes differently from text notes.
 - Sidebar utility modals and board renderer frames are lazy-loaded with plain `import()` helpers so the app shell does not eagerly pull the whole circus into the entry bundle.
+- Shared modal opening and closing animations belong in `frontend/src/components/DarkWrapper.module.css`; modal CSS modules should not duplicate `smoothToggleModal` keyframes.
 - Backend startup loads config, initializes SQLite, wires AWS-backed dependencies, starts background jobs, and serves Echo on port `7070`.
 - Backend audit log reads are protected by `PermissionReadAuditLogs`; admins still inherit access through effective permission checks.
 - Backend websocket events can mutate frontend-visible state through the websocket pipeline, so frontend and backend changes around realtime need to be checked together.
