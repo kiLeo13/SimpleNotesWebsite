@@ -4,8 +4,11 @@ import * as Dialog from "@radix-ui/react-dialog"
 import clsx from "clsx"
 
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
+import { useDelayedUnmount } from "@/hooks/useModalPresence"
 
 import styles from "./DarkWrapper.module.css"
+
+export type ModalAnimationPreset = "none" | "pop" | "slide-up"
 
 type DarkWrapperProps = {
   children: React.ReactNode
@@ -14,6 +17,7 @@ type DarkWrapperProps = {
   onOpenChange?: (open: boolean) => void
   zIndex?: number
   isolateEvents?: boolean
+  animationPreset?: ModalAnimationPreset
 }
 
 export function DarkWrapper({
@@ -22,18 +26,29 @@ export function DarkWrapper({
   open,
   onOpenChange,
   zIndex = 40,
-  isolateEvents = true
+  isolateEvents = true,
+  animationPreset = "none"
 }: DarkWrapperProps) {
+  const isOpen = open ?? true
+  const delayedShouldRender = useDelayedUnmount(isOpen)
+  const shouldRender = animationPreset === "none" ? isOpen : delayedShouldRender
+
   const handleEventBubbling = (e: React.SyntheticEvent) => {
     if (isolateEvents) {
       e.stopPropagation()
     }
   }
 
+  if (!shouldRender) {
+    return null
+  }
+
   return (
-    <Dialog.Root open={open ?? true} onOpenChange={onOpenChange}>
-      <Dialog.Portal>
+    <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
+      <Dialog.Portal forceMount>
         <Dialog.Overlay
+          forceMount
+          data-animation-preset={animationPreset}
           className={styles.overlay}
           style={{ zIndex: zIndex }}
           onClick={handleEventBubbling}
@@ -41,6 +56,8 @@ export function DarkWrapper({
         />
 
         <Dialog.Content
+          forceMount
+          data-animation-preset={animationPreset}
           className={clsx(styles.content, className)}
           style={{ zIndex: zIndex + 1 }}
           onClick={handleEventBubbling}
