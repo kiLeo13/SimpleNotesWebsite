@@ -288,7 +288,6 @@ function handleSystemEvents(
 
       if (code === "IDLE_TIMEOUT") {
         console.log("[WS] Idle timeout. Preparing to auto-reconnect...")
-        toasts.warning(t("warnings.reconnectingIdle"))
         return
       }
 
