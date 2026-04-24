@@ -117,26 +117,6 @@ func TestRegisterConnectionReplacesPreviousTransportForSameSession(t *testing.T)
 	}
 }
 
-func TestRegisterConnectionFallsBackToConnectionIDWhenSessionIDMissing(t *testing.T) {
-	wsSvc, connRepo, _ := newWebSocketTestService(t)
-	exp := time.Now().Add(time.Hour).Unix()
-
-	if apierr := wsSvc.RegisterConnection(7, "", "conn-a", exp); apierr != nil {
-		t.Fatalf("register connection without session id: %#v", apierr)
-	}
-
-	conn, err := connRepo.FindBySessionID("conn-a")
-	if err != nil {
-		t.Fatalf("find fallback session: %v", err)
-	}
-	if conn == nil {
-		t.Fatal("expected fallback session row to exist")
-	}
-	if conn.ConnectionID != "conn-a" {
-		t.Fatalf("expected fallback session to track conn-a, got %s", conn.ConnectionID)
-	}
-}
-
 func TestRemoveConnectionMarksSessionDisconnectedButKeepsUserOnlineDuringGrace(t *testing.T) {
 	wsSvc, connRepo, gateway := newWebSocketTestService(t)
 	exp := time.Now().Add(time.Hour).Unix()

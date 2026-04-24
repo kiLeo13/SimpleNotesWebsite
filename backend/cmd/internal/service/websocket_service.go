@@ -43,10 +43,6 @@ func NewWebSocketService(repo ConnectionRepository, gateway websocket.GatewayCli
 }
 
 func (s *WebSocketService) RegisterConnection(userID int, sessionID string, connectionID string, exp int64) apierror.ErrorResponse {
-	if sessionID == "" {
-		sessionID = connectionID
-	}
-
 	now := utils.NowUTC()
 	wasOnline, _ := s.ConnRepo.IsOnline(userID, now)
 
