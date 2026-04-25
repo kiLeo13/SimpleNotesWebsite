@@ -1,10 +1,15 @@
 import type { GatewayMessage } from "@/models/events/GatewayEvent"
 import type { FullNoteResponseData, NoteResponseData } from "@/types/api/notes"
 import type { UserResponseData } from "@/types/api/users"
-import { beforeEach, describe, expect, it } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { handleNoteEvents } from "./useWebSocketManager"
+import {
+  handleNoteEvents,
+  shouldApplyGatewayMessage
+} from "./websocketMessageHandlers"
 import { serverEvents } from "@/models/events/GatewayEvent"
+import { noteService } from "@/services/noteService"
+import { setLastSocketEventId } from "@/services/socketSession"
 import { useNoteStore } from "@/stores/useNotesStore"
 import { useSessionStore } from "@/stores/useSessionStore"
 
@@ -26,6 +31,7 @@ type FullMarkdownNote = MarkdownNote & {
 
 describe("handleNoteEvents", () => {
   beforeEach(() => {
+    window.sessionStorage.clear()
     useNoteStore.setState({
       notes: [],
       state: "READY",
@@ -37,10 +43,11 @@ describe("handleNoteEvents", () => {
     useSessionStore.setState({
       user: makeUser(0)
     })
+    vi.restoreAllMocks()
   })
 
   it("ignores private create events for users without hidden-note access", () => {
-    handleNoteEvents(
+    void handleNoteEvents(
       makeMessage(serverEvents.NoteCreated.type, makeNote({ visibility: "PRIVATE" }))
     )
 
@@ -53,7 +60,7 @@ describe("handleNoteEvents", () => {
       shownNote: makeFullNote()
     })
 
-    handleNoteEvents(
+    void handleNoteEvents(
       makeMessage(serverEvents.NoteUpdated.type, makeNote({ visibility: "PRIVATE" }))
     )
 
@@ -66,20 +73,74 @@ describe("handleNoteEvents", () => {
       user: makeUser(1 << 4)
     })
 
-    handleNoteEvents(
+    void handleNoteEvents(
       makeMessage(serverEvents.NoteCreated.type, makeNote({ visibility: "PRIVATE" }))
     )
 
     expect(useNoteStore.getState().notes).toHaveLength(1)
     expect(useNoteStore.getState().notes[0]?.visibility).toBe("PRIVATE")
   })
+
+  it("refreshes the currently open text note when a newer update arrives", async () => {
+    const updatedFullNote = makeFullNote({
+      updated_at: "2026-04-21T11:00:00.000Z",
+      content: "# refreshed"
+    })
+
+    useNoteStore.setState({
+      notes: [makeNote()],
+      shownNote: makeFullNote()
+    })
+    vi.spyOn(noteService, "fetchNote").mockResolvedValue({
+      success: true,
+      statusCode: 200,
+      data: updatedFullNote
+    })
+
+    await handleNoteEvents(
+      makeMessage(
+        serverEvents.NoteUpdated.type,
+        makeNote({ updated_at: "2026-04-21T11:00:00.000Z" })
+      )
+    )
+
+    expect(noteService.fetchNote).toHaveBeenCalledWith("42")
+    expect(useNoteStore.getState().shownNote?.content).toBe("# refreshed")
+  })
+})
+
+describe("shouldApplyGatewayMessage", () => {
+  beforeEach(() => {
+    window.sessionStorage.clear()
+  })
+
+  it("ignores replayable events that are not newer than the stored cursor", () => {
+    setLastSocketEventId("10")
+
+    expect(
+      shouldApplyGatewayMessage(
+        makeMessage(serverEvents.NoteDeleted.type, { id: "42" }, "10")
+      )
+    ).toBe(false)
+    expect(
+      shouldApplyGatewayMessage(
+        makeMessage(serverEvents.NoteDeleted.type, { id: "42" }, "9")
+      )
+    ).toBe(false)
+    expect(
+      shouldApplyGatewayMessage(
+        makeMessage(serverEvents.NoteDeleted.type, { id: "42" }, "11")
+      )
+    ).toBe(true)
+  })
 })
 
 function makeMessage(
   type: GatewayMessage["type"],
-  data: NoteResponseData
+  data: GatewayMessage["data"],
+  eventId?: string
 ): GatewayMessage {
-  return { type, data } as GatewayMessage
+  return { type, data, event_id: eventId } as GatewayMessage
 }
 
 function makeUser(permissions: number): UserResponseData {
