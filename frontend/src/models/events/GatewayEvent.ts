@@ -3,7 +3,8 @@ import { z } from "zod"
 import { createEvent } from "./eventFactory"
 import {
   connectionKillSchema,
-  presenceUpdatedEventSchema
+  presenceUpdatedEventSchema,
+  resyncRequiredSchema
 } from "@/types/websocket/events"
 import { noteBaseSchema, noteResponseSchema } from "@/types/api/notes"
 import { userResponseSchema } from "@/types/api/users"
@@ -13,6 +14,7 @@ const eventRegistry = {
   Ping: createEvent("ping", z.unknown()),
   Ack: createEvent("ACK", z.unknown()),
   SessionExpired: createEvent("SESSION_EXPIRED", z.unknown()),
+  ResyncRequired: createEvent("RESYNC_REQUIRED", resyncRequiredSchema),
   ConnectionKill: createEvent("CONNECTION_KILL", connectionKillSchema),
 
   // Notes
@@ -33,7 +35,8 @@ export interface EventDefinition<S extends z.ZodTypeAny> {
   schema: S
 }
 
-type AllEnvelopes = (typeof eventRegistry)[keyof typeof eventRegistry]["envelope"]
+type AllEnvelopes =
+  (typeof eventRegistry)[keyof typeof eventRegistry]["envelope"]
 
 const schemas = Object.values(eventRegistry).map((e) => e.envelope) as [
   AllEnvelopes,

@@ -2,7 +2,9 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import {
   buildSocketUrl,
+  clearLastSocketEventId,
   clearSocketSessionId,
+  getLastSocketEventId,
   getOrCreateSocketSessionId
 } from "./socketSession"
 
@@ -39,11 +41,27 @@ describe("socketSession", () => {
   })
 
   it("builds a websocket url with auth and session parameters", () => {
-    const url = buildSocketUrl("wss://example.com/ws", "token with spaces", "tab-7")
+    const url = buildSocketUrl(
+      "wss://example.com/ws",
+      "token with spaces",
+      "tab-7",
+      "42"
+    )
     const parsed = new URL(url)
 
     expect(parsed.searchParams.get("token")).toBe("token with spaces")
     expect(parsed.searchParams.get("session_id")).toBe("tab-7")
+    expect(parsed.searchParams.get("last_event_id")).toBe("42")
+  })
+
+  it("stores and clears the last received socket event id", () => {
+    expect(getLastSocketEventId()).toBeNull()
+
+    window.sessionStorage.setItem("zenkeep.ws.last_event_id", "77")
+    expect(getLastSocketEventId()).toBe("77")
+
+    clearLastSocketEventId()
+    expect(getLastSocketEventId()).toBeNull()
   })
 
   it("falls back to Web Crypto random values when randomUUID is unavailable", () => {

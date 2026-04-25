@@ -3,7 +3,11 @@ import { z } from "zod"
 export interface GatewayEventDefinition<T extends string, S extends z.ZodTypeAny> {
   type: T
   schema: S
-  envelope: z.ZodObject<{ type: z.ZodLiteral<T>; data: S }>
+  envelope: z.ZodObject<{
+    type: z.ZodLiteral<T>
+    data: S
+    event_id: z.ZodOptional<z.ZodString>
+  }>
 }
 
 export function createEvent<T extends string, S extends z.ZodTypeAny>(
@@ -15,7 +19,8 @@ export function createEvent<T extends string, S extends z.ZodTypeAny>(
     schema,
     envelope: z.object({
       type: z.literal(type),
-      data: schema
+      data: schema,
+      event_id: z.string().optional()
     })
   }
 }
