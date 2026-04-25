@@ -9,6 +9,7 @@ import (
 	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
 
+	"zenkeep/cmd/internal/contract"
 	"zenkeep/cmd/internal/domain/entity"
 	"zenkeep/cmd/internal/domain/sqlite/repository"
 	"zenkeep/cmd/internal/service"
@@ -31,8 +32,9 @@ func (g *cleanerGatewaySpy) DeleteConnection(_ context.Context, connID string) e
 func TestCleanupMarksIdleConnectionsAsDisconnectedBeforeGraceExpiry(t *testing.T) {
 	db := newCleanerTestDB(t)
 	connRepo := repository.NewConnectionRepository(db)
+	deliveryRepo := repository.NewSocketDeliveryRepository(db)
 	gateway := &cleanerGatewaySpy{}
-	wsService := service.NewWebSocketService(connRepo, gateway)
+	wsService := service.NewWebSocketService(connRepo, deliveryRepo, gateway)
 	cleaner := NewConnectionCleaner(wsService)
 
 	now := utils.NowUTC()
@@ -74,6 +76,42 @@ func TestCleanupMarksIdleConnectionsAsDisconnectedBeforeGraceExpiry(t *testing.T
 	}
 }
 
+func TestCleanupPrunesExpiredReplayDeliveries(t *testing.T) {
+	db := newCleanerTestDB(t)
+	connRepo := repository.NewConnectionRepository(db)
+	deliveryRepo := repository.NewSocketDeliveryRepository(db)
+	wsService := service.NewWebSocketService(connRepo, deliveryRepo, &cleanerGatewaySpy{})
+	cleaner := NewConnectionCleaner(wsService)
+
+	now := utils.NowUTC()
+	if err := deliveryRepo.Create(&entity.SocketDelivery{
+		UserID:      7,
+		EventType:   contract.EventNoteDeleted,
+		PayloadJSON: `{"id":"41"}`,
+		CreatedAt:   now - entity.ReplayRetentionMillis - 1,
+	}); err != nil {
+		t.Fatalf("create expired delivery: %v", err)
+	}
+	if err := deliveryRepo.Create(&entity.SocketDelivery{
+		UserID:      7,
+		EventType:   contract.EventNoteDeleted,
+		PayloadJSON: `{"id":"42"}`,
+		CreatedAt:   now,
+	}); err != nil {
+		t.Fatalf("create retained delivery: %v", err)
+	}
+
+	cleaner.cleanup()
+
+	oldestEventID, err := deliveryRepo.FindOldestEventID(7)
+	if err != nil {
+		t.Fatalf("find oldest delivery: %v", err)
+	}
+	if oldestEventID == nil || *oldestEventID <= 1 {
+		t.Fatalf("expected expired replay rows to be pruned, oldest=%v", oldestEventID)
+	}
+}
+
 func newCleanerTestDB(t *testing.T) *gorm.DB {
 	t.Helper()
 
@@ -89,6 +127,7 @@ func newCleanerTestDB(t *testing.T) *gorm.DB {
 		&entity.Note{},
 		&entity.User{},
 		&entity.Connection{},
+		&entity.SocketDelivery{},
 		&entity.Company{},
 		&entity.CompanyPartner{},
 	); err != nil {

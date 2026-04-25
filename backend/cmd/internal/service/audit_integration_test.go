@@ -73,7 +73,7 @@ func TestNoteUpdateAuditGroupsMultipleFieldChanges(t *testing.T) {
 	userRepo := repository.NewUserRepository(db)
 	noteRepo := repository.NewNoteRepository(db)
 	connRepo := repository.NewConnectionRepository(db)
-	wsSvc := NewWebSocketService(connRepo, noopGateway{})
+	wsSvc := NewWebSocketService(connRepo, repository.NewSocketDeliveryRepository(db), noopGateway{})
 	noteSvc := NewNoteService(db, noteRepo, userRepo, wsSvc, noopS3{}, validate, auditSvc, policy.NewNotePolicy(), &sequenceAuditIDGenerator{next: 9000})
 
 	actor := &entity.User{
@@ -160,7 +160,7 @@ func TestDeleteUserCreatesAuditEvent(t *testing.T) {
 	auditSvc := newTestAuditService(t, db, 2000)
 	userRepo := repository.NewUserRepository(db)
 	connRepo := repository.NewConnectionRepository(db)
-	wsSvc := NewWebSocketService(connRepo, noopGateway{})
+	wsSvc := NewWebSocketService(connRepo, repository.NewSocketDeliveryRepository(db), noopGateway{})
 	userSvc := NewUserService(db, userRepo, newTestValidator(), wsSvc, fakeCognitoClient{}, auditSvc, policy.NewUserPolicy(), &sequenceAuditIDGenerator{next: 9000})
 
 	actor := &entity.User{
@@ -436,6 +436,7 @@ func newTestDB(t *testing.T) *gorm.DB {
 		&entity.Note{},
 		&entity.User{},
 		&entity.Connection{},
+		&entity.SocketDelivery{},
 		&entity.Company{},
 		&entity.CompanyPartner{},
 	); err != nil {

@@ -166,7 +166,7 @@ func newNoteVisibilityTestService(t *testing.T) (*NoteService, *captureGateway, 
 	userRepo := repository.NewUserRepository(db)
 	connRepo := repository.NewConnectionRepository(db)
 	gateway := &captureGateway{}
-	wsSvc := NewWebSocketService(connRepo, gateway)
+	wsSvc := NewWebSocketService(connRepo, repository.NewSocketDeliveryRepository(db), gateway)
 
 	noteSvc := NewNoteService(
 		db,
