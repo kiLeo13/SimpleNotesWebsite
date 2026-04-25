@@ -1,14 +1,13 @@
 .button {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 9999px;
   border: none;
   overflow: hidden;
   font-size: 1em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   cursor: pointer;
-  opacity: 1;
   transition:
     opacity 300ms,
     background-color 300ms;
