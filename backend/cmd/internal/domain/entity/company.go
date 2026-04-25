@@ -36,7 +36,7 @@ type Company struct {
 	// - false: The CNPJ was queried, returned a 404, and is safely cached as invalid.
 	//
 	// This prevents repeated API calls for CNPJs that we already know do not exist.
-	Found    bool  `gorm:"default:true"`
+	Found    bool
 	CachedAt int64 `gorm:"autoUpdateTime:false"`
 
 	// Relationships

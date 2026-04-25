@@ -136,7 +136,9 @@ func (u *MiscService) cacheNegativeResult(cnpj string) {
 		CNPJ:  cnpj,
 		Found: false,
 	}
-	_ = u.CompanyRepo.Save(emptyCompany)
+	if err := u.CompanyRepo.Save(emptyCompany); err != nil {
+		log.Errorf("failed to save negative company cache for CNPJ %s: %v", cnpj, err)
+	}
 }
 
 func (u *MiscService) assignCompanyPartnerIDs(company *entity.Company) error {

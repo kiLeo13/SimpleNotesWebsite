@@ -54,9 +54,11 @@ func (fakeCognitoClient) AdminDeleteUser(string) error                         {
 type fakeLookupClient struct {
 	company *entity.Company
 	err     error
+	calls   int
 }
 
 func (f *fakeLookupClient) GetByCNPJ(context.Context, string) (*entity.Company, error) {
+	f.calls++
 	if f.err != nil {
 		return nil, f.err
 	}
@@ -340,6 +342,89 @@ func TestGetCompanyByCNPJNotFoundStillCreatesAuditEvent(t *testing.T) {
 	}
 	if changesByField["cache_hit"] == nil || changesByField["cache_hit"].NewValue == nil || *changesByField["cache_hit"].NewValue != "false" {
 		t.Fatalf("expected cache_hit=false change, got %+v", changesByField["cache_hit"])
+	}
+}
+
+func TestGetCompanyByCNPJNotFoundCacheReturnsNotFoundAgain(t *testing.T) {
+	db := newTestDB(t)
+
+	auditRepo := repository.NewAuditRepository(db)
+	auditSvc := newTestAuditService(t, db, 3600)
+	companyRepo := repository.NewCompanyRepository(db)
+	userRepo := repository.NewUserRepository(db)
+	lookupClient := &fakeLookupClient{err: minhareceita.ErrNotFound}
+	miscSvc := NewMiscService(lookupClient, companyRepo, auditSvc, &sequenceAuditIDGenerator{next: 9000})
+
+	actor := &entity.User{
+		ID:          101,
+		Username:    "lookup-not-found-cache",
+		Email:       "lookup-not-found-cache@example.com",
+		Permissions: entity.PermissionPerformLookup,
+		Active:      true,
+		CreatedAt:   utils.NowUTC(),
+		UpdatedAt:   utils.NowUTC(),
+	}
+	if err := userRepo.Save(actor); err != nil {
+		t.Fatalf("save actor: %v", err)
+	}
+
+	cnpj := "00000000000000"
+	for i := 1; i <= 2; i++ {
+		resp, apierr := miscSvc.GetCompanyByCNPJ(actor, cnpj)
+		if apierr == nil {
+			t.Fatalf("lookup %d: expected not found api error", i)
+		}
+		if apierr.Code() != 404 {
+			t.Fatalf("lookup %d: expected 404 status code, got %d", i, apierr.Code())
+		}
+		if resp != nil {
+			t.Fatalf("lookup %d: expected nil company response", i)
+		}
+	}
+
+	if lookupClient.calls != 1 {
+		t.Fatalf("expected external lookup to be called once, got %d", lookupClient.calls)
+	}
+
+	cached, err := companyRepo.FindByCNPJ(cnpj)
+	if err != nil {
+		t.Fatalf("find cached company: %v", err)
+	}
+	if cached == nil {
+		t.Fatal("expected negative cache row")
+	}
+	if cached.Found {
+		t.Fatalf("expected cached company to keep found=false, got found=%v", cached.Found)
+	}
+
+	events, err := auditRepo.List(&repository.AuditLogFilter{
+		Limit:      10,
+		ActionType: auditActionPtr(entity.AuditActionCompanyLookup),
+	})
+	if err != nil {
+		t.Fatalf("list audit logs: %v", err)
+	}
+	if len(events) != 2 {
+		t.Fatalf("expected 2 company lookup audit events, got %d", len(events))
+	}
+
+	seenCacheHit := false
+	for _, event := range events {
+		changesByField := map[string]*entity.AuditLogChange{}
+		for _, change := range event.Changes {
+			changesByField[change.FieldName] = change
+		}
+
+		if changesByField["found"] == nil || changesByField["found"].NewValue == nil || *changesByField["found"].NewValue != "false" {
+			t.Fatalf("expected found=false change, got %+v", changesByField["found"])
+		}
+		if changesByField["cache_hit"] != nil && changesByField["cache_hit"].NewValue != nil && *changesByField["cache_hit"].NewValue == "true" {
+			seenCacheHit = true
+		}
+	}
+
+	if !seenCacheHit {
+		t.Fatal("expected one audit event to record cache_hit=true")
 	}
 }
 
