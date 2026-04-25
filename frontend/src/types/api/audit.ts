@@ -35,7 +35,7 @@ const auditLogChangeSchema = z
 const auditLogEntrySchema = z
   .object({
     id: z.string(),
-    actor_user_id: z.number().optional(),
+    actor_user_id: z.string().optional(),
     action_type: auditActionTypeSchema,
     subject_type: auditSubjectTypeSchema,
     subject_id: z.string(),

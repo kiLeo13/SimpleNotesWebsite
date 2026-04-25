@@ -23,7 +23,7 @@ const eventRegistry = {
   // Users
   UserCreated: createEvent("USER_CREATED", userResponseSchema),
   UserUpdated: createEvent("USER_UPDATED", userResponseSchema),
-  UserDeleted: createEvent("USER_DELETED", z.object({ id: z.number() })),
+  UserDeleted: createEvent("USER_DELETED", z.object({ id: z.string() })),
 
   PresenceUpdated: createEvent("PRESENCE_UPDATED", presenceUpdatedEventSchema)
 }

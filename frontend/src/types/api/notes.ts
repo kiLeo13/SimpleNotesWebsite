@@ -29,12 +29,12 @@ export interface UpdateNoteRequestPayload {
 
 // --- API Responses ---
 export const noteBaseSchema = z.object({
-  id: z.number(),
+  id: z.string(),
   name: z.string(),
   tags: z.array(z.string()),
   visibility: noteVisibilitySchema,
   note_type: noteTypeSchema,
-  created_by_id: z.number(),
+  created_by_id: z.string(),
   content_size: z.number(),
   created_at: z.string(),
   updated_at: z.string()

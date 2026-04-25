@@ -71,7 +71,7 @@ export const userService = {
     return safeApiCall(() => apiClient.get("/users"), listUsersResponseSchema)
   },
 
-  getUserById: async (id: number): Promise<ApiResponse<UserResponseData>> => {
+  getUserById: async (id: string): Promise<ApiResponse<UserResponseData>> => {
     return safeApiCall(() => apiClient.get(`/users/${id}`), userResponseSchema)
   },
 
@@ -80,13 +80,13 @@ export const userService = {
   },
 
   updateUser: async (
-    id: number,
+    id: string,
     payload: UpdateUserRequestPayload
   ): Promise<ApiResponse<UserResponseData>> => {
     return safeApiCall(() => apiClient.patch(`/users/${id}`, payload), userResponseSchema)
   },
 
-  deleteUser: async (id: number): Promise<ApiResponse<void>> => {
+  deleteUser: async (id: string): Promise<ApiResponse<void>> => {
     return safeApiCall(() => apiClient.delete(`/users/${id}`), voidSchema)
   },
 

@@ -57,7 +57,7 @@ export const userPresenceSchema = z.enum(["ONLINE", "OFFLINE"])
 // Users
 export const userResponseSchema = z
   .object({
-    id: z.number(),
+    id: z.string(),
     username: z.string(),
     permissions: z.number(),
     presence: userPresenceSchema,

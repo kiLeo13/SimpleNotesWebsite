@@ -70,7 +70,7 @@ export const noteService = {
    * @returns A promise resolving to the updated note data.
    */
   updateNote: async (
-    id: number,
+    id: string,
     payload: UpdateNoteRequestPayload
   ): Promise<ApiResponse<NoteResponseData>> => {
     return safeApiCall(
@@ -84,7 +84,7 @@ export const noteService = {
    * * @param id - The ID of the note to fetch.
    * @returns A promise resolving to the full note data.
    */
-  fetchNote: async (id: number): Promise<ApiResponse<FullNoteResponseData>> => {
+  fetchNote: async (id: string): Promise<ApiResponse<FullNoteResponseData>> => {
     return safeApiCall(
       () => apiClient.get(`/notes/${id}`),
       fullNoteResponseSchema
@@ -104,7 +104,7 @@ export const noteService = {
    * * @param id - The ID of the note to delete.
    * @returns A promise resolving to void on success.
    */
-  deleteNote: async (id: number): Promise<ApiResponse<void>> => {
+  deleteNote: async (id: string): Promise<ApiResponse<void>> => {
     return safeApiCall(() => apiClient.delete(`/notes/${id}`), voidSchema)
   },
 

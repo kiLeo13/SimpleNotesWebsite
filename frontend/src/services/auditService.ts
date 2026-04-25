@@ -12,7 +12,7 @@ import { safeApiCall } from "./safeApiCall"
 type ListAuditLogsParams = {
   limit?: number
   beforeId?: string
-  actorUserId?: number
+  actorUserId?: string
   subjectType?: AuditSubjectType
   subjectId?: string
   actionType?: AuditActionType

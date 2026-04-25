@@ -15,7 +15,7 @@ export const connectionKillSchema = z.object({
 })
 
 export const presenceUpdatedEventSchema = z.object({
-  id: z.number(),
+  id: z.string(),
   presence: userPresenceSchema
 })
 
