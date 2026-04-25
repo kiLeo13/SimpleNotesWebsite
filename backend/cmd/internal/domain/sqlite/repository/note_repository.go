@@ -31,7 +31,7 @@ func (d *DefaultNoteRepository) FindAll(withPrivate bool) ([]*entity.Note, error
 	return notes, nil
 }
 
-func (d *DefaultNoteRepository) FindByID(id int) (*entity.Note, error) {
+func (d *DefaultNoteRepository) FindByID(id int64) (*entity.Note, error) {
 	var note entity.Note
 	err := d.db.First(&note, id).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {

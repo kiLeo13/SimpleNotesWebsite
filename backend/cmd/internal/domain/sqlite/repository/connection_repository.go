@@ -33,7 +33,7 @@ func (c *DefaultConnectionRepository) DeleteBySessionID(sessionID string) error 
 		Delete(&entity.Connection{}).Error
 }
 
-func (c *DefaultConnectionRepository) FindByUserID(userID int) ([]string, error) {
+func (c *DefaultConnectionRepository) FindByUserID(userID int64) ([]string, error) {
 	var ids []string
 	result := c.db.Model(&entity.Connection{}).
 		Where("user_id = ?", userID).
@@ -47,8 +47,8 @@ func (c *DefaultConnectionRepository) FindByUserID(userID int) ([]string, error)
 	return ids, nil
 }
 
-func (c *DefaultConnectionRepository) FindAllIDs() ([]int, error) {
-	var ids []int
+func (c *DefaultConnectionRepository) FindAllIDs() ([]int64, error) {
+	var ids []int64
 
 	err := c.db.Model(&entity.Connection{}).
 		Distinct("user_id").
@@ -60,7 +60,7 @@ func (c *DefaultConnectionRepository) FindAllIDs() ([]int, error) {
 	return ids, nil
 }
 
-func (c *DefaultConnectionRepository) CountByUserID(userID int) (int64, error) {
+func (c *DefaultConnectionRepository) CountByUserID(userID int64) (int64, error) {
 	var count int64
 	err := c.db.Model(&entity.Connection{}).
 		Where("user_id = ?", userID).
@@ -98,7 +98,7 @@ func (c *DefaultConnectionRepository) FindBySessionID(sessionID string) (*entity
 	return &conn, nil
 }
 
-func (c *DefaultConnectionRepository) IsOnline(userID int, now int64) (bool, error) {
+func (c *DefaultConnectionRepository) IsOnline(userID int64, now int64) (bool, error) {
 	var exists bool
 	err := c.db.
 		Raw(`
@@ -140,7 +140,7 @@ func (c *DefaultConnectionRepository) FindAll() ([]*entity.Connection, error) {
 	return conns, nil
 }
 
-func (c *DefaultConnectionRepository) FindSessionsByUserID(userID int) ([]*entity.Connection, error) {
+func (c *DefaultConnectionRepository) FindSessionsByUserID(userID int64) ([]*entity.Connection, error) {
 	var conns []*entity.Connection
 	err := c.db.
 		Where("user_id = ?", userID).
@@ -151,7 +151,7 @@ func (c *DefaultConnectionRepository) FindSessionsByUserID(userID int) ([]*entit
 	return conns, nil
 }
 
-func (c *DefaultConnectionRepository) FetchIn(userIDs ...int) ([]*entity.Connection, error) {
+func (c *DefaultConnectionRepository) FetchIn(userIDs ...int64) ([]*entity.Connection, error) {
 	var conns []*entity.Connection
 	if len(userIDs) == 0 {
 		return conns, nil

@@ -8,7 +8,7 @@ import (
 type AuditLogFilter struct {
 	Limit       int
 	BeforeID    *int64
-	ActorUserID *int
+	ActorUserID *int64
 	SubjectType *entity.AuditSubjectType
 	SubjectID   *string
 	ActionType  *entity.AuditActionType

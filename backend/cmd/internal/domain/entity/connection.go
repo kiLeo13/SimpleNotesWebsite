@@ -16,7 +16,7 @@ const (
 type Connection struct {
 	ConnectionID    string `gorm:"primaryKey;autoIncrement:false"`
 	SessionID       string `gorm:"not null;uniqueIndex"`
-	UserID          int    `gorm:"not null;index"`
+	UserID          int64  `gorm:"not null;index"`
 	ExpiresAt       int64  `gorm:"not null;index"`
 	LastHeartbeatAt int64  `gorm:"not null;index"`
 	CreatedAt       int64  `gorm:"not null"`

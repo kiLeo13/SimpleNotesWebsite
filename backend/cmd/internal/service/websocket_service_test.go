@@ -9,6 +9,7 @@ import (
 	"zenkeep/cmd/internal/contract"
 	"zenkeep/cmd/internal/domain/events"
 	"zenkeep/cmd/internal/domain/sqlite/repository"
+	"zenkeep/cmd/internal/idgen"
 	"zenkeep/cmd/internal/infrastructure/aws/websocket"
 	"zenkeep/cmd/internal/utils"
 )
@@ -211,7 +212,7 @@ func assertPresenceMessage(
 	t *testing.T,
 	messages []capturedMessage,
 	connID string,
-	userID int,
+	userID int64,
 	presence contract.UserPresence,
 ) {
 	t.Helper()
@@ -225,7 +226,7 @@ func assertPresenceMessage(
 		if !ok {
 			t.Fatalf("expected presence payload, got %T", message.message.Data)
 		}
-		if payload.UserID == userID && payload.Presence == presence {
+		if payload.UserID == idgen.Format(userID) && payload.Presence == presence {
 			return
 		}
 	}

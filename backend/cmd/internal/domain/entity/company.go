@@ -44,7 +44,7 @@ type Company struct {
 }
 
 type CompanyPartner struct {
-	ID          int    `gorm:"primaryKey"`
+	ID          int64  `gorm:"primaryKey;autoIncrement:false"`
 	CompanyCNPJ string `gorm:"uniqueIndex:idx_company_partner_cnpj_name;index"`
 	Name        string `gorm:"uniqueIndex:idx_company_partner_cnpj_name"`
 	Role        string

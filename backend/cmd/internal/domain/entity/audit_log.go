@@ -39,7 +39,7 @@ const (
 
 type AuditLogEvent struct {
 	ID          int64            `gorm:"primaryKey;autoIncrement:false;index:idx_audit_events_actor_id,priority:2;index:idx_audit_events_subject_id,priority:3;index:idx_audit_events_action_id,priority:2"`
-	ActorUserID *int             `gorm:"index:idx_audit_events_actor_id,priority:1"`
+	ActorUserID *int64           `gorm:"index:idx_audit_events_actor_id,priority:1"`
 	ActionType  AuditActionType  `gorm:"not null;index:idx_audit_events_action_id,priority:1"`
 	SubjectType AuditSubjectType `gorm:"not null;index:idx_audit_events_subject_id,priority:1"`
 	SubjectID   string           `gorm:"not null;index:idx_audit_events_subject_id,priority:2"`

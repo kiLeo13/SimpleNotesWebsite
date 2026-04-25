@@ -25,7 +25,7 @@ func (u *DefaultUserRepository) FindAllActive() ([]*entity.User, error) {
 	return users, nil
 }
 
-func (u *DefaultUserRepository) FindActiveByID(id int) (*entity.User, error) {
+func (u *DefaultUserRepository) FindActiveByID(id int64) (*entity.User, error) {
 	var user entity.User
 	err := u.db.Where("active = ?", true).First(&user, id).Error
 
@@ -38,7 +38,7 @@ func (u *DefaultUserRepository) FindActiveByID(id int) (*entity.User, error) {
 	return &user, nil
 }
 
-func (u *DefaultUserRepository) FindByID(id int) (*entity.User, error) {
+func (u *DefaultUserRepository) FindByID(id int64) (*entity.User, error) {
 	var user entity.User
 	err := u.db.First(&user, id).Error
 

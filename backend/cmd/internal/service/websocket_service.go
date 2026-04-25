@@ -6,6 +6,7 @@ import (
 	"zenkeep/cmd/internal/contract"
 	"zenkeep/cmd/internal/domain/entity"
 	"zenkeep/cmd/internal/domain/events"
+	"zenkeep/cmd/internal/idgen"
 	"zenkeep/cmd/internal/infrastructure/aws/websocket"
 	"zenkeep/cmd/internal/utils"
 	"zenkeep/cmd/internal/utils/apierror"
@@ -17,12 +18,12 @@ type ConnectionRepository interface {
 	Save(conn *entity.Connection) error
 	Delete(connID string) error
 	DeleteBySessionID(sessionID string) error
-	FindByUserID(userID int) ([]string, error)
-	FindSessionsByUserID(userID int) ([]*entity.Connection, error)
+	FindByUserID(userID int64) ([]string, error)
+	FindSessionsByUserID(userID int64) ([]*entity.Connection, error)
 	FindAll() ([]*entity.Connection, error)
 	FindByID(connID string) (*entity.Connection, error)
 	FindBySessionID(sessionID string) (*entity.Connection, error)
-	IsOnline(userID int, now int64) (bool, error)
+	IsOnline(userID int64, now int64) (bool, error)
 	FindAllConnIDs() ([]string, error)
 	FindStale(now int64, hbLimit int64) ([]*entity.Connection, error)
 	FindExpiredDisconnected(now int64) ([]*entity.Connection, error)
@@ -42,7 +43,7 @@ func NewWebSocketService(repo ConnectionRepository, gateway websocket.GatewayCli
 	}
 }
 
-func (s *WebSocketService) RegisterConnection(userID int, sessionID string, connectionID string, exp int64) apierror.ErrorResponse {
+func (s *WebSocketService) RegisterConnection(userID int64, sessionID string, connectionID string, exp int64) apierror.ErrorResponse {
 	now := utils.NowUTC()
 	wasOnline, _ := s.ConnRepo.IsOnline(userID, now)
 
@@ -54,7 +55,7 @@ func (s *WebSocketService) RegisterConnection(userID int, sessionID string, conn
 
 	createdAt := now
 	var replacedConnectionID string
-	var replacedUserID int
+	var replacedUserID int64
 	if existingSession != nil {
 		createdAt = existingSession.CreatedAt
 		replacedConnectionID = existingSession.ConnectionID
@@ -136,7 +137,7 @@ func (s *WebSocketService) HandleMessage(msg *contract.IncomingSocketMessage, co
 	}
 }
 
-func (s *WebSocketService) PushToUser(ctx context.Context, userID int, payload interface{}) {
+func (s *WebSocketService) PushToUser(ctx context.Context, userID int64, payload interface{}) {
 	conns, err := s.ConnRepo.FindByUserID(userID)
 	if err != nil {
 		log.Errorf("failed to fetch connections for user %d: %v", userID, err)
@@ -150,7 +151,7 @@ func (s *WebSocketService) PushToUser(ctx context.Context, userID int, payload i
 }
 
 // TerminateUserConnections sends a "poison pill" message and then disconnects
-func (s *WebSocketService) TerminateUserConnections(ctx context.Context, userID int, ck *events.ConnectionKill) {
+func (s *WebSocketService) TerminateUserConnections(ctx context.Context, userID int64, ck *events.ConnectionKill) {
 	conns, _ := s.ConnRepo.FindSessionsByUserID(userID)
 	msg := contract.OutgoingSocketMessage{
 		Type: contract.EventConnectionKill,
@@ -175,7 +176,7 @@ func (s *WebSocketService) TerminateUserConnections(ctx context.Context, userID 
 	}
 }
 
-func (s *WebSocketService) Dispatch(ctx context.Context, userID int, evt events.SocketEvent) {
+func (s *WebSocketService) Dispatch(ctx context.Context, userID int64, evt events.SocketEvent) {
 	envelope := &contract.OutgoingSocketMessage{
 		Type: evt.GetType(),
 		Data: evt,
@@ -212,7 +213,7 @@ func (s *WebSocketService) Broadcast(ctx context.Context, evt events.SocketEvent
 
 // BroadcastSupplier broadcasts the returned socket event to the current user.
 // If the supplier returns `nil`, then no event is sent.
-func (s *WebSocketService) BroadcastSupplier(ctx context.Context, supplier func(userID int) events.SocketEvent) {
+func (s *WebSocketService) BroadcastSupplier(ctx context.Context, supplier func(userID int64) events.SocketEvent) {
 	conns, err := s.ConnRepo.FindAll()
 	if err != nil {
 		log.Errorf("failed to fetch all connections for broadcast: %v", err)
@@ -232,14 +233,14 @@ func (s *WebSocketService) BroadcastSupplier(ctx context.Context, supplier func(
 	}
 }
 
-func (s *WebSocketService) dispatchPresenceEvent(userID int, presence contract.UserPresence) {
+func (s *WebSocketService) dispatchPresenceEvent(userID int64, presence contract.UserPresence) {
 	s.Broadcast(context.Background(), &events.PresenceUpdated{
-		UserID:   userID,
+		UserID:   idgen.Format(userID),
 		Presence: presence,
 	})
 }
 
-func (s *WebSocketService) dispatchOfflineIfNeeded(userID int, now int64) {
+func (s *WebSocketService) dispatchOfflineIfNeeded(userID int64, now int64) {
 	isOnline, _ := s.ConnRepo.IsOnline(userID, now)
 	if !isOnline {
 		s.dispatchPresenceEvent(userID, contract.PresenceOffline)
