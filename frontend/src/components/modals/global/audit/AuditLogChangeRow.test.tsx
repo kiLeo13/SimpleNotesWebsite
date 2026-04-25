@@ -54,7 +54,6 @@ describe("AuditLogChangeRow", () => {
 
 function makeChange(): AuditLogChangeData {
   return {
-    id: 42,
     fieldName: "title",
     oldValue: "Before",
     newValue: "After",

@@ -89,7 +89,7 @@ export function AuditLogEntry({
             <div className={styles.changesList}>
               {entry.changes.map((change, index) => (
                 <AuditLogChangeRow
-                  key={`${entry.id}-${change.id}`}
+                  key={`${entry.id}-${change.fieldName}-${index}`}
                   change={change}
                   displayCode={index + 1}
                   event={event}

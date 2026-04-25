@@ -206,7 +206,6 @@ func toAuditEventResponse(event *entity.AuditLogEvent) *contract.AuditLogEventRe
 
 	for i, change := range event.Changes {
 		resp.Changes[i] = &contract.AuditLogChangeResponse{
-			ID:        change.ID,
 			FieldName: change.FieldName,
 			OldValue:  change.OldValue,
 			NewValue:  change.NewValue,

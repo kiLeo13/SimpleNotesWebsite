@@ -380,7 +380,6 @@ function makeAuditEntry(
     occurredAt: "2026-04-19T00:00:00Z",
     changes: [
       {
-        id: 1,
         fieldName: "name",
         oldValue: actionType === "NOTE_CREATE" ? undefined : "Antigo",
         newValue: "Novo",

@@ -26,7 +26,6 @@ type AuditLogEventResponse struct {
 }
 
 type AuditLogChangeResponse struct {
-	ID        int     `json:"id"`
 	FieldName string  `json:"field_name"`
 	OldValue  *string `json:"old_value,omitempty"`
 	NewValue  *string `json:"new_value,omitempty"`

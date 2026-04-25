@@ -18,14 +18,12 @@ export type AuditSubjectType = z.infer<typeof auditSubjectTypeSchema>
 
 const auditLogChangeSchema = z
   .object({
-    id: z.number(),
     field_name: z.string(),
     old_value: z.string().optional(),
     new_value: z.string().optional(),
     value_type: z.string()
   })
   .transform((data) => ({
-    id: data.id,
     fieldName: data.field_name,
     oldValue: data.old_value,
     newValue: data.new_value,
