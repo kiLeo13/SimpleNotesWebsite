@@ -59,8 +59,9 @@ Important frontend behavior:
   Modal bodies should keep layout and visual styling only, while callers choose the shared `pop` or `slide-up` animation preset on the wrapper.
 - Realtime updates come through the websocket manager and fan into stores.
 - The websocket client now identifies itself with a stable per-tab `session_id` stored in `sessionStorage`, and that identifier is generated with Web Crypto APIs instead of non-cryptographic randomness. Reconnects reuse that logical session so brief transport drops do not create duplicate backend sessions for the same tab.
-- The `$connect` Lambda shim must forward that `session_id` as `X-Session-Id` to the Go API. The backend intentionally rejects connect requests that do not provide it, so frontend and connect-shim deployments need to stay in lockstep.
-- Frontend websocket heartbeats are driven only while the document is visible. When a socket reconnects after a temporary drop, the client performs a lightweight users/notes resync before continuing with live events.
+- The frontend also stores the last applied replay cursor as `last_event_id` in `sessionStorage`. Reconnects send both `session_id` and `last_event_id` so the backend can resume from the missed event range instead of forcing a default full refresh.
+- The `$connect` Lambda shim must forward `session_id` as `X-Session-Id` and `last_event_id` as `X-Last-Event-Id` to the Go API. The backend intentionally rejects connect requests that omit `session_id`, so frontend and connect-shim deployments need to stay in lockstep.
+- Frontend websocket heartbeats are driven only while the document is visible. Normal reconnects now rely on buffered replay plus per-event targeted refreshes for open text notes; a full users/notes resync only happens after an explicit `RESYNC_REQUIRED` control event.
 - Note websocket delivery is permission-aware: recipients only receive note events for notes they can currently access. Visibility transitions are translated per recipient, so losing access becomes `NOTE_DELETED`, gaining access becomes `NOTE_CREATED`, and only users who can still see the note receive `NOTE_UPDATED`.
 - Audit logs are surfaced through a permission-gated modal in that sidebar rail, auto-apply frontend filters on change, resolve actor and user-subject names through the users store plus on-demand user fetches, and page through the backend with cursor-style `next_before_id` pagination.
 - Frontend audit event metadata is owned by `frontend/src/components/modals/global/audit/AuditLogEvent.ts`, while `frontend/src/components/modals/global/audit/auditPresentation.ts` formats UI copy from that registry. Each supported audit event declares whether the UI should allow row expansion through an `expands` flag.
@@ -127,6 +128,7 @@ Persisted entities include:
 - `users`
 - `notes`
 - `connections`
+- `socket_deliveries`
 - `companies`
 - `company_partners`
 
@@ -145,6 +147,26 @@ The `connections` table now models logical websocket sessions, not only raw API 
 - disconnect/grace timestamps for temporarily resumable sessions
 
 This allows the backend to keep a session logically online for a short reconnect window while still preventing duplicate active transports for the same browser tab.
+
+The `socket_deliveries` table stores the replayable websocket stream per user. Each row contains:
+
+- an auto-incrementing `event_id` used as the resume cursor
+- the target `user_id`
+- the exact event type and payload that were delivered to that user
+- a `scope_changed` flag used to force a safe fallback resync when replay would be risky
+- the delivery timestamp for retention cleanup
+
+Replayable websocket events are:
+
+- `NOTE_CREATED`
+- `NOTE_UPDATED`
+- `NOTE_DELETED`
+- `USER_CREATED`
+- `USER_UPDATED`
+- `USER_DELETED`
+- `PRESENCE_UPDATED`
+
+System-only websocket messages such as `ACK`, `SESSION_EXPIRED`, and `CONNECTION_KILL` are delivered live but are not written to the replay log.
 
 Current audit coverage includes:
 
@@ -166,7 +188,8 @@ That creates a few important cross-project seams:
 - websocket event shapes must stay aligned between backend event emitters and frontend event schemas
 - file and reference note handling depends on both backend storage behavior and frontend renderer support
 - websocket reconnect semantics span both sides: the frontend must reconnect with the same `session_id`, and the backend must replace old transports for that session instead of stacking rows
-- the websocket `$connect` shim is part of that contract, because it is responsible for forwarding `session_id` from the browser query string into the backend request headers
+- the websocket replay cursor is also cross-project state: the frontend persists `last_event_id`, the backend emits ordered `event_id` values, and both sides must treat them as decimal strings on the wire
+- the websocket `$connect` shim is part of that contract, because it is responsible for forwarding both `session_id` and `last_event_id` from the browser query string into the backend request headers
 
 When a change crosses one of those seams, validate both sides instead of trusting the universe to be kind for once.
 
