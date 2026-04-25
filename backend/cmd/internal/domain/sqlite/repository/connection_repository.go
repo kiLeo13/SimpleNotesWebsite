@@ -47,6 +47,23 @@ func (c *DefaultConnectionRepository) FindByUserID(userID int64) ([]string, erro
 	return ids, nil
 }
 
+func (c *DefaultConnectionRepository) FindDeliverableUserIDs(now int64) ([]int64, error) {
+	var ids []int64
+	err := c.db.Model(&entity.Connection{}).
+		Distinct("user_id").
+		Where("expires_at >= ?", now).
+		Where(
+			c.db.
+				Where("disconnected_at IS NULL").
+				Or("grace_expires_at >= ?", now),
+		).
+		Pluck("user_id", &ids).Error
+	if err != nil {
+		return nil, err
+	}
+	return ids, nil
+}
+
 func (c *DefaultConnectionRepository) FindAllIDs() ([]int64, error) {
 	var ids []int64
 

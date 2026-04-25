@@ -19,6 +19,7 @@ type ConnectionRepository interface {
 	Delete(connID string) error
 	DeleteBySessionID(sessionID string) error
 	FindByUserID(userID int64) ([]string, error)
+	FindDeliverableUserIDs(now int64) ([]int64, error)
 	FindSessionsByUserID(userID int64) ([]*entity.Connection, error)
 	FindAll() ([]*entity.Connection, error)
 	FindByID(connID string) (*entity.Connection, error)
@@ -31,19 +32,40 @@ type ConnectionRepository interface {
 	MarkDisconnected(connID string, disconnectedAt int64, graceExpiresAt int64) error
 }
 
-type WebSocketService struct {
-	ConnRepo ConnectionRepository
-	Gateway  websocket.GatewayClient
+type SocketDeliveryRepository interface {
+	Create(delivery *entity.SocketDelivery) error
+	FindLatestEventID(userID int64) (*int64, error)
+	FindOldestEventID(userID int64) (*int64, error)
+	ListBetween(userID int64, afterEventID int64, fenceEventID int64) ([]*entity.SocketDelivery, error)
+	DeleteOlderThan(cutoff int64) error
+	TrimUserToLimit(userID int64, keep int) error
 }
 
-func NewWebSocketService(repo ConnectionRepository, gateway websocket.GatewayClient) *WebSocketService {
+type WebSocketService struct {
+	ConnRepo     ConnectionRepository
+	DeliveryRepo SocketDeliveryRepository
+	Gateway      websocket.GatewayClient
+}
+
+func NewWebSocketService(
+	connRepo ConnectionRepository,
+	deliveryRepo SocketDeliveryRepository,
+	gateway websocket.GatewayClient,
+) *WebSocketService {
 	return &WebSocketService{
-		ConnRepo: repo,
-		Gateway:  gateway,
+		ConnRepo:     connRepo,
+		DeliveryRepo: deliveryRepo,
+		Gateway:      gateway,
 	}
 }
 
-func (s *WebSocketService) RegisterConnection(userID int64, sessionID string, connectionID string, exp int64) apierror.ErrorResponse {
+func (s *WebSocketService) RegisterConnection(
+	userID int64,
+	sessionID string,
+	connectionID string,
+	exp int64,
+	lastEventID *int64,
+) apierror.ErrorResponse {
 	now := utils.NowUTC()
 	wasOnline, _ := s.ConnRepo.IsOnline(userID, now)
 
@@ -69,13 +91,24 @@ func (s *WebSocketService) RegisterConnection(userID int64, sessionID string, co
 		}
 	}
 
+	latestEventID, err := s.DeliveryRepo.FindLatestEventID(userID)
+	if err != nil {
+		log.Errorf("failed to load latest socket delivery for user %d: %v", userID, err)
+		return apierror.InternalServerError
+	}
+
+	replayPending, replayFenceEvent := shouldReplayOnConnect(lastEventID, latestEventID)
+
 	conn := &entity.Connection{
-		ConnectionID:    connectionID,
-		SessionID:       sessionID,
-		UserID:          userID,
-		ExpiresAt:       exp * 1000, // "exp" is stored in seconds, our app uses millis
-		LastHeartbeatAt: now,        // Avoid users getting disconnected immediately
-		CreatedAt:       createdAt,
+		ConnectionID:     connectionID,
+		SessionID:        sessionID,
+		UserID:           userID,
+		ExpiresAt:        exp * 1000, // "exp" is stored in seconds, our app uses millis
+		LastHeartbeatAt:  now,        // Avoid users getting disconnected immediately
+		CreatedAt:        createdAt,
+		ReplayPending:    replayPending,
+		ResumeFromEvent:  copyInt64Ptr(lastEventID),
+		ResumeFenceEvent: replayFenceEvent,
 	}
 
 	if err = s.ConnRepo.Save(conn); err != nil {
@@ -95,6 +128,10 @@ func (s *WebSocketService) RegisterConnection(userID int64, sessionID string, co
 
 	if !wasOnline {
 		s.dispatchPresenceEvent(userID, contract.PresenceOnline)
+	}
+
+	if replayPending {
+		go s.resumeSession(sessionID, connectionID)
 	}
 	return nil
 }
@@ -138,16 +175,7 @@ func (s *WebSocketService) HandleMessage(msg *contract.IncomingSocketMessage, co
 }
 
 func (s *WebSocketService) PushToUser(ctx context.Context, userID int64, payload interface{}) {
-	conns, err := s.ConnRepo.FindByUserID(userID)
-	if err != nil {
-		log.Errorf("failed to fetch connections for user %d: %v", userID, err)
-		return
-	}
-
-	for _, connID := range conns {
-		// We ignore errors here so one stale connection doesn't block others
-		_ = s.Gateway.PostToConnection(ctx, connID, payload)
-	}
+	s.pushPayloadToActiveSessions(ctx, userID, payload)
 }
 
 // TerminateUserConnections sends a "poison pill" message and then disconnects
@@ -177,11 +205,7 @@ func (s *WebSocketService) TerminateUserConnections(ctx context.Context, userID 
 }
 
 func (s *WebSocketService) Dispatch(ctx context.Context, userID int64, evt events.SocketEvent) {
-	envelope := &contract.OutgoingSocketMessage{
-		Type: evt.GetType(),
-		Data: evt,
-	}
-	s.PushToUser(ctx, userID, envelope)
+	s.dispatchEventToUser(ctx, userID, evt)
 }
 
 func (s *WebSocketService) DispatchToConnection(ctx context.Context, connID string, evt events.SocketEvent) {
@@ -195,41 +219,34 @@ func (s *WebSocketService) DispatchToConnection(ctx context.Context, connID stri
 // Broadcast sends an event to ALL connected users.
 // This iterates through every active connection in the DB.
 func (s *WebSocketService) Broadcast(ctx context.Context, evt events.SocketEvent) {
-	conns, err := s.ConnRepo.FindAllConnIDs()
+	now := utils.NowUTC()
+	userIDs, err := s.ConnRepo.FindDeliverableUserIDs(now)
 	if err != nil {
-		log.Errorf("failed to fetch all connections for broadcast: %v", err)
+		log.Errorf("failed to fetch websocket recipients for broadcast: %v", err)
 		return
 	}
 
-	envelope := &contract.OutgoingSocketMessage{
-		Type: evt.GetType(),
-		Data: evt,
-	}
-
-	for _, connID := range conns {
-		_ = s.Gateway.PostToConnection(ctx, connID, envelope)
+	for _, userID := range userIDs {
+		s.dispatchEventToUser(ctx, userID, evt)
 	}
 }
 
 // BroadcastSupplier broadcasts the returned socket event to the current user.
 // If the supplier returns `nil`, then no event is sent.
 func (s *WebSocketService) BroadcastSupplier(ctx context.Context, supplier func(userID int64) events.SocketEvent) {
-	conns, err := s.ConnRepo.FindAll()
+	now := utils.NowUTC()
+	userIDs, err := s.ConnRepo.FindDeliverableUserIDs(now)
 	if err != nil {
-		log.Errorf("failed to fetch all connections for broadcast: %v", err)
+		log.Errorf("failed to fetch websocket recipients for broadcast: %v", err)
 		return
 	}
 
-	for _, conn := range conns {
-		evt := supplier(conn.UserID)
+	for _, userID := range userIDs {
+		evt := supplier(userID)
 		if evt == nil {
 			continue
 		}
-		envelope := &contract.OutgoingSocketMessage{
-			Type: evt.GetType(),
-			Data: evt,
-		}
-		_ = s.Gateway.PostToConnection(ctx, conn.ConnectionID, envelope)
+		s.dispatchEventToUser(ctx, userID, evt)
 	}
 }
 

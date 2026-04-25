@@ -40,6 +40,7 @@ func (c *ConnectionCleaner) Start(ctx context.Context) {
 
 func (c *ConnectionCleaner) cleanup() {
 	now := utils.NowUTC()
+	c.wsService.PruneReplayLog(now)
 	heartbeatCutoff := now - ((entity.HeartbeatPeriodMillis * 2) + entity.HeartbeatToleranceMillis)
 	conns, err := c.wsService.ConnRepo.FindStale(now, heartbeatCutoff)
 	if err != nil {
