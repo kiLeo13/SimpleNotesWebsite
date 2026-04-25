@@ -21,8 +21,7 @@ export function NoteReference({
 }: NoteRefProps): JSX.Element {
   const { t } = useTranslation()
 
-  const numericId = Number(noteId)
-  const note = useNoteStore((s) => s.notes.find((n) => n.id === numericId))
+  const note = useNoteStore((s) => s.notes.find((n) => n.id === noteId))
   const hasChildren = Array.isArray(children)
     ? children.length > 0
     : Boolean(children)
@@ -31,7 +30,7 @@ export function NoteReference({
     return (
       <span
         className={styles.unknownNote}
-        title={t("labels.notes.refNoteNotFound", { id: numericId })}
+        title={t("labels.notes.refNoteNotFound", { id: noteId })}
         {...props}
       >
         <i>{t("commons.notFound")}</i>

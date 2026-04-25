@@ -21,7 +21,7 @@ export const EMPTY_AUDIT_FILTERS: AuditFilters = {
 export function toAuditLogQuery(filters: AuditFilters): ListAuditLogsParams {
   return {
     limit: AUDIT_LOG_PAGE_SIZE,
-    actorUserId: filters.actorUserId ? Number(filters.actorUserId) : undefined,
+    actorUserId: filters.actorUserId.trim() || undefined,
     actionType: filters.actionType || undefined,
     subjectType: filters.subjectType || undefined,
     subjectId: filters.subjectId.trim() || undefined

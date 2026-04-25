@@ -57,8 +57,7 @@ export function MainPage(): JSX.Element {
         return
       }
 
-      const parsedId = Number(activeNoteId)
-      const resp = await openNote(parsedId)
+      const resp = await openNote(activeNoteId)
       if (!resp?.errors) return
 
       if (resp.statusCode === 404) {

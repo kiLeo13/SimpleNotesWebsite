@@ -47,7 +47,7 @@ export function Sidebar(): JSX.Element {
     void navigate({
       search: (prev) => ({
         ...prev,
-        id: n.id.toString()
+        id: n.id
       })
     })
   }

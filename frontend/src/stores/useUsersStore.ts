@@ -15,9 +15,9 @@ type UsersState = {
 
   addUser: (user: UserResponseData) => void
   updateUser: (user: UserResponseData) => void
-  updatePresence: (userId: number, presence: UserPresenceData) => void
-  removeUser: (userId: number) => void
-  getById: (userId: number) => UserResponseData | null
+  updatePresence: (userId: string, presence: UserPresenceData) => void
+  removeUser: (userId: string) => void
+  getById: (userId: string) => UserResponseData | null
 }
 
 export const useUsersStore = create<UsersState>((set, get) => ({

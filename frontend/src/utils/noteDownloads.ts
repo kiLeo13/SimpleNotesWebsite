@@ -5,7 +5,7 @@ import { renderMermaidToSvg } from "./mermaid"
 import { getReferenceDownloadName, getReferenceNoteUrl } from "./noteFiles"
 
 type FetchNoteContent = (
-  noteId: number
+  noteId: string
 ) => Promise<ApiResponse<FullNoteResponseData>>
 
 type DownloadNoteFailure =

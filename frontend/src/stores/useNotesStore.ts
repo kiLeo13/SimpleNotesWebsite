@@ -21,13 +21,13 @@ type NotesState = {
 
   addNote: (note: NoteResponseData) => void
   updateNote: (newNote: NoteResponseData) => void
-  removeNote: (noteId: number) => void
-  getNoteById: (noteId: number) => NoteResponseData | null
+  removeNote: (noteId: string) => void
+  getNoteById: (noteId: string) => NoteResponseData | null
 
   ensureLoaded: () => Promise<ApiResponse<ListNoteResponseData> | void>
   reload: () => Promise<void>
 
-  openNote: (noteId: number) => Promise<ApiErrorResponse | void>
+  openNote: (noteId: string) => Promise<ApiErrorResponse | void>
   renderNote: (note: FullNoteResponseData) => void
   closeNote: () => void
 

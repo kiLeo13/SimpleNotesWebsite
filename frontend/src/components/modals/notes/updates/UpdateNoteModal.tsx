@@ -16,7 +16,7 @@ import { toasts } from "@/utils/toastUtils"
 import styles from "./UpdateNoteModal.module.css"
 
 type UpdateNoteModalProps = {
-  noteId: number
+  noteId: string
   setIsPatching: (flag: boolean) => void
 }
 

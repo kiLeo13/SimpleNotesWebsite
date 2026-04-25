@@ -64,7 +64,7 @@ export function NoteFrame({ baseNote }: NoteFrameProps): JSX.Element {
         <AppTooltip label={t("labels.notes.openFull")} side="right">
           <Link
             to="/"
-            search={{ id: baseNote.id.toString() }}
+            search={{ id: baseNote.id }}
             className={styles.redirectLink}
           >
             <FiExternalLink />

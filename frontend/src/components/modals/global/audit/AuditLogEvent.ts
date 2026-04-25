@@ -13,7 +13,7 @@ export type AuditTranslate = (
   options?: Record<string, unknown>
 ) => string
 
-export type AuditUserLabelResolver = (userId: number | undefined) => string
+export type AuditUserLabelResolver = (userId: string | undefined) => string
 
 export type AuditEntryPresentation = {
   summary: string
@@ -47,13 +47,11 @@ function resolveAuditUserSubjectLabel(
   subjectId: string,
   resolveUserLabel: AuditUserLabelResolver
 ): string {
-  const parsedUserId = Number(subjectId)
-
-  if (!Number.isInteger(parsedUserId)) {
+  if (!subjectId.trim()) {
     return subjectId
   }
 
-  return resolveUserLabel(parsedUserId)
+  return resolveUserLabel(subjectId)
 }
 
 export class AuditLogEvent {

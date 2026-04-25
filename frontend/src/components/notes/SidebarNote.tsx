@@ -58,7 +58,7 @@ export function SidebarNote({ note, onClick }: SidebarNoteProps): JSX.Element {
 
   const copyNoteId = async () => {
     try {
-      await copyTextToClipboard(note.id.toString())
+      await copyTextToClipboard(note.id)
       toasts.success(t("sidebar.notes.toasts.copyIdSuccess"))
     } catch (error) {
       console.error("Failed to copy note ID:", error)
@@ -176,7 +176,7 @@ function getMenuOptions(
   canEdit: boolean,
   canDelete: boolean,
   t: (s: string, opts?: Record<string, unknown>) => string,
-  noteId: number,
+  noteId: string,
   onDownload: () => void,
   onCopyId: () => void,
   setIsPatching: (b: boolean) => void,

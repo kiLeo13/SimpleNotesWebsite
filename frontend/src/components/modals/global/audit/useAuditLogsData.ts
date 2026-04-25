@@ -22,8 +22,8 @@ type UseAuditLogsDataResult = {
   hasLoadError: boolean
   loadInitialLogs: () => Promise<void>
   loadMoreLogs: () => Promise<void>
-  resolveUserLabel: (userId: number | undefined) => string
-  resolveActorLabel: (actorUserId: number | undefined) => string
+  resolveUserLabel: (userId: string | undefined) => string
+  resolveActorLabel: (actorUserId: string | undefined) => string
 }
 
 export function useAuditLogsData({
@@ -39,12 +39,12 @@ export function useAuditLogsData({
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [hasLoadError, setHasLoadError] = useState(false)
   const [fetchedUsers, setFetchedUsers] = useState<
-    Record<number, UserResponseData | null>
+    Record<string, UserResponseData | null>
   >({})
   const requestVersionRef = useRef(0)
 
   const resolveUserLabel = useCallback(
-    (userId: number | undefined): string => {
+    (userId: string | undefined): string => {
       if (userId == null) {
         return t("modals.audit.system")
       }
@@ -69,7 +69,7 @@ export function useAuditLogsData({
   )
 
   const resolveActorLabel = useCallback(
-    (actorUserId: number | undefined): string => resolveUserLabel(actorUserId),
+    (actorUserId: string | undefined): string => resolveUserLabel(actorUserId),
     [resolveUserLabel]
   )
 
@@ -151,18 +151,14 @@ export function useAuditLogsData({
 
   useEffect(() => {
     const referencedUserIds = entries.flatMap((entry) => {
-      const ids: number[] = []
+      const ids: string[] = []
 
       if (entry.actorUserId != null) {
         ids.push(entry.actorUserId)
       }
 
       if (entry.subjectType === "USER") {
-        const subjectUserId = Number(entry.subjectId)
-
-        if (Number.isInteger(subjectUserId)) {
-          ids.push(subjectUserId)
-        }
+        ids.push(entry.subjectId)
       }
 
       return ids
