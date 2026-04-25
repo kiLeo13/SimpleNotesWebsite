@@ -7,12 +7,12 @@ describe("gatewayMessageSchema", () => {
     const result = gatewayMessageSchema.parse({
       type: "NOTE_CREATED",
       data: {
-        id: 1,
+        id: "1",
         name: "Docs",
         tags: [],
         visibility: "PUBLIC",
         note_type: "MARKDOWN",
-        created_by_id: 2,
+        created_by_id: "2",
         content_size: 128,
         created_at: "2026-04-21T10:00:00.000Z",
         updated_at: "2026-04-21T10:00:00.000Z"

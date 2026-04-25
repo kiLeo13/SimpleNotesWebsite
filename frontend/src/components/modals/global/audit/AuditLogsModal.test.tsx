@@ -179,14 +179,14 @@ describe("AuditLogsModal", () => {
 
   it("renders a compact i18n summary row and expands change details", async () => {
     useUsersStore.setState({
-      users: [makeUser(7, "Leonardo")]
+      users: [makeUser("7", "Leonardo")]
     })
 
     mockedAuditService.listAuditLogs.mockResolvedValueOnce({
       success: true,
       statusCode: 200,
       data: {
-        entries: [makeAuditEntry("evt-1", "101", "NOTE_UPDATE", 7)],
+        entries: [makeAuditEntry("evt-1", "101", "NOTE_UPDATE", "7")],
         nextBeforeId: undefined
       }
     })
@@ -211,25 +211,25 @@ describe("AuditLogsModal", () => {
       success: true,
       statusCode: 200,
       data: {
-        entries: [makeAuditEntry("evt-2", "202", "NOTE_CREATE", 88)],
+        entries: [makeAuditEntry("evt-2", "202", "NOTE_CREATE", "88")],
         nextBeforeId: undefined
       }
     })
     mockedUserService.getUserById.mockResolvedValueOnce({
       success: true,
       statusCode: 200,
-      data: makeUser(88, "Maria")
+      data: makeUser("88", "Maria")
     })
 
     render(<AuditLogsModal setShowAuditLogs={vi.fn()} />)
 
     expect(await screen.findByText("Maria criou a nota #202")).toBeInTheDocument()
-    expect(mockedUserService.getUserById).toHaveBeenCalledWith(88)
+    expect(mockedUserService.getUserById).toHaveBeenCalledWith("88")
   })
 
   it("resolves missing user subjects for lifecycle events", async () => {
     useUsersStore.setState({
-      users: [makeUser(7, "Leonardo")]
+      users: [makeUser("7", "Leonardo")]
     })
 
     mockedAuditService.listAuditLogs.mockResolvedValueOnce({
@@ -237,7 +237,7 @@ describe("AuditLogsModal", () => {
       statusCode: 200,
       data: {
         entries: [
-          makeAuditEntry("evt-5", "88", "USER_DELETE", 7, {
+          makeAuditEntry("evt-5", "88", "USER_DELETE", "7", {
             subjectType: "USER",
             changes: []
           })
@@ -248,7 +248,7 @@ describe("AuditLogsModal", () => {
     mockedUserService.getUserById.mockResolvedValueOnce({
       success: true,
       statusCode: 200,
-      data: makeUser(88, "Maria")
+      data: makeUser("88", "Maria")
     })
 
     render(<AuditLogsModal setShowAuditLogs={vi.fn()} />)
@@ -256,17 +256,17 @@ describe("AuditLogsModal", () => {
     expect(
       await screen.findByText("Leonardo excluiu o usuário Maria")
     ).toBeInTheDocument()
-    expect(mockedUserService.getUserById).toHaveBeenCalledWith(88)
+    expect(mockedUserService.getUserById).toHaveBeenCalledWith("88")
   })
 
   it("auto-applies filters and keeps them while loading more entries", async () => {
     useUsersStore.setState({
-      users: [makeUser(7, "Leonardo")]
+      users: [makeUser("7", "Leonardo")]
     })
 
     mockedAuditService.listAuditLogs.mockImplementation(async (params = {}) => {
       if (
-        params.actorUserId === 7 &&
+        params.actorUserId === "7" &&
         params.actionType === "NOTE_UPDATE" &&
         params.subjectType === "NOTE" &&
         params.beforeId === "cursor-1"
@@ -275,14 +275,14 @@ describe("AuditLogsModal", () => {
           success: true,
           statusCode: 200,
           data: {
-            entries: [makeAuditEntry("evt-4", "203", "NOTE_UPDATE", 7)],
+            entries: [makeAuditEntry("evt-4", "203", "NOTE_UPDATE", "7")],
             nextBeforeId: undefined
           }
         }
       }
 
       if (
-        params.actorUserId === 7 &&
+        params.actorUserId === "7" &&
         params.actionType === "NOTE_UPDATE" &&
         params.subjectType === "NOTE"
       ) {
@@ -290,7 +290,7 @@ describe("AuditLogsModal", () => {
           success: true,
           statusCode: 200,
           data: {
-            entries: [makeAuditEntry("evt-3", "202", "NOTE_UPDATE", 7)],
+            entries: [makeAuditEntry("evt-3", "202", "NOTE_UPDATE", "7")],
             nextBeforeId: "cursor-1"
           }
         }
@@ -300,7 +300,7 @@ describe("AuditLogsModal", () => {
         success: true,
         statusCode: 200,
         data: {
-          entries: [makeAuditEntry("evt-1", "101", "NOTE_CREATE", 7)],
+          entries: [makeAuditEntry("evt-1", "101", "NOTE_CREATE", "7")],
           nextBeforeId: undefined
         }
       }
@@ -323,7 +323,7 @@ describe("AuditLogsModal", () => {
     await waitFor(() => {
       expect(mockedAuditService.listAuditLogs).toHaveBeenLastCalledWith({
         limit: 50,
-        actorUserId: 7,
+        actorUserId: "7",
         actionType: "NOTE_UPDATE",
         subjectType: "NOTE",
         beforeId: undefined
@@ -352,7 +352,7 @@ describe("AuditLogsModal", () => {
     await waitFor(() => {
       expect(mockedAuditService.listAuditLogs).toHaveBeenLastCalledWith({
         limit: 50,
-        actorUserId: 7,
+        actorUserId: "7",
         actionType: "NOTE_UPDATE",
         subjectType: "NOTE",
         beforeId: "cursor-1"
@@ -367,7 +367,7 @@ function makeAuditEntry(
   id: string,
   subjectId: string,
   actionType: AuditActionType,
-  actorUserId: number,
+  actorUserId: string,
   overrides: Partial<AuditLogEntryData> = {}
 ): AuditLogEntryData {
   return {
@@ -391,7 +391,7 @@ function makeAuditEntry(
   }
 }
 
-function makeUser(id: number, username: string) {
+function makeUser(id: string, username: string) {
   return {
     id,
     username,

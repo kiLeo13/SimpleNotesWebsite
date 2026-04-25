@@ -5,12 +5,12 @@ import { fullNoteResponseSchema, noteResponseSchema } from "./notes"
 describe("note schemas", () => {
   it("preserves explicit note variants in the summary union", () => {
     const markdown = noteResponseSchema.parse({
-      id: 1,
+      id: "1",
       name: "Docs",
       tags: ["guide"],
       visibility: "PUBLIC",
       note_type: "MARKDOWN",
-      created_by_id: 3,
+      created_by_id: "3",
       content_size: 120,
       created_at: "2026-04-21T10:00:00.000Z",
       updated_at: "2026-04-21T10:00:00.000Z"
@@ -22,12 +22,12 @@ describe("note schemas", () => {
 
   it("requires content for full text-note responses", () => {
     const result = fullNoteResponseSchema.safeParse({
-      id: 1,
+      id: "1",
       name: "Docs",
       tags: ["guide"],
       visibility: "PUBLIC",
       note_type: "FLOWCHART",
-      created_by_id: 3,
+      created_by_id: "3",
       content_size: 120,
       created_at: "2026-04-21T10:00:00.000Z",
       updated_at: "2026-04-21T10:00:00.000Z"
@@ -38,12 +38,12 @@ describe("note schemas", () => {
 
   it("accepts reference notes with attachment content in both unions", () => {
     const input = {
-      id: 9,
+      id: "9",
       name: "Invoice",
       tags: [],
       visibility: "PRIVATE" as const,
       note_type: "REFERENCE" as const,
-      created_by_id: 5,
+      created_by_id: "5",
       content_size: 2048,
       created_at: "2026-04-21T10:00:00.000Z",
       updated_at: "2026-04-21T10:00:00.000Z",

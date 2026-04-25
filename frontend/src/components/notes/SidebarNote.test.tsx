@@ -170,12 +170,12 @@ describe("SidebarNote", () => {
 
 function makeNote(): NoteResponseData {
   return {
-    id: 42,
+    id: "42",
     name: "Architecture",
     tags: [],
     visibility: "PUBLIC",
     note_type: "MARKDOWN",
-    created_by_id: 7,
+    created_by_id: "7",
     content_size: 256,
     created_at: "2026-04-21T10:00:00.000Z",
     updated_at: "2026-04-21T10:00:00.000Z"

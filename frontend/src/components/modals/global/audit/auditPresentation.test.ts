@@ -72,7 +72,7 @@ function makeEntry(
 ): AuditLogEntryData {
   return {
     id: "evt-1",
-    actorUserId: 7,
+    actorUserId: "7",
     actionType: "NOTE_UPDATE",
     subjectType: "NOTE",
     subjectId: "101",

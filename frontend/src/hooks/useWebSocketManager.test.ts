@@ -9,12 +9,12 @@ import { useNoteStore } from "@/stores/useNotesStore"
 import { useSessionStore } from "@/stores/useSessionStore"
 
 type MarkdownNote = {
-  id: number
+  id: string
   name: string
   tags: string[]
   visibility: "PUBLIC" | "PRIVATE"
   note_type: "MARKDOWN"
-  created_by_id: number
+  created_by_id: string
   content_size: number
   created_at: string
   updated_at: string
@@ -84,7 +84,7 @@ function makeMessage(
 
 function makeUser(permissions: number): UserResponseData {
   return {
-    id: 7,
+    id: "7",
     username: "tester",
     permissions,
     presence: "ONLINE",
@@ -99,12 +99,12 @@ function makeNote(
   overrides: Partial<MarkdownNote> = {}
 ): NoteResponseData {
   const note: MarkdownNote = {
-    id: 42,
+    id: "42",
     name: "Architecture",
     tags: ["docs"],
     visibility: "PUBLIC",
     note_type: "MARKDOWN",
-    created_by_id: 7,
+    created_by_id: "7",
     content_size: 128,
     created_at: "2026-04-21T10:00:00.000Z",
     updated_at: "2026-04-21T10:00:00.000Z",
@@ -117,12 +117,12 @@ function makeFullNote(
   overrides: Partial<FullMarkdownNote> = {}
 ): FullNoteResponseData {
   const note: FullMarkdownNote = {
-    id: 42,
+    id: "42",
     name: "Architecture",
     tags: ["docs"],
     visibility: "PUBLIC",
     note_type: "MARKDOWN",
-    created_by_id: 7,
+    created_by_id: "7",
     content_size: 128,
     created_at: "2026-04-21T10:00:00.000Z",
     updated_at: "2026-04-21T10:00:00.000Z",

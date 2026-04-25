@@ -125,11 +125,11 @@ function makeBaseNote(
   overrides: Partial<NoteResponseData> & Pick<NoteResponseData, "note_type">
 ): NoteResponseData {
   const base = {
-    id: 7,
+    id: "7",
     name: "Note",
     tags: [],
     visibility: "PUBLIC" as const,
-    created_by_id: 1,
+    created_by_id: "1",
     content_size: 12,
     created_at: "2026-04-21T10:00:00.000Z",
     updated_at: "2026-04-21T10:00:00.000Z"
@@ -154,11 +154,11 @@ function makeFullNote(
     Pick<FullNoteResponseData, "note_type" | "content">
 ): FullNoteResponseData {
   return {
-    id: 7,
+    id: "7",
     name: "Note",
     tags: [],
     visibility: "PUBLIC",
-    created_by_id: 1,
+    created_by_id: "1",
     content_size: 12,
     created_at: "2026-04-21T10:00:00.000Z",
     updated_at: "2026-04-21T10:00:00.000Z",
