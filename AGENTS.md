@@ -177,6 +177,7 @@ That sequence usually gives enough context without spelunking the whole repo lik
 - `backend/cmd/internal/domain/entity/`: GORM entities and schema tags.
 - `backend/cmd/internal/contract/`: API contracts.
 - `backend/cmd/internal/domain/events/events.go`: event payloads.
+- `backend/cmd/internal/idgen/`: shared Sonyflake ID generation and decimal string formatting/parsing helpers.
 
 ## Practical Read Paths By Task
 
@@ -298,6 +299,8 @@ Do not copy environment values into docs or comments unless explicitly needed.
 - Audit logs are opened from `SidebarRail`, auto-apply frontend filters on change, and page through `/audit-logs` in chunks of `50` using `next_before_id`.
 - The audit modal resolves actor names from `useUsersStore` first and falls back to `userService.getUserById` for users that are no longer present in the active list.
 - Company lookup audit events are recorded for both hits and misses, with `found` and `cache_hit` change rows describing the outcome.
+- Internal platform IDs are stored as numeric `int64` values in SQLite but serialized as decimal strings in API and websocket contracts. The frontend must keep these values as strings and never parse them to JavaScript numbers.
+- New platform IDs are generated through `backend/cmd/internal/idgen` using Sonyflake with a `2025-01-01T00:00:00Z` epoch. Audit log change IDs are local numeric rows, and CNPJs stay business identifiers rather than generated IDs.
 - `frontend/src/stores/useNotesStore.ts` treats `REFERENCE` notes differently from text notes.
 - Sidebar utility modals and board renderer frames are lazy-loaded with plain `import()` helpers so the app shell does not eagerly pull the whole circus into the entry bundle.
 - Shared modal opening and closing animations belong in `frontend/src/components/DarkWrapper.module.css`; modal CSS modules should not duplicate `smoothToggleModal` keyframes.
