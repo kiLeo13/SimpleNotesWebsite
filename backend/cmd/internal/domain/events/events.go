@@ -38,7 +38,7 @@ func (e *NoteUpdated) GetType() contract.EventType {
 }
 
 type NoteDeleted struct {
-	NoteID int `json:"id"`
+	NoteID string `json:"id"`
 }
 
 func (e *NoteDeleted) GetType() contract.EventType {
@@ -62,7 +62,7 @@ func (e *UserUpdated) GetType() contract.EventType {
 }
 
 type UserDeleted struct {
-	UserID int `json:"id"`
+	UserID string `json:"id"`
 }
 
 func (e *UserDeleted) GetType() contract.EventType {
@@ -70,7 +70,7 @@ func (e *UserDeleted) GetType() contract.EventType {
 }
 
 type PresenceUpdated struct {
-	UserID   int                   `json:"id"`
+	UserID   string                `json:"id"`
 	Presence contract.UserPresence `json:"presence"`
 }
 

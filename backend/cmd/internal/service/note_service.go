@@ -17,6 +17,7 @@ import (
 	"zenkeep/cmd/internal/domain/entity"
 	"zenkeep/cmd/internal/domain/events"
 	"zenkeep/cmd/internal/domain/policy"
+	"zenkeep/cmd/internal/idgen"
 	"zenkeep/cmd/internal/infrastructure/aws/storage"
 	"zenkeep/cmd/internal/utils"
 	"zenkeep/cmd/internal/utils/apierror"
@@ -26,7 +27,7 @@ import (
 
 type NoteRepository interface {
 	FindAll(withPrivate bool) ([]*entity.Note, error)
-	FindByID(id int) (*entity.Note, error)
+	FindByID(id int64) (*entity.Note, error)
 	Save(note *entity.Note) error
 	SaveWithDB(db *gorm.DB, note *entity.Note) error
 	Delete(note *entity.Note) error
@@ -42,6 +43,7 @@ type NoteService struct {
 	Validate   *validator.Validate
 	Audit      *AuditService
 	NotePolicy *policy.NotePolicy
+	IDGen      idgen.Generator
 }
 
 func NewNoteService(
@@ -53,6 +55,7 @@ func NewNoteService(
 	validate *validator.Validate,
 	auditService *AuditService,
 	notePolicy *policy.NotePolicy,
+	idGenerator idgen.Generator,
 ) *NoteService {
 	return &NoteService{
 		DB:         db,
@@ -63,6 +66,7 @@ func NewNoteService(
 		Validate:   validate,
 		Audit:      auditService,
 		NotePolicy: notePolicy,
+		IDGen:      idGenerator,
 	}
 }
 
@@ -81,7 +85,7 @@ func (n *NoteService) GetAllNotes(actor *entity.User) ([]*contract.NoteResponse,
 	return resp, nil
 }
 
-func (n *NoteService) GetNoteByID(actor *entity.User, noteId int) (*contract.NoteResponse, apierror.ErrorResponse) {
+func (n *NoteService) GetNoteByID(actor *entity.User, noteId int64) (*contract.NoteResponse, apierror.ErrorResponse) {
 	note, err := n.NoteRepo.FindByID(noteId)
 	if err != nil {
 		log.Errorf("failed to fetch note: %v", err)
@@ -107,8 +111,14 @@ func (n *NoteService) CreateTextNote(actor *entity.User, req *contract.CreateTex
 
 	tags := strings.Join(req.Tags, " ")
 	now := utils.NowUTC()
+	noteID, err := n.nextID()
+	if err != nil {
+		log.Errorf("failed to generate note id: %v", err)
+		return nil, apierror.InternalServerError
+	}
 
 	note := &entity.Note{
+		ID:          noteID,
 		Name:        req.Name,
 		Content:     req.Content,
 		CreatedByID: actor.ID,
@@ -120,7 +130,7 @@ func (n *NoteService) CreateTextNote(actor *entity.User, req *contract.CreateTex
 		UpdatedAt:   now,
 	}
 
-	err := n.DB.Transaction(func(tx *gorm.DB) error {
+	err = n.DB.Transaction(func(tx *gorm.DB) error {
 		if err := n.NoteRepo.SaveWithDB(tx, note); err != nil {
 			return err
 		}
@@ -128,7 +138,7 @@ func (n *NoteService) CreateTextNote(actor *entity.User, req *contract.CreateTex
 			ActorUserID: &actor.ID,
 			ActionType:  entity.AuditActionNoteCreate,
 			SubjectType: entity.AuditSubjectNote,
-			SubjectID:   strconv.Itoa(note.ID),
+			SubjectID:   idgen.Format(note.ID),
 			Source:      entity.AuditSourceHTTPAPI,
 			Changes:     buildNoteCreateAuditChanges(note),
 		})
@@ -165,7 +175,13 @@ func (n *NoteService) CreateFileNote(actor *entity.User, req *contract.CreateFil
 
 	tags := strings.Join(req.Tags, " ")
 	now := utils.NowUTC()
+	noteID, err := n.nextID()
+	if err != nil {
+		log.Errorf("failed to generate note id: %v", err)
+		return nil, apierror.InternalServerError
+	}
 	note := &entity.Note{
+		ID:          noteID,
 		Name:        req.Name,
 		Content:     filename,
 		CreatedByID: actor.ID,
@@ -177,7 +193,7 @@ func (n *NoteService) CreateFileNote(actor *entity.User, req *contract.CreateFil
 		UpdatedAt:   now,
 	}
 
-	err := n.DB.Transaction(func(tx *gorm.DB) error {
+	err = n.DB.Transaction(func(tx *gorm.DB) error {
 		if err := n.NoteRepo.SaveWithDB(tx, note); err != nil {
 			return err
 		}
@@ -185,7 +201,7 @@ func (n *NoteService) CreateFileNote(actor *entity.User, req *contract.CreateFil
 			ActorUserID: &actor.ID,
 			ActionType:  entity.AuditActionNoteCreate,
 			SubjectType: entity.AuditSubjectNote,
-			SubjectID:   strconv.Itoa(note.ID),
+			SubjectID:   idgen.Format(note.ID),
 			Source:      entity.AuditSourceHTTPAPI,
 			Changes:     buildNoteCreateAuditChanges(note),
 		})
@@ -201,7 +217,7 @@ func (n *NoteService) CreateFileNote(actor *entity.User, req *contract.CreateFil
 	return resp, nil
 }
 
-func (n *NoteService) UpdateNote(actor *entity.User, noteId int, req *contract.UpdateNoteRequest) (*contract.NoteResponse, apierror.ErrorResponse) {
+func (n *NoteService) UpdateNote(actor *entity.User, noteId int64, req *contract.UpdateNoteRequest) (*contract.NoteResponse, apierror.ErrorResponse) {
 	note, err := n.NoteRepo.FindByID(noteId)
 	if err != nil {
 		log.Errorf("failed to fetch note: %v", err)
@@ -246,7 +262,7 @@ func (n *NoteService) UpdateNote(actor *entity.User, noteId int, req *contract.U
 			ActorUserID: &actor.ID,
 			ActionType:  entity.AuditActionNoteUpdate,
 			SubjectType: entity.AuditSubjectNote,
-			SubjectID:   strconv.Itoa(note.ID),
+			SubjectID:   idgen.Format(note.ID),
 			Source:      entity.AuditSourceHTTPAPI,
 			Changes:     changes,
 		})
@@ -261,7 +277,7 @@ func (n *NoteService) UpdateNote(actor *entity.User, noteId int, req *contract.U
 	return resp, nil
 }
 
-func (n *NoteService) DeleteNote(actor *entity.User, noteId int) apierror.ErrorResponse {
+func (n *NoteService) DeleteNote(actor *entity.User, noteId int64) apierror.ErrorResponse {
 	note, err := n.NoteRepo.FindByID(noteId)
 	if err != nil {
 		log.Errorf("failed to fetch note: %v", err)
@@ -287,7 +303,7 @@ func (n *NoteService) DeleteNote(actor *entity.User, noteId int) apierror.ErrorR
 			ActorUserID: &actor.ID,
 			ActionType:  entity.AuditActionNoteDelete,
 			SubjectType: entity.AuditSubjectNote,
-			SubjectID:   strconv.Itoa(note.ID),
+			SubjectID:   idgen.Format(note.ID),
 			Source:      entity.AuditSourceHTTPAPI,
 		})
 	})
@@ -302,7 +318,7 @@ func (n *NoteService) DeleteNote(actor *entity.User, noteId int) apierror.ErrorR
 
 func (n *NoteService) dispatchNoteCreateEvent(note *entity.Note) {
 	resp := toNoteResponse(note, false)
-	n.WSService.BroadcastSupplier(context.Background(), func(userID int) events.SocketEvent {
+	n.WSService.BroadcastSupplier(context.Background(), func(userID int64) events.SocketEvent {
 		recipient, ok := n.findNoteRecipient(userID)
 		if !ok || !n.canRecipientSeeNote(note, recipient) {
 			return nil
@@ -316,7 +332,7 @@ func (n *NoteService) dispatchNoteCreateEvent(note *entity.Note) {
 
 func (n *NoteService) dispatchNoteUpdateEvent(before, after *entity.Note) {
 	resp := toNoteResponse(after, false)
-	n.WSService.BroadcastSupplier(context.Background(), func(userID int) events.SocketEvent {
+	n.WSService.BroadcastSupplier(context.Background(), func(userID int64) events.SocketEvent {
 		recipient, ok := n.findNoteRecipient(userID)
 		if !ok {
 			return nil
@@ -332,7 +348,7 @@ func (n *NoteService) dispatchNoteUpdateEvent(before, after *entity.Note) {
 			}
 		case couldSeeBefore && !canSeeAfter:
 			return &events.NoteDeleted{
-				NoteID: after.ID,
+				NoteID: idgen.Format(after.ID),
 			}
 		case !couldSeeBefore && canSeeAfter:
 			return &events.NoteCreated{
@@ -345,19 +361,19 @@ func (n *NoteService) dispatchNoteUpdateEvent(before, after *entity.Note) {
 }
 
 func (n *NoteService) dispatchNoteDeleteEvent(note *entity.Note) {
-	n.WSService.BroadcastSupplier(context.Background(), func(userID int) events.SocketEvent {
+	n.WSService.BroadcastSupplier(context.Background(), func(userID int64) events.SocketEvent {
 		recipient, ok := n.findNoteRecipient(userID)
 		if !ok || !n.canRecipientSeeNote(note, recipient) {
 			return nil
 		}
 
 		return &events.NoteDeleted{
-			NoteID: note.ID,
+			NoteID: idgen.Format(note.ID),
 		}
 	})
 }
 
-func (n *NoteService) findNoteRecipient(userID int) (*entity.User, bool) {
+func (n *NoteService) findNoteRecipient(userID int64) (*entity.User, bool) {
 	recipient, err := n.UserRepo.FindActiveByID(userID)
 	if err != nil {
 		log.Errorf("failed to find websocket recipient (%d): %v", userID, err)
@@ -429,17 +445,24 @@ func toNoteResponse(note *entity.Note, forceContent bool) *contract.NoteResponse
 	}
 
 	return &contract.NoteResponse{
-		ID:          note.ID,
+		ID:          idgen.Format(note.ID),
 		Name:        note.Name,
 		Content:     content,
 		Tags:        toTagsArray(note.Tags),
 		Visibility:  string(note.Visibility),
 		NoteType:    string(note.NoteType),
 		ContentSize: note.ContentSize,
-		CreatedByID: note.CreatedByID,
+		CreatedByID: idgen.Format(note.CreatedByID),
 		CreatedAt:   utils.FormatEpoch(note.CreatedAt),
 		UpdatedAt:   utils.FormatEpoch(note.UpdatedAt),
 	}
+}
+
+func (n *NoteService) nextID() (int64, error) {
+	if n.IDGen == nil {
+		return 0, errors.New("note id generator is nil")
+	}
+	return n.IDGen.NextID()
 }
 
 // deleteBucketObject deletes the file with the given name from the attachments directory in S3.

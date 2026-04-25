@@ -56,7 +56,7 @@ type CheckUserStatusRequest struct {
 }
 
 type UserResponse struct {
-	ID          int          `json:"id"`
+	ID          string       `json:"id"`
 	Username    string       `json:"username"`
 	Permissions int64        `json:"permissions"`
 	Presence    UserPresence `json:"presence"`

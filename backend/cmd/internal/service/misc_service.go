@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"zenkeep/cmd/internal/contract"
 	"zenkeep/cmd/internal/domain/entity"
+	"zenkeep/cmd/internal/idgen"
 	"zenkeep/cmd/internal/infrastructure/minhareceita"
 	"zenkeep/cmd/internal/utils"
 	"zenkeep/cmd/internal/utils/apierror"
@@ -25,6 +26,7 @@ type MiscService struct {
 	ReceitaClient CompanyLookupClient
 	CompanyRepo   CompanyRepository
 	AuditService  *AuditService
+	IDGen         idgen.Generator
 }
 
 type companyLookupResult struct {
@@ -33,11 +35,12 @@ type companyLookupResult struct {
 	fromCache bool
 }
 
-func NewMiscService(client CompanyLookupClient, companyRepo CompanyRepository, auditService *AuditService) *MiscService {
+func NewMiscService(client CompanyLookupClient, companyRepo CompanyRepository, auditService *AuditService, idGenerator idgen.Generator) *MiscService {
 	return &MiscService{
 		ReceitaClient: client,
 		CompanyRepo:   companyRepo,
 		AuditService:  auditService,
+		IDGen:         idGenerator,
 	}
 }
 
@@ -121,6 +124,10 @@ func (u *MiscService) fetchFromAPI(cnpj string) (*entity.Company, apierror.Error
 
 	company.Found = true
 	company.CachedAt = utils.NowUTC()
+	if err := u.assignCompanyPartnerIDs(company); err != nil {
+		log.Errorf("failed to generate company partner ids for CNPJ %s: %v", cnpj, err)
+		return nil, apierror.InternalServerError
+	}
 	return company, nil
 }
 
@@ -130,6 +137,25 @@ func (u *MiscService) cacheNegativeResult(cnpj string) {
 		Found: false,
 	}
 	_ = u.CompanyRepo.Save(emptyCompany)
+}
+
+func (u *MiscService) assignCompanyPartnerIDs(company *entity.Company) error {
+	if company == nil || u.IDGen == nil {
+		return nil
+	}
+
+	for _, partner := range company.Partners {
+		if partner.ID != 0 {
+			continue
+		}
+
+		id, err := u.IDGen.NextID()
+		if err != nil {
+			return err
+		}
+		partner.ID = id
+	}
+	return nil
 }
 
 func (u *MiscService) recordCompanyLookup(actor *entity.User, cnpj string, found bool, fromCache bool) {

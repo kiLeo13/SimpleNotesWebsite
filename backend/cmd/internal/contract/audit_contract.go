@@ -3,7 +3,7 @@ package contract
 type AuditLogListRequest struct {
 	Limit       int
 	BeforeID    *int64
-	ActorUserID *int
+	ActorUserID *int64
 	SubjectType *string
 	SubjectID   *string
 	ActionType  *string
@@ -16,7 +16,7 @@ type AuditLogListResponse struct {
 
 type AuditLogEventResponse struct {
 	ID          string                    `json:"id"`
-	ActorUserID *int                      `json:"actor_user_id,omitempty"`
+	ActorUserID *string                   `json:"actor_user_id,omitempty"`
 	ActionType  string                    `json:"action_type"`
 	SubjectType string                    `json:"subject_type"`
 	SubjectID   string                    `json:"subject_id"`

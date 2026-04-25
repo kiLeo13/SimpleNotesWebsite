@@ -18,11 +18,11 @@ import (
 // This allows the service to check permissions without hitting the DB again.
 type NoteService interface {
 	GetAllNotes(actor *entity.User) ([]*contract.NoteResponse, apierror.ErrorResponse)
-	GetNoteByID(actor *entity.User, noteId int) (*contract.NoteResponse, apierror.ErrorResponse)
+	GetNoteByID(actor *entity.User, noteId int64) (*contract.NoteResponse, apierror.ErrorResponse)
 	CreateTextNote(actor *entity.User, req *contract.CreateTextNoteRequest) (*contract.NoteResponse, apierror.ErrorResponse)
 	CreateFileNote(actor *entity.User, req *contract.CreateFileNoteRequest, fileHeader *multipart.FileHeader) (*contract.NoteResponse, apierror.ErrorResponse)
-	UpdateNote(actor *entity.User, noteId int, req *contract.UpdateNoteRequest) (*contract.NoteResponse, apierror.ErrorResponse)
-	DeleteNote(actor *entity.User, noteId int) apierror.ErrorResponse
+	UpdateNote(actor *entity.User, noteId int64, req *contract.UpdateNoteRequest) (*contract.NoteResponse, apierror.ErrorResponse)
+	DeleteNote(actor *entity.User, noteId int64) apierror.ErrorResponse
 }
 
 type DefaultNoteRoute struct {
@@ -54,9 +54,9 @@ func (n *DefaultNoteRoute) GetNote(c echo.Context) error {
 		return c.JSON(cerr.Code(), cerr)
 	}
 
-	id, err := strconv.Atoi(c.Param("id"))
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, apierror.NewInvalidParamTypeError("id", "int"))
+		return c.JSON(http.StatusBadRequest, apierror.NewInvalidParamTypeError("id", "int64"))
 	}
 
 	note, apierr := n.NoteService.GetNoteByID(user, id)
@@ -87,9 +87,9 @@ func (n *DefaultNoteRoute) UpdateNote(c echo.Context) error {
 		return c.JSON(cerr.Code(), cerr)
 	}
 
-	id, err := strconv.Atoi(c.Param("id"))
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, apierror.NewInvalidParamTypeError("id", "int"))
+		return c.JSON(http.StatusBadRequest, apierror.NewInvalidParamTypeError("id", "int64"))
 	}
 
 	var req contract.UpdateNoteRequest
@@ -110,9 +110,9 @@ func (n *DefaultNoteRoute) DeleteNote(c echo.Context) error {
 		return c.JSON(cerr.Code(), cerr)
 	}
 
-	id, err := strconv.Atoi(c.Param("id"))
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, apierror.NewInvalidParamTypeError("id", "int"))
+		return c.JSON(http.StatusBadRequest, apierror.NewInvalidParamTypeError("id", "int64"))
 	}
 
 	serr := n.NoteService.DeleteNote(user, id)

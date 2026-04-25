@@ -14,6 +14,7 @@ import (
 	"zenkeep/cmd/internal/domain/entity"
 	"zenkeep/cmd/internal/domain/policy"
 	"zenkeep/cmd/internal/domain/sqlite/repository"
+	"zenkeep/cmd/internal/idgen"
 	cognitoclient "zenkeep/cmd/internal/infrastructure/aws/cognito"
 	"zenkeep/cmd/internal/infrastructure/minhareceita"
 	"zenkeep/cmd/internal/utils"
@@ -73,9 +74,10 @@ func TestNoteUpdateAuditGroupsMultipleFieldChanges(t *testing.T) {
 	noteRepo := repository.NewNoteRepository(db)
 	connRepo := repository.NewConnectionRepository(db)
 	wsSvc := NewWebSocketService(connRepo, noopGateway{})
-	noteSvc := NewNoteService(db, noteRepo, userRepo, wsSvc, noopS3{}, validate, auditSvc, policy.NewNotePolicy())
+	noteSvc := NewNoteService(db, noteRepo, userRepo, wsSvc, noopS3{}, validate, auditSvc, policy.NewNotePolicy(), &sequenceAuditIDGenerator{next: 9000})
 
 	actor := &entity.User{
+		ID:          1,
 		Username:    "editor",
 		Email:       "editor@example.com",
 		Permissions: entity.PermissionEditNotes.Add(entity.PermissionSeeHiddenNotes),
@@ -88,6 +90,7 @@ func TestNoteUpdateAuditGroupsMultipleFieldChanges(t *testing.T) {
 	}
 
 	note := &entity.Note{
+		ID:          2,
 		Name:        "Old Name",
 		Content:     "hello",
 		CreatedByID: actor.ID,
@@ -128,7 +131,7 @@ func TestNoteUpdateAuditGroupsMultipleFieldChanges(t *testing.T) {
 	if len(events) != 1 {
 		t.Fatalf("expected 1 note update audit event, got %d", len(events))
 	}
-	if events[0].SubjectID != strconv.Itoa(note.ID) {
+	if events[0].SubjectID != idgen.Format(note.ID) {
 		t.Fatalf("unexpected subject id: %s", events[0].SubjectID)
 	}
 	if len(events[0].Changes) != 3 {
@@ -158,9 +161,10 @@ func TestDeleteUserCreatesAuditEvent(t *testing.T) {
 	userRepo := repository.NewUserRepository(db)
 	connRepo := repository.NewConnectionRepository(db)
 	wsSvc := NewWebSocketService(connRepo, noopGateway{})
-	userSvc := NewUserService(db, userRepo, newTestValidator(), wsSvc, fakeCognitoClient{}, auditSvc, policy.NewUserPolicy())
+	userSvc := NewUserService(db, userRepo, newTestValidator(), wsSvc, fakeCognitoClient{}, auditSvc, policy.NewUserPolicy(), &sequenceAuditIDGenerator{next: 9000})
 
 	actor := &entity.User{
+		ID:          10,
 		Username:    "moderator",
 		Email:       "mod@example.com",
 		Permissions: entity.PermissionDeleteUsers,
@@ -169,6 +173,7 @@ func TestDeleteUserCreatesAuditEvent(t *testing.T) {
 		UpdatedAt:   utils.NowUTC(),
 	}
 	target := &entity.User{
+		ID:          11,
 		Username:    "target",
 		Email:       "target@example.com",
 		Permissions: 0,
@@ -183,7 +188,7 @@ func TestDeleteUserCreatesAuditEvent(t *testing.T) {
 		t.Fatalf("save target: %v", err)
 	}
 
-	if apierr := userSvc.DeleteUser(actor, strconv.Itoa(target.ID)); apierr != nil {
+	if apierr := userSvc.DeleteUser(actor, idgen.Format(target.ID)); apierr != nil {
 		t.Fatalf("delete user returned api error: %#v", apierr)
 	}
 
@@ -232,7 +237,7 @@ func TestGetCompanyByCNPJCreatesAuditEvent(t *testing.T) {
 			CNPJ:      "12345678000195",
 			LegalName: "Magalu Teste",
 		},
-	}, companyRepo, auditSvc)
+	}, companyRepo, auditSvc, &sequenceAuditIDGenerator{next: 9000})
 
 	actor := &entity.User{
 		ID:          99,
@@ -282,7 +287,7 @@ func TestGetCompanyByCNPJNotFoundStillCreatesAuditEvent(t *testing.T) {
 	userRepo := repository.NewUserRepository(db)
 	miscSvc := NewMiscService(&fakeLookupClient{
 		err: minhareceita.ErrNotFound,
-	}, companyRepo, auditSvc)
+	}, companyRepo, auditSvc, &sequenceAuditIDGenerator{next: 9000})
 
 	actor := &entity.User{
 		ID:          100,
@@ -344,7 +349,7 @@ func TestAuditServiceGetAuditLogsPaginatesByBeforeID(t *testing.T) {
 
 	for i := range 3 {
 		event := &entity.AuditLogEvent{
-			ActorUserID: intPtr(1),
+			ActorUserID: int64Ptr(1),
 			ActionType:  entity.AuditActionNoteCreate,
 			SubjectType: entity.AuditSubjectNote,
 			SubjectID:   strconv.Itoa(i + 1),
@@ -460,7 +465,7 @@ func auditActionPtr(action entity.AuditActionType) *entity.AuditActionType {
 	return &action
 }
 
-func intPtr(value int) *int {
+func int64Ptr(value int64) *int64 {
 	return &value
 }
 

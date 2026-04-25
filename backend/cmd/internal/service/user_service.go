@@ -2,11 +2,12 @@ package service
 
 import (
 	"context"
-	"strconv"
+	"errors"
 	"zenkeep/cmd/internal/contract"
 	"zenkeep/cmd/internal/domain/entity"
 	"zenkeep/cmd/internal/domain/events"
 	"zenkeep/cmd/internal/domain/policy"
+	"zenkeep/cmd/internal/idgen"
 	cognitoclient "zenkeep/cmd/internal/infrastructure/aws/cognito"
 	"zenkeep/cmd/internal/utils"
 	"zenkeep/cmd/internal/utils/apierror"
@@ -20,8 +21,8 @@ type UserRepository interface {
 	FindAllActive() ([]*entity.User, error)
 	FindActiveBySub(sub string) (*entity.User, error)
 	FindActiveByEmail(email string) (*entity.User, error)
-	FindActiveByID(id int) (*entity.User, error)
-	FindByID(id int) (*entity.User, error)
+	FindActiveByID(id int64) (*entity.User, error)
+	FindByID(id int64) (*entity.User, error)
 	SoftDelete(user *entity.User) error
 	SoftDeleteWithDB(db *gorm.DB, user *entity.User) error
 	ExistsActiveByEmail(email string) (bool, error)
@@ -37,6 +38,7 @@ type UserService struct {
 	Cognito    cognitoclient.Client
 	Audit      *AuditService
 	UserPolicy *policy.UserPolicy
+	IDGen      idgen.Generator
 }
 
 func NewUserService(
@@ -47,6 +49,7 @@ func NewUserService(
 	cogClient cognitoclient.Client,
 	auditService *AuditService,
 	userPolicy *policy.UserPolicy,
+	idGenerator idgen.Generator,
 ) *UserService {
 	return &UserService{
 		DB:         db,
@@ -56,6 +59,7 @@ func NewUserService(
 		Cognito:    cogClient,
 		Audit:      auditService,
 		UserPolicy: userPolicy,
+		IDGen:      idGenerator,
 	}
 }
 
@@ -147,7 +151,7 @@ func (u *UserService) UpdateUser(actor *entity.User, targetId string, req *contr
 				ActorUserID: &actor.ID,
 				ActionType:  actionType,
 				SubjectType: entity.AuditSubjectUser,
-				SubjectID:   strconv.Itoa(target.ID),
+				SubjectID:   idgen.Format(target.ID),
 				Source:      entity.AuditSourceHTTPAPI,
 				Changes:     changes,
 			})
@@ -196,7 +200,7 @@ func (u *UserService) DeleteUser(actor *entity.User, targetRawID string) apierro
 			ActorUserID: &actor.ID,
 			ActionType:  entity.AuditActionUserDelete,
 			SubjectType: entity.AuditSubjectUser,
-			SubjectID:   strconv.Itoa(target.ID),
+			SubjectID:   idgen.Format(target.ID),
 			Source:      entity.AuditSourceHTTPAPI,
 			Changes: []*entity.AuditLogChange{
 				{
@@ -280,7 +284,15 @@ func (u *UserService) CreateUser(req *contract.CreateUserRequest) apierror.Error
 	}
 
 	now := utils.NowUTC()
+	userID, err := u.nextID()
+	if err != nil {
+		revert()
+		log.Errorf("failed to generate user id: %v", err)
+		return apierror.InternalServerError
+	}
+
 	user := &entity.User{
+		ID:            userID,
 		SubUUID:       uuid,
 		Username:      req.Username,
 		Email:         req.Email,
@@ -436,9 +448,9 @@ func (u *UserService) fetchBySub(sub string) (*entity.User, apierror.ErrorRespon
 }
 
 func (u *UserService) fetchByID(rawId string, force bool) (*entity.User, apierror.ErrorResponse) {
-	userId, err := strconv.Atoi(rawId)
+	userId, err := idgen.Parse(rawId)
 	if err != nil {
-		return nil, apierror.NewInvalidParamTypeError("id", "int32")
+		return nil, apierror.NewInvalidParamTypeError("id", "int64")
 	}
 
 	var user *entity.User
@@ -456,7 +468,7 @@ func (u *UserService) fetchByID(rawId string, force bool) (*entity.User, apierro
 }
 
 func (u *UserService) dispatchUserCreateEvent(user *entity.User) {
-	u.WSService.BroadcastSupplier(context.Background(), func(userID int) events.SocketEvent {
+	u.WSService.BroadcastSupplier(context.Background(), func(userID int64) events.SocketEvent {
 		recipient, err := u.UserRepo.FindActiveByID(userID)
 		if err != nil {
 			log.Errorf("failed to find user (%d) by id: %v", userID, err)
@@ -473,7 +485,7 @@ func (u *UserService) dispatchUserCreateEvent(user *entity.User) {
 }
 
 func (u *UserService) dispatchUserUpdateEvent(user *entity.User, presence contract.UserPresence) {
-	u.WSService.BroadcastSupplier(context.Background(), func(userID int) events.SocketEvent {
+	u.WSService.BroadcastSupplier(context.Background(), func(userID int64) events.SocketEvent {
 		recipient, err := u.UserRepo.FindActiveByID(userID)
 		if err != nil {
 			log.Errorf("failed to find user (%d) by id: %v", userID, err)
@@ -492,9 +504,9 @@ func (u *UserService) dispatchUserUpdateEvent(user *entity.User, presence contra
 	}
 }
 
-func (u *UserService) dispatchUserDeleteEvent(userID int) {
+func (u *UserService) dispatchUserDeleteEvent(userID int64) {
 	u.WSService.Broadcast(context.Background(), &events.UserDeleted{
-		UserID: userID,
+		UserID: idgen.Format(userID),
 	})
 
 	u.WSService.TerminateUserConnections(context.Background(), userID, &events.ConnectionKill{
@@ -502,7 +514,7 @@ func (u *UserService) dispatchUserDeleteEvent(userID int) {
 	})
 }
 
-func (u *UserService) dispatchLogoutEvent(userID int) {
+func (u *UserService) dispatchLogoutEvent(userID int64) {
 	u.WSService.TerminateUserConnections(context.Background(), userID, &events.ConnectionKill{
 		Code: contract.CodeLogout,
 	})
@@ -510,9 +522,9 @@ func (u *UserService) dispatchLogoutEvent(userID int) {
 	u.dispatchPresenceEvent(userID, contract.PresenceOffline)
 }
 
-func (u *UserService) dispatchPresenceEvent(userID int, presence contract.UserPresence) {
+func (u *UserService) dispatchPresenceEvent(userID int64, presence contract.UserPresence) {
 	u.WSService.Broadcast(context.Background(), &events.PresenceUpdated{
-		UserID:   userID,
+		UserID:   idgen.Format(userID),
 		Presence: presence,
 	})
 }
@@ -559,7 +571,7 @@ func toUserResponse(user, requester *entity.User, presence contract.UserPresence
 	}
 
 	resp := &contract.UserResponse{
-		ID:          user.ID,
+		ID:          idgen.Format(user.ID),
 		Username:    user.Username,
 		Permissions: int64(user.Permissions),
 		Presence:    presence,
@@ -581,12 +593,19 @@ func toUserResponse(user, requester *entity.User, presence contract.UserPresence
 
 func toDeletedUserResponse(user *entity.User) *contract.UserResponse {
 	return &contract.UserResponse{
-		ID:          user.ID,
+		ID:          idgen.Format(user.ID),
 		Username:    "Deleted User",
 		Permissions: 0,
 		CreatedAt:   utils.FormatEpoch(0),
 		UpdatedAt:   utils.FormatEpoch(0),
 	}
+}
+
+func (u *UserService) nextID() (int64, error) {
+	if u.IDGen == nil {
+		return 0, errors.New("user id generator is nil")
+	}
+	return u.IDGen.NextID()
 }
 
 func buildUserUpdateAuditChanges(before, after *entity.User) []*entity.AuditLogChange {

@@ -2,20 +2,15 @@ package service
 
 import (
 	"errors"
-	"fmt"
-	"hash/crc32"
-	"os"
-	"strconv"
 	"strings"
-	"time"
 
 	"github.com/labstack/gommon/log"
-	"github.com/sony/sonyflake/v2"
 	"gorm.io/gorm"
 
 	"zenkeep/cmd/internal/contract"
 	"zenkeep/cmd/internal/domain/entity"
 	"zenkeep/cmd/internal/domain/sqlite/repository"
+	"zenkeep/cmd/internal/idgen"
 	"zenkeep/cmd/internal/utils"
 	"zenkeep/cmd/internal/utils/apierror"
 )
@@ -29,56 +24,16 @@ type auditLogRepository interface {
 	List(filter *repository.AuditLogFilter) ([]*entity.AuditLogEvent, error)
 }
 
-type auditIDGenerator interface {
-	NextID() (int64, error)
-}
-
-type sonyflakeGenerator struct {
-	flake *sonyflake.Sonyflake
-}
-
-func newSonyflakeGenerator() (auditIDGenerator, error) {
-	flake, err := sonyflake.New(sonyflake.Settings{
-		StartTime: time.Date(2025, time.January, 1, 0, 0, 0, 0, time.UTC),
-		MachineID: resolveAuditMachineID,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return &sonyflakeGenerator{flake: flake}, nil
-}
-
-func (s *sonyflakeGenerator) NextID() (int64, error) {
-	return s.flake.NextID()
-}
-
-func resolveAuditMachineID() (int, error) {
-	rawMachineID := strings.TrimSpace(os.Getenv("AUDIT_MACHINE_ID"))
-	if rawMachineID != "" {
-		machineID, err := strconv.ParseUint(rawMachineID, 10, 16)
-		if err != nil {
-			return 0, fmt.Errorf("parse AUDIT_MACHINE_ID: %w", err)
-		}
-		return int(machineID), nil
-	}
-
-	host, err := os.Hostname()
-	if err == nil && host != "" {
-		return int(crc32.ChecksumIEEE([]byte(host)) & 0xffff), nil
-	}
-	return os.Getpid() & 0xffff, nil
-}
-
 type AuditService struct {
 	DB        *gorm.DB
 	AuditRepo auditLogRepository
-	IDGen     auditIDGenerator
+	IDGen     idgen.Generator
 }
 
-func NewAuditService(db *gorm.DB, auditRepo auditLogRepository, idGen auditIDGenerator) (*AuditService, error) {
+func NewAuditService(db *gorm.DB, auditRepo auditLogRepository, idGen idgen.Generator) (*AuditService, error) {
 	if idGen == nil {
 		var err error
-		idGen, err = newSonyflakeGenerator()
+		idGen, err = idgen.NewSonyflakeGenerator()
 		if err != nil {
 			return nil, err
 		}
@@ -157,7 +112,7 @@ func (a *AuditService) GetAuditLogs(actor *entity.User, req *contract.AuditLogLi
 	}
 
 	if len(events) == filter.Limit {
-		next := strconv.FormatInt(events[len(events)-1].ID, 10)
+		next := idgen.Format(events[len(events)-1].ID)
 		resp.NextBeforeID = &next
 	}
 	return resp, nil
@@ -232,9 +187,15 @@ func isAuditActionTypeValid(actionType entity.AuditActionType) bool {
 }
 
 func toAuditEventResponse(event *entity.AuditLogEvent) *contract.AuditLogEventResponse {
+	var actorUserID *string
+	if event.ActorUserID != nil {
+		formatted := idgen.Format(*event.ActorUserID)
+		actorUserID = &formatted
+	}
+
 	resp := &contract.AuditLogEventResponse{
-		ID:          strconv.FormatInt(event.ID, 10),
-		ActorUserID: event.ActorUserID,
+		ID:          idgen.Format(event.ID),
+		ActorUserID: actorUserID,
 		ActionType:  string(event.ActionType),
 		SubjectType: string(event.SubjectType),
 		SubjectID:   event.SubjectID,

@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"strconv"
 	"sync"
 	"testing"
 
@@ -11,6 +10,7 @@ import (
 	"zenkeep/cmd/internal/domain/events"
 	"zenkeep/cmd/internal/domain/policy"
 	"zenkeep/cmd/internal/domain/sqlite/repository"
+	"zenkeep/cmd/internal/idgen"
 	"zenkeep/cmd/internal/utils"
 )
 
@@ -177,6 +177,7 @@ func newNoteVisibilityTestService(t *testing.T) (*NoteService, *captureGateway, 
 		newTestValidator(),
 		newTestAuditService(t, db, 6000),
 		policy.NewNotePolicy(),
+		&sequenceAuditIDGenerator{next: 9000},
 	)
 
 	return noteSvc, gateway, userRepo, connRepo
@@ -190,6 +191,7 @@ func seedNoteRecipients(
 	t.Helper()
 
 	visibleUser := &entity.User{
+		ID:          10,
 		Username:    "visible",
 		Email:       "visible@example.com",
 		Permissions: 0,
@@ -198,6 +200,7 @@ func seedNoteRecipients(
 		UpdatedAt:   utils.NowUTC(),
 	}
 	hiddenUser := &entity.User{
+		ID:          11,
 		Username:    "hidden",
 		Email:       "hidden@example.com",
 		Permissions: entity.PermissionSeeHiddenNotes,
@@ -220,11 +223,11 @@ func mustSaveUser(t *testing.T, userRepo *repository.DefaultUserRepository, user
 	}
 }
 
-func mustSaveConnection(t *testing.T, connRepo *repository.DefaultConnectionRepository, userID int) {
+func mustSaveConnection(t *testing.T, connRepo *repository.DefaultConnectionRepository, userID int64) {
 	t.Helper()
 	if err := connRepo.Save(&entity.Connection{
 		ConnectionID:    connectionID(userID),
-		SessionID:       "session-user-" + strconv.Itoa(userID),
+		SessionID:       "session-user-" + idgen.Format(userID),
 		UserID:          userID,
 		ExpiresAt:       utils.NowUTC() + 60_000,
 		LastHeartbeatAt: utils.NowUTC(),
@@ -234,8 +237,8 @@ func mustSaveConnection(t *testing.T, connRepo *repository.DefaultConnectionRepo
 	}
 }
 
-func connectionID(userID int) string {
-	return "conn-user-" + strconv.Itoa(userID)
+func connectionID(userID int64) string {
+	return "conn-user-" + idgen.Format(userID)
 }
 
 func (g *captureGateway) snapshot() []capturedMessage {

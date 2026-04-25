@@ -63,9 +63,9 @@ func bindAuditLogRequest(c echo.Context) (*contract.AuditLogListRequest, apierro
 	}
 
 	if rawActorID := strings.TrimSpace(c.QueryParam("actor_user_id")); rawActorID != "" {
-		actorID, err := strconv.Atoi(rawActorID)
+		actorID, err := strconv.ParseInt(rawActorID, 10, 64)
 		if err != nil {
-			return nil, apierror.NewInvalidParamTypeError("actor_user_id", "int")
+			return nil, apierror.NewInvalidParamTypeError("actor_user_id", "int64")
 		}
 		req.ActorUserID = &actorID
 	}

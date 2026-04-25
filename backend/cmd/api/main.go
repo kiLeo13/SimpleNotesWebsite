@@ -8,6 +8,7 @@ import (
 	"zenkeep/cmd/internal/domain/sqlite/repository"
 	"zenkeep/cmd/internal/http/handler"
 	mdlware "zenkeep/cmd/internal/http/middleware"
+	"zenkeep/cmd/internal/idgen"
 	cognitoclient "zenkeep/cmd/internal/infrastructure/aws/cognito"
 	"zenkeep/cmd/internal/infrastructure/aws/storage"
 	"zenkeep/cmd/internal/infrastructure/aws/websocket"
@@ -86,15 +87,20 @@ func main() {
 	compRepo := repository.NewCompanyRepository(db)
 	auditRepo := repository.NewAuditRepository(db)
 
-	auditService, err := service.NewAuditService(db, auditRepo, nil)
+	idGenerator, err := idgen.NewSonyflakeGenerator()
+	if err != nil {
+		panic(err)
+	}
+
+	auditService, err := service.NewAuditService(db, auditRepo, idGenerator)
 	if err != nil {
 		panic(err)
 	}
 
 	connService := service.NewWebSocketService(connRepo, wsClient)
-	userService := service.NewUserService(db, userRepo, validate, connService, cogClient, auditService, userPolicy)
-	noteService := service.NewNoteService(db, noteRepo, userRepo, connService, s3Client, validate, auditService, notePolicy)
-	miscService := service.NewMiscService(receitaClient, compRepo, auditService)
+	userService := service.NewUserService(db, userRepo, validate, connService, cogClient, auditService, userPolicy, idGenerator)
+	noteService := service.NewNoteService(db, noteRepo, userRepo, connService, s3Client, validate, auditService, notePolicy, idGenerator)
+	miscService := service.NewMiscService(receitaClient, compRepo, auditService, idGenerator)
 
 	connRoutes := handler.NewWSDefault(connService)
 	noteRoutes := handler.NewNoteDefault(noteService)
