@@ -301,6 +301,7 @@ Do not copy environment values into docs or comments unless explicitly needed.
 - Audit logs are opened from `SidebarRail`, auto-apply frontend filters on change, and page through `/audit-logs` in chunks of `50` using `next_before_id`.
 - The audit modal resolves actor names from `useUsersStore` first and falls back to `userService.getUserById` for users that are no longer present in the active list.
 - Company lookup audit events are recorded for both hits and misses, with `found` and `cache_hit` change rows describing the outcome.
+- Company lookup misses are cached as `companies` rows with `found=false`; do not put a database default back on `Company.Found`, because GORM can omit false zero values and turn repeated misses into empty successful company responses.
 - Internal platform IDs are stored as numeric `int64` values in SQLite but serialized as decimal strings in API and websocket contracts. The frontend must keep these values as strings and never parse them to JavaScript numbers.
 - New platform IDs are generated through `backend/cmd/internal/idgen` using Sonyflake with a `2025-01-01T00:00:00Z` epoch. Audit log change IDs are local numeric rows, and CNPJs stay business identifiers rather than generated IDs.
 - `frontend/src/stores/useNotesStore.ts` treats `REFERENCE` notes differently from text notes.
