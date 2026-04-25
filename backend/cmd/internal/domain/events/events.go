@@ -12,6 +12,15 @@ func (*Ack) GetType() contract.EventType {
 	return contract.EventAck
 }
 
+type ResyncRequired struct {
+	Reason        contract.ResyncReason `json:"reason"`
+	LatestEventID *string               `json:"latest_event_id,omitempty"`
+}
+
+func (*ResyncRequired) GetType() contract.EventType {
+	return contract.EventResyncRequired
+}
+
 type ConnectionKill struct {
 	Code   contract.ConnectionKillCode `json:"code"`
 	Reason *string                     `json:"reason,omitempty"`

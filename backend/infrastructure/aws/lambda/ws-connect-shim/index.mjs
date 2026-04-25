@@ -3,6 +3,7 @@ export const handler = async (event) => {
   const connectionId = event.requestContext.connectionId;
   const token = (event.queryStringParameters || {}).token || "";
   const sessionId = (event.queryStringParameters || {}).session_id || "";
+  const lastEventId = (event.queryStringParameters || {}).last_event_id || "";
 
   if (!sessionId) {
     return {
@@ -17,6 +18,7 @@ export const handler = async (event) => {
     "Content-Type": "application/json",
     "X-Connection-Id": connectionId,
     "X-Session-Id": sessionId,
+    "X-Last-Event-Id": lastEventId,
     Authorization: token ? `Bearer ${token}` : "",
   };
 

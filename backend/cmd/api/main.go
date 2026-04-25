@@ -82,6 +82,7 @@ func main() {
 	notePolicy := policy.NewNotePolicy()
 
 	connRepo := repository.NewConnectionRepository(db)
+	deliveryRepo := repository.NewSocketDeliveryRepository(db)
 	noteRepo := repository.NewNoteRepository(db)
 	userRepo := repository.NewUserRepository(db)
 	compRepo := repository.NewCompanyRepository(db)
@@ -97,7 +98,7 @@ func main() {
 		panic(err)
 	}
 
-	connService := service.NewWebSocketService(connRepo, wsClient)
+	connService := service.NewWebSocketService(connRepo, deliveryRepo, wsClient)
 	userService := service.NewUserService(db, userRepo, validate, connService, cogClient, auditService, userPolicy, idGenerator)
 	noteService := service.NewNoteService(db, noteRepo, userRepo, connService, s3Client, validate, auditService, notePolicy, idGenerator)
 	miscService := service.NewMiscService(receitaClient, compRepo, auditService, idGenerator)

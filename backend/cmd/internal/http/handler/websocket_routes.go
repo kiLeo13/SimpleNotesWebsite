@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"zenkeep/cmd/internal/contract"
 	"zenkeep/cmd/internal/infrastructure/aws/websocket"
 	"zenkeep/cmd/internal/utils"
@@ -12,7 +13,7 @@ import (
 )
 
 type WebSocketService interface {
-	RegisterConnection(userID int64, sessionID string, connID string, exp int64) apierror.ErrorResponse
+	RegisterConnection(userID int64, sessionID string, connID string, exp int64, lastEventID *int64) apierror.ErrorResponse
 	RemoveConnection(connectionID string)
 	HandleMessage(msg *contract.IncomingSocketMessage, connID string)
 }
@@ -41,12 +42,17 @@ func (h *DefaultWSRoute) HandleConnect(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, apierror.NewMissingParamError("sessionId"))
 	}
 
+	lastEventID, apierr := parseLastEventID(c.Request().Header.Get(websocket.HeaderLastEventID))
+	if apierr != nil {
+		return c.JSON(apierr.Code(), apierr)
+	}
+
 	token, err := utils.ParseTokenDataCtx(c)
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, apierror.InvalidAuthTokenError)
 	}
 
-	if apierr := h.WSService.RegisterConnection(user.ID, sessionID, connID, token.Exp); apierr != nil {
+	if apierr = h.WSService.RegisterConnection(user.ID, sessionID, connID, token.Exp, lastEventID); apierr != nil {
 		return c.JSON(apierr.Code(), apierr)
 	}
 	return c.NoContent(http.StatusOK)
@@ -69,4 +75,16 @@ func (h *DefaultWSRoute) HandleMessage(c echo.Context) error {
 
 	h.WSService.HandleMessage(&msg, connID)
 	return c.NoContent(http.StatusOK)
+}
+
+func parseLastEventID(raw string) (*int64, apierror.ErrorResponse) {
+	if raw == "" {
+		return nil, nil
+	}
+
+	value, err := strconv.ParseInt(raw, 10, 64)
+	if err != nil {
+		return nil, apierror.NewInvalidParamTypeError("lastEventId", "int64")
+	}
+	return &value, nil
 }

@@ -11,6 +11,7 @@ import (
 
 const HeaderConnectionID = "X-Connection-Id"
 const HeaderSessionID = "X-Session-Id"
+const HeaderLastEventID = "X-Last-Event-Id"
 
 type GatewayClient interface {
 	PostToConnection(ctx context.Context, connID string, data interface{}) error

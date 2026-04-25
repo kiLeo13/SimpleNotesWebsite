@@ -3,8 +3,8 @@ package sqlite
 import (
 	"os"
 	"path/filepath"
-	"zenkeep/cmd/internal/domain/entity"
 	"time"
+	"zenkeep/cmd/internal/domain/entity"
 
 	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
@@ -27,6 +27,7 @@ func Init() (*gorm.DB, error) {
 		&entity.Note{},
 		&entity.User{},
 		&entity.Connection{},
+		&entity.SocketDelivery{},
 		&entity.Company{},
 		&entity.CompanyPartner{},
 	)
