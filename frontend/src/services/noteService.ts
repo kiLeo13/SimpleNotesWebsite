@@ -29,6 +29,8 @@ export const NOTE_EXTENSIONS = [
   "mp4",
   "mp3"
 ]
+
+export const NOTE_MAX_SIZE_BYTES_RAW = 30 * 1024 * 1024 // 30 MiB
 export const NOTE_MAX_SIZE_BYTES = 20 * 1024 * 1024 // 20 MiB
 
 export const noteService = {

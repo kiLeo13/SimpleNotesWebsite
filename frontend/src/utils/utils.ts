@@ -125,10 +125,10 @@ export function ext(fileName: string): string | undefined {
 
 export function getPrettySize(size: number): string {
   if (size < KB) return `${size} Bytes`
-  if (size < MB) return `${formatSizeValue(size / KB)} KB`
-  if (size < GB) return `${formatSizeValue(size / MB)} MB`
+  if (size < MB) return `${formatSizeValue(size / KB)} KiB`
+  if (size < GB) return `${formatSizeValue(size / MB)} MiB`
 
-  return `${formatSizeValue(size / GB)} GB`
+  return `${formatSizeValue(size / GB)} GiB`
 }
 
 export function isOnlyDigit(s: string): boolean {
