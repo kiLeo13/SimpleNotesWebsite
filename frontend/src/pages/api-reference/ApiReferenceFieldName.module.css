@@ -1,0 +1,18 @@
+.fieldName {
+  overflow-wrap: anywhere;
+}
+
+.fieldCode {
+  color: #f0b5d3;
+  font-family: var(--font-code);
+  font-size: 0.86em;
+  background-color: #2b2d31;
+  border-radius: 4px;
+  padding: 0.08rem 0.25rem;
+}
+
+.optionalMark {
+  color: #f0b5d3;
+  font-family: var(--font-code);
+  font-size: 0.86em;
+}
