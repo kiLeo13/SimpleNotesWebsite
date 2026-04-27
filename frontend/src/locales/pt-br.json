@@ -26,7 +26,8 @@
     }
   },
   "app": {
-    "title": "ZenKeep"
+    "title": "ZenKeep",
+    "reference": "ZenKeep - API Reference"
   },
   "labels": {
     "notes": {
@@ -288,6 +289,36 @@
       "opt": "opcional"
     }
   },
+  "apiReference": {
+    "header": {
+      "eyebrow": "ZenKeep",
+      "title": "API Reference",
+      "description": "The ZenKeep API is a RESTful HTTP API, which is the primary way to interact with the platform. This documentation also covers information for websocket, events, business rules and more."
+    },
+    "sidebar": {
+      "ariaLabel": "API reference navigation",
+      "brand": "ZenKeep API",
+      "resourcesGroup": "HTTP API Resources"
+    },
+    "sections": {
+      "reference": "Reference",
+      "resources": "Resources",
+      "routes": "Routes",
+      "responses": "Responses",
+      "resourceRoutesAria": "{{resource}} routes"
+    },
+    "routeFields": {
+      "pathParameters": "Path Parameters",
+      "queryParameters": "Query Parameters",
+      "requestBody": "Request Body"
+    },
+    "tables": {
+      "fieldsCaption": "{{title}} fields",
+      "field": "Field",
+      "type": "Type",
+      "description": "Description"
+    }
+  },
   "warnings": {
     "noAccessToken": "Nenhum access token encontrado! Redirecionando para a página inicial...",
     "noteCreation": {
@@ -355,7 +386,8 @@
       "usersMng": "Gerenciar Usuários",
       "createNote": "Criar Nota",
       "companyLookup": "Consultar CNPJ",
-      "settings": "Configurações"
+      "settings": "Configurações",
+      "anchorSection": "Link para Seção"
     }
   },
   "menus": {

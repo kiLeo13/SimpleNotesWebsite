@@ -1,0 +1,92 @@
+.tableWrap {
+  max-width: 100%;
+  margin-top: 0.85rem;
+  overflow-x: auto;
+  scrollbar-color: #555861 #1b1c20;
+  scrollbar-width: thin;
+}
+
+.tableWrap table {
+  width: 100%;
+  min-width: 34rem;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.tableWrap caption {
+  margin-bottom: 0.45rem;
+  color: #f2f3f5;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-align: left;
+}
+
+.tableWrap th,
+.tableWrap td {
+  padding: 0.68rem 0.45rem;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid #303238;
+}
+
+.tableWrap th {
+  color: #f2f3f5;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.tableWrap th:nth-child(1),
+.tableWrap td:nth-child(1) {
+  width: 29%;
+}
+
+.tableWrap th:nth-child(2),
+.tableWrap td:nth-child(2) {
+  width: 24%;
+  color: #b5bac1;
+  overflow-wrap: anywhere;
+}
+
+.tableWrap a {
+  color: #b6c7ff;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(182, 199, 255, 0.48);
+}
+
+.tableWrap a:hover {
+  color: #d7e0ff;
+  border-bottom-color: #d7e0ff;
+}
+
+.tableWrap code {
+  color: #f0b5d3;
+  font-family: var(--font-code);
+  font-size: 0.86em;
+  background-color: #2b2d31;
+  border-radius: 4px;
+  padding: 0.08rem 0.25rem;
+}
+
+.descriptionCell {
+  color: #b5bac1;
+  background: transparent;
+}
+
+.descriptionCell code {
+  color: #f0b5d3;
+  background: transparent;
+  padding: 0;
+}
+
+.fieldName {
+  overflow-wrap: anywhere;
+}
+
+.optionalMark {
+  color: #f0b5d3;
+  font-family: var(--font-code);
+  font-size: 0.86em;
+}

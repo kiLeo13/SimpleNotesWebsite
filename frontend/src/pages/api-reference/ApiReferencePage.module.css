@@ -1,0 +1,83 @@
+.page {
+  display: flex;
+  height: 100dvh;
+  overflow: hidden;
+  background-color: #1e1f22;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: #555861 #1b1c20;
+  scrollbar-width: thin;
+  box-sizing: border-box;
+  padding: 2.25rem 8rem 5rem;
+}
+
+.header p {
+  margin: 0 0 0.55rem;
+  color: #a5b4fc;
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1.45;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.header h1 {
+  margin: 0;
+  color: #f2f3f5;
+  font-size: 2rem;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.header span {
+  display: block;
+  max-width: 42rem;
+  margin-top: 0.8rem;
+  color: #b5bac1;
+  font-size: 0.94rem;
+  line-height: 1.75;
+}
+
+.referenceGroup,
+.resourceGroup {
+  margin-top: 2.25rem;
+}
+
+.referenceGroup > h2,
+.resourceGroup > h2 {
+  margin: 0 0 0.4rem;
+  color: #f2f3f5;
+  font-size: 1.55rem;
+  line-height: 1.25;
+  letter-spacing: 0;
+}
+
+@media (max-width: 1100px) {
+  .content {
+    padding: 2rem 1.5rem 4rem 2rem;
+  }
+}
+
+@media (max-width: 760px) {
+  .page {
+    height: auto;
+    min-height: 100dvh;
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  .content {
+    overflow: visible;
+    padding: 1.35rem 1rem 4rem;
+  }
+
+  .header h1 {
+    font-size: 1.65rem;
+  }
+}
