@@ -87,6 +87,7 @@ That sequence usually gives enough context without spelunking the whole repo lik
 - `frontend/src/routes/index.tsx`: authenticated home route with typed search params and auth redirect.
 - `frontend/src/routes/login.tsx`: login screen route.
 - `frontend/src/routes/register.tsx`: signup screen route.
+- `frontend/src/routes/api.reference.tsx`: public API reference route at `/api/reference`.
 - `frontend/src/routeTree.gen.ts`: generated TanStack route tree. Do not hand-edit it unless you enjoy arguing with the generator.
 
 ### Frontend Main Screen Flow
@@ -159,6 +160,17 @@ That sequence usually gives enough context without spelunking the whole repo lik
   - Server event registry and discriminated union schema.
 - `frontend/src/types/websocket/events.ts`
   - Kill codes and presence payload schemas.
+
+### API Reference Docs
+
+- `frontend/src/pages/api-reference/apiReferenceDocs.ts`
+  - Single source of truth for rendered backend API reference content: topics, resources, object fields, routes, request/response fields, examples, and route-to-resource links.
+- `frontend/src/pages/api-reference/`
+  - Dark in-app documentation renderer at `/api/reference`. Keep TSX generic; adding resources or endpoints should only require changing declarations.
+
+Update these docs whenever backend handlers/contracts, frontend API schemas, or
+websocket event shapes change. The docs should describe the wire contract, not
+client-side transformed models.
 
 ### Backend Entrypoints
 
