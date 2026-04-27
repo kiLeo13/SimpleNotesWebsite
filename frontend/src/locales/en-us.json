@@ -1,0 +1,53 @@
+{
+  "app": {
+    "reference": "ZenKeep - API Reference"
+  },
+  "apiReference": {
+    "header": {
+      "eyebrow": "ZenKeep",
+      "title": "API Reference",
+      "description": "The ZenKeep API is a RESTful HTTP API, which is the primary way to interact with the platform. This documentation also covers information for websocket, events, business rules and more."
+    },
+    "sidebar": {
+      "ariaLabel": "API reference navigation",
+      "brand": "ZenKeep API",
+      "brandIconAlt": "ZenKeep icon",
+      "resourcesGroup": "HTTP Resources"
+    },
+    "sections": {
+      "reference": "Reference",
+      "resources": "Resources",
+      "routes": "Endpoints",
+      "responses": "Responses",
+      "resourceRoutesAria": "{{resource}} endpoints",
+      "gatewayEvents": "Gateway Events",
+      "gatewayEventsAria": "Gateway event documentation"
+    },
+    "routeFields": {
+      "pathParameters": "Path Parameters",
+      "queryParameters": "Query Parameters",
+      "requestBody": "Request Body"
+    },
+    "tables": {
+      "fieldsCaption": "{{title}} fields",
+      "payloadCaption": "{{title}} payload",
+      "field": "Field",
+      "type": "Type",
+      "description": "Description"
+    },
+    "gateway": {
+      "dataReturns": "Returns",
+      "envelopeTitle": "Event Envelope",
+      "envelopeDescription": "Every gateway message is wrapped in an envelope with the following structure. The data field shape varies by event type."
+    },
+    "toc": {
+      "ariaLabel": "Page sections",
+      "title": "On this page"
+    }
+  },
+  "tooltips": {
+    "labels": {
+      "anchorSection": "Link to Section"
+    }
+  }
+}
