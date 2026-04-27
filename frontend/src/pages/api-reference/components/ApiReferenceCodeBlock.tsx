@@ -1,4 +1,4 @@
-import type { ApiExample } from "./apiReferenceDocs"
+import type { ApiExample } from "../docs/apiReferenceDocs"
 
 import ReactMarkdown from "react-markdown"
 import rehypeHighlight from "rehype-highlight"

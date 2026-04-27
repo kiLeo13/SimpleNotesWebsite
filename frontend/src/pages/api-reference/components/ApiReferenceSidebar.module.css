@@ -1,13 +1,12 @@
 .sidebar {
+  display: flex;
+  flex-direction: column;
   min-height: 0;
   height: 100dvh;
   width: 250px;
   box-sizing: border-box;
-  padding: 1rem 0.75rem 6rem;
-  overflow-y: auto;
+  overflow: hidden;
   overscroll-behavior: contain;
-  scrollbar-color: #555861 #1b1c20;
-  scrollbar-width: thin;
   background: #17181c;
   border-right: 1px solid #2b2d31;
 }
@@ -15,9 +14,9 @@
 .brand {
   display: flex;
   align-items: center;
+  flex: 0 0 auto;
   gap: 5px;
-  padding: 0.25rem 0.45rem 1rem;
-  margin-bottom: 0.8rem;
+  padding: 1.25rem 1.2rem 1rem;
   border-bottom: 1px solid #2b2d31;
   user-select: none;
 }
@@ -32,7 +31,11 @@
   font-size: 1rem;
 }
 
-.resourceNavBlock {
-  display: flex;
-  flex-direction: column;
+.navScroller {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 0 0.75rem 6rem;
+  overflow-y: auto;
+  scrollbar-color: #555861 #1b1c20;
+  scrollbar-width: thin;
 }

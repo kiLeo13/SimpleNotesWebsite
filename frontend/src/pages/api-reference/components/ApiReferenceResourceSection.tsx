@@ -1,11 +1,12 @@
-import { useTranslation } from "react-i18next"
+import type { ApiResource } from "../docs/apiReferenceDocs"
 
-import type { ApiResource } from "./apiReferenceDocs"
 import { ApiReferenceCallouts } from "./ApiReferenceCallout"
+import { ApiReferenceDeclarationSection } from "./ApiReferenceDeclarationSection"
 import { ApiReferenceFieldTable } from "./ApiReferenceFieldTable"
 import { ApiReferenceRouteSection } from "./ApiReferenceRouteSection"
+import { useTranslation } from "react-i18next"
 import { renderInline } from "./ApiReferenceInline"
-import { resourceSectionId } from "./apiReferenceIds"
+import { resourceObjectSectionId } from "../docs/apiReferenceIds"
 
 import styles from "./ApiReferenceResourceSection.module.css"
 
@@ -20,7 +21,7 @@ export function ApiReferenceResourceSection({
 
   return (
     <article
-      id={resourceSectionId(resource.id)}
+      id={resource.id}
       className={styles.resourceSection}
     >
       <div className={styles.resourceHeader}>
@@ -35,7 +36,10 @@ export function ApiReferenceResourceSection({
 
       <ApiReferenceCallouts callouts={resource.callouts} />
 
-      <section className={styles.objectSection}>
+      <section
+        id={resourceObjectSectionId(resource.id)}
+        className={styles.objectSection}
+      >
         <h3 className={styles.objectTitle}>{resource.objectName}</h3>
         <ApiReferenceFieldTable
           fields={resource.fields}
@@ -44,6 +48,18 @@ export function ApiReferenceResourceSection({
           })}
         />
       </section>
+
+      {resource.declarations && resource.declarations.length > 0 ? (
+        <section className={styles.declarationsBlock}>
+          {resource.declarations.map((declaration) => (
+            <ApiReferenceDeclarationSection
+              key={declaration.id}
+              declaration={declaration}
+              resourceId={resource.id}
+            />
+          ))}
+        </section>
+      ) : null}
 
       {resource.routes.length > 0 ? (
         <section

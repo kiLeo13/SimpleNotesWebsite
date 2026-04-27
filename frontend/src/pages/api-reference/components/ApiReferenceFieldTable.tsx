@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next"
 
-import type { ApiField } from "./apiReferenceDocs"
+import type { ApiField } from "../docs/apiReferenceDocs"
 import { ApiReferenceFieldName } from "./ApiReferenceFieldName"
 import { renderInline } from "./ApiReferenceInline"
 

@@ -1,0 +1,40 @@
+.declarationSection {
+  scroll-margin-top: 1.3rem;
+  margin-top: 1rem;
+}
+
+.declarationTitle {
+  margin: 0;
+  color: #f2f3f5;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+
+.declarationDescription {
+  margin: 0.45rem 0 0;
+  color: #b5bac1;
+  font-size: 0.9rem;
+  line-height: 1.78;
+}
+
+.inlineLink {
+  color: #b6c7ff;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(182, 199, 255, 0.48);
+}
+
+.inlineLink:hover {
+  color: #d7e0ff;
+  border-bottom-color: #d7e0ff;
+}
+
+.inlineCode {
+  color: #f0b5d3;
+  font-family: var(--font-code);
+  font-size: 0.86em;
+  background-color: #2b2d31;
+  border-radius: 4px;
+  padding: 0.08rem 0.25rem;
+}

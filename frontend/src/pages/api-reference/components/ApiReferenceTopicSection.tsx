@@ -1,13 +1,13 @@
+import type { ApiTopic } from "../docs/apiReferenceDocs"
+
 import { AppTooltip } from "@/components/ui/AppTooltip"
 import { FiLink } from "react-icons/fi"
-import { useTranslation } from "react-i18next"
-
-import type { ApiTopic } from "./apiReferenceDocs"
 import { ApiReferenceCallouts } from "./ApiReferenceCallout"
 import { ApiReferenceCodeBlock } from "./ApiReferenceCodeBlock"
 import { ApiReferenceFieldTable } from "./ApiReferenceFieldTable"
 import { renderInline } from "./ApiReferenceInline"
-import { topicSectionId } from "./apiReferenceIds"
+import { topicSectionId } from "../docs/apiReferenceIds"
+import { useTranslation } from "react-i18next"
 
 import styles from "./ApiReferenceTopicSection.module.css"
 

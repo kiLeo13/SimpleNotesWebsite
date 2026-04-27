@@ -1,4 +1,4 @@
-import type { ApiCallout, CalloutTone } from "./apiReferenceDocs"
+import type { ApiCallout, CalloutTone } from "../docs/apiReferenceDocs"
 
 import clsx from "clsx"
 

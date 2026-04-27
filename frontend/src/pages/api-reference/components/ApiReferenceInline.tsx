@@ -1,7 +1,8 @@
 import type { JSX } from "react"
-import type { InlineTextPart } from "./apiReferenceDocs"
+import type { InlineTextPart } from "../docs/apiReferenceDocs"
 
-import { resourceSectionId, topicSectionId } from "./apiReferenceIds"
+import { Link } from "@tanstack/react-router"
+import { topicSectionId } from "../docs/apiReferenceIds"
 
 type InlineClassNames = {
   code?: string
@@ -19,25 +20,28 @@ export function renderInline(
 
     if (part.resourceId) {
       return (
-        <a
+        <Link
           key={index}
           className={classNames.link}
-          href={`#${resourceSectionId(part.resourceId)}`}
+          to="/api/reference/$resourceId"
+          params={{ resourceId: part.resourceId }}
+          hash={part.hash}
         >
           {part.label}
-        </a>
+        </Link>
       )
     }
 
     if (part.sectionId) {
       return (
-        <a
+        <Link
           key={index}
           className={classNames.link}
-          href={`#${topicSectionId(part.sectionId)}`}
+          to="/api/reference"
+          hash={topicSectionId(part.sectionId)}
         >
           {part.label}
-        </a>
+        </Link>
       )
     }
 

@@ -14,7 +14,7 @@
   scrollbar-color: #555861 #1b1c20;
   scrollbar-width: thin;
   box-sizing: border-box;
-  padding: 2.25rem 8rem 5rem;
+  padding: 2.25rem 4rem 12rem 8rem;
 }
 
 .eyebrow {
@@ -44,8 +44,7 @@
   line-height: 1.75;
 }
 
-.referenceGroup,
-.resourceGroup {
+.referenceGroup {
   margin-top: 2.25rem;
 }
 
@@ -55,6 +54,12 @@
   font-size: 1.55rem;
   line-height: 1.25;
   letter-spacing: 0;
+}
+
+@media (max-width: 1360px) {
+  .content {
+    padding-right: 4rem;
+  }
 }
 
 @media (max-width: 1100px) {

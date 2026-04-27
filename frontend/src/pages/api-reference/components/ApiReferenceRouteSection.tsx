@@ -2,11 +2,11 @@ import clsx from "clsx"
 import { useTranslation } from "react-i18next"
 
 import { inRange } from "@/utils/utils"
-import type { ApiRoute, HttpMethod } from "./apiReferenceDocs"
+import type { ApiRoute, HttpMethod } from "../docs/apiReferenceDocs"
 import { ApiReferenceCallouts } from "./ApiReferenceCallout"
 import { ApiReferenceRouteFields } from "./ApiReferenceRouteFields"
 import { renderInline } from "./ApiReferenceInline"
-import { routeSectionId } from "./apiReferenceIds"
+import { routeSectionId } from "../docs/apiReferenceIds"
 
 import styles from "./ApiReferenceRouteSection.module.css"
 

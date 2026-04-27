@@ -1,4 +1,4 @@
-import type { ApiField } from "./apiReferenceDocs"
+import type { ApiField } from "../docs/apiReferenceDocs"
 import { ApiReferenceFieldTable } from "./ApiReferenceFieldTable"
 
 import "./ApiReferenceRouteFields.module.css"

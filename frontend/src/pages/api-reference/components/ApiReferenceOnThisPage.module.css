@@ -1,0 +1,57 @@
+.toc {
+  flex: 0 0 255px;
+  width: 255px;
+  height: 100dvh;
+  box-sizing: border-box;
+  padding: 2.25rem 1.35rem 2rem 0.85rem;
+  overflow: hidden;
+  background-color: #1e1f22;
+}
+
+.tocInner {
+  max-height: calc(100dvh - 4.25rem);
+  overflow-y: auto;
+  scrollbar-color: #555861 #1b1c20;
+  scrollbar-width: thin;
+}
+
+.tocTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.8rem;
+  color: #f2f3f5;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.tocIcon {
+  flex: 0 0 auto;
+  color: #b5bac1;
+  font-size: 0.82rem;
+}
+
+.tocNav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.14rem;
+}
+
+.tocLink {
+  display: block;
+  min-width: 0;
+  padding: 0.34rem 0;
+  color: #a8adb5;
+  font-size: 0.76rem;
+  font-weight: 600;
+  line-height: 1.35;
+  text-decoration: none;
+  outline: none;
+}
+
+.tocLink:hover,
+.tocLink:focus-visible,
+.activeTocLink {
+  color: #a5b4fc;
+}
