@@ -119,7 +119,7 @@ func (n *DefaultNoteRoute) DeleteNote(c echo.Context) error {
 	if serr != nil {
 		return c.JSON(serr.Code(), serr)
 	}
-	return c.NoContent(http.StatusOK)
+	return c.NoContent(http.StatusNoContent)
 }
 
 func (n *DefaultNoteRoute) createFromText(c echo.Context) error {
