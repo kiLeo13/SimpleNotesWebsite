@@ -4,12 +4,22 @@ import { describe, expect, it } from "vitest"
 import "@/services/i18n"
 import { ApiReferencePage } from "./ApiReferencePage"
 
+function getByTextContent(text: string) {
+  return screen.getByText((_, element) => {
+    if (element?.textContent !== text) return false
+
+    return Array.from(element.children).every(
+      (child) => child.textContent !== text
+    )
+  })
+}
+
 describe("ApiReferencePage", () => {
   it("renders a backend-only resource-driven reference", () => {
     render(<ApiReferencePage />)
 
     expect(
-      screen.getByRole("heading", { name: "ZenKeep API Reference" })
+      screen.getByRole("heading", { name: "API Reference" })
     ).toBeInTheDocument()
     expect(
       screen.getByRole("navigation", { name: "HTTP API Resources" })
@@ -23,8 +33,8 @@ describe("ApiReferencePage", () => {
     render(<ApiReferencePage />)
 
     expect(screen.getByText("/v1")).toBeInTheDocument()
-    expect(screen.getByText("zenkeep.com")).toBeInTheDocument()
-    expect(screen.getAllByText("/v1/api/users/{id}")[0]).toBeInTheDocument()
+    expect(screen.getByText(/\/v\{version\}/)).toBeInTheDocument()
+    expect(screen.getAllByText("/users/{id}")[0]).toBeInTheDocument()
   })
 
   it("renders each resource with its object declaration before routes", () => {
@@ -60,7 +70,7 @@ describe("ApiReferencePage", () => {
 
     expect(getUserSection).not.toBeNull()
     expect(
-      within(getUserSection as HTMLElement).getByRole("link", { name: "User" })
+      within(getUserSection as HTMLElement).getByRole("link", { name: "user" })
     ).toHaveAttribute("href", "#resource-user")
   })
 
@@ -68,10 +78,14 @@ describe("ApiReferencePage", () => {
     render(<ApiReferencePage />)
 
     expect(
-      screen.getByText(/Reference uploads use/i)
+      getByTextContent(
+        "File uploads must use multipart/form-data header and pass all attributes through json_payload parameter."
+      )
     ).toBeInTheDocument()
     expect(
-      screen.getByText(/Routes in this reference are shown relative to the \/v1 API stage/i)
+      getByTextContent(
+        "Requests that do not provide a valid bearer token will fail with a 401 Unauthorized."
+      )
     ).toBeInTheDocument()
 
     const highlightedCode = screen.getByText((_, element) => {

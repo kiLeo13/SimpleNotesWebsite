@@ -97,9 +97,10 @@ request/response fields, examples, and cross-links between routes and resources.
 The TSX page should stay
 a generic renderer over those declarations, so adding an endpoint or resource does
 not require editing page layout code.
-Each API reference renderer component owns its CSS through a matching local
-CSS module; keep layout, sidebar, section, table, callout, and code block styles
-with the component that renders the corresponding markup.
+Each API reference renderer component lives in its own file and owns its CSS
+through a matching local CSS module; keep layout, navigation, section, table,
+callout, and code block styles with the component that renders the corresponding
+markup.
 
 When backend handlers, backend contracts, websocket events, or ID/cursor
 semantics change, update `apiReferenceDocs.ts` in the same change.
