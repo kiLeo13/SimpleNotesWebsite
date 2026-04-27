@@ -6,32 +6,12 @@
   border-radius: 12px;
 }
 
-.codeBlock figcaption {
+.caption {
   padding: 0.55rem 0.75rem;
   color: #949ba4;
   font-size: 0.72rem;
   font-weight: 800;
   border-bottom: 1px solid rgb(41, 43, 65);
-}
-
-.codeBlock pre {
-  margin: 0;
-  padding: 0.85rem;
-  overflow-x: auto;
-  scrollbar-color: #555861 #1b1c20;
-  scrollbar-width: thin;
-  background-color: #0d1117;
-}
-
-.codeBlock code {
-  display: block;
-  color: #c9d1d9;
-  font-family: var(--font-code);
-  font-size: 0.8rem;
-  line-height: 1.65;
-  background: transparent;
-  border: 0;
-  padding: 0 !important;
 }
 
 .codeBlock :global(.hljs) {

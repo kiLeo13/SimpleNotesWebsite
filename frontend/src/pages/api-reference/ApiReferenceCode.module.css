@@ -1,0 +1,10 @@
+.code {
+  display: block;
+  color: #c9d1d9;
+  font-family: var(--font-code);
+  font-size: 0.8rem;
+  line-height: 1.65;
+  background: transparent;
+  border: 0;
+  padding: 0 !important;
+}

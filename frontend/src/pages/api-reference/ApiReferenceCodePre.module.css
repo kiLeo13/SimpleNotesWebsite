@@ -1,0 +1,8 @@
+.pre {
+  margin: 0;
+  padding: 0.85rem;
+  overflow-x: auto;
+  scrollbar-color: #555861 #1b1c20;
+  scrollbar-width: thin;
+  background-color: #0d1117;
+}
