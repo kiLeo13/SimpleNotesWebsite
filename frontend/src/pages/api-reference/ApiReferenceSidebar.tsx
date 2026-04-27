@@ -1,11 +1,9 @@
-import type { ReactNode } from "react"
 import type { NavCategory } from "./apiReferenceIds"
 
-import clsx from "clsx"
-
-import { FiChevronDown } from "react-icons/fi"
 import { useTranslation } from "react-i18next"
 import { apiResources, apiTopics } from "./apiReferenceDocs"
+import { ApiReferenceNavGroup } from "./ApiReferenceNavGroup"
+import { ApiReferenceNavLink } from "./ApiReferenceNavLink"
 import {
   resourceSectionId,
   routeSectionId,
@@ -36,41 +34,43 @@ export function ApiReferenceSidebar({
         <img
           className={styles.brandIcon}
           src="/favicon.png"
-          alt="ZenKeep Icon"
+          alt={t("apiReference.sidebar.brandIconAlt")}
           draggable={false}
         />
-        <strong>{t("apiReference.sidebar.brand")}</strong>
+        <strong className={styles.brandName}>
+          {t("apiReference.sidebar.brand")}
+        </strong>
       </div>
 
-      <NavGroup
+      <ApiReferenceNavGroup
         expanded={openCategories.reference}
         onToggle={() => onToggleCategory("reference")}
         title={t("apiReference.sections.reference")}
       >
         {apiTopics.map((topic) => (
-          <NavLink
+          <ApiReferenceNavLink
             key={topic.id}
             active={activeId === topicSectionId(topic.id)}
             href={`#${topicSectionId(topic.id)}`}
             label={topic.title}
           />
         ))}
-      </NavGroup>
+      </ApiReferenceNavGroup>
 
-      <NavGroup
+      <ApiReferenceNavGroup
         expanded={openCategories.resources}
         onToggle={() => onToggleCategory("resources")}
         title={t("apiReference.sidebar.resourcesGroup")}
       >
         {apiResources.map((resource) => (
           <div key={resource.id} className={styles.resourceNavBlock}>
-            <NavLink
+            <ApiReferenceNavLink
               active={activeId === resourceSectionId(resource.id)}
               href={`#${resourceSectionId(resource.id)}`}
               label={resource.navLabel ?? resource.name}
             />
             {resource.routes.map((route) => (
-              <NavLink
+              <ApiReferenceNavLink
                 key={route.id}
                 active={activeId === routeSectionId(resource.id, route.id)}
                 href={`#${routeSectionId(resource.id, route.id)}`}
@@ -80,57 +80,7 @@ export function ApiReferenceSidebar({
             ))}
           </div>
         ))}
-      </NavGroup>
+      </ApiReferenceNavGroup>
     </aside>
-  )
-}
-
-function NavGroup({
-  children,
-  expanded,
-  onToggle,
-  title
-}: {
-  children: ReactNode
-  expanded: boolean
-  onToggle: () => void
-  title: string
-}) {
-  return (
-    <nav className={styles.navGroup} aria-label={title}>
-      <button
-        type="button"
-        className={styles.navGroupButton}
-        onClick={onToggle}
-      >
-        <span>{title}</span>
-        <FiChevronDown className={styles.chevron} data-expanded={expanded} />
-      </button>
-      {expanded && <div>{children}</div>}
-    </nav>
-  )
-}
-
-function NavLink({
-  active,
-  href,
-  label,
-  nested = false
-}: {
-  active: boolean
-  href: string
-  label: string
-  nested?: boolean
-}) {
-  return (
-    <a
-      className={clsx(
-        nested ? styles.nestedNavItem : styles.navItem,
-        active && styles.activeNavItem
-      )}
-      href={href}
-    >
-      {label}
-    </a>
   )
 }

@@ -298,6 +298,7 @@
     "sidebar": {
       "ariaLabel": "API reference navigation",
       "brand": "ZenKeep API",
+      "brandIconAlt": "ZenKeep icon",
       "resourcesGroup": "HTTP API Resources"
     },
     "sections": {

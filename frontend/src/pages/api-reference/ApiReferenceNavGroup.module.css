@@ -1,0 +1,43 @@
+.navGroup {
+  margin-top: 1.15rem;
+}
+
+.navGroupButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin: 0 0 0.45rem;
+  padding: 0 0.45rem;
+  color: #948e9c;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: transparent;
+  outline: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.navGroupButton:hover,
+.navGroupButton:focus-visible {
+  color: #b2adb9;
+}
+
+.chevron {
+  transform: rotate(-90deg);
+  transition: transform 200ms ease-in-out;
+}
+
+.chevron[data-expanded="true"] {
+  transform: rotate(0deg);
+}
+
+.navItems {
+  display: flex;
+  flex-direction: column;
+  gap: 0.08rem;
+  padding-bottom: 1rem;
+}
