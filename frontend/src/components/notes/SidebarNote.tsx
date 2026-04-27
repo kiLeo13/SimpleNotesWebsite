@@ -59,6 +59,7 @@ export function SidebarNote({ note, onClick }: SidebarNoteProps): JSX.Element {
   const copyNoteId = async () => {
     try {
       await copyTextToClipboard(note.id)
+      toasts.success(t("sidebar.notes.toasts.copyIdSuccess"))
     } catch (error) {
       console.error("Failed to copy note ID:", error)
       toasts.error(t("sidebar.notes.toasts.copyIdError"))
