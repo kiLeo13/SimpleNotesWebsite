@@ -312,7 +312,11 @@ export const apiResources: ApiResource[] = [
         path: "/users/login",
         title: "Login",
         auth: "Public",
-        description: [["Authenticates a user with email and password. Returns a token pair."]],
+        description: [
+          [
+            "Authenticates a user with email and password. Returns a token pair."
+          ]
+        ],
         requestBody: [
           {
             name: "email",
@@ -338,9 +342,9 @@ export const apiResources: ApiResource[] = [
         path: "/users",
         title: "Create User",
         auth: "Public",
-        description: [[
-          "Creates a user account and starts the confirmation flow."
-        ]],
+        description: [
+          ["Creates a user account and starts the confirmation flow."]
+        ],
         requestBody: [
           {
             name: "username",
@@ -374,11 +378,13 @@ export const apiResources: ApiResource[] = [
         path: "/users",
         title: "List Users",
         auth: "Bearer JWT",
-        description: [[
-          "Lists users visible to the authenticated requester. Returns an array of ",
-          { label: "user", resourceId: "user" },
-          " objects."
-        ]],
+        description: [
+          [
+            "Lists users visible to the authenticated requester. Returns an array of ",
+            { label: "user", resourceId: "user" },
+            " objects."
+          ]
+        ],
         responses: [
           {
             status: 200,
@@ -393,11 +399,13 @@ export const apiResources: ApiResource[] = [
         path: "/users/{id}",
         title: "Get User",
         auth: "Bearer JWT",
-        description: [[
-          "Fetches one user by platform ID. Returns a ",
-          { label: "user", resourceId: "user" },
-          " object."
-        ]],
+        description: [
+          [
+            "Fetches one user by platform ID. Returns a ",
+            { label: "user", resourceId: "user" },
+            " object."
+          ]
+        ],
         pathParams: [
           { name: "id", type: "string", description: ["User platform ID."] }
         ],
@@ -415,11 +423,13 @@ export const apiResources: ApiResource[] = [
         path: "/users/{id}",
         title: "Update User",
         auth: "Bearer JWT",
-        description: [[
-          "Updates mutable user fields permitted by the requester. Returns the updated ",
-          { label: "User", resourceId: "user" },
-          " object."
-        ]],
+        description: [
+          [
+            "Updates mutable user fields permitted by the requester. Returns the updated ",
+            { label: "User", resourceId: "user" },
+            " object."
+          ]
+        ],
         callouts: [
           {
             tone: "warning",
@@ -526,11 +536,13 @@ export const apiResources: ApiResource[] = [
         path: "/notes",
         title: "List Notes",
         auth: "Bearer JWT",
-        description: [[
-          "Lists notes visible to the authenticated user. Returns an array of ",
-          { label: "note", resourceId: "note" },
-          " objects."
-        ]],
+        description: [
+          [
+            "Lists notes visible to the authenticated user. Returns an array of ",
+            { label: "note", resourceId: "note" },
+            " objects."
+          ]
+        ],
         responses: [
           {
             status: 200,
@@ -548,19 +560,21 @@ export const apiResources: ApiResource[] = [
         path: "/notes",
         title: "Create Note",
         auth: "Bearer JWT",
-        description: [[
-          "Creates a new note. Returns the created ",
-          { label: "note", resourceId: "note" },
-          " object. Requires ",
-          { label: "Create Notes" },
-          " permission."
-        ]],
+        description: [
+          [
+            "Creates a new note. Returns the created ",
+            { label: "note", resourceId: "note" },
+            " object. Requires ",
+            { label: "Create Notes" },
+            " permission."
+          ]
+        ],
         callouts: [
           {
             tone: "info",
             text: [
               "File uploads must use ",
-              { label: "multipart/form-data"},
+              { label: "multipart/form-data" },
               " header and pass all attributes through ",
               { label: "json_payload" },
               " parameter."
@@ -615,11 +629,13 @@ export const apiResources: ApiResource[] = [
         path: "/notes/{id}",
         title: "Get Note",
         auth: "Bearer JWT",
-        description: [[
-          "Fetches one note by platform ID. Returns a full ",
-          { label: "note", resourceId: "note" },
-          " object."
-        ]],
+        description: [
+          [
+            "Fetches one note by platform ID. Returns a full ",
+            { label: "note", resourceId: "note" },
+            " object."
+          ]
+        ],
         pathParams: [
           { name: "id", type: "string", description: ["Note platform ID."] }
         ],
@@ -639,9 +655,9 @@ export const apiResources: ApiResource[] = [
         auth: "Bearer JWT",
         description: [
           [
-          "Updates note metadata. Returns the updated ",
-          { label: "Note", resourceId: "note" },
-          " object."
+            "Updates note metadata. Returns the updated ",
+            { label: "note", resourceId: "note" },
+            " object."
           ],
           [
             "This endpoint usually fires a ",
@@ -656,9 +672,7 @@ export const apiResources: ApiResource[] = [
             { label: "Note Created" },
             " event."
           ],
-          [
-            "Note content cannot be updated."
-          ]
+          ["Note content cannot be updated."]
         ],
         requestBody: [
           { name: "name?", type: "string", description: ["Note name."] },
@@ -684,12 +698,17 @@ export const apiResources: ApiResource[] = [
         path: "/notes/{id}",
         title: "Delete Note",
         auth: "Bearer JWT",
-        description: [[
-          "Deletes a note by ID. Returns a 204 empty response on success."
-        ]],
+        description: [
+          ["Deletes a note by ID. Returns a 204 empty response on success."]
+        ],
         responses: [
           { status: 204, description: ["Note deleted."] },
-          { status: 404, description: ["Note not found or user does not have permission to see it."] },
+          {
+            status: 404,
+            description: [
+              "Note not found or user does not have permission to see it."
+            ]
+          },
           { status: 403, description: ["Requester cannot delete the note."] }
         ]
       }
@@ -744,13 +763,15 @@ export const apiResources: ApiResource[] = [
         path: "/audit-logs",
         title: "List Audit Logs",
         auth: "Bearer JWT",
-        description: [[
-          "Lists audit events newest first with cursor pagination. Returns an array of ",
-          { label: "audit log", resourceId: "audit-logs" },
-          " objects and an optional ",
-          { label: "next_before_id" },
-          " cursor."
-        ]],
+        description: [
+          [
+            "Lists audit events newest first with cursor pagination. Returns an array of ",
+            { label: "audit log", resourceId: "audit-logs" },
+            " objects and an optional ",
+            { label: "next_before_id" },
+            " cursor."
+          ]
+        ],
         queryParams: [
           {
             name: "limit?",
@@ -828,11 +849,13 @@ export const apiResources: ApiResource[] = [
         path: "/misc/cnpj/{cnpj}",
         title: "Get Company by CNPJ",
         auth: "Bearer JWT",
-        description: [[
-          "Looks up a Brazilian company by CNPJ. Returns a ",
-          { label: "company", resourceId: "company" },
-          " object."
-        ]],
+        description: [
+          [
+            "Looks up a Brazilian company by CNPJ. Returns a ",
+            { label: "company", resourceId: "company" },
+            " object."
+          ]
+        ],
         pathParams: [
           {
             name: "cnpj",

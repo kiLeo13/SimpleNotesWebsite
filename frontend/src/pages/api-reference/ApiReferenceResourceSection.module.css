@@ -1,0 +1,72 @@
+.resourceSection {
+  scroll-margin-top: 1.3rem;
+  padding: 1.45rem 0;
+  border-top: 1px solid #303238;
+}
+
+.resourceHeader {
+  padding-bottom: 0.5rem;
+}
+
+.resourceTitle {
+  margin: 0;
+  color: #f2f3f5;
+  font-size: 1.8rem;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.resourceDescription {
+  margin: 0.65rem 0 0;
+  color: #b5bac1;
+  font-size: 0.9rem;
+  line-height: 1.78;
+}
+
+.objectSection {
+  margin-top: 1.1rem;
+}
+
+.objectTitle,
+.routesTitle {
+  margin: 0;
+  color: #f2f3f5;
+  font-size: 1rem;
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+
+.routesBlock {
+  margin-top: 1.75rem;
+}
+
+.routesTitle {
+  margin-bottom: 0.25rem;
+}
+
+.inlineLink {
+  color: #b6c7ff;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(182, 199, 255, 0.48);
+}
+
+.inlineLink:hover {
+  color: #d7e0ff;
+  border-bottom-color: #d7e0ff;
+}
+
+.inlineCode {
+  color: #f0b5d3;
+  font-family: var(--font-code);
+  font-size: 0.86em;
+  background-color: #2b2d31;
+  border-radius: 4px;
+  padding: 0.08rem 0.25rem;
+}
+
+@media (max-width: 760px) {
+  .resourceTitle {
+    font-size: 1.45rem;
+  }
+}

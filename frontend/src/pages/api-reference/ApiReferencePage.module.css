@@ -17,7 +17,7 @@
   padding: 2.25rem 8rem 5rem;
 }
 
-.header p {
+.eyebrow {
   margin: 0 0 0.55rem;
   color: #a5b4fc;
   font-size: 0.72rem;
@@ -27,7 +27,7 @@
   letter-spacing: 0.04em;
 }
 
-.header h1 {
+.title {
   margin: 0;
   color: #f2f3f5;
   font-size: 2rem;
@@ -35,7 +35,7 @@
   letter-spacing: 0;
 }
 
-.header span {
+.description {
   display: block;
   max-width: 42rem;
   margin-top: 0.8rem;
@@ -49,8 +49,7 @@
   margin-top: 2.25rem;
 }
 
-.referenceGroup > h2,
-.resourceGroup > h2 {
+.groupHeading {
   margin: 0 0 0.4rem;
   color: #f2f3f5;
   font-size: 1.55rem;
@@ -77,7 +76,7 @@
     padding: 1.35rem 1rem 4rem;
   }
 
-  .header h1 {
+  .title {
     font-size: 1.65rem;
   }
 }

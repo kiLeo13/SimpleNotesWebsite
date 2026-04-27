@@ -4,8 +4,9 @@ import "highlight.js/styles/github-dark.css"
 import { useTranslation } from "react-i18next"
 
 import { apiResources, apiTopics } from "./apiReferenceDocs"
+import { ApiReferenceResourceSection } from "./ApiReferenceResourceSection"
 import { ApiReferenceSidebar } from "./ApiReferenceSidebar"
-import { ResourceSection, TopicSection } from "./ApiReferenceSections"
+import { ApiReferenceTopicSection } from "./ApiReferenceTopicSection"
 import { useActiveApiReferenceSection } from "./useActiveApiReferenceSection"
 
 import styles from "./ApiReferencePage.module.css"
@@ -28,17 +29,21 @@ export function ApiReferencePage(): JSX.Element {
 
         <div className={styles.content}>
           <header className={styles.header}>
-            <p>{t("apiReference.header.eyebrow")}</p>
-            <h1>{t("apiReference.header.title")}</h1>
-            <span>{t("apiReference.header.description")}</span>
+            <p className={styles.eyebrow}>
+              {t("apiReference.header.eyebrow")}
+            </p>
+            <h1 className={styles.title}>{t("apiReference.header.title")}</h1>
+            <span className={styles.description}>
+              {t("apiReference.header.description")}
+            </span>
           </header>
 
           <section
             className={styles.referenceGroup}
-            aria-labelledby="reference-heading"
+            aria-label={t("apiReference.sections.reference")}
           >
             {apiTopics.map((topic) => (
-              <TopicSection key={topic.id} topic={topic} />
+              <ApiReferenceTopicSection key={topic.id} topic={topic} />
             ))}
           </section>
 
@@ -46,11 +51,14 @@ export function ApiReferencePage(): JSX.Element {
             className={styles.resourceGroup}
             aria-labelledby="resources-heading"
           >
-            <h2 id="resources-heading">
+            <h2 id="resources-heading" className={styles.groupHeading}>
               {t("apiReference.sections.resources")}
             </h2>
             {apiResources.map((resource) => (
-              <ResourceSection key={resource.id} resource={resource} />
+              <ApiReferenceResourceSection
+                key={resource.id}
+                resource={resource}
+              />
             ))}
           </section>
         </div>
