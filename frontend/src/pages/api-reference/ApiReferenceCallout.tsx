@@ -21,15 +21,27 @@ function calloutClass(tone: ApiCallout["tone"]) {
   return styles.calloutInfo
 }
 
-export function Callouts({ callouts }: { callouts?: ApiCallout[] }) {
+export function ApiReferenceCallouts({
+  callouts
+}: {
+  callouts?: ApiCallout[]
+}) {
   if (!callouts?.length) return null
 
   return (
     <>
       {callouts.map((callout, index) => (
-        <aside key={index} className={clsx(styles.callout, calloutClass(callout.tone))}>
-          <div>{calloutToneIcons[callout.tone]}</div>
-          <p className={styles.text}>{renderInline(callout.text)}</p>
+        <aside
+          key={index}
+          className={clsx(styles.callout, calloutClass(callout.tone))}
+        >
+          <div className={styles.icon}>{calloutToneIcons[callout.tone]}</div>
+          <p className={styles.text}>
+            {renderInline(callout.text, {
+              code: styles.inlineCode,
+              link: styles.inlineLink
+            })}
+          </p>
         </aside>
       ))}
     </>

@@ -3,7 +3,15 @@ import type { InlineTextPart } from "./apiReferenceDocs"
 
 import { resourceSectionId, topicSectionId } from "./apiReferenceIds"
 
-export function renderInline(parts: InlineTextPart[]): JSX.Element[] {
+type InlineClassNames = {
+  code?: string
+  link?: string
+}
+
+export function renderInline(
+  parts: InlineTextPart[],
+  classNames: InlineClassNames = {}
+): JSX.Element[] {
   return parts.map((part, index) => {
     if (typeof part === "string") {
       return <span key={index}>{part}</span>
@@ -11,7 +19,11 @@ export function renderInline(parts: InlineTextPart[]): JSX.Element[] {
 
     if (part.resourceId) {
       return (
-        <a key={index} href={`#${resourceSectionId(part.resourceId)}`}>
+        <a
+          key={index}
+          className={classNames.link}
+          href={`#${resourceSectionId(part.resourceId)}`}
+        >
           {part.label}
         </a>
       )
@@ -19,7 +31,11 @@ export function renderInline(parts: InlineTextPart[]): JSX.Element[] {
 
     if (part.sectionId) {
       return (
-        <a key={index} href={`#${topicSectionId(part.sectionId)}`}>
+        <a
+          key={index}
+          className={classNames.link}
+          href={`#${topicSectionId(part.sectionId)}`}
+        >
           {part.label}
         </a>
       )
@@ -27,12 +43,22 @@ export function renderInline(parts: InlineTextPart[]): JSX.Element[] {
 
     if (part.href) {
       return (
-        <a href={part.href} target="_blank" rel="noopener noreferrer">
+        <a
+          key={index}
+          className={classNames.link}
+          href={part.href}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           {part.label}
         </a>
       )
     }
 
-    return <code key={index}>{part.label}</code>
+    return (
+      <code key={index} className={classNames.code}>
+        {part.label}
+      </code>
+    )
   })
 }
