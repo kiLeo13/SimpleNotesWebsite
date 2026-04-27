@@ -13,6 +13,7 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiReferenceRouteImport } from './routes/api.reference'
+import { Route as ApiReferenceResourceIdRouteImport } from './routes/api.reference_.$resourceId'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
@@ -34,18 +35,25 @@ const ApiReferenceRoute = ApiReferenceRouteImport.update({
   path: '/api/reference',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiReferenceResourceIdRoute = ApiReferenceResourceIdRouteImport.update({
+  id: '/api/reference_/$resourceId',
+  path: '/api/reference/$resourceId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/api/reference': typeof ApiReferenceRoute
+  '/api/reference/$resourceId': typeof ApiReferenceResourceIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/api/reference': typeof ApiReferenceRoute
+  '/api/reference/$resourceId': typeof ApiReferenceResourceIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,30 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/api/reference': typeof ApiReferenceRoute
+  '/api/reference_/$resourceId': typeof ApiReferenceResourceIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/register' | '/api/reference'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/register'
+    | '/api/reference'
+    | '/api/reference/$resourceId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/register' | '/api/reference'
-  id: '__root__' | '/' | '/login' | '/register' | '/api/reference'
+  to:
+    | '/'
+    | '/login'
+    | '/register'
+    | '/api/reference'
+    | '/api/reference/$resourceId'
+  id:
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/register'
+    | '/api/reference'
+    | '/api/reference_/$resourceId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +92,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   ApiReferenceRoute: typeof ApiReferenceRoute
+  ApiReferenceResourceIdRoute: typeof ApiReferenceResourceIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -99,6 +125,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiReferenceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/reference_/$resourceId': {
+      id: '/api/reference_/$resourceId'
+      path: '/api/reference/$resourceId'
+      fullPath: '/api/reference/$resourceId'
+      preLoaderRoute: typeof ApiReferenceResourceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -107,6 +140,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   ApiReferenceRoute: ApiReferenceRoute,
+  ApiReferenceResourceIdRoute: ApiReferenceResourceIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

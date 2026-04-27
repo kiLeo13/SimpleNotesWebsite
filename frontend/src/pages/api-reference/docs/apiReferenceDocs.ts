@@ -1,11 +1,13 @@
 import { NOTE_MAX_SIZE_BYTES_RAW } from "@/services/noteService"
 import { getPrettySize } from "@/utils/utils"
+import { declarationSectionId } from "./apiReferenceIds"
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE"
 
 export type InlineTextPart =
   | string
   | {
+      hash?: string
       label: string
       href?: string
       resourceId?: string
@@ -64,12 +66,40 @@ export type ApiResource = {
   objectName: string
   description: InlineTextPart[]
   callouts?: ApiCallout[]
+  declarations?: ApiDeclaration[]
   fields: ApiField[]
   routes: ApiRoute[]
 }
 
+export type ApiDeclaration = {
+  id: string
+  title: string
+  description?: InlineTextPart[]
+  fields: ApiField[]
+}
+
+export type GatewayEvent = {
+  id: string
+  type: string
+  description: InlineTextPart[]
+  dataFields: ApiField[]
+  callouts?: ApiCallout[]
+  returns?: InlineTextPart[]
+}
+
+export type GatewayEventGroup = {
+  id: string
+  navLabel: string
+  title: string
+  description: InlineTextPart[]
+  events: GatewayEvent[]
+}
+
 const apiUrl = import.meta.env.VITE_API_BASE_URL
 export const apiBaseUrl = apiUrl.slice(0, apiUrl.lastIndexOf("/"))
+
+const noteTypeDeclarationHash = declarationSectionId("note", "note-type")
+const noteVisibilityDeclarationHash = declarationSectionId("note", "visibility")
 
 export const apiTopics: ApiTopic[] = [
   {
@@ -360,7 +390,7 @@ export const apiResources: ApiResource[] = [
             name: "password",
             type: "string",
             description: [
-              "Password meeting Cognito and backend validator rules."
+              "Password meeting backend validator rules."
             ]
           }
         ],
@@ -502,19 +532,41 @@ export const apiResources: ApiResource[] = [
         name: "content?",
         type: "string",
         description: [
-          "Text content or reference file identifier, depending on note_type."
+          "Text content or reference file identifier, depending on ",
+          {
+            label: "Note Type",
+            resourceId: "note",
+            hash: noteTypeDeclarationHash
+          },
+          "."
         ]
       },
-      { name: "tags", type: "string[]", description: ["Note tags."] },
+      { name: "tags", type: "string array", description: ["Note tags."] },
       {
         name: "visibility",
-        type: "PUBLIC | PRIVATE",
-        description: ["Visibility policy."]
+        type: "Visibility",
+        description: [
+          "Visibility policy.",
+          {
+            label: "Visibility",
+            resourceId: "note",
+            hash: noteVisibilityDeclarationHash
+          },
+          "."
+        ]
       },
       {
         name: "note_type",
-        type: "MARKDOWN | FLOWCHART | REFERENCE",
-        description: ["Rendering and storage mode."]
+        type: "Note Type",
+        description: [
+          "Rendering and storage mode. See ",
+          {
+            label: "Note Type",
+            resourceId: "note",
+            hash: noteTypeDeclarationHash
+          },
+          "."
+        ]
       },
       {
         name: "content_size",
@@ -528,6 +580,53 @@ export const apiResources: ApiResource[] = [
       },
       { name: "created_at", type: "string", description: ["Creation time."] },
       { name: "updated_at", type: "string", description: ["Last update time."] }
+    ],
+    declarations: [
+      {
+        id: "note-type",
+        title: "Note Type",
+        description: [
+          "Determines how the note content is stored and rendered."
+        ],
+        fields: [
+          {
+            name: "MARKDOWN",
+            type: "string",
+            description: ["Text note rendered with Markdown."]
+          },
+          {
+            name: "FLOWCHART",
+            type: "string",
+            description: ["Text note rendered as a Mermaid flowchart."]
+          },
+          {
+            name: "REFERENCE",
+            type: "string",
+            description: [
+              "File-backed note rendered according to the uploaded attachment type."
+            ]
+          }
+        ]
+      },
+      {
+        id: "visibility",
+        title: "Visibility",
+        description: [
+          "Controls which users can discover and receive realtime events for a note."
+        ],
+        fields: [
+          {
+            name: "PUBLIC",
+            type: "string",
+            description: ["Visible to users allowed by note policy."]
+          },
+          {
+            name: "PRIVATE",
+            type: "string",
+            description: ["Visible only to users with explicit access."]
+          }
+        ]
+      }
     ],
     routes: [
       {
@@ -598,12 +697,30 @@ export const apiResources: ApiResource[] = [
           {
             name: "content?",
             type: "string",
-            description: ["Required for MARKDOWN and FLOWCHART notes."]
+            description: [
+              "Required for ",
+              { label: "MARKDOWN" },
+              " and ",
+              { label: "FLOWCHART" },
+              " ",
+              {
+                label: "Note Type",
+                resourceId: "note",
+                hash: noteTypeDeclarationHash
+              },
+              " values."
+            ]
           },
           {
             name: "note_type?",
-            type: "MARKDOWN | FLOWCHART",
-            description: ["Required for JSON text notes."]
+            type: "Note Type",
+            description: [
+              "Required for JSON text notes. Must be ",
+              { label: "MARKDOWN" },
+              " or ",
+              { label: "FLOWCHART" },
+              "."
+            ]
           },
           {
             name: "json_payload?",
@@ -663,11 +780,19 @@ export const apiResources: ApiResource[] = [
             "This endpoint usually fires a ",
             { label: "Note Updated" },
             " event. However, if the visibility property changes to ",
-            { label: "PRIVATE" },
+            {
+              label: "PRIVATE",
+              resourceId: "note",
+              hash: noteVisibilityDeclarationHash
+            },
             ", users without permission to see it will receive a ",
             { label: "Note Deleted" },
             " event. If the visibility property changes to ",
-            { label: "PUBLIC" },
+            {
+              label: "PUBLIC",
+              resourceId: "note",
+              hash: noteVisibilityDeclarationHash
+            },
             ", users that priorly couldn't see it, will receive a ",
             { label: "Note Created" },
             " event."
@@ -678,8 +803,16 @@ export const apiResources: ApiResource[] = [
           { name: "name?", type: "string", description: ["Note name."] },
           {
             name: "visibility?",
-            type: "PUBLIC | PRIVATE",
-            description: ["Visibility change."]
+            type: "Visibility",
+            description: [
+              "Visibility change. See ",
+              {
+                label: "Visibility",
+                resourceId: "note",
+                hash: noteVisibilityDeclarationHash
+              },
+              "."
+            ]
           },
           {
             name: "tags?",
@@ -752,7 +885,7 @@ export const apiResources: ApiResource[] = [
       },
       {
         name: "changes",
-        type: "AuditLogChange[]",
+        type: "AuditLogChange array",
         description: ["Field-level change list."]
       }
     ],
@@ -833,7 +966,7 @@ export const apiResources: ApiResource[] = [
       { name: "address", type: "object", description: ["Registered address."] },
       {
         name: "partners",
-        type: "CompanyPartner[]",
+        type: "CompanyPartner array",
         description: ["Known company partners."]
       },
       {
@@ -872,27 +1005,318 @@ export const apiResources: ApiResource[] = [
         ]
       }
     ]
-  },
+  }
+]
+
+export const gatewayEvents: GatewayEvent[] = [
   {
-    id: "gateway-message",
-    name: "Gateway Message",
-    objectName: "Gateway Message Object",
+    id: "note-created",
+    type: "NOTE_CREATED",
     description: [
-      "Represents a websocket envelope emitted by the backend gateway pipeline."
+      "Dispatched when a new note is created and visible to the receiving user."
     ],
-    fields: [
-      { name: "type", type: "string", description: ["Event type."] },
+    dataFields: [
+      { name: "id", type: "string", description: ["Note platform ID."] },
+      { name: "name", type: "string", description: ["Note name."] },
+      { name: "tags", type: "string array", description: ["Note tags."] },
       {
-        name: "data",
-        type: "object",
-        description: ["Payload determined by type."]
+        name: "visibility",
+        type: "Visibility",
+        description: [
+          "Visibility policy. See ",
+          {
+            label: "Visibility",
+            resourceId: "note",
+            hash: noteVisibilityDeclarationHash
+          },
+          "."
+        ]
       },
       {
-        name: "event_id?",
+        name: "note_type",
+        type: "Note Type",
+        description: [
+          "Rendering and storage mode. See ",
+          {
+            label: "Note Type",
+            resourceId: "note",
+            hash: noteTypeDeclarationHash
+          },
+          "."
+        ]
+      },
+      {
+        name: "content_size",
+        type: "integer",
+        description: ["Content size in bytes."]
+      },
+      {
+        name: "created_by_id",
         type: "string",
-        description: ["Replay cursor for persisted events."]
+        description: ["Creator user ID."]
+      },
+      { name: "created_at", type: "string", description: ["Creation time."] },
+      { name: "updated_at", type: "string", description: ["Last update time."] }
+    ],
+    returns: ["A full ", { label: "note", resourceId: "note" }, " object."]
+  },
+  {
+    id: "note-updated",
+    type: "NOTE_UPDATED",
+    description: [
+      "Dispatched when a note visible to the receiving user is updated."
+    ],
+    dataFields: [
+      { name: "id", type: "string", description: ["Note platform ID."] },
+      { name: "name", type: "string", description: ["Note name."] },
+      { name: "tags", type: "string array", description: ["Note tags."] },
+      {
+        name: "visibility",
+        type: "Visibility",
+        description: [
+          "Updated visibility policy. See ",
+          {
+            label: "Visibility",
+            resourceId: "note",
+            hash: noteVisibilityDeclarationHash
+          },
+          "."
+        ]
+      },
+      {
+        name: "note_type",
+        type: "Note Type",
+        description: [
+          "Rendering and storage mode. See ",
+          {
+            label: "Note Type",
+            resourceId: "note",
+            hash: noteTypeDeclarationHash
+          },
+          "."
+        ]
+      },
+      {
+        name: "content_size",
+        type: "integer",
+        description: ["Content size in bytes."]
+      },
+      {
+        name: "created_by_id",
+        type: "string",
+        description: ["Creator user ID."]
+      },
+      { name: "created_at", type: "string", description: ["Creation time."] },
+      { name: "updated_at", type: "string", description: ["Last update time."] }
+    ],
+    returns: [
+      "A full ",
+      { label: "note", resourceId: "note" },
+      " object with updated fields."
+    ]
+  },
+  {
+    id: "note-deleted",
+    type: "NOTE_DELETED",
+    description: [
+      "Dispatched when a note is deleted or becomes invisible to the receiving user (e.g. visibility changed to ",
+      { label: "PRIVATE" },
+      ")."
+    ],
+    dataFields: [
+      { name: "id", type: "string", description: ["Deleted note platform ID."] }
+    ],
+    returns: [
+      "An object containing only the ",
+      { label: "id" },
+      " of the deleted note."
+    ]
+  },
+  {
+    id: "user-created",
+    type: "USER_CREATED",
+    description: [
+      "Dispatched when a new user account is created and visible to the receiving user."
+    ],
+    dataFields: [
+      { name: "id", type: "string", description: ["User platform ID."] },
+      { name: "username", type: "string", description: ["Display name."] },
+      {
+        name: "permissions",
+        type: "integer",
+        description: ["Permission bitmask."]
+      },
+      {
+        name: "presence",
+        type: "ONLINE | OFFLINE",
+        description: ["Current realtime presence."]
+      },
+      { name: "created_at", type: "string", description: ["Creation time."] },
+      { name: "updated_at", type: "string", description: ["Last update time."] }
+    ],
+    returns: ["A full ", { label: "user", resourceId: "user" }, " object."]
+  },
+  {
+    id: "user-updated",
+    type: "USER_UPDATED",
+    description: ["Dispatched when a user account is updated."],
+    dataFields: [
+      { name: "id", type: "string", description: ["User platform ID."] },
+      { name: "username", type: "string", description: ["Display name."] },
+      {
+        name: "permissions",
+        type: "integer",
+        description: ["Permission bitmask."]
+      },
+      {
+        name: "presence",
+        type: "ONLINE | OFFLINE",
+        description: ["Current realtime presence."]
+      },
+      { name: "created_at", type: "string", description: ["Creation time."] },
+      { name: "updated_at", type: "string", description: ["Last update time."] }
+    ],
+    returns: [
+      "A full ",
+      { label: "user", resourceId: "user" },
+      " object with updated fields."
+    ]
+  },
+  {
+    id: "user-deleted",
+    type: "USER_DELETED",
+    description: ["Dispatched when a user account is deleted."],
+    dataFields: [
+      { name: "id", type: "string", description: ["Deleted user platform ID."] }
+    ],
+    returns: [
+      "An object containing only the ",
+      { label: "id" },
+      " of the deleted user."
+    ]
+  },
+  {
+    id: "presence-updated",
+    type: "PRESENCE_UPDATED",
+    description: ["Dispatched when a user's online/offline presence changes."],
+    dataFields: [
+      { name: "id", type: "string", description: ["User platform ID."] },
+      {
+        name: "presence",
+        type: "ONLINE | OFFLINE",
+        description: ["New presence status."]
       }
     ],
-    routes: []
+    returns: [
+      "An object with the user ",
+      { label: "id" },
+      " and new ",
+      { label: "presence" },
+      " value."
+    ]
+  },
+  {
+    id: "session-expired",
+    type: "SESSION_EXPIRED",
+    description: [
+      "Dispatched when the authenticated session is no longer valid. The client should re-authenticate."
+    ],
+    dataFields: [],
+    returns: [
+      "No meaningful payload. The ",
+      { label: "data" },
+      " field may be empty or unknown."
+    ]
+  },
+  {
+    id: "connection-kill",
+    type: "CONNECTION_KILL",
+    description: [
+      "Dispatched when the server forcibly terminates the connection. The ",
+      { label: "code" },
+      " field indicates the reason."
+    ],
+    dataFields: [
+      {
+        name: "code",
+        type: "SUSPENDED_ACCOUNT | IDLE_TIMEOUT | DELETED | LOGOUT",
+        description: ["Kill reason discriminator."]
+      },
+      {
+        name: "reason?",
+        type: "string",
+        description: ["Optional human-readable reason."]
+      }
+    ],
+    returns: [
+      "A ",
+      { label: "ConnectionKill" },
+      " object with a ",
+      { label: "code" },
+      " and optional ",
+      { label: "reason" },
+      "."
+    ]
+  },
+  {
+    id: "resync-required",
+    type: "RESYNC_REQUIRED",
+    description: [
+      "Dispatched when the server cannot replay missed events. The client should perform a full data resync."
+    ],
+    dataFields: [
+      {
+        name: "reason",
+        type: "CURSOR_TOO_OLD | SCOPE_CHANGED",
+        description: ["Reason the resync is required."]
+      },
+      {
+        name: "latest_event_id?",
+        type: "string",
+        description: ["Latest available event ID when known."]
+      }
+    ],
+    returns: [
+      "A ",
+      { label: "ResyncRequired" },
+      " object with ",
+      { label: "reason" },
+      " and optional ",
+      { label: "latest_event_id" },
+      "."
+    ]
+  }
+]
+
+export const clientGatewayEvents: GatewayEvent[] = [
+  {
+    id: "ping",
+    type: "ping",
+    description: [
+      "Sent by the browser while the tab is visible to keep the websocket session alive."
+    ],
+    dataFields: [],
+    returns: [
+      "The server updates the connection heartbeat and responds with ",
+      { label: "ACK" },
+      "."
+    ]
+  }
+]
+
+export const gatewayEventGroups: GatewayEventGroup[] = [
+  {
+    id: "server-events",
+    navLabel: "Server Events",
+    title: "Server Events",
+    description: ["Messages emitted by the server over the websocket gateway."],
+    events: gatewayEvents
+  },
+  {
+    id: "client-events",
+    navLabel: "Client Events",
+    title: "Client Events",
+    description: ["Messages sent by the browser to the websocket gateway."],
+    events: clientGatewayEvents
   }
 ]
