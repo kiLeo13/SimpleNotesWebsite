@@ -163,10 +163,10 @@ That sequence usually gives enough context without spelunking the whole repo lik
 
 ### API Reference Docs
 
-- `frontend/src/pages/api-reference/apiReferenceDocs.ts`
+- `frontend/src/pages/api-reference/docs/apiReferenceDocs.ts`
   - Single source of truth for rendered backend API reference content: topics, resources, object fields, routes, request/response fields, examples, and route-to-resource links.
 - `frontend/src/pages/api-reference/`
-  - Dark in-app documentation renderer at `/api/reference`. Keep TSX generic; adding resources or endpoints should only require changing declarations.
+  - Dark in-app documentation renderer at `/api/reference`. Page entrypoint stays at the folder root, while renderer components, docs declarations, hooks, and route guards live in nested folders. Keep TSX generic; adding resources or endpoints should only require changing declarations.
 
 Update these docs whenever backend handlers/contracts, frontend API schemas, or
 websocket event shapes change. The docs should describe the wire contract, not

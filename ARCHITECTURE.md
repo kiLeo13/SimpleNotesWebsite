@@ -89,9 +89,20 @@ Important frontend behavior:
 The backend API docs surface is served by the frontend at `/api/reference`.
 The page is intentionally public, but it documents backend wire behavior only:
 authorization, errors, pagination, websocket envelopes, resources, and routes.
+The root `/api/reference` page renders the Reference overview topics, including
+the API Reference intro header, and keeps those sidebar links as in-page hash
+navigation. Resource and gateway event details are routed pages under
+`/api/reference/{id}`, such as `/api/reference/user`,
+`/api/reference/server-events`, or `/api/reference/client-events`; unknown detail
+IDs redirect back to `/api/reference`. The API reference sidebar keeps its brand
+area fixed, renders categories expanded by default, and limits scrolling to the
+navigation item list. Route-changing links should use TanStack Router link
+integration so navigation stays client-side. The right-side "On this page" rail
+is generated from the same API reference declarations, not from DOM scraping, and
+tracks the active section within the main documentation scroll container.
 
 The single source of truth for the rendered API reference is
-`frontend/src/pages/api-reference/apiReferenceDocs.ts`. That typed declaration
+`frontend/src/pages/api-reference/docs/apiReferenceDocs.ts`. That typed declaration
 file owns topics, resource object declarations, route descriptions,
 request/response fields, examples, and cross-links between routes and resources.
 The TSX page should stay
@@ -100,7 +111,9 @@ not require editing page layout code.
 Each API reference renderer component lives in its own file and owns its CSS
 through a matching local CSS module; keep layout, navigation, section, table,
 callout, and code block styles with the component that renders the corresponding
-markup.
+markup. Reusable contract values such as note enums belong in resource
+declaration sections so field tables can reference those declarations instead of
+repeating enum lists.
 
 When backend handlers, backend contracts, websocket events, or ID/cursor
 semantics change, update `apiReferenceDocs.ts` in the same change.
@@ -251,5 +264,5 @@ This keeps backend publish automation asleep when only frontend files change.
 
 - Repo-level architectural guidance belongs only in `AGENTS.md` and `ARCHITECTURE.md`.
 - Do not reintroduce duplicate repo-level `AGENTS.md` or `ARCHITECTURE.md` files inside subdirectories.
-- API contract documentation for the rendered reference belongs in `frontend/src/pages/api-reference/apiReferenceDocs.ts` and is surfaced by the frontend `/api/reference` route.
+- API contract documentation for the rendered reference belongs in `frontend/src/pages/api-reference/docs/apiReferenceDocs.ts` and is surfaced by the frontend `/api/reference` route.
 - If the monorepo layout or the frontend/backend interaction model changes, update this file in the same change.
