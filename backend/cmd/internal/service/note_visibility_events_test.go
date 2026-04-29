@@ -171,6 +171,7 @@ func newNoteVisibilityTestService(t *testing.T) (*NoteService, *captureGateway, 
 	noteSvc := NewNoteService(
 		db,
 		repository.NewNoteRepository(db),
+		repository.NewDepartmentRepository(db),
 		userRepo,
 		wsSvc,
 		noopS3{},

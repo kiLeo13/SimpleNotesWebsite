@@ -124,8 +124,10 @@ func newCleanerTestDB(t *testing.T) *gorm.DB {
 	if err = db.AutoMigrate(
 		&entity.AuditLogEvent{},
 		&entity.AuditLogChange{},
-		&entity.Note{},
+		&entity.Department{},
 		&entity.User{},
+		&entity.DepartmentMembership{},
+		&entity.Note{},
 		&entity.Connection{},
 		&entity.SocketDelivery{},
 		&entity.Company{},
