@@ -14,6 +14,7 @@ type MarkdownNote = {
   name: string
   tags: string[]
   visibility: "PUBLIC" | "PRIVATE"
+  department_id: string | null
   note_type: "MARKDOWN"
   created_by_id: string
   content_size: number
@@ -103,6 +104,7 @@ function makeBaseNote(
     name: "Architecture",
     tags: ["docs"],
     visibility: "PUBLIC",
+    department_id: null,
     note_type: "MARKDOWN",
     created_by_id: "7",
     content_size: 128,
@@ -121,6 +123,7 @@ function makeFullNote(
     name: "Architecture",
     tags: ["docs"],
     visibility: "PUBLIC",
+    department_id: null,
     note_type: "MARKDOWN",
     created_by_id: "7",
     content_size: 128,

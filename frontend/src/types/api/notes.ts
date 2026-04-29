@@ -11,6 +11,7 @@ interface BaseNotePayload {
   name: string
   tags: string[]
   visibility: NoteVisibility
+  department_id?: string | null
   note_type: NoteType
 }
 
@@ -25,6 +26,7 @@ export interface UpdateNoteRequestPayload {
   name?: string
   tags?: string[]
   visibility?: NoteVisibility
+  department_id?: string | null
 }
 
 // --- API Responses ---
@@ -33,6 +35,7 @@ export const noteBaseSchema = z.object({
   name: z.string(),
   tags: z.array(z.string()),
   visibility: noteVisibilitySchema,
+  department_id: z.string().nullable(),
   note_type: noteTypeSchema,
   created_by_id: z.string(),
   content_size: z.number(),

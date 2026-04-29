@@ -24,6 +24,7 @@ const baseNoteFormSchema = z.object({
     .max(80, t("errors.string.max", { count: 80 })),
 
   visibility: z.enum(["PUBLIC", "PRIVATE"], t("errors.enum.invalid")),
+  department_id: z.string().nullable(),
 
   tags: z
     .array(
@@ -71,7 +72,8 @@ export const createNoteFormSchema = z.discriminatedUnion("mode", [
 export const updateNoteFormSchema = baseNoteFormSchema.pick({
   name: true,
   tags: true,
-  visibility: true
+  visibility: true,
+  department_id: true
 })
 
 export type FileNoteFormFields = z.infer<typeof uploadNoteFormSchema>

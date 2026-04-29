@@ -18,6 +18,7 @@ import {
 import { useSessionStore } from "@/stores/useSessionStore"
 import { useUsersStore } from "@/stores/useUsersStore"
 import { useNoteStore } from "../stores/useNotesStore"
+import { useDepartmentsStore } from "@/stores/useDepartmentsStore"
 import { socketBus } from "@/services/socketBus"
 
 export async function routeServerMessage(
@@ -33,6 +34,12 @@ export async function routeServerMessage(
     case serverEvents.NoteUpdated.type:
     case serverEvents.NoteDeleted.type:
       await handleNoteEvents(msg)
+      break
+
+    case serverEvents.DepartmentCreated.type:
+    case serverEvents.DepartmentUpdated.type:
+    case serverEvents.DepartmentDeleted.type:
+      handleDepartmentEvents(msg)
       break
 
     case serverEvents.UserCreated.type:
@@ -236,6 +243,7 @@ async function resyncRealtimeState() {
   const notesStore = useNoteStore.getState()
 
   await Promise.allSettled([usersStore.reload(), notesStore.reload()])
+  await useDepartmentsStore.getState().reload()
 
   const { shownNote, renderNote, closeNote } = useNoteStore.getState()
   if (!shownNote || shownNote.note_type === "REFERENCE") {
@@ -251,6 +259,25 @@ async function resyncRealtimeState() {
   }
 
   renderNote(resp.data)
+}
+
+function handleDepartmentEvents(msg: GatewayMessage) {
+  const { addDepartment, updateDepartment, removeDepartment } =
+    useDepartmentsStore.getState()
+
+  switch (msg.type) {
+    case serverEvents.DepartmentCreated.type:
+      addDepartment(msg.data)
+      break
+
+    case serverEvents.DepartmentUpdated.type:
+      updateDepartment(msg.data)
+      break
+
+    case serverEvents.DepartmentDeleted.type:
+      removeDepartment(msg.data.id)
+      break
+  }
 }
 
 async function refreshOpenTextNote(noteId: string) {

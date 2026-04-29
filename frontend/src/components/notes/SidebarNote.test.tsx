@@ -174,6 +174,7 @@ function makeNote(): NoteResponseData {
     name: "Architecture",
     tags: [],
     visibility: "PUBLIC",
+    department_id: null,
     note_type: "MARKDOWN",
     created_by_id: "7",
     content_size: 256,

@@ -11,6 +11,7 @@ describe("gatewayMessageSchema", () => {
         name: "Docs",
         tags: [],
         visibility: "PUBLIC",
+        department_id: null,
         note_type: "MARKDOWN",
         created_by_id: "2",
         content_size: 128,

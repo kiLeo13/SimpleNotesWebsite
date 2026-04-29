@@ -7,6 +7,7 @@ import {
   resyncRequiredSchema
 } from "@/types/websocket/events"
 import { noteBaseSchema, noteResponseSchema } from "@/types/api/notes"
+import { departmentSchema } from "@/types/api/departments"
 import { userResponseSchema } from "@/types/api/users"
 
 const eventRegistry = {
@@ -21,6 +22,14 @@ const eventRegistry = {
   NoteCreated: createEvent("NOTE_CREATED", noteResponseSchema),
   NoteUpdated: createEvent("NOTE_UPDATED", noteResponseSchema),
   NoteDeleted: createEvent("NOTE_DELETED", noteBaseSchema.pick({ id: true })),
+
+  // Departments
+  DepartmentCreated: createEvent("DEPARTMENT_CREATED", departmentSchema),
+  DepartmentUpdated: createEvent("DEPARTMENT_UPDATED", departmentSchema),
+  DepartmentDeleted: createEvent(
+    "DEPARTMENT_DELETED",
+    z.object({ id: z.string() })
+  ),
 
   // Users
   UserCreated: createEvent("USER_CREATED", userResponseSchema),
