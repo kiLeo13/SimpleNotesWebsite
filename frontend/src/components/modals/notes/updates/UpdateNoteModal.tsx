@@ -35,6 +35,7 @@ export function UpdateNoteModal({
     defaultValues: {
       name: note?.name || "",
       visibility: note?.visibility || "PUBLIC",
+      department_id: note?.department_id ?? "",
       tags: note?.tags || []
     }
   })
@@ -48,6 +49,7 @@ export function UpdateNoteModal({
       reset({
         name: note.name,
         visibility: note.visibility,
+        department_id: note.department_id ?? "",
         tags: note.tags || []
       })
     }

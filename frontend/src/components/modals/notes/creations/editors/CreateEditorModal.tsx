@@ -19,6 +19,7 @@ import { ModalSelectInput } from "../../shared/inputs/ModalSelectInput"
 import { Button } from "@/components/ui/buttons/Button"
 import { LivePreview } from "./LivePreview"
 import { ModalArrayInput } from "../../shared/inputs/ModalArrayInput"
+import { useDepartmentOptions } from "@/hooks/useDepartmentOptions"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { noteService } from "@/services/noteService"
 import { useTranslation } from "react-i18next"
@@ -49,6 +50,7 @@ export function CreateEditorModal({
       mode: "EDITOR",
       name: "",
       visibility: "PUBLIC",
+      department_id: "",
       tags: [],
       content: ""
     }
@@ -63,6 +65,7 @@ export function CreateEditorModal({
       value: o.value
     }))
   }, [t])
+  const departmentOptions = useDepartmentOptions()
 
   const onSubmit = async (data: NoteFormFields) => {
     setIsLoading(true)
@@ -123,6 +126,18 @@ export function CreateEditorModal({
                   }
                   input={
                     <ModalSelectInput name="visibility" options={viewOptions} />
+                  }
+                />
+                <ModalSection
+                  label={
+                    <ModalLabel title={t("departments.label")} required />
+                  }
+                  input={
+                    <ModalSelectInput
+                      name="department_id"
+                      options={departmentOptions}
+                      hasSearch
+                    />
                   }
                 />
               </ModalActionRow>

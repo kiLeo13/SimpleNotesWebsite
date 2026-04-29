@@ -1,0 +1,12 @@
+.icon {
+  display: inline-flex;
+  width: 1.35em;
+  height: 1.35em;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.25em;
+  object-fit: cover;
+  font-size: 1em;
+  line-height: 1;
+  flex: 0 0 auto;
+}

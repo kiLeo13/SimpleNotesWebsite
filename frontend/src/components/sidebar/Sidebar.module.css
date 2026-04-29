@@ -98,6 +98,51 @@
   gap: 3px;
 }
 
+.departmentGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.departmentHeader {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 7px;
+  min-height: 28px;
+  padding: 7px 7px 3px;
+  color: rgb(124, 116, 137);
+  font-size: 0.78em;
+  font-weight: 700;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.departmentIcon {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  color: rgb(122, 108, 147);
+  object-fit: cover;
+  line-height: 18px;
+}
+
+.departmentName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.departmentCount {
+  min-width: 18px;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background-color: rgb(42, 37, 54);
+  color: rgb(118, 108, 132);
+  text-align: center;
+}
+
 .menuLowerItems:hover {
   overflow-y: auto;
 }

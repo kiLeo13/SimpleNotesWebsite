@@ -20,6 +20,7 @@ import { ModalSelectInput } from "../../shared/inputs/ModalSelectInput"
 import { ModalLabel } from "../../shared/sections/ModalLabel"
 import { ModalSection } from "../../shared/sections/ModalSection"
 import { ModalArrayInput } from "../../shared/inputs/ModalArrayInput"
+import { useDepartmentOptions } from "@/hooks/useDepartmentOptions"
 import { getPrettySize } from "@/utils/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useNoteStore } from "@/stores/useNotesStore"
@@ -44,6 +45,7 @@ export function CreateNoteModalForm({
       mode: "UPLOAD",
       name: "",
       visibility: "PUBLIC",
+      department_id: "",
       tags: [],
       file: undefined
     }
@@ -53,6 +55,7 @@ export function CreateNoteModalForm({
     label: t(o.label),
     value: o.value
   }))
+  const departmentOptions = useDepartmentOptions()
 
   const onSubmit = async (data: FileNoteFormFields) => {
     // This should be impossible, but better
@@ -67,7 +70,8 @@ export function CreateNoteModalForm({
         name: data.name,
         note_type: "REFERENCE",
         tags: data.tags || [],
-        visibility: data.visibility
+        visibility: data.visibility,
+        department_id: data.department_id
       },
       data.file[0]
     )
@@ -98,6 +102,19 @@ export function CreateNoteModalForm({
             <ModalSection
               label={<ModalLabel title={t("createNoteModal.name")} required />}
               input={<ModalTextInput name="name" autoComplete="off" />}
+            />
+          </ModalActionRow>
+
+          <ModalActionRow>
+            <ModalSection
+              label={<ModalLabel title={t("departments.label")} required />}
+              input={
+                <ModalSelectInput
+                  name="department_id"
+                  options={departmentOptions}
+                  hasSearch
+                />
+              }
             />
           </ModalActionRow>
 

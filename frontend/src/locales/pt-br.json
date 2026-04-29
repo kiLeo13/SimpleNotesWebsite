@@ -25,6 +25,49 @@
       "private": "Oculto"
     }
   },
+  "departments": {
+    "label": "Departamento",
+    "general": "Geral",
+    "unknown": "Departamento",
+    "fields": {
+      "name": "Nome",
+      "emoji": "Emoji"
+    },
+    "actions": {
+      "create": "Criar",
+      "bulkMove": "Mover notas",
+      "bulkDelete": "Excluir notas"
+    },
+    "management": {
+      "title": "Departamentos",
+      "subtitle": "Organize notas por operacao e mantenha o acesso dos atendentes alinhado.",
+      "create": "Novo departamento",
+      "details": "Detalhes",
+      "notes": "Notas deste departamento",
+      "members": "Atendentes",
+      "empty": "Nenhum departamento criado.",
+      "membersPermission": "Voce precisa de Gerenciar Usuarios para alterar membros."
+    },
+    "confirm": {
+      "delete": "Excluir o departamento {{name}}?",
+      "bulkMove": "Mover todas as notas de {{name}}?",
+      "bulkDelete": "Excluir todas as notas de {{name}}?"
+    },
+    "toasts": {
+      "createSuccess": "Departamento criado.",
+      "createError": "Erro ao criar departamento.",
+      "updateSuccess": "Departamento atualizado.",
+      "updateError": "Erro ao atualizar departamento.",
+      "deleteSuccess": "Departamento excluido.",
+      "deleteError": "Erro ao excluir departamento.",
+      "deleteBlocked": "Este departamento ainda tem notas. Mova ou exclua as notas antes.",
+      "bulkMoveSuccess": "Notas movidas.",
+      "bulkMoveError": "Erro ao mover notas.",
+      "bulkDeleteSuccess": "Notas excluidas.",
+      "bulkDeleteError": "Erro ao excluir notas.",
+      "membershipError": "Erro ao atualizar membros."
+    }
+  },
   "app": {
     "title": "ZenKeep",
     "reference": "ZenKeep - API Reference"
@@ -93,7 +136,8 @@
     "managePerms": "Gerenciar Permissões",
     "punishUsers": "Moderar Usuários",
     "lookup": "Realizar Consultas",
-    "readAuditLogs": "Ler Logs de Auditoria"
+    "readAuditLogs": "Ler Logs de Auditoria",
+    "manageDepartments": "Gerenciar Departamentos"
   },
   "modals": {
     "audit": {
@@ -356,6 +400,7 @@
       "usersMng": "Gerenciar Usuários",
       "createNote": "Criar Nota",
       "companyLookup": "Consultar CNPJ",
+      "departments": "Gerenciar Departamentos",
       "settings": "Configurações",
       "anchorSection": "Link para Seção"
     }

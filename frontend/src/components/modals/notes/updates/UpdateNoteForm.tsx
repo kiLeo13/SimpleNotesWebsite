@@ -24,6 +24,7 @@ import { ModalTextInput } from "../shared/inputs/ModalTextInput"
 import { ModalNoteFileView } from "../shared/tiny/ModalNoteFileView"
 import { FaEye } from "react-icons/fa6"
 import { ModalSelectInput } from "../shared/inputs/ModalSelectInput"
+import { useDepartmentOptions } from "@/hooks/useDepartmentOptions"
 import { userService } from "@/services/userService"
 import { formatLocalTimestamp, getDirtyValues } from "@/utils/utils"
 import { useUsersStore } from "@/stores/useUsersStore"
@@ -61,6 +62,7 @@ export function UpdateNoteForm({
       value: o.value
     }))
   }, [t])
+  const departmentOptions = useDepartmentOptions()
 
   const onSubmit = async (data: UpdateNoteFormFields) => {
     const payload = getDirtyValues(dirtyFields, data)
@@ -140,6 +142,19 @@ export function UpdateNoteForm({
           }
           input={<ModalSelectInput name="visibility" options={viewOptions} />}
         />
+        <ModalSection
+          label={<ModalLabel title={t("departments.label")} />}
+          input={
+            <ModalSelectInput
+              name="department_id"
+              options={departmentOptions}
+              hasSearch
+            />
+          }
+        />
+      </ModalActionRow>
+
+      <ModalActionRow>
         <ModalSection
           label={
             <ModalLabel

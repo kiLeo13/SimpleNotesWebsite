@@ -14,6 +14,7 @@ import { FaGear } from "react-icons/fa6"
 import { DarkWrapper } from "../DarkWrapper"
 import { MdOutlineLogout } from "react-icons/md"
 import { MdOutlineHistory } from "react-icons/md"
+import { MdOutlineAccountTree } from "react-icons/md"
 import { UserManagementPopover } from "../modals/users/management/UserManagementPopover"
 import { CgController } from "react-icons/cg"
 import { AppTooltip } from "../ui/AppTooltip"
@@ -51,6 +52,11 @@ const AuditLogsModal = createAsyncComponent(
   (module) => module.AuditLogsModal
 )
 
+const DepartmentManagementModal = createAsyncComponent(
+  () => import("../modals/departments/DepartmentManagementModal"),
+  (module) => module.DepartmentManagementModal
+)
+
 const CompanyLookupModal = createAsyncComponent(
   () => import("../modals/global/lookup/CompanyLookupModal"),
   (module) => module.CompanyLookupModal
@@ -68,11 +74,13 @@ export function SidebarRail(): JSX.Element {
   const canManageUsers = usePermission(Permission.ManageUsers)
   const canLookup = usePermission(Permission.PerformLookup)
   const canReadAuditLogs = usePermission(Permission.ReadAuditLogs)
+  const canManageDepartments = usePermission(Permission.ManageDepartments)
 
   const [showUploadModal, setShowUploadModal] = useState(false)
   const [editorMode, setEditorMode] = useState<EditorMode | null>(null)
   const [showAlgoCalc, setShowAlgoCalc] = useState(false)
   const [showAuditLogs, setShowAuditLogs] = useState(false)
+  const [showDepartments, setShowDepartments] = useState(false)
   const [lookingUp, setLookingUp] = useState(false)
 
   const closeEditor = () => setEditorMode(null)
@@ -155,6 +163,17 @@ export function SidebarRail(): JSX.Element {
       </DarkWrapper>
 
       <DarkWrapper
+        open={showDepartments}
+        onOpenChange={setShowDepartments}
+        animationPreset="slide-up"
+      >
+        <DepartmentManagementModal
+          loadingFallback={modalLoaderFallback}
+          onClose={() => setShowDepartments(false)}
+        />
+      </DarkWrapper>
+
+      <DarkWrapper
         open={lookingUp}
         onOpenChange={setLookingUp}
         animationPreset="pop"
@@ -232,6 +251,20 @@ export function SidebarRail(): JSX.Element {
                 onClick={() => setShowAuditLogs(true)}
               >
                 <MdOutlineHistory size={"0.9em"} />
+                <Ripple />
+              </button>
+            </AppTooltip>
+          )}
+
+          {canManageDepartments && (
+            <AppTooltip label={t("tooltips.labels.departments")} side="right">
+              <button
+                type="button"
+                className={styles.button}
+                aria-label={t("tooltips.labels.departments")}
+                onClick={() => setShowDepartments(true)}
+              >
+                <MdOutlineAccountTree size={"0.9em"} />
                 <Ripple />
               </button>
             </AppTooltip>

@@ -20,6 +20,7 @@ vi.mock("react-i18next", () => ({
         "tooltips.labels.algoCalc": "Calculadora",
         "tooltips.labels.companyLookup": "Consultar empresa",
         "tooltips.labels.auditLogs": "Logs de auditoria",
+        "tooltips.labels.departments": "Departamentos",
         "tooltips.labels.settings": "ConfiguraÃ§Ãµes",
         "menus.settings.signout": "Sair",
         "menus.notes.optText": "Nota markdown",
@@ -73,6 +74,10 @@ vi.mock("../modals/users/management/UserManagementPopover", () => ({
   )
 }))
 
+vi.mock("../modals/departments/DepartmentManagementModal", () => ({
+  DepartmentManagementModal: () => null
+}))
+
 vi.mock("../ui/effects/Ripple", () => ({
   Ripple: () => null
 }))
@@ -117,6 +122,7 @@ describe("SidebarRail", () => {
     grantedPermissions.add(Permission.ManageUsers)
     grantedPermissions.add(Permission.PerformLookup)
     grantedPermissions.add(Permission.ReadAuditLogs)
+    grantedPermissions.add(Permission.ManageDepartments)
 
     render(<SidebarRail />)
 
@@ -129,6 +135,9 @@ describe("SidebarRail", () => {
     ).toBeInTheDocument()
     expect(
       screen.getByRole("button", { name: "Logs de auditoria" })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole("button", { name: "Departamentos" })
     ).toBeInTheDocument()
     expect(screen.getByRole("button", { name: "Calculadora" })).toBeInTheDocument()
     expect(screen.getByRole("button", { name: "ConfiguraÃ§Ãµes" })).toBeInTheDocument()
@@ -153,6 +162,9 @@ describe("SidebarRail", () => {
     ).not.toBeInTheDocument()
     expect(
       screen.queryByRole("button", { name: "Logs de auditoria" })
+    ).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole("button", { name: "Departamentos" })
     ).not.toBeInTheDocument()
 
     expect(screen.getByRole("button", { name: "Calculadora" })).toBeInTheDocument()
@@ -201,5 +213,6 @@ describe("SidebarRail", () => {
     expect(usePermission).toHaveBeenCalledWith(Permission.ManageUsers)
     expect(usePermission).toHaveBeenCalledWith(Permission.PerformLookup)
     expect(usePermission).toHaveBeenCalledWith(Permission.ReadAuditLogs)
+    expect(usePermission).toHaveBeenCalledWith(Permission.ManageDepartments)
   })
 })

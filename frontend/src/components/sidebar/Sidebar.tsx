@@ -1,5 +1,6 @@
 import type { ChangeEventHandler, JSX, KeyboardEventHandler } from "react"
 import type { NoteResponseData } from "@/types/api/notes"
+import type { DepartmentData } from "@/types/api/departments"
 
 import { useNavigate } from "@tanstack/react-router"
 import { SidebarNote } from "../notes/SidebarNote"
@@ -7,9 +8,12 @@ import { SidebarRail } from "./SidebarRail"
 import { PiListMagnifyingGlass } from "react-icons/pi"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useNoteStore } from "@/stores/useNotesStore"
+import { useDepartmentsStore } from "@/stores/useDepartmentsStore"
 import { matchSorter } from "match-sorter"
 import { throttle } from "lodash-es"
 import { useTranslation } from "react-i18next"
+import { DepartmentIcon } from "../departments/DepartmentIcon"
+import { MdOutlineTag } from "react-icons/md"
 
 import styles from "./Sidebar.module.css"
 
@@ -23,15 +27,21 @@ export function Sidebar(): JSX.Element {
   const notesState = useNoteStore((s) => s.state)
   const ensureLoaded = useNoteStore((s) => s.ensureLoaded)
   const reloadNotes = useNoteStore((s) => s.reload)
+  const departments = useDepartmentsStore((s) => s.departments)
+  const ensureDepartmentsLoaded = useDepartmentsStore((s) => s.ensureLoaded)
 
   const isLoading = notesState === "LOADING"
   const searchRef = useRef<HTMLInputElement>(null)
-  const filteredNotes = toFilteredNotes(search, notes)
-  const resultCount = filteredNotes.length
+  const departmentGroups = toDepartmentGroups(search, notes, departments, t)
+  const resultCount = departmentGroups.reduce(
+    (total, group) => total + group.notes.length,
+    0
+  )
 
   useEffect(() => {
     ensureLoaded()
-  }, [ensureLoaded])
+    ensureDepartmentsLoaded()
+  }, [ensureLoaded, ensureDepartmentsLoaded])
 
   const handleSearch: ChangeEventHandler<HTMLInputElement> = (e) => {
     setSearch(e.target.value)
@@ -121,29 +131,107 @@ export function Sidebar(): JSX.Element {
           )}
 
           {!isLoading &&
-            filteredNotes.map((n) => {
-              return (
-                <SidebarNote
-                  onClick={() => handleOpenNote(n)}
-                  key={n.id}
-                  note={n}
-                />
-              )
-            })}
+            departmentGroups.map((group) => (
+              <div className={styles.departmentGroup} key={group.id}>
+                <div className={styles.departmentHeader}>
+                  {group.department ? (
+                    <DepartmentIcon
+                      className={styles.departmentIcon}
+                      department={group.department}
+                    />
+                  ) : (
+                    <MdOutlineTag className={styles.departmentIcon} />
+                  )}
+                  <span className={styles.departmentName}>{group.name}</span>
+                  <span className={styles.departmentCount}>
+                    {group.notes.length}
+                  </span>
+                </div>
+
+                {group.notes.map((n) => (
+                  <SidebarNote
+                    onClick={() => handleOpenNote(n)}
+                    key={n.id}
+                    note={n}
+                  />
+                ))}
+              </div>
+            ))}
         </div>
       </div>
     </nav>
   )
 }
 
+type DepartmentGroup = {
+  id: string
+  name: string
+  department: DepartmentData | null
+  notes: NoteResponseData[]
+}
+
+function toDepartmentGroups(
+  search: string,
+  notes: NoteResponseData[],
+  departments: DepartmentData[],
+  t: (key: string) => string
+): DepartmentGroup[] {
+  const departmentMap = new Map(
+    departments.map((department) => [department.id, department])
+  )
+  const groups = new Map<string, DepartmentGroup>()
+
+  groups.set("general", {
+    id: "general",
+    name: t("departments.general"),
+    department: null,
+    notes: []
+  })
+
+  for (const department of [...departments].sort((a, b) =>
+    a.name.localeCompare(b.name)
+  )) {
+    groups.set(department.id, {
+      id: department.id,
+      name: department.name,
+      department,
+      notes: []
+    })
+  }
+
+  const visibleNotes = toFilteredNotes(search, notes)
+  for (const note of visibleNotes) {
+    const groupID = note.department_id || "general"
+    const group =
+      groups.get(groupID) ||
+      groups.set(groupID, {
+        id: groupID,
+        name: t("departments.unknown"),
+        department: departmentMap.get(groupID) ?? null,
+        notes: []
+      }).get(groupID)
+
+    group?.notes.push(note)
+  }
+
+  const isSearching = search.trim().length > 0
+  return [...groups.values()]
+    .map((group) => ({
+      ...group,
+      notes: [...group.notes].sort((a, b) => a.name.localeCompare(b.name))
+    }))
+    .filter((group) =>
+      isSearching
+        ? group.notes.length > 0
+        : group.department !== null || group.notes.length > 0
+    )
+}
+
 function toFilteredNotes(
   search: string,
   notes: NoteResponseData[]
 ): NoteResponseData[] {
-  if (!search.trim()) {
-    return notes
-  }
-
+  if (!search.trim()) return notes
   return matchSorter(notes, search, {
     keys: ["name", "tags"],
     // Just a tie-breaker
