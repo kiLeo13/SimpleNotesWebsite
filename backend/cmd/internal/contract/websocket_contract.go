@@ -14,6 +14,10 @@ const (
 	EventNoteUpdated EventType = "NOTE_UPDATED"
 	EventNoteDeleted EventType = "NOTE_DELETED"
 
+	EventDepartmentCreated EventType = "DEPARTMENT_CREATED"
+	EventDepartmentUpdated EventType = "DEPARTMENT_UPDATED"
+	EventDepartmentDeleted EventType = "DEPARTMENT_DELETED"
+
 	EventUserCreated EventType = "USER_CREATED"
 	EventUserUpdated EventType = "USER_UPDATED"
 	EventUserDeleted EventType = "USER_DELETED"

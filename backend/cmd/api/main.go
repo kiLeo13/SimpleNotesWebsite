@@ -84,6 +84,7 @@ func main() {
 	connRepo := repository.NewConnectionRepository(db)
 	deliveryRepo := repository.NewSocketDeliveryRepository(db)
 	noteRepo := repository.NewNoteRepository(db)
+	departmentRepo := repository.NewDepartmentRepository(db)
 	userRepo := repository.NewUserRepository(db)
 	compRepo := repository.NewCompanyRepository(db)
 	auditRepo := repository.NewAuditRepository(db)
@@ -100,11 +101,13 @@ func main() {
 
 	connService := service.NewWebSocketService(connRepo, deliveryRepo, wsClient)
 	userService := service.NewUserService(db, userRepo, validate, connService, cogClient, auditService, userPolicy, idGenerator)
-	noteService := service.NewNoteService(db, noteRepo, userRepo, connService, s3Client, validate, auditService, notePolicy, idGenerator)
+	noteService := service.NewNoteService(db, noteRepo, departmentRepo, userRepo, connService, s3Client, validate, auditService, notePolicy, idGenerator)
+	departmentService := service.NewDepartmentService(db, departmentRepo, noteRepo, userRepo, connService, s3Client, validate, auditService, idGenerator)
 	miscService := service.NewMiscService(receitaClient, compRepo, auditService, idGenerator)
 
 	connRoutes := handler.NewWSDefault(connService)
 	noteRoutes := handler.NewNoteDefault(noteService)
+	departmentRoutes := handler.NewDepartmentDefault(departmentService)
 	userRoutes := handler.NewUserDefault(userService)
 	miscRoutes := handler.NewMiscRoute(miscService)
 	auditRoutes := handler.NewAuditDefault(auditService)
@@ -132,7 +135,7 @@ func main() {
 	e.Use(middleware.Recover())
 
 	// --- Register Routes ---
-	registerRoutes(e, noteRoutes, userRoutes, miscRoutes, auditRoutes, connRoutes, authMiddleware)
+	registerRoutes(e, noteRoutes, departmentRoutes, userRoutes, miscRoutes, auditRoutes, connRoutes, authMiddleware)
 
 	if err = e.Start(":7070"); err != nil {
 		panic(err)
@@ -143,6 +146,7 @@ func main() {
 func registerRoutes(
 	e *echo.Echo,
 	noteH *handler.DefaultNoteRoute,
+	departmentH *handler.DefaultDepartmentRoute,
 	userH *handler.DefaultUserRoute,
 	miscH *handler.DefaultMiscRoute,
 	auditH *handler.DefaultAuditRoute,
@@ -171,6 +175,17 @@ func registerRoutes(
 	protected.POST("/notes", noteH.CreateNote)
 	protected.PATCH("/notes/:id", noteH.UpdateNote)
 	protected.DELETE("/notes/:id", noteH.DeleteNote)
+
+	// Departments
+	protected.GET("/departments", departmentH.GetDepartments)
+	protected.POST("/departments", departmentH.CreateDepartment)
+	protected.GET("/departments/users", departmentH.GetDepartmentMemberships)
+	protected.PATCH("/departments/:department_id", departmentH.UpdateDepartment)
+	protected.DELETE("/departments/:department_id", departmentH.DeleteDepartment)
+	protected.PUT("/departments/:department_id/users/:user_id", departmentH.AddDepartmentUser)
+	protected.DELETE("/departments/:department_id/users/:user_id", departmentH.RemoveDepartmentUser)
+	protected.POST("/departments/:department_id/notes/bulk-move", departmentH.BulkMoveNotes)
+	protected.POST("/departments/:department_id/notes/bulk-delete", departmentH.BulkDeleteNotes)
 
 	// Users
 	protected.GET("/users", userH.GetUsers)

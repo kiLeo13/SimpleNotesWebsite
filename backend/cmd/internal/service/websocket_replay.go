@@ -240,9 +240,13 @@ func shouldReplayOnConnect(lastEventID *int64, latestEventID *int64) (bool, *int
 
 func isReplayableEvent(eventType contract.EventType) bool {
 	switch eventType {
-	case contract.EventNoteCreated,
+	case contract.EventResyncRequired,
+		contract.EventNoteCreated,
 		contract.EventNoteUpdated,
 		contract.EventNoteDeleted,
+		contract.EventDepartmentCreated,
+		contract.EventDepartmentUpdated,
+		contract.EventDepartmentDeleted,
 		contract.EventUserCreated,
 		contract.EventUserUpdated,
 		contract.EventUserDeleted,
@@ -255,6 +259,8 @@ func isReplayableEvent(eventType contract.EventType) bool {
 
 func isScopeChangingEvent(userID int64, evt events.SocketEvent) bool {
 	switch payload := evt.(type) {
+	case *events.ResyncRequired:
+		return payload.Reason == contract.ReasonScopeChanged
 	case *events.UserUpdated:
 		return payload.UserResponse != nil && payload.ID == idgen.Format(userID)
 	case *events.UserDeleted:
