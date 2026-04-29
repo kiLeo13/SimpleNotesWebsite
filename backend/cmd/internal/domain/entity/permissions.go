@@ -49,6 +49,10 @@ const (
 
 	// PermissionReadAuditLogs allows viewing audit trail events.
 	PermissionReadAuditLogs
+
+	// PermissionManageDepartments allows managing departments and department
+	// note organization. Membership changes also require PermissionManageUsers.
+	PermissionManageDepartments
 )
 
 // Has checks if the permission bitmask contains ALL bits

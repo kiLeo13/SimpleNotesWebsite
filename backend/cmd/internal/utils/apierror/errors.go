@@ -47,14 +47,16 @@ var (
 	UnauthorizedError   = NewSimple(401, "Unauthorized")
 	MissingAccessError  = NewSimple(403, "Missing access")
 
-	NotFoundError         = NewSimple(404, "Resource not found")
-	FormJSONRequiredError = NewSimple(400, "Form field `json_payload` is required")
-	EmptyPatchCallError   = NewSimple(400, "Empty PATCH request")
-	MissingNoteFileError  = NewSimple(400, "Content file is required")
-	InvalidCNPJError      = NewSimple(400, "Invalid CNPJ")
-	UserMissingPermsError = NewSimple(403, "Missing permissions")
-	MissingFileNameError  = NewSimple(400, "File name is required")
-	InvalidMediaTypeError = NewSimple(415, "Unsupported media type. Use application/json or multipart/form-data")
+	NotFoundError              = NewSimple(404, "Resource not found")
+	FormJSONRequiredError      = NewSimple(400, "Form field `json_payload` is required")
+	EmptyPatchCallError        = NewSimple(400, "Empty PATCH request")
+	MissingNoteFileError       = NewSimple(400, "Content file is required")
+	InvalidCNPJError           = NewSimple(400, "Invalid CNPJ")
+	UserMissingPermsError      = NewSimple(403, "Missing permissions")
+	MissingFileNameError       = NewSimple(400, "File name is required")
+	InvalidMediaTypeError      = NewSimple(415, "Unsupported media type. Use application/json or multipart/form-data")
+	DepartmentHasNotesError    = NewSimple(409, "Department still has notes")
+	InvalidDepartmentIconError = NewSimple(400, "Invalid department icon")
 
 	/*
 	 * Used for authentications
@@ -146,6 +148,10 @@ func NewNoteContentTooLargeError(max int64) *APIError {
 
 func NewInvalidFileExtError(ext string) *APIError {
 	return NewSimple(http.StatusBadRequest, "Invalid file extension: %s", ext)
+}
+
+func NewFileTooLargeError(max int64) *APIError {
+	return NewSimple(http.StatusBadRequest, "File is too large, max: %d", max)
 }
 
 func NewPermissionError(bitmask int64) *APIError {

@@ -13,7 +13,10 @@ import (
 	"path/filepath"
 )
 
-const PathAttachments = "attachments/"
+const (
+	PathAttachments     = "attachments/"
+	PathDepartmentIcons = "department-icons/"
+)
 
 var ErrorEmptyKey = errors.New("key is empty")
 

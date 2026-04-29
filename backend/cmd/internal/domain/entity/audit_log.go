@@ -9,22 +9,30 @@ const (
 type AuditSubjectType string
 
 const (
-	AuditSubjectNote    AuditSubjectType = "NOTE"
-	AuditSubjectUser    AuditSubjectType = "USER"
-	AuditSubjectCompany AuditSubjectType = "COMPANY"
+	AuditSubjectNote       AuditSubjectType = "NOTE"
+	AuditSubjectUser       AuditSubjectType = "USER"
+	AuditSubjectCompany    AuditSubjectType = "COMPANY"
+	AuditSubjectDepartment AuditSubjectType = "DEPARTMENT"
 )
 
 type AuditActionType string
 
 const (
-	AuditActionNoteCreate    AuditActionType = "NOTE_CREATE"
-	AuditActionNoteUpdate    AuditActionType = "NOTE_UPDATE"
-	AuditActionNoteDelete    AuditActionType = "NOTE_DELETE"
-	AuditActionUserUpdate    AuditActionType = "USER_UPDATE"
-	AuditActionUserSuspend   AuditActionType = "USER_SUSPEND"
-	AuditActionUserUnsuspend AuditActionType = "USER_UNSUSPEND"
-	AuditActionUserDelete    AuditActionType = "USER_DELETE"
-	AuditActionCompanyLookup AuditActionType = "COMPANY_LOOKUP"
+	AuditActionNoteCreate                 AuditActionType = "NOTE_CREATE"
+	AuditActionNoteUpdate                 AuditActionType = "NOTE_UPDATE"
+	AuditActionNoteDelete                 AuditActionType = "NOTE_DELETE"
+	AuditActionUserUpdate                 AuditActionType = "USER_UPDATE"
+	AuditActionUserSuspend                AuditActionType = "USER_SUSPEND"
+	AuditActionUserUnsuspend              AuditActionType = "USER_UNSUSPEND"
+	AuditActionUserDelete                 AuditActionType = "USER_DELETE"
+	AuditActionCompanyLookup              AuditActionType = "COMPANY_LOOKUP"
+	AuditActionDepartmentCreate           AuditActionType = "DEPARTMENT_CREATE"
+	AuditActionDepartmentUpdate           AuditActionType = "DEPARTMENT_UPDATE"
+	AuditActionDepartmentDelete           AuditActionType = "DEPARTMENT_DELETE"
+	AuditActionDepartmentMembershipAdd    AuditActionType = "DEPARTMENT_MEMBERSHIP_ADD"
+	AuditActionDepartmentMembershipRemove AuditActionType = "DEPARTMENT_MEMBERSHIP_REMOVE"
+	AuditActionDepartmentNotesBulkMove    AuditActionType = "DEPARTMENT_NOTES_BULK_MOVE"
+	AuditActionDepartmentNotesBulkDelete  AuditActionType = "DEPARTMENT_NOTES_BULK_DELETE"
 )
 
 type AuditValueType string
