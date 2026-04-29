@@ -100,6 +100,10 @@ export const apiBaseUrl = apiUrl.slice(0, apiUrl.lastIndexOf("/"))
 
 const noteTypeDeclarationHash = declarationSectionId("note", "note-type")
 const noteVisibilityDeclarationHash = declarationSectionId("note", "visibility")
+const departmentIconTypeDeclarationHash = declarationSectionId(
+  "department",
+  "icon-type"
+)
 
 export const apiTopics: ApiTopic[] = [
   {
@@ -519,11 +523,375 @@ export const apiResources: ApiResource[] = [
     ]
   },
   {
+    id: "department",
+    name: "Department",
+    objectName: "Department Object",
+    description: [
+      "Represents a note scope used to group operational content for one or more teams. Notes can be general or assigned to exactly one department; users can belong to many departments."
+    ],
+    fields: [
+      { name: "id", type: "string", description: ["Department platform ID."] },
+      {
+        name: "name",
+        type: "string",
+        description: ["Department display name, unique across the workspace."]
+      },
+      {
+        name: "icon_type",
+        type: "Department Icon Type",
+        description: [
+          "How the icon should be rendered. See ",
+          {
+            label: "Department Icon Type",
+            resourceId: "department",
+            hash: departmentIconTypeDeclarationHash
+          },
+          "."
+        ]
+      },
+      {
+        name: "icon_value",
+        type: "string",
+        description: [
+          "Emoji character for ",
+          { label: "EMOJI" },
+          " icons, or stored image filename for ",
+          { label: "IMAGE" },
+          " icons."
+        ]
+      },
+      { name: "created_at", type: "string", description: ["Creation time."] },
+      { name: "updated_at", type: "string", description: ["Last update time."] }
+    ],
+    declarations: [
+      {
+        id: "icon-type",
+        title: "Department Icon Type",
+        description: ["Determines how the department icon value is interpreted."],
+        fields: [
+          {
+            name: "EMOJI",
+            type: "string",
+            description: ["Use icon_value as the department emoji."]
+          },
+          {
+            name: "IMAGE",
+            type: "string",
+            description: [
+              "Use icon_value as an uploaded raster image filename under department icon storage."
+            ]
+          }
+        ]
+      },
+      {
+        id: "membership",
+        title: "Department Membership",
+        description: [
+          "Represents a user-to-department edge. Memberships are returned separately from departments so user objects and department objects each keep a single source of truth."
+        ],
+        fields: [
+          {
+            name: "department_id",
+            type: "string",
+            description: ["Department platform ID."]
+          },
+          {
+            name: "user_id",
+            type: "string",
+            description: ["User platform ID."]
+          }
+        ]
+      }
+    ],
+    routes: [
+      {
+        id: "list-departments",
+        method: "GET",
+        path: "/departments",
+        title: "List Departments",
+        auth: "Bearer JWT",
+        description: [
+          [
+            "Lists departments visible to the authenticated requester. Admins and users with ",
+            { label: "Manage Departments" },
+            " receive every department; other users receive only departments they belong to."
+          ]
+        ],
+        responses: [
+          {
+            status: 200,
+            description: ["Returns departments wrapped in a departments property."]
+          }
+        ]
+      },
+      {
+        id: "create-department",
+        method: "POST",
+        path: "/departments",
+        title: "Create Department",
+        auth: "Bearer JWT",
+        description: [
+          [
+            "Creates a department. Requires ",
+            { label: "Manage Departments" },
+            " permission."
+          ]
+        ],
+        callouts: [
+          {
+            tone: "info",
+            text: [
+              "Image icons must use ",
+              { label: "multipart/form-data" },
+              " with department metadata in ",
+              { label: "json_payload" },
+              " and the file in ",
+              { label: "icon" },
+              ". Emoji icons can use JSON."
+            ]
+          }
+        ],
+        requestBody: [
+          {
+            name: "name",
+            type: "string",
+            description: ["Department name, 2 to 80 characters."]
+          },
+          {
+            name: "icon_type",
+            type: "Department Icon Type",
+            description: ["Either EMOJI or IMAGE."]
+          },
+          {
+            name: "icon_value?",
+            type: "string",
+            description: ["Emoji value for emoji icons."]
+          },
+          {
+            name: "json_payload?",
+            type: "string",
+            description: ["Required multipart metadata for uploaded image icons."]
+          },
+          {
+            name: "icon?",
+            type: "file",
+            description: ["Raster image file for IMAGE icons. Accepted types: png, jpg, jpeg, webp, gif."]
+          }
+        ],
+        responses: [
+          { status: 201, description: ["Department created."] },
+          { status: 403, description: ["Requester cannot manage departments."] },
+          { status: 415, description: ["Unsupported content type."] }
+        ]
+      },
+      {
+        id: "list-department-memberships",
+        method: "GET",
+        path: "/departments/users",
+        title: "List Department Memberships",
+        auth: "Bearer JWT",
+        description: [
+          [
+            "Lists every department membership edge. Requires both ",
+            { label: "Manage Departments" },
+            " and ",
+            { label: "Manage Users" },
+            " permissions."
+          ]
+        ],
+        responses: [
+          {
+            status: 200,
+            description: ["Returns memberships wrapped in a memberships property."]
+          },
+          { status: 403, description: ["Requester lacks one of the required permissions."] }
+        ]
+      },
+      {
+        id: "update-department",
+        method: "PATCH",
+        path: "/departments/{department_id}",
+        title: "Update Department",
+        auth: "Bearer JWT",
+        description: [
+          [
+            "Updates department name or icon. Requires ",
+            { label: "Manage Departments" },
+            " permission."
+          ]
+        ],
+        pathParams: [
+          {
+            name: "department_id",
+            type: "string",
+            description: ["Department platform ID."]
+          }
+        ],
+        requestBody: [
+          { name: "name?", type: "string", description: ["Replacement department name."] },
+          {
+            name: "icon_type?",
+            type: "Department Icon Type",
+            description: ["Replacement icon mode."]
+          },
+          {
+            name: "icon_value?",
+            type: "string",
+            description: ["Replacement emoji value for emoji icons."]
+          },
+          {
+            name: "json_payload?",
+            type: "string",
+            description: ["Required multipart metadata for uploaded replacement image icons."]
+          },
+          {
+            name: "icon?",
+            type: "file",
+            description: ["Replacement raster image file for IMAGE icons."]
+          }
+        ],
+        responses: [
+          { status: 200, description: ["Department updated."] },
+          { status: 403, description: ["Requester cannot manage departments."] },
+          { status: 404, description: ["Department not found."] }
+        ]
+      },
+      {
+        id: "delete-department",
+        method: "DELETE",
+        path: "/departments/{department_id}",
+        title: "Delete Department",
+        auth: "Bearer JWT",
+        description: [
+          [
+            "Deletes a department only when no notes still reference it. Requires ",
+            { label: "Manage Departments" },
+            " permission."
+          ]
+        ],
+        pathParams: [
+          {
+            name: "department_id",
+            type: "string",
+            description: ["Department platform ID."]
+          }
+        ],
+        responses: [
+          { status: 204, description: ["Department deleted."] },
+          { status: 403, description: ["Requester cannot manage departments."] },
+          { status: 409, description: ["Department still has notes. Move or delete those notes first."] }
+        ]
+      },
+      {
+        id: "add-department-user",
+        method: "PUT",
+        path: "/departments/{department_id}/users/{user_id}",
+        title: "Add Department Member",
+        auth: "Bearer JWT",
+        description: [
+          [
+            "Adds one user to one department. Requires both ",
+            { label: "Manage Departments" },
+            " and ",
+            { label: "Manage Users" },
+            " permissions."
+          ]
+        ],
+        pathParams: [
+          { name: "department_id", type: "string", description: ["Department platform ID."] },
+          { name: "user_id", type: "string", description: ["User platform ID."] }
+        ],
+        responses: [
+          { status: 200, description: ["Membership exists after the request."] },
+          { status: 403, description: ["Requester lacks one of the required permissions."] }
+        ]
+      },
+      {
+        id: "remove-department-user",
+        method: "DELETE",
+        path: "/departments/{department_id}/users/{user_id}",
+        title: "Remove Department Member",
+        auth: "Bearer JWT",
+        description: [
+          [
+            "Removes one user from one department. Requires both ",
+            { label: "Manage Departments" },
+            " and ",
+            { label: "Manage Users" },
+            " permissions."
+          ]
+        ],
+        pathParams: [
+          { name: "department_id", type: "string", description: ["Department platform ID."] },
+          { name: "user_id", type: "string", description: ["User platform ID."] }
+        ],
+        responses: [
+          { status: 200, description: ["Membership no longer exists after the request."] },
+          { status: 403, description: ["Requester lacks one of the required permissions."] }
+        ]
+      },
+      {
+        id: "bulk-move-department-notes",
+        method: "POST",
+        path: "/departments/{department_id}/notes/bulk-move",
+        title: "Bulk Move Department Notes",
+        auth: "Bearer JWT",
+        description: [
+          [
+            "Moves every note in a source department to another department or to General. Requires ",
+            { label: "Manage Departments" },
+            " and ",
+            { label: "Edit Notes" },
+            " permissions."
+          ]
+        ],
+        pathParams: [
+          { name: "department_id", type: "string", description: ["Source department platform ID."] }
+        ],
+        requestBody: [
+          {
+            name: "target_department_id",
+            type: "string | null",
+            description: ["Target department ID, or null to move the notes to General."]
+          }
+        ],
+        responses: [
+          { status: 200, description: ["Matching notes were moved."] },
+          { status: 403, description: ["Requester lacks one of the required permissions."] },
+          { status: 404, description: ["Source or target department was not found."] }
+        ]
+      },
+      {
+        id: "bulk-delete-department-notes",
+        method: "POST",
+        path: "/departments/{department_id}/notes/bulk-delete",
+        title: "Bulk Delete Department Notes",
+        auth: "Bearer JWT",
+        description: [
+          [
+            "Deletes every note in a department. Requires ",
+            { label: "Manage Departments" },
+            " and ",
+            { label: "Delete Notes" },
+            " permissions."
+          ]
+        ],
+        pathParams: [
+          { name: "department_id", type: "string", description: ["Source department platform ID."] }
+        ],
+        responses: [
+          { status: 200, description: ["Matching notes were deleted."] },
+          { status: 403, description: ["Requester lacks one of the required permissions."] }
+        ]
+      }
+    ]
+  },
+  {
     id: "note",
     name: "Note",
     objectName: "Note Object",
     description: [
-      "Represents a Markdown, flowchart, or reference note visible to the requester."
+      "Represents a Markdown, flowchart, or reference note visible to the requester. A note can be assigned to one department or left without a department as General content."
     ],
     fields: [
       { name: "id", type: "string", description: ["Note platform ID."] },
@@ -553,6 +921,13 @@ export const apiResources: ApiResource[] = [
             hash: noteVisibilityDeclarationHash
           },
           "."
+        ]
+      },
+      {
+        name: "department_id",
+        type: "string | null",
+        description: [
+          "Department scope for the note. Null means the note is General content."
         ]
       },
       {
@@ -618,12 +993,16 @@ export const apiResources: ApiResource[] = [
           {
             name: "PUBLIC",
             type: "string",
-            description: ["Visible to users allowed by note policy."]
+            description: [
+              "Visible to users allowed by note policy and department scope."
+            ]
           },
           {
             name: "PRIVATE",
             type: "string",
-            description: ["Visible only to users with explicit access."]
+            description: [
+              "Visible only to users with explicit access inside the note's department scope."
+            ]
           }
         ]
       }
@@ -723,6 +1102,13 @@ export const apiResources: ApiResource[] = [
             ]
           },
           {
+            name: "department_id?",
+            type: "string | null",
+            description: [
+              "Department ID to assign the note to. Omit or send null to create a General note."
+            ]
+          },
+          {
             name: "json_payload?",
             type: "string",
             description: [
@@ -779,23 +1165,23 @@ export const apiResources: ApiResource[] = [
           [
             "This endpoint usually fires a ",
             { label: "Note Updated" },
-            " event. However, if the visibility property changes to ",
+            " event. However, if the visibility or department scope change removes a recipient's access, that recipient receives a ",
+            { label: "Note Deleted" },
+            " event. If the update grants access to a recipient, that recipient receives a ",
+            { label: "Note Created" },
+            " event. For the legacy visibility path, changing the visibility property to ",
             {
               label: "PRIVATE",
               resourceId: "note",
               hash: noteVisibilityDeclarationHash
             },
-            ", users without permission to see it will receive a ",
-            { label: "Note Deleted" },
-            " event. If the visibility property changes to ",
+            " or ",
             {
               label: "PUBLIC",
               resourceId: "note",
               hash: noteVisibilityDeclarationHash
             },
-            ", users that priorly couldn't see it, will receive a ",
-            { label: "Note Created" },
-            " event."
+            " follows the same per-recipient translation."
           ],
           ["Note content cannot be updated."]
         ],
@@ -818,6 +1204,13 @@ export const apiResources: ApiResource[] = [
             name: "tags?",
             type: "string array",
             description: ["Replacement tag list."]
+          },
+          {
+            name: "department_id?",
+            type: "string | null",
+            description: [
+              "Replacement department ID, or null to move the note to General."
+            ]
           }
         ],
         responses: [
@@ -869,7 +1262,7 @@ export const apiResources: ApiResource[] = [
       },
       {
         name: "subject_type",
-        type: "NOTE | USER | COMPANY",
+        type: "NOTE | USER | COMPANY | DEPARTMENT",
         description: ["Audited resource kind."]
       },
       {
@@ -923,7 +1316,7 @@ export const apiResources: ApiResource[] = [
           },
           {
             name: "subject_type?",
-            type: "NOTE | USER | COMPANY",
+            type: "NOTE | USER | COMPANY | DEPARTMENT",
             description: ["Filter by audited subject type."]
           },
           {
@@ -1033,6 +1426,13 @@ export const gatewayEvents: GatewayEvent[] = [
         ]
       },
       {
+        name: "department_id",
+        type: "string | null",
+        description: [
+          "Department scope for the note. Null means General content."
+        ]
+      },
+      {
         name: "note_type",
         type: "Note Type",
         description: [
@@ -1084,6 +1484,13 @@ export const gatewayEvents: GatewayEvent[] = [
         ]
       },
       {
+        name: "department_id",
+        type: "string | null",
+        description: [
+          "Department scope for the note. Null means General content."
+        ]
+      },
+      {
         name: "note_type",
         type: "Note Type",
         description: [
@@ -1130,6 +1537,95 @@ export const gatewayEvents: GatewayEvent[] = [
       "An object containing only the ",
       { label: "id" },
       " of the deleted note."
+    ]
+  },
+  {
+    id: "department-created",
+    type: "DEPARTMENT_CREATED",
+    description: [
+      "Dispatched when a department is created and visible to the receiving user."
+    ],
+    dataFields: [
+      { name: "id", type: "string", description: ["Department platform ID."] },
+      { name: "name", type: "string", description: ["Department display name."] },
+      {
+        name: "icon_type",
+        type: "Department Icon Type",
+        description: [
+          "Department icon mode. See ",
+          {
+            label: "Department Icon Type",
+            resourceId: "department",
+            hash: departmentIconTypeDeclarationHash
+          },
+          "."
+        ]
+      },
+      {
+        name: "icon_value",
+        type: "string",
+        description: ["Emoji value or uploaded image filename."]
+      },
+      { name: "created_at", type: "string", description: ["Creation time."] },
+      { name: "updated_at", type: "string", description: ["Last update time."] }
+    ],
+    returns: [
+      "A full ",
+      { label: "department", resourceId: "department" },
+      " object."
+    ]
+  },
+  {
+    id: "department-updated",
+    type: "DEPARTMENT_UPDATED",
+    description: [
+      "Dispatched when a department visible to the receiving user is updated."
+    ],
+    dataFields: [
+      { name: "id", type: "string", description: ["Department platform ID."] },
+      { name: "name", type: "string", description: ["Department display name."] },
+      {
+        name: "icon_type",
+        type: "Department Icon Type",
+        description: [
+          "Department icon mode. See ",
+          {
+            label: "Department Icon Type",
+            resourceId: "department",
+            hash: departmentIconTypeDeclarationHash
+          },
+          "."
+        ]
+      },
+      {
+        name: "icon_value",
+        type: "string",
+        description: ["Emoji value or uploaded image filename."]
+      },
+      { name: "created_at", type: "string", description: ["Creation time."] },
+      { name: "updated_at", type: "string", description: ["Last update time."] }
+    ],
+    returns: [
+      "A full ",
+      { label: "department", resourceId: "department" },
+      " object with updated fields."
+    ]
+  },
+  {
+    id: "department-deleted",
+    type: "DEPARTMENT_DELETED",
+    description: ["Dispatched when a department is deleted."],
+    dataFields: [
+      {
+        name: "id",
+        type: "string",
+        description: ["Deleted department platform ID."]
+      }
+    ],
+    returns: [
+      "An object containing only the ",
+      { label: "id" },
+      " of the deleted department."
     ]
   },
   {

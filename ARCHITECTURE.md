@@ -50,6 +50,8 @@ Important frontend behavior:
 - Notes can render as markdown, Mermaid flowcharts, or reference/file views.
 - The update-note modal keeps its primary actions in a slim left-side rail so save and future note actions do not bloat the bottom edge of the form as the editor grows.
 - The notes sidebar keeps its utility actions in a fixed non-resizable left rail inside the sidebar panel, while note search and the note list occupy the remaining resizable sidebar width.
+- The notes sidebar groups notes by department, with General notes shown separately and department groups ordered alphabetically. Search filters notes inside each group and hides only groups without matches, so the sidebar keeps its category shape while searching.
+- Department metadata and department membership edges are owned by `frontend/src/stores/useDepartmentsStore.ts`; user records stay owned by `frontend/src/stores/useUsersStore.ts`.
 - Sidebar note rows expose menu actions for all users to copy the note ID and download the note without opening a new tab. Markdown notes download as `.md`, reference notes download the stored attachment file, and Mermaid flowcharts export through the shared Mermaid SVG renderer as `.svg`.
 - Heavy optional UI is loaded on demand instead of from the permanent shell:
   - Sidebar utility modals are imported only when opened.
@@ -58,6 +60,7 @@ Important frontend behavior:
 - Modal entrance and exit motion is centralized in `frontend/src/components/DarkWrapper.tsx` and `DarkWrapper.module.css`.
   Modal bodies should keep layout and visual styling only, while callers choose the shared `pop` or `slide-up` animation preset on the wrapper.
 - Realtime updates come through the websocket manager and fan into stores.
+- Department create, update, and delete events update the department store. Membership changes are treated as a scope change and trigger a full departments/users/notes resync for the affected client.
 - The websocket client now identifies itself with a stable per-tab `session_id` stored in `sessionStorage`, and that identifier is generated with Web Crypto APIs instead of non-cryptographic randomness. Reconnects reuse that logical session so brief transport drops do not create duplicate backend sessions for the same tab.
 - The frontend also stores the last applied replay cursor as `last_event_id` in `sessionStorage`. Reconnects send both `session_id` and `last_event_id` so the backend can resume from the missed event range instead of forcing a default full refresh.
 - The `$connect` Lambda shim must forward `session_id` as `X-Session-Id` and `last_event_id` as `X-Last-Event-Id` to the Go API. The backend intentionally rejects connect requests that omit `session_id`, so frontend and connect-shim deployments need to stay in lockstep.
@@ -160,6 +163,8 @@ Persisted entities include:
 
 - `audit_log_events`
 - `audit_log_changes`
+- `departments`
+- `department_memberships`
 - `users`
 - `notes`
 - `connections`
@@ -173,6 +178,14 @@ API contracts and websocket payloads serialize internal IDs as decimal strings, 
 Audit log change row IDs remain local numeric row IDs, and company CNPJs remain string business identifiers rather than generated platform IDs.
 
 The audit system stores one parent event with zero or more child change rows.
+
+Departments model the primary note scope. A note has a nullable `department_id`:
+`NULL` means General content, while a non-null value points to exactly one
+department. Users can belong to many departments through `department_memberships`.
+The notes table uses a restricted department relationship, and SQLite startup
+also installs a delete guard trigger so a department cannot be removed while
+notes still reference it. Callers must bulk-move or bulk-delete those notes
+before deleting the department.
 
 The `connections` table now models logical websocket sessions, not only raw API Gateway transport IDs. Each row stores:
 
@@ -196,16 +209,21 @@ Replayable websocket events are:
 - `NOTE_CREATED`
 - `NOTE_UPDATED`
 - `NOTE_DELETED`
+- `DEPARTMENT_CREATED`
+- `DEPARTMENT_UPDATED`
+- `DEPARTMENT_DELETED`
 - `USER_CREATED`
 - `USER_UPDATED`
 - `USER_DELETED`
 - `PRESENCE_UPDATED`
+- `RESYNC_REQUIRED`
 
 System-only websocket messages such as `ACK`, `SESSION_EXPIRED`, and `CONNECTION_KILL` are delivered live but are not written to the replay log.
 
 Current audit coverage includes:
 
 - note create, update, and delete
+- department create, update, delete, membership add/remove, note bulk-move, and note bulk-delete
 - user update, suspend/unsuspend, and delete
 - company lookup by CNPJ, including not-found lookups with outcome metadata
 
@@ -222,6 +240,7 @@ That creates a few important cross-project seams:
 
 - authentication tokens issued by the backend auth stack are stored and consumed by the frontend session store
 - note contracts must stay aligned between frontend `types/` and backend `contract/` plus service behavior
+- department contracts must stay aligned between frontend `types/` and backend `contract/`; this includes department objects, membership edge lists, note `department_id`, and department websocket event payloads
 - audit log contracts and permission bit offsets must stay aligned between frontend `types/models` and backend `contract/entity` layers
 - websocket event shapes must stay aligned between backend event emitters and frontend event schemas
 - file and reference note handling depends on both backend storage behavior and frontend renderer support

@@ -114,6 +114,9 @@ That sequence usually gives enough context without spelunking the whole repo lik
   - Central source for note list and currently opened note.
   - Handles list caching, note fetch, note open/close, render loading state.
   - Start here for note bugs.
+- `frontend/src/stores/useDepartmentsStore.ts`
+  - Department metadata cache and department membership edge cache.
+  - Owns department state while `useUsersStore` remains the source of truth for user records.
 - `frontend/src/stores/useUsersStore.ts`
   - User list cache and presence updates.
 
@@ -129,6 +132,8 @@ That sequence usually gives enough context without spelunking the whole repo lik
   - CRUD for notes.
   - Upload vs editor note creation logic.
   - File extension/size constants.
+- `frontend/src/services/departmentService.ts`
+  - Department CRUD, membership edge mutations, and department note bulk actions.
 - `frontend/src/services/auditService.ts`
   - Audit log listing client.
   - Uses `limit` + `before_id` cursor pagination against `/audit-logs`.
@@ -210,10 +215,21 @@ Read:
 Read:
 
 1. `frontend/src/stores/useNotesStore.ts`
-2. `frontend/src/services/noteService.ts`
-3. `frontend/src/types/api/notes.ts`
-4. `frontend/src/types/forms/notes.ts`
-5. Relevant modal or board component
+2. `frontend/src/stores/useDepartmentsStore.ts` if department scope is involved
+3. `frontend/src/services/noteService.ts`
+4. `frontend/src/types/api/notes.ts`
+5. `frontend/src/types/forms/notes.ts`
+6. Relevant modal or board component
+
+### If The Task Is About Frontend Departments
+
+Read:
+
+1. `frontend/src/stores/useDepartmentsStore.ts`
+2. `frontend/src/services/departmentService.ts`
+3. `frontend/src/types/api/departments.ts`
+4. `frontend/src/components/sidebar/Sidebar.tsx`
+5. `frontend/src/components/modals/departments/DepartmentManagementModal.tsx`
 
 ### If The Task Is About Frontend Realtime Updates
 
@@ -253,6 +269,16 @@ Read:
 3. `backend/cmd/internal/domain/sqlite/repository/note_repository.go`
 4. `backend/cmd/internal/domain/entity/note.go`
 5. `backend/cmd/internal/contract/note_contract.go`
+
+### If The Task Is About Backend Departments
+
+Read:
+
+1. `backend/cmd/internal/http/handler/department_routes.go`
+2. `backend/cmd/internal/service/department_service.go`
+3. `backend/cmd/internal/domain/sqlite/repository/department_repository.go`
+4. `backend/cmd/internal/domain/entity/department.go`
+5. `backend/cmd/internal/contract/department_contract.go`
 
 ### If The Task Is About Backend Audit Logs
 
@@ -310,6 +336,10 @@ Do not copy environment values into docs or comments unless explicitly needed.
 - The frontend currently sends `id_token` in API requests even though auth data also includes `access_token`.
 - Route protection is handled in TanStack Router route guards instead of a dedicated `ProtectedRoute` wrapper.
 - `frontend/src/pages/mainpage/MainPage.tsx` drives note opening via typed `?id=` search params on the `/` route.
+- Notes are scoped by nullable `department_id`: `null` means General, and a non-null value points to exactly one department. Users may belong to multiple departments through membership edges.
+- Department membership state is ID-only and separate from user objects. Keep `useUsersStore` as the source of truth for user data and `useDepartmentsStore` as the source of truth for department metadata plus memberships.
+- The sidebar preserves department grouping while searching: it filters notes inside each department and hides only empty groups.
+- Department deletion is intentionally guarded. Departments with notes must have those notes bulk-moved or bulk-deleted before the department can be removed.
 - Audit logs are opened from `SidebarRail`, auto-apply frontend filters on change, and page through `/audit-logs` in chunks of `50` using `next_before_id`.
 - The audit modal resolves actor names from `useUsersStore` first and falls back to `userService.getUserById` for users that are no longer present in the active list.
 - Company lookup audit events are recorded for both hits and misses, with `found` and `cache_hit` change rows describing the outcome.
@@ -322,6 +352,7 @@ Do not copy environment values into docs or comments unless explicitly needed.
 - Backend startup loads config, initializes SQLite, wires AWS-backed dependencies, starts background jobs, and serves Echo on port `7070`.
 - Backend audit log reads are protected by `PermissionReadAuditLogs`; admins still inherit access through effective permission checks.
 - Backend websocket events can mutate frontend-visible state through the websocket pipeline, so frontend and backend changes around realtime need to be checked together.
+- Department membership changes alter note visibility scope. The backend sends scope-change resync signals so the frontend refreshes users, notes, and departments instead of trying to infer every affected row locally.
 - Websocket presence is now tied to a logical per-tab `session_id` with a reconnect grace window, not just the raw API Gateway `connection_id`. Temporary disconnects should resume the same session instead of creating duplicate active connections.
 - The frontend also persists the last applied websocket replay cursor as `last_event_id` in `sessionStorage`. Reconnects must reuse the same `session_id` and send that cursor so the backend can replay missed events in order.
 - The frontend only sends websocket pings while the tab is visible. Hidden-tab reconnect behavior is expected to rely on session resumption plus ordered replay, with a full notes/users resync only after an explicit `RESYNC_REQUIRED` control event.
