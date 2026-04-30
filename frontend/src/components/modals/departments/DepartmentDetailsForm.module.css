@@ -1,0 +1,111 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-height: 0;
+  padding: 20px 22px;
+  overflow-y: auto;
+}
+
+.section {
+  padding: 0 0 20px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  color: rgb(130, 118, 150);
+}
+
+.sectionHeader h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: rgb(215, 210, 225);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.sectionIcon {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  object-fit: cover;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.iconAndName {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.nameField {
+  flex: 1;
+  min-width: 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.primaryButton,
+.secondaryButton,
+.dangerButton {
+  gap: 6px;
+  padding: 8px 18px;
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.primaryButton {
+  background-color: rgb(78, 56, 120);
+  color: rgb(230, 225, 240);
+}
+
+.primaryButton:hover:not(:disabled) {
+  background-color: rgb(92, 68, 140);
+}
+
+.secondaryButton {
+  border: 1px solid rgb(53, 47, 66);
+  background-color: rgb(38, 34, 50);
+  color: rgb(190, 184, 201);
+}
+
+.secondaryButton:hover:not(:disabled) {
+  border-color: rgb(70, 62, 88);
+  background-color: rgb(48, 43, 62);
+}
+
+.dangerButton {
+  border: 1px solid rgba(200, 60, 60, 0.25);
+  background-color: rgba(180, 50, 50, 0.15);
+  color: rgb(255, 170, 170);
+}
+
+.dangerButton:hover:not(:disabled) {
+  border-color: rgba(220, 70, 70, 0.35);
+  background-color: rgba(180, 50, 50, 0.25);
+}
+
+@media (max-width: 860px) {
+  .iconAndName {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

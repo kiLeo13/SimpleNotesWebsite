@@ -1,0 +1,190 @@
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgb(53, 47, 66);
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    border-color 0.25s,
+    background-color 0.25s,
+    transform 0.15s;
+}
+
+.trigger:hover:not(:disabled) {
+  border-color: rgb(92, 71, 145);
+  background-color: rgba(92, 71, 145, 0.12);
+  transform: scale(1.06);
+}
+
+.trigger:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.triggerEmoji {
+  font-size: 22px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.content {
+  z-index: 100;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgb(48, 42, 60);
+  background-color: rgb(24, 23, 29);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
+  animation: popoverSlideIn 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  width: 340px;
+}
+
+.content:focus {
+  outline: none;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid rgb(43, 38, 53);
+}
+
+.tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border: 0;
+  background: transparent;
+  color: rgb(130, 118, 150);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    color 0.2s,
+    background-color 0.2s;
+  position: relative;
+}
+
+.tab:hover {
+  color: rgb(200, 195, 212);
+  background-color: rgba(92, 71, 145, 0.06);
+}
+
+.tab[data-active="true"] {
+  color: rgb(220, 215, 232);
+}
+
+.tab[data-active="true"]::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 16px;
+  right: 16px;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background-color: rgb(120, 86, 176);
+}
+
+.uploadPanel {
+  padding: 20px;
+}
+
+.uploadZone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 28px 20px;
+  border: 2px dashed rgb(53, 47, 66);
+  border-radius: 10px;
+  background-color: rgb(18, 17, 22);
+  cursor: pointer;
+  transition:
+    border-color 0.25s,
+    background-color 0.25s;
+}
+
+.uploadZone:hover {
+  border-color: rgb(92, 71, 145);
+  background-color: rgba(92, 71, 145, 0.06);
+}
+
+.uploadIconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background-color: rgb(38, 34, 50);
+  color: rgb(130, 118, 150);
+}
+
+.uploadHint {
+  color: rgb(160, 150, 175);
+  font-size: 0.85rem;
+  text-align: center;
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.browseButton {
+  padding: 7px 22px;
+  border: 0;
+  border-radius: 8px;
+  background-color: rgb(78, 56, 120);
+  color: rgb(230, 225, 240);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.browseButton:hover {
+  background-color: rgb(92, 68, 140);
+}
+
+.emojiPanel {
+  /*
+   * Isolate the emoji picker's own scroll so Radix Popover
+   * focus management doesn't intercept mousewheel events.
+   */
+  overflow: hidden;
+}
+
+/*
+ * Override emoji-picker-react dark theme colors to match
+ * the app's purple-tinted dark palette.
+ */
+.emojiPanel :global(.EmojiPickerReact.epr-dark-theme) {
+  --epr-bg-color: rgb(24, 23, 29);
+  --epr-category-label-bg-color: rgb(24, 23, 29);
+  --epr-text-color: rgb(190, 184, 201);
+  --epr-hover-bg-color: rgb(42, 37, 54);
+  --epr-search-input-bg-color: rgb(18, 17, 22);
+  --epr-search-input-text-color: rgb(207, 202, 218);
+  --epr-search-border-color: rgb(53, 47, 66);
+  --epr-picker-border-color: transparent;
+  --epr-header-padding: 10px 10px 6px;
+  border: 0;
+  border-radius: 0;
+}
+
+@keyframes popoverSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
