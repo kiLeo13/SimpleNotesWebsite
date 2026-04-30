@@ -99,7 +99,7 @@ func (u *DefaultUserRoute) DeleteUser(c echo.Context) error {
 	if apierr != nil {
 		return c.JSON(apierr.Code(), apierr)
 	}
-	return c.NoContent(http.StatusOK)
+	return c.NoContent(http.StatusNoContent)
 }
 
 func (u *DefaultUserRoute) Logout(c echo.Context) error {
@@ -117,7 +117,7 @@ func (u *DefaultUserRoute) Logout(c echo.Context) error {
 	if apierr != nil {
 		return c.JSON(apierr.Code(), apierr)
 	}
-	return c.NoContent(http.StatusOK)
+	return c.NoContent(http.StatusNoContent)
 }
 
 func (u *DefaultUserRoute) CheckEmail(c echo.Context) error {
@@ -171,7 +171,7 @@ func (u *DefaultUserRoute) ConfirmSignup(c echo.Context) error {
 	if apierr != nil {
 		return c.JSON(apierr.Code(), apierr)
 	}
-	return c.NoContent(http.StatusOK)
+	return c.NoContent(http.StatusNoContent)
 }
 
 func (u *DefaultUserRoute) ResendConfirmation(c echo.Context) error {
@@ -184,5 +184,5 @@ func (u *DefaultUserRoute) ResendConfirmation(c echo.Context) error {
 	if apierr != nil {
 		return c.JSON(apierr.Code(), apierr)
 	}
-	return c.NoContent(http.StatusOK)
+	return c.NoContent(http.StatusNoContent)
 }

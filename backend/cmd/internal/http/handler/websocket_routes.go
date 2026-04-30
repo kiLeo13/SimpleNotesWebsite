@@ -55,7 +55,7 @@ func (h *DefaultWSRoute) HandleConnect(c echo.Context) error {
 	if apierr = h.WSService.RegisterConnection(user.ID, sessionID, connID, token.Exp, lastEventID); apierr != nil {
 		return c.JSON(apierr.Code(), apierr)
 	}
-	return c.NoContent(http.StatusOK)
+	return c.NoContent(http.StatusNoContent)
 }
 
 func (h *DefaultWSRoute) HandleDisconnect(c echo.Context) error {
@@ -63,7 +63,7 @@ func (h *DefaultWSRoute) HandleDisconnect(c echo.Context) error {
 	if connID != "" {
 		h.WSService.RemoveConnection(connID)
 	}
-	return c.NoContent(http.StatusOK)
+	return c.NoContent(http.StatusNoContent)
 }
 
 func (h *DefaultWSRoute) HandleMessage(c echo.Context) error {
@@ -74,7 +74,7 @@ func (h *DefaultWSRoute) HandleMessage(c echo.Context) error {
 	}
 
 	h.WSService.HandleMessage(&msg, connID)
-	return c.NoContent(http.StatusOK)
+	return c.NoContent(http.StatusNoContent)
 }
 
 func parseLastEventID(raw string) (*int64, apierror.ErrorResponse) {

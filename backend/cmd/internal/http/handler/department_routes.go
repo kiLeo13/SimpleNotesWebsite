@@ -148,7 +148,7 @@ func (d *DefaultDepartmentRoute) BulkMoveNotes(c echo.Context) error {
 	if apierr = d.DepartmentService.BulkMoveNotes(user, departmentID, &req); apierr != nil {
 		return c.JSON(apierr.Code(), apierr)
 	}
-	return c.NoContent(http.StatusOK)
+	return c.NoContent(http.StatusNoContent)
 }
 
 func (d *DefaultDepartmentRoute) BulkDeleteNotes(c echo.Context) error {
@@ -165,7 +165,7 @@ func (d *DefaultDepartmentRoute) BulkDeleteNotes(c echo.Context) error {
 	if apierr = d.DepartmentService.BulkDeleteNotes(user, departmentID); apierr != nil {
 		return c.JSON(apierr.Code(), apierr)
 	}
-	return c.NoContent(http.StatusOK)
+	return c.NoContent(http.StatusNoContent)
 }
 
 func (d *DefaultDepartmentRoute) mutateDepartmentUser(c echo.Context, add bool) error {
@@ -193,7 +193,7 @@ func (d *DefaultDepartmentRoute) mutateDepartmentUser(c echo.Context, add bool) 
 	if apierr != nil {
 		return c.JSON(apierr.Code(), apierr)
 	}
-	return c.NoContent(http.StatusOK)
+	return c.NoContent(http.StatusNoContent)
 }
 
 func bindDepartmentPayload[T any](c echo.Context, req *T) (*multipart.FileHeader, apierror.ErrorResponse) {
