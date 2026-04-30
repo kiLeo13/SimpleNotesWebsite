@@ -1,0 +1,199 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-left: 1px solid rgb(38, 34, 48);
+  background-color: rgb(22, 21, 27);
+  user-select: none;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px 8px;
+  border-bottom: 1px solid rgb(38, 34, 48);
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: rgb(110, 100, 126);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 17px;
+  padding: 0 5px;
+  border-radius: 8px;
+  background-color: rgb(55, 45, 72);
+  color: rgb(165, 150, 190);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.addButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 6px;
+  background-color: rgb(60, 48, 82);
+  color: rgb(175, 160, 200);
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    transform 0.15s;
+}
+
+.addButton:hover {
+  background-color: rgb(78, 56, 120);
+  transform: scale(1.08);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 0;
+  padding: 6px 8px;
+  overflow-y: auto;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  transition: background-color 0.15s;
+}
+
+.row:hover {
+  background-color: rgb(34, 31, 42);
+}
+
+.userIcon {
+  flex-shrink: 0;
+  color: rgb(110, 100, 126);
+}
+
+.name {
+  flex: 1;
+  overflow: hidden;
+  color: rgb(175, 168, 190);
+  font-size: 0.82rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.removeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: rgb(130, 118, 150);
+  cursor: pointer;
+  opacity: 0;
+  transition:
+    opacity 0.15s,
+    background-color 0.15s,
+    color 0.15s;
+}
+
+.row:hover .removeButton {
+  opacity: 1;
+}
+
+.removeButton:hover {
+  background-color: rgba(224, 90, 90, 0.2);
+  color: rgb(255, 160, 160);
+}
+
+.menuContent {
+  z-index: 110;
+  min-width: 150px;
+  padding: 4px;
+  border: 1px solid rgb(48, 42, 60);
+  border-radius: 8px;
+  background-color: rgb(30, 27, 38);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  transform-origin: var(--radix-dropdown-menu-content-transform-origin);
+  animation: menuSlideIn 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 5px;
+  color: rgb(195, 190, 210);
+  font-size: 0.85rem;
+  outline: none;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.12s;
+}
+
+.menuItem[data-highlighted] {
+  background-color: rgb(58, 48, 75);
+  color: rgb(225, 220, 240);
+}
+
+.menuItemLabel {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.menuEmpty,
+.empty {
+  display: block;
+  color: rgb(110, 100, 126);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.menuEmpty {
+  padding: 10px 14px;
+}
+
+.empty {
+  padding: 14px 10px;
+}
+
+@keyframes menuSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(2px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 860px) {
+  .panel {
+    max-height: 200px;
+    border-top: 1px solid rgb(38, 34, 48);
+    border-left: 0;
+  }
+}

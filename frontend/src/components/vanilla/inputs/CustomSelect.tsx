@@ -26,6 +26,14 @@ export type CustomSelectProps = {
   id?: string
   invalid?: boolean
   onBlur?: () => void
+  customTrigger?: React.ReactNode
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+  align?: "start" | "center" | "end"
+  side?: "top" | "right" | "bottom" | "left"
+  sideOffset?: number
+  contentClassName?: string
+  emptyMessage?: string
 }
 
 export const CustomSelect = forwardRef<HTMLButtonElement, CustomSelectProps>(
@@ -39,6 +47,14 @@ export const CustomSelect = forwardRef<HTMLButtonElement, CustomSelectProps>(
       className,
       disabled = false,
       invalid = false,
+      customTrigger,
+      open,
+      onOpenChange,
+      align = "start",
+      side,
+      sideOffset = 5,
+      contentClassName,
+      emptyMessage,
       ...props
     },
     ref
@@ -46,8 +62,15 @@ export const CustomSelect = forwardRef<HTMLButtonElement, CustomSelectProps>(
     const { t } = useTranslation()
 
     const [searchTerm, setSearchTerm] = useState("")
-    const [isOpen, setIsOpen] = useState(false)
+    const [internalOpen, setInternalOpen] = useState(false)
     const searchInputRef = useRef<HTMLInputElement>(null)
+
+    const isOpen = open !== undefined ? open : internalOpen
+
+    const handleOpenChange = (newOpen: boolean) => {
+      setInternalOpen(newOpen)
+      onOpenChange?.(newOpen)
+    }
 
     useEffect(() => {
       if (!isOpen || !hasSearch) return
@@ -76,44 +99,49 @@ export const CustomSelect = forwardRef<HTMLButtonElement, CustomSelectProps>(
     const handleSelect = (selectedValue: string) => {
       onChange(selectedValue)
       setSearchTerm("")
-      setIsOpen(false)
+      handleOpenChange(false)
     }
 
     return (
-      <DropdownMenu.Root open={isOpen} onOpenChange={setIsOpen}>
+      <DropdownMenu.Root open={isOpen} onOpenChange={handleOpenChange}>
         <DropdownMenu.Trigger asChild disabled={disabled}>
-          <button
-            ref={ref}
-            className={clsx(
-              styles.trigger,
-              invalid && styles.invalid,
-              className
-            )}
-            type="button"
-            {...props}
-          >
-            <div className={styles.valueWrapper}>
-              {selectedOption ? (
-                <>
-                  {selectedOption.icon && (
-                    <span className={styles.itemIcon}>
-                      {selectedOption.icon}
-                    </span>
-                  )}
-                  <span>{selectedOption.label}</span>
-                </>
-              ) : (
-                <span className={styles.placeholder}>{placeholder || ""}</span>
+          {customTrigger ? (
+            customTrigger
+          ) : (
+            <button
+              ref={ref}
+              className={clsx(
+                styles.trigger,
+                invalid && styles.invalid,
+                className
               )}
-            </div>
-            <FiChevronDown className={styles.chevron} />
-          </button>
+              type="button"
+              {...props}
+            >
+              <div className={styles.valueWrapper}>
+                {selectedOption ? (
+                  <>
+                    {selectedOption.icon && (
+                      <span className={styles.itemIcon}>
+                        {selectedOption.icon}
+                      </span>
+                    )}
+                    <span>{selectedOption.label}</span>
+                  </>
+                ) : (
+                  <span className={styles.placeholder}>{placeholder || ""}</span>
+                )}
+              </div>
+              <FiChevronDown className={styles.chevron} />
+            </button>
+          )}
         </DropdownMenu.Trigger>
         <DropdownMenu.Portal>
           <DropdownMenu.Content
-            className={styles.content}
-            sideOffset={5}
-            align="start"
+            className={clsx(styles.content, contentClassName)}
+            side={side}
+            sideOffset={sideOffset}
+            align={align}
             onCloseAutoFocus={(e) => e.preventDefault()}
           >
             {hasSearch && (
@@ -156,7 +184,7 @@ export const CustomSelect = forwardRef<HTMLButtonElement, CustomSelectProps>(
                 ))
               ) : (
                 <div className={styles.noResults}>
-                  {t("menus.select.noResults")}
+                  {emptyMessage || t("menus.select.noResults")}
                 </div>
               )}
             </div>
