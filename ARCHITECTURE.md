@@ -52,6 +52,7 @@ Important frontend behavior:
 - The notes sidebar keeps its utility actions in a fixed non-resizable left rail inside the sidebar panel, while note search and the note list occupy the remaining resizable sidebar width.
 - The notes sidebar groups notes by department, with General notes shown separately and department groups ordered alphabetically. Search filters notes inside each group and hides only groups without matches, so the sidebar keeps its category shape while searching.
 - Department metadata and department membership edges are owned by `frontend/src/stores/useDepartmentsStore.ts`; user records stay owned by `frontend/src/stores/useUsersStore.ts`.
+- The department management modal is split into local department-specific components: `DepartmentSidebar`, `DepartmentActionsMenu`, `DepartmentDetailsForm`, `DepartmentMembersPanel`, and `IconPicker`. Each component keeps its styles in a matching CSS module so modal orchestration stays separate from list, form, menu, member, and picker layout concerns.
 - Sidebar note rows expose menu actions for all users to copy the note ID and download the note without opening a new tab. Markdown notes download as `.md`, reference notes download the stored attachment file, and Mermaid flowcharts export through the shared Mermaid SVG renderer as `.svg`.
 - Heavy optional UI is loaded on demand instead of from the permanent shell:
   - Sidebar utility modals are imported only when opened.

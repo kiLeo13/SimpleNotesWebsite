@@ -1,9 +1,11 @@
-import { useEffect, useMemo, useState, type ChangeEvent, type JSX } from "react"
-import { IoMdClose } from "react-icons/io"
-import { MdDelete, MdDriveFileMove, MdSave } from "react-icons/md"
+import { useCallback, useEffect, useMemo, useState, type JSX } from "react"
+import type { DepartmentData } from "@/types/api/departments"
+import type { UserResponseData } from "@/types/api/users"
+import type { BulkMoveTarget } from "./DepartmentActionsMenu"
 
-import { Button } from "@/components/ui/buttons/Button"
-import { DepartmentIcon } from "@/components/departments/DepartmentIcon"
+import { IoMdClose } from "react-icons/io"
+import { DarkWrapper } from "@/components/DarkWrapper"
+import { ConfirmModal } from "@/components/modals/shared/ConfirmModal"
 import { Permission } from "@/models/Permission"
 import { departmentService } from "@/services/departmentService"
 import { useDepartmentsStore } from "@/stores/useDepartmentsStore"
@@ -12,7 +14,35 @@ import { useTranslation } from "react-i18next"
 import { useUsersStore } from "@/stores/useUsersStore"
 import { toasts } from "@/utils/toastUtils"
 
+import { DepartmentDetailsForm } from "./DepartmentDetailsForm"
+import { DepartmentMembersPanel } from "./DepartmentMembersPanel"
+import { DepartmentSidebar } from "./DepartmentSidebar"
+import {
+  DEFAULT_DEPARTMENT_EMOJI,
+  buildBulkMovePayload,
+  buildCreateDepartmentPayload,
+  buildUpdateDepartmentPayload,
+  getBulkMoveTargets as buildBulkMoveTargets,
+  getDepartmentUserPartitions,
+  sortDepartments,
+  sortUsers
+} from "./DepartmentManagementModal.helpers"
+
 import styles from "./DepartmentManagementModal.module.css"
+
+type ConfirmDialogState = {
+  open: boolean
+  title: string
+  description: string
+  onConfirm: () => Promise<void> | void
+}
+
+const INITIAL_CONFIRM: ConfirmDialogState = {
+  open: false,
+  title: "",
+  description: "",
+  onConfirm: () => { }
+}
 
 type DepartmentManagementModalProps = {
   onClose: () => void
@@ -39,29 +69,29 @@ export function DepartmentManagementModal({
   const users = useUsersStore((state) => state.users)
   const ensureUsersLoaded = useUsersStore((state) => state.ensureLoaded)
 
-  const sortedDepartments = useMemo(
-    () => [...departments].sort((a, b) => a.name.localeCompare(b.name)),
-    [departments]
-  )
-  const sortedUsers = useMemo(
-    () => [...users].sort((a, b) => a.username.localeCompare(b.username)),
-    [users]
-  )
+  const sortedDepartments = useMemo(() => sortDepartments(departments), [departments])
+  const sortedUsers = useMemo(() => sortUsers(users), [users])
 
   const [selectedDepartmentId, setSelectedDepartmentId] = useState("")
   const selectedDepartment =
-    sortedDepartments.find((department) => department.id === selectedDepartmentId) ??
+    sortedDepartments.find((d) => d.id === selectedDepartmentId) ??
     sortedDepartments[0] ??
     null
 
+  const [showCreateForm, setShowCreateForm] = useState(false)
   const [newName, setNewName] = useState("")
-  const [newEmoji, setNewEmoji] = useState("🏷️")
+  const [newEmoji, setNewEmoji] = useState(DEFAULT_DEPARTMENT_EMOJI)
   const [newIconFile, setNewIconFile] = useState<File | null>(null)
+
   const [editName, setEditName] = useState("")
   const [editEmoji, setEditEmoji] = useState("")
   const [editIconFile, setEditIconFile] = useState<File | null>(null)
-  const [bulkTargetId, setBulkTargetId] = useState("")
   const [isSaving, setIsSaving] = useState(false)
+
+  const [showAddUserMenu, setShowAddUserMenu] = useState(false)
+
+  const [confirmDialog, setConfirmDialog] = useState<ConfirmDialogState>(INITIAL_CONFIRM)
+  const closeConfirm = useCallback(() => setConfirmDialog(INITIAL_CONFIRM), [])
 
   useEffect(() => {
     ensureDepartmentsLoaded()
@@ -84,19 +114,18 @@ export function DepartmentManagementModal({
       selectedDepartment.icon_type === "EMOJI" ? selectedDepartment.icon_value : ""
     )
     setEditIconFile(null)
-    setBulkTargetId("")
-  }, [selectedDepartment?.id])
+  }, [selectedDepartment])
+
+  const { members: departmentMembers, nonMembers: nonMemberUsers } = useMemo(() => {
+    return getDepartmentUserPartitions(selectedDepartment, memberships, sortedUsers)
+  }, [memberships, selectedDepartment, sortedUsers])
 
   const handleCreate = async () => {
     if (!newName.trim()) return
 
     setIsSaving(true)
     const resp = await departmentService.createDepartment(
-      {
-        name: newName.trim(),
-        icon_type: newIconFile ? "IMAGE" : "EMOJI",
-        icon_value: newIconFile ? undefined : newEmoji.trim()
-      },
+      buildCreateDepartmentPayload(newName, newEmoji, newIconFile),
       newIconFile
     )
     setIsSaving(false)
@@ -109,8 +138,9 @@ export function DepartmentManagementModal({
     addDepartment(resp.data)
     setSelectedDepartmentId(resp.data.id)
     setNewName("")
-    setNewEmoji("🏷️")
+    setNewEmoji(DEFAULT_DEPARTMENT_EMOJI)
     setNewIconFile(null)
+    setShowCreateForm(false)
     toasts.success(t("departments.toasts.createSuccess"))
   }
 
@@ -118,17 +148,9 @@ export function DepartmentManagementModal({
     if (!selectedDepartment || !editName.trim()) return
 
     setIsSaving(true)
-    const payload = {
-      name: editName.trim(),
-      ...(editIconFile
-        ? { icon_type: "IMAGE" as const }
-        : editEmoji.trim()
-          ? { icon_type: "EMOJI" as const, icon_value: editEmoji.trim() }
-          : {})
-    }
     const resp = await departmentService.updateDepartment(
       selectedDepartment.id,
-      payload,
+      buildUpdateDepartmentPayload(editName, editEmoji, editIconFile),
       editIconFile
     )
     setIsSaving(false)
@@ -142,240 +164,195 @@ export function DepartmentManagementModal({
     toasts.success(t("departments.toasts.updateSuccess"))
   }
 
-  const handleDelete = async () => {
+  const requestDeleteDepartment = () => {
     if (!selectedDepartment) return
-    if (!window.confirm(t("departments.confirm.delete", { name: selectedDepartment.name }))) {
-      return
-    }
-
-    const resp = await departmentService.deleteDepartment(selectedDepartment.id)
-    if (!resp.success) {
-      if (resp.statusCode === 409) {
-        toasts.warning(t("departments.toasts.deleteBlocked"))
-      } else {
-        toasts.apiError(t("departments.toasts.deleteError"), resp)
+    setConfirmDialog({
+      open: true,
+      title: t("departments.confirm.deleteTitle"),
+      description: t("departments.confirm.delete", { name: selectedDepartment.name }),
+      onConfirm: async () => {
+        const resp = await departmentService.deleteDepartment(selectedDepartment.id)
+        if (!resp.success) {
+          if (resp.statusCode === 409) {
+            toasts.warning(t("departments.toasts.deleteBlocked"))
+          } else {
+            toasts.apiError(t("departments.toasts.deleteError"), resp)
+          }
+          return
+        }
+        removeDepartment(selectedDepartment.id)
+        setSelectedDepartmentId("")
+        toasts.success(t("departments.toasts.deleteSuccess"))
+        closeConfirm()
       }
-      return
-    }
-
-    removeDepartment(selectedDepartment.id)
-    setSelectedDepartmentId("")
-    toasts.success(t("departments.toasts.deleteSuccess"))
-  }
-
-  const handleBulkMove = async () => {
-    if (!selectedDepartment) return
-    const targetDepartmentId = bulkTargetId || null
-    if (!window.confirm(t("departments.confirm.bulkMove", { name: selectedDepartment.name }))) {
-      return
-    }
-
-    const resp = await departmentService.bulkMoveNotes(selectedDepartment.id, {
-      target_department_id: targetDepartmentId
     })
-    if (resp.success) {
-      toasts.success(t("departments.toasts.bulkMoveSuccess"))
-    } else {
-      toasts.apiError(t("departments.toasts.bulkMoveError"), resp)
-    }
   }
 
-  const handleBulkDelete = async () => {
-    if (!selectedDepartment) return
-    if (
-      !window.confirm(t("departments.confirm.bulkDelete", { name: selectedDepartment.name }))
-    ) {
-      return
-    }
-
-    const resp = await departmentService.bulkDeleteNotes(selectedDepartment.id)
-    if (resp.success) {
-      toasts.success(t("departments.toasts.bulkDeleteSuccess"))
-    } else {
-      toasts.apiError(t("departments.toasts.bulkDeleteError"), resp)
-    }
+  const requestBulkMove = (
+    sourceDept: DepartmentData,
+    targetId: string | null,
+    targetName: string
+  ) => {
+    setConfirmDialog({
+      open: true,
+      title: t("departments.confirm.bulkMoveTitle"),
+      description: t("departments.confirm.bulkMove", {
+        name: sourceDept.name,
+        target: targetName
+      }),
+      onConfirm: async () => {
+        const resp = await departmentService.bulkMoveNotes(
+          sourceDept.id,
+          buildBulkMovePayload(targetId)
+        )
+        if (resp.success) {
+          toasts.success(t("departments.toasts.bulkMoveSuccess"))
+        } else {
+          toasts.apiError(t("departments.toasts.bulkMoveError"), resp)
+        }
+        closeConfirm()
+      }
+    })
   }
 
-  const handleMembershipChange = async (userId: string, checked: boolean) => {
+  const requestBulkDelete = (dept: DepartmentData) => {
+    setConfirmDialog({
+      open: true,
+      title: t("departments.confirm.bulkDeleteTitle"),
+      description: t("departments.confirm.bulkDelete", { name: dept.name }),
+      onConfirm: async () => {
+        const resp = await departmentService.bulkDeleteNotes(dept.id)
+        if (resp.success) {
+          toasts.success(t("departments.toasts.bulkDeleteSuccess"))
+        } else {
+          toasts.apiError(t("departments.toasts.bulkDeleteError"), resp)
+        }
+        closeConfirm()
+      }
+    })
+  }
+
+  const handleAddMember = async (user: UserResponseData) => {
     if (!selectedDepartment) return
-
-    const resp = checked
-      ? await departmentService.addUser(selectedDepartment.id, userId)
-      : await departmentService.removeUser(selectedDepartment.id, userId)
-
+    const resp = await departmentService.addUser(selectedDepartment.id, user.id)
     if (!resp.success) {
       toasts.apiError(t("departments.toasts.membershipError"), resp)
       return
     }
+    addMembership({ department_id: selectedDepartment.id, user_id: user.id })
+  }
 
-    if (checked) {
-      addMembership({ department_id: selectedDepartment.id, user_id: userId })
-    } else {
-      removeMembership(selectedDepartment.id, userId)
-    }
+  const requestRemoveMember = (user: UserResponseData) => {
+    if (!selectedDepartment) return
+    setConfirmDialog({
+      open: true,
+      title: t("departments.confirm.removeMemberTitle"),
+      description: t("departments.confirm.removeMember", {
+        user: user.username,
+        dept: selectedDepartment.name
+      }),
+      onConfirm: async () => {
+        const resp = await departmentService.removeUser(selectedDepartment.id, user.id)
+        if (!resp.success) {
+          toasts.apiError(t("departments.toasts.membershipError"), resp)
+          return
+        }
+        removeMembership(selectedDepartment.id, user.id)
+        closeConfirm()
+      }
+    })
+  }
+
+  const getBulkMoveTargets = (dept: DepartmentData): BulkMoveTarget[] => {
+    return buildBulkMoveTargets(dept, sortedDepartments, t("departments.general"))
   }
 
   return (
     <div className={styles.container}>
       <button type="button" className={styles.close} onClick={onClose}>
-        <IoMdClose size={24} />
+        <IoMdClose size={22} />
       </button>
 
       <header className={styles.header}>
-        <h2>{t("departments.management.title")}</h2>
+        <h2 className={styles.title}>{t("departments.management.title")}</h2>
         <span>{t("departments.management.subtitle")}</span>
       </header>
 
       <div className={styles.layout}>
-        <aside className={styles.departmentList}>
-          {sortedDepartments.map((department) => (
-            <button
-              key={department.id}
-              type="button"
-              className={styles.departmentButton}
-              data-active={department.id === selectedDepartment?.id}
-              onClick={() => setSelectedDepartmentId(department.id)}
-            >
-              <DepartmentIcon department={department} className={styles.icon} />
-              <span>{department.name}</span>
-            </button>
-          ))}
+        <DepartmentSidebar
+          departments={sortedDepartments}
+          selectedDepartmentId={selectedDepartment?.id ?? null}
+          getMoveTargets={getBulkMoveTargets}
+          onCreateClick={() => setShowCreateForm(true)}
+          onSelectDepartment={setSelectedDepartmentId}
+          onBulkMove={requestBulkMove}
+          onBulkDelete={requestBulkDelete}
+        />
 
-          {sortedDepartments.length === 0 && (
-            <span className={styles.empty}>{t("departments.management.empty")}</span>
-          )}
-        </aside>
+        {showCreateForm ? (
+          <DepartmentDetailsForm
+            mode="create"
+            name={newName}
+            emoji={newEmoji}
+            isSaving={isSaving}
+            iconFileName={newIconFile?.name}
+            onNameChange={setNewName}
+            onEmojiChange={setNewEmoji}
+            onFileChange={setNewIconFile}
+            onSubmit={handleCreate}
+            onCancel={() => setShowCreateForm(false)}
+          />
+        ) : selectedDepartment ? (
+          <div className={styles.panelWithMembers}>
+            <DepartmentDetailsForm
+              mode="edit"
+              department={selectedDepartment}
+              name={editName}
+              emoji={editEmoji}
+              isSaving={isSaving}
+              iconFileName={editIconFile?.name}
+              onNameChange={setEditName}
+              onEmojiChange={setEditEmoji}
+              onFileChange={setEditIconFile}
+              onSubmit={handleUpdate}
+              onDelete={requestDeleteDepartment}
+            />
 
-        <main className={styles.panel}>
-          <section className={styles.section}>
-            <h3>{t("departments.management.create")}</h3>
-            <div className={styles.formGrid}>
-              <input
-                value={newName}
-                onChange={(event) => setNewName(event.target.value)}
-                placeholder={t("departments.fields.name")}
+            {canManageUsers && (
+              <DepartmentMembersPanel
+                members={departmentMembers}
+                nonMembers={nonMemberUsers}
+                addMenuOpen={showAddUserMenu}
+                onAddMenuOpenChange={setShowAddUserMenu}
+                onAddMember={(user) => void handleAddMember(user)}
+                onRemoveMember={requestRemoveMember}
               />
-              <input
-                value={newEmoji}
-                onChange={(event) => setNewEmoji(event.target.value)}
-                placeholder={t("departments.fields.emoji")}
-              />
-              <input
-                type="file"
-                accept=".png,.jpg,.jpeg,.webp,.gif"
-                onChange={(event) => setNewIconFile(readFile(event))}
-              />
-              <Button
-                disabled={isSaving || !newName.trim()}
-                isLoading={isSaving}
-                onClick={handleCreate}
-              >
-                {t("departments.actions.create")}
-              </Button>
-            </div>
-          </section>
-
-          {selectedDepartment && (
-            <>
-              <section className={styles.section}>
-                <h3>{t("departments.management.details")}</h3>
-                <div className={styles.formGrid}>
-                  <input
-                    value={editName}
-                    onChange={(event) => setEditName(event.target.value)}
-                    placeholder={t("departments.fields.name")}
-                  />
-                  <input
-                    value={editEmoji}
-                    onChange={(event) => setEditEmoji(event.target.value)}
-                    placeholder={t("departments.fields.emoji")}
-                  />
-                  <input
-                    type="file"
-                    accept=".png,.jpg,.jpeg,.webp,.gif"
-                    onChange={(event) => setEditIconFile(readFile(event))}
-                  />
-                  <Button
-                    disabled={isSaving || !editName.trim()}
-                    isLoading={isSaving}
-                    onClick={handleUpdate}
-                  >
-                    <MdSave />
-                    {t("commons.save")}
-                  </Button>
-                </div>
-              </section>
-
-              <section className={styles.section}>
-                <h3>{t("departments.management.notes")}</h3>
-                <div className={styles.actionsRow}>
-                  <select
-                    value={bulkTargetId}
-                    onChange={(event) => setBulkTargetId(event.target.value)}
-                  >
-                    <option value="">{t("departments.general")}</option>
-                    {sortedDepartments
-                      .filter((department) => department.id !== selectedDepartment.id)
-                      .map((department) => (
-                        <option key={department.id} value={department.id}>
-                          {department.name}
-                        </option>
-                      ))}
-                  </select>
-                  <Button onClick={handleBulkMove}>
-                    <MdDriveFileMove />
-                    {t("departments.actions.bulkMove")}
-                  </Button>
-                  <Button onClick={handleBulkDelete}>
-                    <MdDelete />
-                    {t("departments.actions.bulkDelete")}
-                  </Button>
-                  <Button className={styles.dangerButton} onClick={handleDelete}>
-                    <MdDelete />
-                    {t("commons.delete")}
-                  </Button>
-                </div>
-              </section>
-
-              <section className={styles.section}>
-                <h3>{t("departments.management.members")}</h3>
-                {canManageUsers ? (
-                  <div className={styles.memberList}>
-                    {sortedUsers.map((user) => {
-                      const checked = memberships.some(
-                        (membership) =>
-                          membership.department_id === selectedDepartment.id &&
-                          membership.user_id === user.id
-                      )
-
-                      return (
-                        <label className={styles.memberRow} key={user.id}>
-                          <input
-                            type="checkbox"
-                            checked={checked}
-                            onChange={(event) =>
-                              handleMembershipChange(user.id, event.target.checked)
-                            }
-                          />
-                          <span>{user.username}</span>
-                        </label>
-                      )
-                    })}
-                  </div>
-                ) : (
-                  <span className={styles.empty}>
-                    {t("departments.management.membersPermission")}
-                  </span>
-                )}
-              </section>
-            </>
-          )}
-        </main>
+            )}
+          </div>
+        ) : (
+          <main className={styles.panel}>
+            <span className={styles.emptyPanel}>{t("departments.management.empty")}</span>
+          </main>
+        )}
       </div>
+
+      <DarkWrapper
+        open={confirmDialog.open}
+        onOpenChange={(open) => {
+          if (!open) closeConfirm()
+        }}
+        animationPreset="pop"
+        zIndex={50}
+      >
+        <ConfirmModal
+          title={confirmDialog.title}
+          description={confirmDialog.description}
+          intent="warning"
+          strategy="simple"
+          onConfirm={confirmDialog.onConfirm}
+          onClose={closeConfirm}
+        />
+      </DarkWrapper>
     </div>
   )
-}
-
-function readFile(event: ChangeEvent<HTMLInputElement>): File | null {
-  return event.target.files?.[0] ?? null
 }

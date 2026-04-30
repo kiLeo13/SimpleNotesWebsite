@@ -31,7 +31,21 @@
     "unknown": "Departamento",
     "fields": {
       "name": "Nome",
-      "emoji": "Emoji"
+      "namePlaceholder": "Nome do departamento",
+      "emoji": "Emoji",
+      "pickIcon": "Escolher icone",
+      "iconImage": "Icone (imagem)",
+      "iconImageHint": "Envia uma imagem como icone ao inves do emoji.",
+      "selectIcon": "Selecione uma imagem",
+      "bulkTarget": "Destino",
+      "bulkTargetHint": "Escolha o departamento para onde mover as notas."
+    },
+    "iconPicker": {
+      "uploadTab": "Enviar Imagem",
+      "emojiTab": "Emoji",
+      "uploadHint": "Escolha um PNG ou JPG para enviar",
+      "browse": "Procurar Arquivos",
+      "searchEmoji": "Buscar emoji..."
     },
     "actions": {
       "create": "Criar",
@@ -40,18 +54,29 @@
     },
     "management": {
       "title": "Departamentos",
-      "subtitle": "Organize notas por operacao e mantenha o acesso dos atendentes alinhado.",
+      "subtitle": "Organize notas por operação e garanta acesso apenas onde é necessário.",
       "create": "Novo departamento",
+      "listTitle": "Departamentos ({{count}})",
       "details": "Detalhes",
       "notes": "Notas deste departamento",
-      "members": "Atendentes",
+      "members": "Usuários",
       "empty": "Nenhum departamento criado.",
-      "membersPermission": "Voce precisa de Gerenciar Usuarios para alterar membros."
+      "membersPermission": "Voce precisa de Gerenciar Usuarios para alterar membros.",
+      "options": "Opções",
+      "addMember": "Adicionar usuário",
+      "removeMember": "Remover usuário",
+      "noMembers": "Nenhum usuário neste departamento.",
+      "allUsersAdded": "Todos os usuarios ja foram adicionados."
     },
     "confirm": {
-      "delete": "Excluir o departamento {{name}}?",
-      "bulkMove": "Mover todas as notas de {{name}}?",
-      "bulkDelete": "Excluir todas as notas de {{name}}?"
+      "deleteTitle": "Excluir Departamento",
+      "delete": "Tem certeza que deseja excluir o departamento **{{name}}**?",
+      "bulkMoveTitle": "Mover Notas",
+      "bulkMove": "Mover todas as notas de **{{name}}** para **{{target}}**?",
+      "bulkDeleteTitle": "Excluir Notas",
+      "bulkDelete": "Excluir todas as notas de **{{name}}**? Esta ação é irreversível.",
+      "removeMemberTitle": "Remover Usuário",
+      "removeMember": "Remover **{{user}}** do departamento **{{dept}}**?"
     },
     "toasts": {
       "createSuccess": "Departamento criado.",

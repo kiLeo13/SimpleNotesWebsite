@@ -2,205 +2,96 @@
   position: relative;
   display: grid;
   grid-template-rows: auto 1fr;
-  width: min(940px, calc(100vw - 32px));
-  height: min(720px, calc(100vh - 32px));
+  width: min(1020px, calc(100vw - 32px));
+  height: min(740px, calc(100vh - 32px));
   overflow: hidden;
   border: 1px solid rgb(48, 42, 60);
-  border-radius: 8px;
+  border-radius: 12px;
   background-color: rgb(24, 23, 29);
   color: rgb(203, 199, 211);
 }
 
 .close {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  z-index: 1;
+  top: 14px;
+  right: 14px;
   display: inline-flex;
-  width: 32px;
-  height: 32px;
   align-items: center;
   justify-content: center;
+  width: 30px;
+  height: 30px;
   border: 0;
   border-radius: 6px;
   background: transparent;
   color: rgb(122, 105, 151);
   cursor: pointer;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
 }
 
 .close:hover {
   background-color: rgb(42, 37, 53);
+  color: rgb(190, 175, 210);
 }
 
 .header {
-  padding: 24px 64px 18px 24px;
+  padding: 22px 52px 16px 24px;
   border-bottom: 1px solid rgb(43, 38, 53);
 }
 
-.header h2 {
+.title {
   margin: 0;
-  font-size: 1.35rem;
+  color: rgb(188, 182, 196);
+  font-size: 1.3rem;
+  font-weight: 600;
   line-height: 1.2;
 }
 
 .header span {
   display: block;
-  margin-top: 6px;
-  color: rgb(137, 128, 151);
-  font-size: 0.92rem;
+  margin-top: 5px;
+  color: rgb(128, 119, 143);
+  font-size: 0.88rem;
 }
 
 .layout {
   display: grid;
-  grid-template-columns: 240px minmax(0, 1fr);
+  grid-template-columns: 230px minmax(0, 1fr);
   min-height: 0;
 }
 
-.departmentList {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-height: 0;
-  padding: 14px;
-  overflow-y: auto;
-  border-right: 1px solid rgb(43, 38, 53);
-}
-
-.departmentButton {
+.panelWithMembers {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  gap: 9px;
-  min-height: 38px;
-  padding: 8px;
-  border: 0;
-  border-radius: 6px;
-  background-color: transparent;
-  color: rgb(182, 176, 193);
-  text-align: left;
-  cursor: pointer;
-}
-
-.departmentButton span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.departmentButton:hover,
-.departmentButton[data-active="true"] {
-  background-color: rgb(42, 37, 54);
-}
-
-.icon {
-  width: 22px;
-  height: 22px;
-  border-radius: 5px;
-  object-fit: cover;
-  text-align: center;
+  grid-template-columns: minmax(0, 1fr) 200px;
+  min-height: 0;
 }
 
 .panel {
   min-height: 0;
+  padding: 20px 22px;
   overflow-y: auto;
-  padding: 18px;
 }
 
-.section {
-  padding: 0 0 20px;
-}
-
-.section + .section {
-  padding-top: 18px;
-  border-top: 1px solid rgb(43, 38, 53);
-}
-
-.section h3 {
-  margin: 0 0 12px;
-  color: rgb(217, 213, 224);
-  font-size: 0.98rem;
-}
-
-.formGrid {
-  display: grid;
-  grid-template-columns: minmax(180px, 1fr) 90px minmax(160px, 1fr) auto;
-  gap: 10px;
-  align-items: center;
-}
-
-.formGrid input,
-.actionsRow select {
-  min-height: 34px;
-  min-width: 0;
-  border: 1px solid rgb(53, 47, 66);
-  border-radius: 6px;
-  background-color: rgb(18, 17, 22);
-  color: rgb(207, 202, 218);
-  padding: 0 10px;
-}
-
-.actionsRow {
+.emptyPanel {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
   align-items: center;
-}
-
-.actionsRow select {
-  width: min(240px, 100%);
-}
-
-.dangerButton {
-  color: rgb(255, 180, 180);
-}
-
-.memberList {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 8px;
-}
-
-.memberRow {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: 8px;
-  min-height: 34px;
-  padding: 0 10px;
-  border-radius: 6px;
-  background-color: rgb(30, 28, 36);
-  color: rgb(190, 184, 201);
-}
-
-.memberRow span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.empty {
-  display: block;
-  padding: 12px 8px;
-  color: rgb(124, 116, 137);
+  justify-content: center;
+  height: 100%;
+  color: rgb(110, 100, 126);
   font-size: 0.9rem;
+  font-style: italic;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 860px) {
   .container {
-    height: calc(100vh - 20px);
     width: calc(100vw - 20px);
+    height: calc(100vh - 20px);
   }
 
-  .layout {
-    grid-template-columns: 1fr;
-  }
-
-  .departmentList {
-    max-height: 150px;
-    border-right: 0;
-    border-bottom: 1px solid rgb(43, 38, 53);
-  }
-
-  .formGrid {
+  .layout,
+  .panelWithMembers {
     grid-template-columns: 1fr;
   }
 }
