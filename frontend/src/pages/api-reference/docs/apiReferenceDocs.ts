@@ -516,7 +516,7 @@ export const apiResources: ApiResource[] = [
           }
         ],
         responses: [
-          { status: 200, description: ["User deleted."] },
+          { status: 204, description: ["User deleted."] },
           { status: 403, description: ["Requester cannot delete this user."] }
         ]
       }
@@ -802,7 +802,7 @@ export const apiResources: ApiResource[] = [
           { name: "user_id", type: "string", description: ["User platform ID."] }
         ],
         responses: [
-          { status: 200, description: ["Membership exists after the request."] },
+          { status: 204, description: ["Membership exists after the request."] },
           { status: 403, description: ["Requester lacks one of the required permissions."] }
         ]
       },
@@ -826,7 +826,7 @@ export const apiResources: ApiResource[] = [
           { name: "user_id", type: "string", description: ["User platform ID."] }
         ],
         responses: [
-          { status: 200, description: ["Membership no longer exists after the request."] },
+          { status: 204, description: ["Membership no longer exists after the request."] },
           { status: 403, description: ["Requester lacks one of the required permissions."] }
         ]
       },
@@ -856,7 +856,7 @@ export const apiResources: ApiResource[] = [
           }
         ],
         responses: [
-          { status: 200, description: ["Matching notes were moved."] },
+          { status: 204, description: ["Matching notes were moved."] },
           { status: 403, description: ["Requester lacks one of the required permissions."] },
           { status: 404, description: ["Source or target department was not found."] }
         ]
@@ -880,7 +880,7 @@ export const apiResources: ApiResource[] = [
           { name: "department_id", type: "string", description: ["Source department platform ID."] }
         ],
         responses: [
-          { status: 200, description: ["Matching notes were deleted."] },
+          { status: 204, description: ["Matching notes were deleted."] },
           { status: 403, description: ["Requester lacks one of the required permissions."] }
         ]
       }
