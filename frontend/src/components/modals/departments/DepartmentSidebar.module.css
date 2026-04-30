@@ -1,0 +1,138 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-right: 1px solid rgb(43, 38, 53);
+  user-select: none;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px 8px;
+  border-bottom: 1px solid rgb(38, 34, 48);
+}
+
+.title {
+  color: rgb(110, 100, 126);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.addButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 6px;
+  background-color: rgb(78, 56, 120);
+  color: rgb(220, 215, 235);
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    transform 0.15s;
+}
+
+.addButton:hover {
+  background-color: rgb(92, 68, 140);
+  transform: scale(1.08);
+}
+
+.addButton:active {
+  transform: scale(0.94);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 0;
+  padding: 8px 10px;
+  overflow-y: auto;
+}
+
+.row {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.row:hover {
+  background-color: rgb(38, 34, 48);
+}
+
+.row[data-active="true"] {
+  background-color: rgb(45, 38, 60);
+}
+
+.row[data-active="true"]::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 3px;
+  height: 22px;
+  border-radius: 0 3px 3px 0;
+  background: rgb(120, 86, 176);
+  content: "";
+  transform: translateY(-50%);
+}
+
+.departmentButton {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-height: 38px;
+  padding: 7px 4px 7px 10px;
+  border: 0;
+  background-color: transparent;
+  color: rgb(175, 168, 188);
+  font-size: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.row:hover .departmentButton,
+.row[data-active="true"] .departmentButton {
+  color: rgb(220, 215, 235);
+}
+
+.icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  object-fit: cover;
+  font-size: 16px;
+  line-height: 22px;
+  text-align: center;
+}
+
+.name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.empty {
+  display: block;
+  padding: 14px 10px;
+  color: rgb(110, 100, 126);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+@media (max-width: 860px) {
+  .sidebar {
+    max-height: 140px;
+    border-right: 0;
+    border-bottom: 1px solid rgb(43, 38, 53);
+  }
+}

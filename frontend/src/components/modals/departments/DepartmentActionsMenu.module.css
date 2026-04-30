@@ -1,0 +1,100 @@
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin-right: 4px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: rgb(110, 100, 126);
+  cursor: pointer;
+  opacity: 0.65;
+  transition:
+    opacity 0.15s,
+    background-color 0.15s,
+    color 0.15s;
+}
+
+.trigger:hover,
+.trigger[data-state="open"] {
+  background-color: rgb(55, 48, 70);
+  color: rgb(180, 170, 200);
+  opacity: 1;
+}
+
+.content {
+  z-index: 110;
+  min-width: 150px;
+  padding: 4px;
+  border: 1px solid rgb(48, 42, 60);
+  border-radius: 8px;
+  background-color: rgb(30, 27, 38);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  transform-origin: var(--radix-dropdown-menu-content-transform-origin);
+  animation: menuSlideIn 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.item,
+.dangerItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 5px;
+  color: rgb(195, 190, 210);
+  font-size: 0.85rem;
+  outline: none;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.12s;
+}
+
+.item[data-highlighted] {
+  background-color: rgb(58, 48, 75);
+  color: rgb(225, 220, 240);
+}
+
+.dangerItem {
+  color: rgb(255, 170, 170);
+}
+
+.dangerItem[data-highlighted] {
+  background-color: rgba(180, 50, 50, 0.2);
+  color: rgb(255, 190, 190);
+}
+
+.itemIcon {
+  flex-shrink: 0;
+  color: rgb(140, 125, 165);
+}
+
+.dangerItem .itemIcon {
+  color: rgb(255, 150, 150);
+}
+
+.itemLabel {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chevron {
+  flex-shrink: 0;
+  margin-left: auto;
+  color: rgb(120, 108, 140);
+}
+
+@keyframes menuSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(2px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
