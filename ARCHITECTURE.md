@@ -135,6 +135,11 @@ High-level startup flow:
 5. Background jobs start for stale websocket connection cleanup and expired company cache cleanup.
 6. Echo starts serving HTTP traffic on port `7070`.
 
+Successful mutation routes that do not return a response body use `204 No Content`.
+This includes empty DELETE acknowledgements, idempotent PUT membership changes,
+logout/confirmation acknowledgements, websocket shim acknowledgements, and
+department bulk mutation acknowledgements.
+
 ### Backend Layers
 
 - `backend/cmd/internal/http/handler/`
