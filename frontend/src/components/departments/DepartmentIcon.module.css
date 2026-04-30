@@ -10,3 +10,10 @@
   line-height: 1;
   flex: 0 0 auto;
 }
+
+/* Twemoji-rendered SVG images */
+.icon :global(img.emoji) {
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+}
