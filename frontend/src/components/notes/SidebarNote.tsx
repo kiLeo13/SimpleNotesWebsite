@@ -1,7 +1,6 @@
 import type { NoteResponseData } from "@/types/api/notes"
 import { ActionMenu, type MenuActionItem } from "../ui/ActionMenu"
 import {
-  useEffect,
   useRef,
   useState,
   type JSX,
@@ -16,6 +15,7 @@ import { FaPenToSquare } from "react-icons/fa6"
 import { MdDownload } from "react-icons/md"
 import { Permission } from "@/models/Permission"
 import { SlOptions } from "react-icons/sl"
+import { IdentificationIcon } from "../icons/IdentificationIcon"
 import { UpdateNoteModal } from "../modals/notes/updates/UpdateNoteModal"
 import { ConfirmModal } from "../modals/shared/ConfirmModal"
 import { FaTrashAlt } from "react-icons/fa"
@@ -31,7 +31,6 @@ import {
 } from "@/utils/noteDownloads"
 
 import styles from "./SidebarNote.module.css"
-import { IdentificationIcon } from "../icons/IdentificationIcon"
 
 type SidebarNoteProps = {
   note: NoteResponseData
@@ -40,10 +39,6 @@ type SidebarNoteProps = {
 
 export function SidebarNote({ note, onClick }: SidebarNoteProps): JSX.Element {
   const { t } = useTranslation()
-  // This is being used to determine whether the NoteItem is higher
-  // than 50px (which indicates multi-line titles).
-  // If it is, the border radius must be adjusted to avoid a giant row becoming a circle.
-  const [isTall, setIsTall] = useState(false)
   const elementRef = useRef(null)
 
   const [isPatching, setIsPatching] = useState(false)
@@ -92,20 +87,6 @@ export function SidebarNote({ note, onClick }: SidebarNoteProps): JSX.Element {
     setIsDeleting
   )
 
-  useEffect(() => {
-    const element = elementRef.current
-    if (!element) return
-
-    const observer = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const height = entry.contentRect.height
-        setIsTall(height > 40)
-      }
-    })
-    observer.observe(element)
-    return () => observer.disconnect()
-  }, [])
-
   const handleDeletion = async () => {
     const resp = await noteService.deleteNote(note.id)
 
@@ -123,8 +104,7 @@ export function SidebarNote({ note, onClick }: SidebarNoteProps): JSX.Element {
       onClick={onClick}
       className={clsx(
         styles.noteItem,
-        isOpen && styles.open,
-        isTall && styles.tall
+        isOpen && styles.open
       )}
       ref={elementRef}
     >
