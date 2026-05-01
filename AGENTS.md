@@ -352,7 +352,7 @@ Do not copy environment values into docs or comments unless explicitly needed.
 - Backend startup loads config, initializes SQLite, wires AWS-backed dependencies, starts background jobs, and serves Echo on port `7070`.
 - Backend audit log reads are protected by `PermissionReadAuditLogs`; admins still inherit access through effective permission checks.
 - Backend websocket events can mutate frontend-visible state through the websocket pipeline, so frontend and backend changes around realtime need to be checked together.
-- Department membership changes alter note visibility scope. The backend sends scope-change resync signals so the frontend refreshes users, notes, and departments instead of trying to infer every affected row locally.
+- Department membership changes alter note scope. The backend sends scope-change resync signals so the frontend refreshes users, notes, and departments instead of trying to infer every affected row locally.
 - Websocket presence is now tied to a logical per-tab `session_id` with a reconnect grace window, not just the raw API Gateway `connection_id`. Temporary disconnects should resume the same session instead of creating duplicate active connections.
 - The frontend also persists the last applied websocket replay cursor as `last_event_id` in `sessionStorage`. Reconnects must reuse the same `session_id` and send that cursor so the backend can replay missed events in order.
 - The frontend only sends websocket pings while the tab is visible. Hidden-tab reconnect behavior is expected to rely on session resumption plus ordered replay, with a full notes/users resync only after an explicit `RESYNC_REQUIRED` control event.
