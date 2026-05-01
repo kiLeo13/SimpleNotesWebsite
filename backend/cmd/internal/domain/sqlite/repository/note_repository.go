@@ -14,30 +14,9 @@ func NewNoteRepository(db *gorm.DB) *DefaultNoteRepository {
 	return &DefaultNoteRepository{db: db}
 }
 
-func (d *DefaultNoteRepository) FindAll(withPrivate bool) ([]*entity.Note, error) {
-	var notes []*entity.Note
-	var err error
-	if withPrivate {
-		err = d.db.Find(&notes).Error
-	} else {
-		err = d.db.
-			Where("visibility != ?", string(entity.VisibilityPrivate)).
-			Find(&notes).Error
-	}
-
-	if err != nil {
-		return nil, err
-	}
-	return notes, nil
-}
-
-func (d *DefaultNoteRepository) FindAllVisible(withPrivate bool, allowedDepartmentIDs []int64, includeAllDepartments bool) ([]*entity.Note, error) {
+func (d *DefaultNoteRepository) FindAllVisible(allowedDepartmentIDs []int64, includeAllDepartments bool) ([]*entity.Note, error) {
 	var notes []*entity.Note
 	query := d.db.Model(&entity.Note{})
-
-	if !withPrivate {
-		query = query.Where("visibility != ?", string(entity.VisibilityPrivate))
-	}
 
 	if !includeAllDepartments {
 		if len(allowedDepartmentIDs) == 0 {

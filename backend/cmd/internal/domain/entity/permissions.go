@@ -17,8 +17,8 @@ const (
 	// PermissionDeleteNotes allows permanently removing notes.
 	PermissionDeleteNotes
 
-	// PermissionSeeHiddenNotes allows access to private/hidden notes.
-	PermissionSeeHiddenNotes
+	// Reserved legacy permission bit.
+	_
 
 	// PermissionManageUsers allows modifying mutable fields of other users.
 	// It does NOT grant the ability to change permissions or delete users.

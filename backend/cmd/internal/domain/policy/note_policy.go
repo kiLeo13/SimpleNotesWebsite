@@ -6,9 +6,8 @@ import (
 )
 
 const (
-	seeHiddenNotes = entity.PermissionSeeHiddenNotes
-	editNotes      = entity.PermissionEditNotes
-	deleteNotes    = entity.PermissionDeleteNotes
+	editNotes   = entity.PermissionEditNotes
+	deleteNotes = entity.PermissionDeleteNotes
 )
 
 // NotePolicy encapsulates all business rules for note manipulation.
@@ -22,11 +21,6 @@ func NewNotePolicy() *NotePolicy {
 func (p *NotePolicy) CanSee(note *entity.Note, actor *entity.User) apierror.ErrorResponse {
 	if note == nil {
 		return apierror.NotFoundError
-	}
-
-	if !actor.Permissions.HasEffective(seeHiddenNotes) &&
-		note.Visibility == entity.VisibilityPrivate {
-		return apierror.NotFoundError // ^^
 	}
 	return nil
 }

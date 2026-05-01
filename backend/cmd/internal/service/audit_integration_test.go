@@ -83,7 +83,7 @@ func TestNoteUpdateAuditGroupsMultipleFieldChanges(t *testing.T) {
 		ID:          1,
 		Username:    "editor",
 		Email:       "editor@example.com",
-		Permissions: entity.PermissionEditNotes.Add(entity.PermissionSeeHiddenNotes),
+		Permissions: entity.PermissionEditNotes,
 		Active:      true,
 		CreatedAt:   utils.NowUTC(),
 		UpdatedAt:   utils.NowUTC(),
@@ -100,7 +100,6 @@ func TestNoteUpdateAuditGroupsMultipleFieldChanges(t *testing.T) {
 		Tags:        "alpha beta",
 		NoteType:    entity.NoteTypeMarkdown,
 		ContentSize: 5,
-		Visibility:  entity.VisibilityPublic,
 		CreatedAt:   utils.NowUTC(),
 		UpdatedAt:   utils.NowUTC(),
 	}
@@ -109,11 +108,9 @@ func TestNoteUpdateAuditGroupsMultipleFieldChanges(t *testing.T) {
 	}
 
 	newName := "New Name"
-	newVisibility := string(entity.VisibilityPrivate)
 	req := &contract.UpdateNoteRequest{
-		Name:       &newName,
-		Visibility: &newVisibility,
-		Tags:       []string{"gamma", "delta"},
+		Name: &newName,
+		Tags: []string{"gamma", "delta"},
 	}
 
 	resp, apierr := noteSvc.UpdateNote(actor, note.ID, req)
@@ -137,8 +134,8 @@ func TestNoteUpdateAuditGroupsMultipleFieldChanges(t *testing.T) {
 	if events[0].SubjectID != idgen.Format(note.ID) {
 		t.Fatalf("unexpected subject id: %s", events[0].SubjectID)
 	}
-	if len(events[0].Changes) != 3 {
-		t.Fatalf("expected 3 grouped changes, got %d", len(events[0].Changes))
+	if len(events[0].Changes) != 2 {
+		t.Fatalf("expected 2 grouped changes, got %d", len(events[0].Changes))
 	}
 
 	fields := map[string]bool{}
@@ -149,7 +146,7 @@ func TestNoteUpdateAuditGroupsMultipleFieldChanges(t *testing.T) {
 		}
 	}
 
-	for _, field := range []string{"name", "visibility", "tags"} {
+	for _, field := range []string{"name", "tags"} {
 		if !fields[field] {
 			t.Fatalf("missing audit change for field %s", field)
 		}

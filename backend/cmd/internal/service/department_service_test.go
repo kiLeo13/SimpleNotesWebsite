@@ -113,7 +113,6 @@ func TestCreateNoteRejectsDepartmentTheActorDoesNotBelongTo(t *testing.T) {
 		Name:         "Policy",
 		Content:      "content",
 		NoteType:     string(entity.NoteTypeMarkdown),
-		Visibility:   string(entity.VisibilityPublic),
 		DepartmentID: &rawDepartmentID,
 		Tags:         []string{"policy"},
 	})
@@ -298,7 +297,6 @@ func mustSaveDepartmentNote(
 		Tags:         "policy",
 		NoteType:     entity.NoteTypeMarkdown,
 		ContentSize:  7,
-		Visibility:   entity.VisibilityPublic,
 		CreatedAt:    utils.NowUTC(),
 		UpdatedAt:    utils.NowUTC(),
 	}

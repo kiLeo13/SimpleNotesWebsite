@@ -17,6 +17,11 @@ import (
 	"zenkeep/cmd/internal/utils"
 )
 
+type capturedMessage struct {
+	connID  string
+	message *contract.OutgoingSocketMessage
+}
+
 type websocketGatewaySpy struct {
 	mu      sync.Mutex
 	posted  []capturedMessage

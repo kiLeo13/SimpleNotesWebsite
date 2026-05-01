@@ -26,8 +26,7 @@ import (
 )
 
 type NoteRepository interface {
-	FindAll(withPrivate bool) ([]*entity.Note, error)
-	FindAllVisible(withPrivate bool, allowedDepartmentIDs []int64, includeAllDepartments bool) ([]*entity.Note, error)
+	FindAllVisible(allowedDepartmentIDs []int64, includeAllDepartments bool) ([]*entity.Note, error)
 	FindByID(id int64) (*entity.Note, error)
 	Save(note *entity.Note) error
 	SaveWithDB(db *gorm.DB, note *entity.Note) error
@@ -85,7 +84,6 @@ func NewNoteService(
 }
 
 func (n *NoteService) GetAllNotes(actor *entity.User) ([]*contract.NoteResponse, apierror.ErrorResponse) {
-	canSeeHidden := actor.Permissions.HasEffective(entity.PermissionSeeHiddenNotes)
 	includeAllDepartments := actor.Permissions.HasEffective(entity.PermissionAdministrator)
 	allowedDepartmentIDs, err := n.allowedDepartmentIDs(actor, includeAllDepartments)
 	if err != nil {
@@ -93,7 +91,7 @@ func (n *NoteService) GetAllNotes(actor *entity.User) ([]*contract.NoteResponse,
 		return nil, apierror.InternalServerError
 	}
 
-	notes, err := n.NoteRepo.FindAllVisible(canSeeHidden, allowedDepartmentIDs, includeAllDepartments)
+	notes, err := n.NoteRepo.FindAllVisible(allowedDepartmentIDs, includeAllDepartments)
 	if err != nil {
 		log.Errorf("failed to fetch notes: %v", err)
 		return nil, apierror.InternalServerError
@@ -152,7 +150,6 @@ func (n *NoteService) CreateTextNote(actor *entity.User, req *contract.CreateTex
 		Tags:         strings.ToLower(tags),
 		NoteType:     entity.NoteType(req.NoteType),
 		ContentSize:  len(req.Content),
-		Visibility:   entity.NoteVisibility(req.Visibility),
 		CreatedAt:    now,
 		UpdatedAt:    now,
 	}
@@ -221,7 +218,6 @@ func (n *NoteService) CreateFileNote(actor *entity.User, req *contract.CreateFil
 		Tags:         strings.ToLower(tags),
 		NoteType:     entity.NoteTypeReference,
 		ContentSize:  fileLength,
-		Visibility:   entity.NoteVisibility(req.Visibility),
 		CreatedAt:    now,
 		UpdatedAt:    now,
 	}
@@ -273,9 +269,6 @@ func (n *NoteService) UpdateNote(actor *entity.User, noteId int64, req *contract
 	tags := strings.Join(req.Tags, " ")
 	if req.Name != nil {
 		note.Name = *req.Name
-	}
-	if req.Visibility != nil {
-		note.Visibility = entity.NoteVisibility(*req.Visibility)
 	}
 	if req.Tags != nil {
 		note.Tags = strings.ToLower(tags)
@@ -489,7 +482,6 @@ func toNoteResponse(note *entity.Note, forceContent bool) *contract.NoteResponse
 		Name:         note.Name,
 		Content:      content,
 		Tags:         toTagsArray(note.Tags),
-		Visibility:   string(note.Visibility),
 		DepartmentID: formatOptionalID(note.DepartmentID),
 		NoteType:     string(note.NoteType),
 		ContentSize:  note.ContentSize,
@@ -633,14 +625,12 @@ func buildNoteCreateAuditChanges(note *entity.Note) []*entity.AuditLogChange {
 		newAuditCreateValue("department_id", entity.AuditValueTypeString, auditOptionalID(note.DepartmentID)),
 		newAuditCreateValue("note_type", entity.AuditValueTypeEnum, string(note.NoteType)),
 		newAuditCreateValue("content_size", entity.AuditValueTypeInt, strconv.Itoa(note.ContentSize)),
-		newAuditCreateValue("visibility", entity.AuditValueTypeEnum, string(note.Visibility)),
 	}
 }
 
 func buildNoteUpdateAuditChanges(before, after *entity.Note) []*entity.AuditLogChange {
 	var changes []*entity.AuditLogChange
 	appendAuditStringChange(&changes, "name", before.Name, after.Name)
-	appendAuditEnumChange(&changes, "visibility", string(before.Visibility), string(after.Visibility))
 	appendAuditStringChange(&changes, "department_id", auditOptionalID(before.DepartmentID), auditOptionalID(after.DepartmentID))
 	appendAuditStringArrayChange(&changes, "tags", toTagsArray(before.Tags), toTagsArray(after.Tags))
 	return changes
