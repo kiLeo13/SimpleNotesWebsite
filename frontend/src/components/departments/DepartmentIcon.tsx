@@ -32,6 +32,7 @@ export function DepartmentIcon({
         className={className ?? styles.icon}
         src={getDepartmentIconUrl(department.icon_value)}
         alt=""
+        draggable={false}
         loading="lazy"
       />
     )

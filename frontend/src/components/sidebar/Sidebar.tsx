@@ -204,12 +204,14 @@ function toDepartmentGroups(
     const groupID = note.department_id || "general"
     const group =
       groups.get(groupID) ||
-      groups.set(groupID, {
-        id: groupID,
-        name: t("departments.unknown"),
-        department: departmentMap.get(groupID) ?? null,
-        notes: []
-      }).get(groupID)
+      groups
+        .set(groupID, {
+          id: groupID,
+          name: t("departments.unknown"),
+          department: departmentMap.get(groupID) ?? null,
+          notes: []
+        })
+        .get(groupID)
 
     group?.notes.push(note)
   }
