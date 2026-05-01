@@ -12,18 +12,12 @@ const hasValidExtension = (fileName: string): boolean => {
 
 const t = i18n.t
 
-export const VISIBILITY_OPTIONS = [
-  { label: "notes.visibility.public", value: "PUBLIC" },
-  { label: "notes.visibility.private", value: "PRIVATE" }
-]
-
 const baseNoteFormSchema = z.object({
   name: z
     .string()
     .min(2, t("errors.string.min", { count: 2 }))
     .max(80, t("errors.string.max", { count: 80 })),
 
-  visibility: z.enum(["PUBLIC", "PRIVATE"], t("errors.enum.invalid")),
   department_id: z.string().nullable(),
 
   tags: z
@@ -72,7 +66,6 @@ export const createNoteFormSchema = z.discriminatedUnion("mode", [
 export const updateNoteFormSchema = baseNoteFormSchema.pick({
   name: true,
   tags: true,
-  visibility: true,
   department_id: true
 })
 

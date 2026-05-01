@@ -34,7 +34,6 @@ export function UpdateNoteModal({
     mode: "onChange",
     defaultValues: {
       name: note?.name || "",
-      visibility: note?.visibility || "PUBLIC",
       department_id: note?.department_id ?? "",
       tags: note?.tags || []
     }
@@ -48,7 +47,6 @@ export function UpdateNoteModal({
     } else {
       reset({
         name: note.name,
-        visibility: note.visibility,
         department_id: note.department_id ?? "",
         tags: note.tags || []
       })

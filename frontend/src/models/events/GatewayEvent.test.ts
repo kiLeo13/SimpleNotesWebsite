@@ -10,7 +10,6 @@ describe("gatewayMessageSchema", () => {
         id: "1",
         name: "Docs",
         tags: [],
-        visibility: "PUBLIC",
         department_id: null,
         note_type: "MARKDOWN",
         created_by_id: "2",

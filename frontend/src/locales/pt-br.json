@@ -19,12 +19,6 @@
     "delete": "Excluir",
     "typeToConfirm": "Digite \"{{val}}\" para confirmar."
   },
-  "notes": {
-    "visibility": {
-      "public": "Público",
-      "private": "Oculto"
-    }
-  },
   "departments": {
     "label": "Departamento",
     "general": "Geral",
@@ -155,7 +149,6 @@
     "createNotes": "Criar Notas",
     "editNotes": "Editar Notas",
     "deleteNotes": "Apagar Notas",
-    "seeHiddenNotes": "Ver Notas Ocultas",
     "manageUsers": "Gerenciar Usuários",
     "deleteUsers": "Apagar Usuários",
     "managePerms": "Gerenciar Permissões",
@@ -227,7 +220,6 @@
         "created_by_id": "autor",
         "note_type": "tipo de nota",
         "content_size": "tamanho do conteúdo",
-        "visibility": "visibilidade",
         "tags": "palavras-chave",
         "email": "e-mail",
         "permissions": "permissões"
@@ -320,7 +312,6 @@
     "actions": "Ações",
     "author": "Autor",
     "creationTime": "Criação",
-    "visibility": "Visibilidade",
     "lastUpdate": "Última Atualização",
     "content": "Conteúdo",
     "name": "Nome",
@@ -336,8 +327,6 @@
   "createNoteModal": {
     "title": "Criar Nota",
     "name": "Nome",
-    "visibility": "Visibilidade",
-    "visibilityHint": "A visibilidade de uma nota é apenas para fins de organização...",
     "tags": "Palavras-chave",
     "tagsPlaceholder": "Adicione apelidos...",
     "content": "Conteúdo",

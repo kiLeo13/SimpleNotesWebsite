@@ -99,7 +99,6 @@ const apiUrl = import.meta.env.VITE_API_BASE_URL
 export const apiBaseUrl = apiUrl.slice(0, apiUrl.lastIndexOf("/"))
 
 const noteTypeDeclarationHash = declarationSectionId("note", "note-type")
-const noteVisibilityDeclarationHash = declarationSectionId("note", "visibility")
 const departmentIconTypeDeclarationHash = declarationSectionId(
   "department",
   "icon-type"
@@ -911,19 +910,6 @@ export const apiResources: ApiResource[] = [
       },
       { name: "tags", type: "string array", description: ["Note tags."] },
       {
-        name: "visibility",
-        type: "Visibility",
-        description: [
-          "Visibility policy.",
-          {
-            label: "Visibility",
-            resourceId: "note",
-            hash: noteVisibilityDeclarationHash
-          },
-          "."
-        ]
-      },
-      {
         name: "department_id",
         type: "string | null",
         description: [
@@ -979,29 +965,6 @@ export const apiResources: ApiResource[] = [
             type: "string",
             description: [
               "File-backed note rendered according to the uploaded attachment type."
-            ]
-          }
-        ]
-      },
-      {
-        id: "visibility",
-        title: "Visibility",
-        description: [
-          "Controls which users can discover and receive realtime events for a note."
-        ],
-        fields: [
-          {
-            name: "PUBLIC",
-            type: "string",
-            description: [
-              "Visible to users allowed by note policy and department scope."
-            ]
-          },
-          {
-            name: "PRIVATE",
-            type: "string",
-            description: [
-              "Visible only to users with explicit access inside the note's department scope."
             ]
           }
         ]
@@ -1165,41 +1128,16 @@ export const apiResources: ApiResource[] = [
           [
             "This endpoint usually fires a ",
             { label: "Note Updated" },
-            " event. However, if the visibility or department scope change removes a recipient's access, that recipient receives a ",
+            " event. However, if the department scope change removes a recipient's access, that recipient receives a ",
             { label: "Note Deleted" },
             " event. If the update grants access to a recipient, that recipient receives a ",
             { label: "Note Created" },
-            " event. For the legacy visibility path, changing the visibility property to ",
-            {
-              label: "PRIVATE",
-              resourceId: "note",
-              hash: noteVisibilityDeclarationHash
-            },
-            " or ",
-            {
-              label: "PUBLIC",
-              resourceId: "note",
-              hash: noteVisibilityDeclarationHash
-            },
-            " follows the same per-recipient translation."
+            " event."
           ],
           ["Note content cannot be updated."]
         ],
         requestBody: [
           { name: "name?", type: "string", description: ["Note name."] },
-          {
-            name: "visibility?",
-            type: "Visibility",
-            description: [
-              "Visibility change. See ",
-              {
-                label: "Visibility",
-                resourceId: "note",
-                hash: noteVisibilityDeclarationHash
-              },
-              "."
-            ]
-          },
           {
             name: "tags?",
             type: "string array",
@@ -1413,19 +1351,6 @@ export const gatewayEvents: GatewayEvent[] = [
       { name: "name", type: "string", description: ["Note name."] },
       { name: "tags", type: "string array", description: ["Note tags."] },
       {
-        name: "visibility",
-        type: "Visibility",
-        description: [
-          "Visibility policy. See ",
-          {
-            label: "Visibility",
-            resourceId: "note",
-            hash: noteVisibilityDeclarationHash
-          },
-          "."
-        ]
-      },
-      {
         name: "department_id",
         type: "string | null",
         description: [
@@ -1471,19 +1396,6 @@ export const gatewayEvents: GatewayEvent[] = [
       { name: "name", type: "string", description: ["Note name."] },
       { name: "tags", type: "string array", description: ["Note tags."] },
       {
-        name: "visibility",
-        type: "Visibility",
-        description: [
-          "Updated visibility policy. See ",
-          {
-            label: "Visibility",
-            resourceId: "note",
-            hash: noteVisibilityDeclarationHash
-          },
-          "."
-        ]
-      },
-      {
         name: "department_id",
         type: "string | null",
         description: [
@@ -1526,9 +1438,7 @@ export const gatewayEvents: GatewayEvent[] = [
     id: "note-deleted",
     type: "NOTE_DELETED",
     description: [
-      "Dispatched when a note is deleted or becomes invisible to the receiving user (e.g. visibility changed to ",
-      { label: "PRIVATE" },
-      ")."
+      "Dispatched when a note is deleted or leaves the receiving user's department scope."
     ],
     dataFields: [
       { name: "id", type: "string", description: ["Deleted note platform ID."] }

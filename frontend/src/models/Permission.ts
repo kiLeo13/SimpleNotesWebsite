@@ -13,7 +13,6 @@ export class Permission {
   static readonly CreateNotes = new Permission(1, "perms.createNotes")
   static readonly EditNotes = new Permission(2, "perms.editNotes")
   static readonly DeleteNotes = new Permission(3, "perms.deleteNotes")
-  static readonly SeeHiddenNotes = new Permission(4, "perms.seeHiddenNotes")
   static readonly ManageUsers = new Permission(5, "perms.manageUsers")
   static readonly DeleteUsers = new Permission(6, "perms.deleteUsers")
   static readonly ManagePermissions = new Permission(7, "perms.managePerms")
@@ -28,7 +27,6 @@ export class Permission {
       Permission.CreateNotes,
       Permission.EditNotes,
       Permission.DeleteNotes,
-      Permission.SeeHiddenNotes,
       Permission.ManageUsers,
       Permission.DeleteUsers,
       Permission.ManagePermissions,

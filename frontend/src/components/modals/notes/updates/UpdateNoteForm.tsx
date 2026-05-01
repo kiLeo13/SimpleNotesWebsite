@@ -5,11 +5,8 @@ import {
   useFormState,
   type UseFormHandleSubmit
 } from "react-hook-form"
-import { useEffect, useMemo, useState, type JSX } from "react"
-import {
-  VISIBILITY_OPTIONS,
-  type UpdateNoteFormFields
-} from "@/types/forms/notes"
+import { useEffect, useState, type JSX } from "react"
+import type { UpdateNoteFormFields } from "@/types/forms/notes"
 
 import { isEmpty } from "lodash-es"
 import { ModalSection } from "../shared/sections/ModalSection"
@@ -22,7 +19,6 @@ import { ModalFooter } from "./ModalFooter"
 import { ModalArrayInput } from "../shared/inputs/ModalArrayInput"
 import { ModalTextInput } from "../shared/inputs/ModalTextInput"
 import { ModalNoteFileView } from "../shared/tiny/ModalNoteFileView"
-import { FaEye } from "react-icons/fa6"
 import { ModalSelectInput } from "../shared/inputs/ModalSelectInput"
 import { useDepartmentOptions } from "@/hooks/useDepartmentOptions"
 import { userService } from "@/services/userService"
@@ -55,13 +51,6 @@ export function UpdateNoteForm({
   const [author, setAuthor] = useState<UserResponseData | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
-  // Store Actions
-  const viewOptions = useMemo(() => {
-    return [...VISIBILITY_OPTIONS].map((o) => ({
-      label: t(o.label),
-      value: o.value
-    }))
-  }, [t])
   const departmentOptions = useDepartmentOptions()
 
   const onSubmit = async (data: UpdateNoteFormFields) => {
@@ -133,15 +122,6 @@ export function UpdateNoteForm({
       </ModalActionRow>
 
       <ModalActionRow>
-        <ModalSection
-          label={
-            <ModalLabel
-              icon={<FaEye color="#a085b3ff" />}
-              title={t("updateNoteModal.visibility")}
-            />
-          }
-          input={<ModalSelectInput name="visibility" options={viewOptions} />}
-        />
         <ModalSection
           label={<ModalLabel title={t("departments.label")} />}
           input={

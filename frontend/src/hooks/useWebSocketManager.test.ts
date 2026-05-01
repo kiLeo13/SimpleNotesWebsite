@@ -17,7 +17,6 @@ type MarkdownNote = {
   id: string
   name: string
   tags: string[]
-  visibility: "PUBLIC" | "PRIVATE"
   department_id: string | null
   note_type: "MARKDOWN"
   created_by_id: string
@@ -45,41 +44,6 @@ describe("handleNoteEvents", () => {
       user: makeUser(0)
     })
     vi.restoreAllMocks()
-  })
-
-  it("ignores private create events for users without hidden-note access", () => {
-    void handleNoteEvents(
-      makeMessage(serverEvents.NoteCreated.type, makeNote({ visibility: "PRIVATE" }))
-    )
-
-    expect(useNoteStore.getState().notes).toEqual([])
-  })
-
-  it("removes an open note when a private update arrives for a user without hidden-note access", () => {
-    useNoteStore.setState({
-      notes: [makeNote()],
-      shownNote: makeFullNote()
-    })
-
-    void handleNoteEvents(
-      makeMessage(serverEvents.NoteUpdated.type, makeNote({ visibility: "PRIVATE" }))
-    )
-
-    expect(useNoteStore.getState().notes).toEqual([])
-    expect(useNoteStore.getState().shownNote).toBeNull()
-  })
-
-  it("keeps private notes for users with hidden-note access", () => {
-    useSessionStore.setState({
-      user: makeUser(1 << 4)
-    })
-
-    void handleNoteEvents(
-      makeMessage(serverEvents.NoteCreated.type, makeNote({ visibility: "PRIVATE" }))
-    )
-
-    expect(useNoteStore.getState().notes).toHaveLength(1)
-    expect(useNoteStore.getState().notes[0]?.visibility).toBe("PRIVATE")
   })
 
   it("refreshes the currently open text note when a newer update arrives", async () => {
@@ -164,7 +128,6 @@ function makeNote(
     id: "42",
     name: "Architecture",
     tags: ["docs"],
-    visibility: "PUBLIC",
     department_id: null,
     note_type: "MARKDOWN",
     created_by_id: "7",
@@ -183,7 +146,6 @@ function makeFullNote(
     id: "42",
     name: "Architecture",
     tags: ["docs"],
-    visibility: "PUBLIC",
     department_id: null,
     note_type: "MARKDOWN",
     created_by_id: "7",

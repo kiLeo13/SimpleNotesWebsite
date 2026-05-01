@@ -1,9 +1,8 @@
-import { type JSX, useMemo, useState } from "react"
+import { type JSX, useState } from "react"
 
 import { IoMdClose } from "react-icons/io"
 import {
   editorNoteFormSchema,
-  VISIBILITY_OPTIONS,
   type NoteFormFields,
   type TextNoteFormFields
 } from "@/types/forms/notes"
@@ -49,7 +48,6 @@ export function CreateEditorModal({
     defaultValues: {
       mode: "EDITOR",
       name: "",
-      visibility: "PUBLIC",
       department_id: "",
       tags: [],
       content: ""
@@ -59,12 +57,6 @@ export function CreateEditorModal({
   const { handleSubmit, control } = methods
   const liveContent = useWatch({ control, name: "content" })
   const debouncedContent = useDebounce(liveContent, 300)
-  const viewOptions = useMemo(() => {
-    return [...VISIBILITY_OPTIONS].map((o) => ({
-      label: t(o.label),
-      value: o.value
-    }))
-  }, [t])
   const departmentOptions = useDepartmentOptions()
 
   const onSubmit = async (data: NoteFormFields) => {
@@ -116,17 +108,6 @@ export function CreateEditorModal({
                     <ModalLabel title={t("createNoteModal.name")} required />
                   }
                   input={<ModalTextInput name="name" autoComplete="off" />}
-                />
-                <ModalSection
-                  label={
-                    <ModalLabel
-                      title={t("createNoteModal.visibility")}
-                      required
-                    />
-                  }
-                  input={
-                    <ModalSelectInput name="visibility" options={viewOptions} />
-                  }
                 />
                 <ModalSection
                   label={

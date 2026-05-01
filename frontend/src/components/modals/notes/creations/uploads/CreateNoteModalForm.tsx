@@ -1,6 +1,5 @@
 import {
   uploadNoteFormSchema,
-  VISIBILITY_OPTIONS,
   type FileNoteFormFields
 } from "@/types/forms/notes"
 import { useState, type JSX } from "react"
@@ -44,17 +43,12 @@ export function CreateNoteModalForm({
     defaultValues: {
       mode: "UPLOAD",
       name: "",
-      visibility: "PUBLIC",
       department_id: "",
       tags: [],
       file: undefined
     }
   })
   const { handleSubmit } = methods
-  const viewOptions = [...VISIBILITY_OPTIONS].map((o) => ({
-    label: t(o.label),
-    value: o.value
-  }))
   const departmentOptions = useDepartmentOptions()
 
   const onSubmit = async (data: FileNoteFormFields) => {
@@ -70,7 +64,6 @@ export function CreateNoteModalForm({
         name: data.name,
         note_type: "REFERENCE",
         tags: data.tags || [],
-        visibility: data.visibility,
         department_id: data.department_id
       },
       data.file[0]
@@ -114,17 +107,6 @@ export function CreateNoteModalForm({
                   options={departmentOptions}
                   hasSearch
                 />
-              }
-            />
-          </ModalActionRow>
-
-          <ModalActionRow>
-            <ModalSection
-              label={
-                <ModalLabel title={t("createNoteModal.visibility")} required />
-              }
-              input={
-                <ModalSelectInput name="visibility" options={viewOptions} />
               }
             />
           </ModalActionRow>

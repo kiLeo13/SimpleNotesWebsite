@@ -1,7 +1,6 @@
 import type { TFunction } from "i18next"
 import type { RefObject } from "react"
 
-import { Permission } from "@/models/Permission"
 import {
   serverEvents,
   type GatewayMessage
@@ -85,27 +84,13 @@ export function persistGatewayCursor(msg: GatewayMessage) {
 
 export async function handleNoteEvents(msg: GatewayMessage) {
   const { addNote, updateNote, removeNote } = useNoteStore.getState()
-  const { user: self } = useSessionStore.getState()
-  const canSeeHiddenNotes = Permission.hasEffective(
-    self?.permissions || 0,
-    Permission.SeeHiddenNotes
-  )
 
   switch (msg.type) {
     case serverEvents.NoteCreated.type:
-      if (shouldHideNoteFromClient(msg.data.visibility, canSeeHiddenNotes)) {
-        removeNote(msg.data.id)
-        break
-      }
       addNote(msg.data)
       break
 
     case serverEvents.NoteUpdated.type: {
-      if (shouldHideNoteFromClient(msg.data.visibility, canSeeHiddenNotes)) {
-        removeNote(msg.data.id)
-        break
-      }
-
       const { shownNote } = useNoteStore.getState()
       const shouldRefreshOpenNote =
         shownNote?.id === msg.data.id &&
@@ -125,13 +110,6 @@ export async function handleNoteEvents(msg: GatewayMessage) {
   }
 }
 
-function shouldHideNoteFromClient(
-  visibility: "PUBLIC" | "PRIVATE",
-  canSeeHiddenNotes: boolean
-): boolean {
-  return visibility === "PRIVATE" && !canSeeHiddenNotes
-}
-
 async function handleUserEvents(msg: GatewayMessage) {
   const { addUser, updateUser, updatePresence, removeUser } =
     useUsersStore.getState()
@@ -147,20 +125,6 @@ async function handleUserEvents(msg: GatewayMessage) {
       updateUser(updatedUser)
 
       if (self && self.id === updatedUser.id) {
-        const selfHasAdmin = Permission.hasEffective(
-          self.permissions,
-          Permission.Administrator
-        )
-        const permissionChanged = Permission.changed(
-          self.permissions,
-          updatedUser.permissions,
-          Permission.SeeHiddenNotes
-        )
-
-        if (!selfHasAdmin && permissionChanged) {
-          await useNoteStore.getState().reload()
-        }
-
         setUser(updatedUser)
       }
       break

@@ -13,7 +13,6 @@ type MarkdownNote = {
   id: string
   name: string
   tags: string[]
-  visibility: "PUBLIC" | "PRIVATE"
   department_id: string | null
   note_type: "MARKDOWN"
   created_by_id: string
@@ -103,7 +102,6 @@ function makeBaseNote(
     id: "42",
     name: "Architecture",
     tags: ["docs"],
-    visibility: "PUBLIC",
     department_id: null,
     note_type: "MARKDOWN",
     created_by_id: "7",
@@ -122,7 +120,6 @@ function makeFullNote(
     id: "42",
     name: "Architecture",
     tags: ["docs"],
-    visibility: "PUBLIC",
     department_id: null,
     note_type: "MARKDOWN",
     created_by_id: "7",

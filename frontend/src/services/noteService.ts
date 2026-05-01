@@ -36,7 +36,7 @@ export const NOTE_MAX_SIZE_BYTES = 20 * 1024 * 1024 // 20 MiB
 export const noteService = {
   /**
    * Uploads a file-based note (e.g., PDF, Image) using a `multipart/form-data` request.
-   * * @param payload - Metadata only (name, tags, visibility).
+   * * @param payload - Metadata only (name, tags, department).
    * @param file - The binary file to be uploaded.
    * @returns A promise resolving to the full note response.
    */
@@ -68,7 +68,7 @@ export const noteService = {
   /**
    * Updates the metadata of an existing note.
    * * @param id - The ID of the note to update.
-   * @param payload - The fields to update (name, tags, visibility).
+   * @param payload - The fields to update (name, tags, department).
    * @returns A promise resolving to the updated note data.
    */
   updateNote: async (

@@ -98,7 +98,6 @@ function makeNote(
     id,
     name,
     tags: [],
-    visibility: "PUBLIC",
     department_id: departmentID,
     note_type: "MARKDOWN",
     created_by_id: "7",

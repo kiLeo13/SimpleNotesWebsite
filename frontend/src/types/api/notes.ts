@@ -1,8 +1,5 @@
 import { z } from "zod"
 
-export const noteVisibilitySchema = z.enum(["PUBLIC", "PRIVATE"])
-export type NoteVisibility = z.infer<typeof noteVisibilitySchema>
-
 export const noteTypeSchema = z.enum(["MARKDOWN", "FLOWCHART", "REFERENCE"])
 export type NoteType = z.infer<typeof noteTypeSchema>
 
@@ -10,7 +7,6 @@ export type NoteType = z.infer<typeof noteTypeSchema>
 interface BaseNotePayload {
   name: string
   tags: string[]
-  visibility: NoteVisibility
   department_id?: string | null
   note_type: NoteType
 }
@@ -25,7 +21,6 @@ export interface CreateTextNotePayload extends BaseNotePayload {
 export interface UpdateNoteRequestPayload {
   name?: string
   tags?: string[]
-  visibility?: NoteVisibility
   department_id?: string | null
 }
 
@@ -34,7 +29,6 @@ export const noteBaseSchema = z.object({
   id: z.string(),
   name: z.string(),
   tags: z.array(z.string()),
-  visibility: noteVisibilitySchema,
   department_id: z.string().nullable(),
   note_type: noteTypeSchema,
   created_by_id: z.string(),

@@ -261,21 +261,15 @@ describe("ApiReferencePage", () => {
       .toHaveAttribute("href", "/api/reference/note#route-note-create-note")
   })
 
-  it("renders note enum declarations for reusable field references", () => {
+  it("renders note type declarations for reusable field references", () => {
     render(<ApiReferencePage detailId="note" />)
 
     expect(
       screen.getByRole("heading", { name: "Note Type" })
     ).toBeInTheDocument()
     expect(
-      screen.getByRole("heading", { name: "Visibility" })
-    ).toBeInTheDocument()
-    expect(
       screen.getAllByRole("link", { name: "Note Type" })[0]
     ).toHaveAttribute("href", "/api/reference/note#declaration-note-note-type")
-    expect(
-      screen.getAllByRole("link", { name: "Visibility" })[0]
-    ).toHaveAttribute("href", "/api/reference/note#declaration-note-visibility")
   })
 
   it("accepts only documented detail route ids", () => {

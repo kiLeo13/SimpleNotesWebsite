@@ -173,7 +173,6 @@ function makeNote(): NoteResponseData {
     id: "42",
     name: "Architecture",
     tags: [],
-    visibility: "PUBLIC",
     department_id: null,
     note_type: "MARKDOWN",
     created_by_id: "7",
