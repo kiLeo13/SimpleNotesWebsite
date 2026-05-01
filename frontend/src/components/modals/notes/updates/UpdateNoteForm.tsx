@@ -13,6 +13,7 @@ import { ModalSection } from "../shared/sections/ModalSection"
 import { ModalActionRow } from "../shared/sections/ModalActionRow"
 import { ModalLabel } from "../shared/sections/ModalLabel"
 import { PiCrownFill } from "react-icons/pi"
+import { BsBuildingFill } from "react-icons/bs"
 import { BaseModalTextInput } from "../shared/inputs/BaseModalTextInput"
 import { FaCalendarAlt } from "react-icons/fa"
 import { ModalFooter } from "./ModalFooter"
@@ -123,7 +124,12 @@ export function UpdateNoteForm({
 
       <ModalActionRow>
         <ModalSection
-          label={<ModalLabel title={t("departments.label")} />}
+          label={
+            <ModalLabel
+              icon={<BsBuildingFill color="#8fae9aff" />}
+              title={t("departments.label")}
+            />
+          }
           input={
             <ModalSelectInput
               name="department_id"
