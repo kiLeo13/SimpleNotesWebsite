@@ -530,9 +530,6 @@ func newTestDB(t *testing.T) *gorm.DB {
 	); err != nil {
 		t.Fatalf("automigrate: %v", err)
 	}
-	if err := db.Migrator().CreateConstraint(&entity.Note{}, "Department"); err != nil {
-		t.Fatalf("create note department constraint: %v", err)
-	}
 
 	sqlDB, err := db.DB()
 	if err != nil {

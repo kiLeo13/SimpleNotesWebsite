@@ -20,7 +20,7 @@ type Note struct {
 	Name         string         `gorm:"not null"`
 	Content      string         `gorm:"not null"`
 	CreatedByID  int64          `gorm:"not null"` // References: users(id)
-	DepartmentID *int64         `gorm:"index"`
+	DepartmentID *int64         `gorm:"index"`    // Nullable reference to departments(id). Nil means General.
 	Tags         string         `gorm:"not null"`
 	NoteType     NoteType       `gorm:"not null"`
 	ContentSize  int            `gorm:"not null"`
@@ -29,6 +29,5 @@ type Note struct {
 	UpdatedAt    int64          `gorm:"not null;autoUpdateTime:false"`
 
 	// Relations
-	CreatedBy  User       `gorm:"foreignKey:CreatedByID;references:ID"`
-	Department Department `gorm:"foreignKey:DepartmentID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	CreatedBy User `gorm:"foreignKey:CreatedByID;references:ID"`
 }

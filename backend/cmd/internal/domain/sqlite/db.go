@@ -36,9 +36,6 @@ func Init() (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err = db.Migrator().CreateConstraint(&entity.Note{}, "Department"); err != nil {
-		return nil, err
-	}
 
 	sqlDB, _ := db.DB()
 	sqlDB.SetMaxOpenConns(1)

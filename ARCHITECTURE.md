@@ -188,9 +188,9 @@ The audit system stores one parent event with zero or more child change rows.
 Departments model the primary note scope. A note has a nullable `department_id`:
 `NULL` means General content, while a non-null value points to exactly one
 department. Users can belong to many departments through `department_memberships`.
-The notes table uses a restricted department relationship, and SQLite startup
-also installs a delete guard trigger so a department cannot be removed while
-notes still reference it. Callers must bulk-move or bulk-delete those notes
+The note entity stores only the nullable department ID rather than a hydrated
+department association. Department deletion is blocked in the service layer while
+notes still reference it, so callers must bulk-move or bulk-delete those notes
 before deleting the department.
 
 The `connections` table now models logical websocket sessions, not only raw API Gateway transport IDs. Each row stores:
