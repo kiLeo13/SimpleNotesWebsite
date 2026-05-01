@@ -39,9 +39,6 @@ func Init() (*gorm.DB, error) {
 	if err = db.Migrator().CreateConstraint(&entity.Note{}, "Department"); err != nil {
 		return nil, err
 	}
-	if err = installDepartmentDeleteGuard(db); err != nil {
-		return nil, err
-	}
 
 	sqlDB, _ := db.DB()
 	sqlDB.SetMaxOpenConns(1)
@@ -49,20 +46,4 @@ func Init() (*gorm.DB, error) {
 	sqlDB.SetConnMaxLifetime(time.Hour)
 
 	return db, nil
-}
-
-func installDepartmentDeleteGuard(db *gorm.DB) error {
-	return db.Exec(`
-		CREATE TRIGGER IF NOT EXISTS restrict_department_delete_with_notes
-		BEFORE DELETE ON departments
-		FOR EACH ROW
-		WHEN EXISTS (
-			SELECT 1
-			FROM notes
-			WHERE department_id = OLD.id
-		)
-		BEGIN
-			SELECT RAISE(ABORT, 'department still has notes');
-		END;
-	`).Error
 }

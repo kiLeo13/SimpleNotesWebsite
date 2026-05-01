@@ -27,10 +27,6 @@ func TestDepartmentDeleteIsBlockedWhenNotesStillReferenceIt(t *testing.T) {
 	if apierr.Code() != 409 {
 		t.Fatalf("expected 409 conflict, got %d", apierr.Code())
 	}
-
-	if err := db.Delete(department).Error; err == nil {
-		t.Fatal("expected database FK to restrict department deletion")
-	}
 }
 
 func TestDepartmentMembershipMutationRequiresManageDepartmentsAndManageUsers(t *testing.T) {

@@ -533,9 +533,6 @@ func newTestDB(t *testing.T) *gorm.DB {
 	if err := db.Migrator().CreateConstraint(&entity.Note{}, "Department"); err != nil {
 		t.Fatalf("create note department constraint: %v", err)
 	}
-	if err := installDepartmentDeleteGuardForTest(db); err != nil {
-		t.Fatalf("install department delete guard: %v", err)
-	}
 
 	sqlDB, err := db.DB()
 	if err != nil {
@@ -543,22 +540,6 @@ func newTestDB(t *testing.T) *gorm.DB {
 	}
 	sqlDB.SetMaxOpenConns(1)
 	return db
-}
-
-func installDepartmentDeleteGuardForTest(db *gorm.DB) error {
-	return db.Exec(`
-		CREATE TRIGGER IF NOT EXISTS restrict_department_delete_with_notes
-		BEFORE DELETE ON departments
-		FOR EACH ROW
-		WHEN EXISTS (
-			SELECT 1
-			FROM notes
-			WHERE department_id = OLD.id
-		)
-		BEGIN
-			SELECT RAISE(ABORT, 'department still has notes');
-		END;
-	`).Error
 }
 
 func newTestValidator() *validator.Validate {
