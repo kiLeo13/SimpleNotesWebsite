@@ -138,9 +138,6 @@ export function UpdateNoteForm({
             />
           }
         />
-      </ModalActionRow>
-
-      <ModalActionRow>
         <ModalSection
           label={
             <ModalLabel
