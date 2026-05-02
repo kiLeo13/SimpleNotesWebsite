@@ -140,7 +140,8 @@
       "toasts": {
         "copyIdSuccess": "ID da nota copiado.",
         "copyIdError": "Não foi possível copiar o ID da nota.",
-        "downloadError": "Não foi possível baixar a nota."
+        "downloadError": "Não foi possível baixar a nota.",
+        "moveError": "Não foi possível mover a nota."
       }
     }
   },
