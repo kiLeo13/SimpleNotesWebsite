@@ -1,19 +1,25 @@
-import type { ChangeEventHandler, JSX, KeyboardEventHandler } from "react"
+import type {
+  ChangeEventHandler,
+  JSX,
+  KeyboardEventHandler,
+  MouseEventHandler
+} from "react"
 import type { NoteResponseData } from "@/types/api/notes"
-import type { DepartmentData } from "@/types/api/departments"
 
 import { useNavigate } from "@tanstack/react-router"
-import { SidebarNote } from "../notes/SidebarNote"
 import { SidebarRail } from "./SidebarRail"
-import { PiListMagnifyingGlass } from "react-icons/pi"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useNoteStore } from "@/stores/useNotesStore"
 import { useDepartmentsStore } from "@/stores/useDepartmentsStore"
-import { matchSorter } from "match-sorter"
 import { throttle } from "lodash-es"
 import { useTranslation } from "react-i18next"
-import { DepartmentIcon } from "../departments/DepartmentIcon"
-import { MdOutlineTag } from "react-icons/md"
+import { Permission } from "@/models/Permission"
+import { usePermission } from "@/hooks/usePermission"
+import { SidebarHeader } from "./SidebarHeader"
+import { SidebarEmptyState } from "./SidebarEmptyState"
+import { SidebarCategoryGroup } from "./SidebarCategoryGroup"
+import { moveNoteToGroup, toDepartmentGroups } from "./Sidebar.helpers"
+import { useSidebarInteractions } from "./useSidebarInteractions"
 
 import styles from "./Sidebar.module.css"
 
@@ -22,21 +28,41 @@ export function Sidebar(): JSX.Element {
   const navigate = useNavigate({ from: "/" })
 
   const [search, setSearch] = useState("")
+  const [collapsedGroupIDs, setCollapsedGroupIDs] = useState<Set<string>>(
+    () => new Set()
+  )
 
+  const searchRef = useRef<HTMLInputElement>(null)
   const notes = useNoteStore((s) => s.notes)
   const notesState = useNoteStore((s) => s.state)
   const ensureLoaded = useNoteStore((s) => s.ensureLoaded)
   const reloadNotes = useNoteStore((s) => s.reload)
+  const updateNote = useNoteStore((s) => s.updateNote)
   const departments = useDepartmentsStore((s) => s.departments)
   const ensureDepartmentsLoaded = useDepartmentsStore((s) => s.ensureLoaded)
+  const canEditNotes = usePermission(Permission.EditNotes)
 
   const isLoading = notesState === "LOADING"
-  const searchRef = useRef<HTMLInputElement>(null)
   const departmentGroups = toDepartmentGroups(search, notes, departments, t)
   const resultCount = departmentGroups.reduce(
     (total, group) => total + group.notes.length,
     0
   )
+
+  const throttledLoadNotes = useMemo(
+    () => throttle(reloadNotes, 5000, { leading: true, trailing: false }),
+    [reloadNotes]
+  )
+
+  const sidebarInteractions = useSidebarInteractions({
+    canEditNotes,
+    notes,
+    searchRef,
+    throttledLoadNotes,
+    onMoveNote: (note, group) => {
+      void moveNoteToGroup(note, group, updateNote, t)
+    }
+  })
 
   useEffect(() => {
     ensureLoaded()
@@ -47,196 +73,81 @@ export function Sidebar(): JSX.Element {
     setSearch(e.target.value)
   }
 
-  const handleKeyboard: KeyboardEventHandler<HTMLInputElement> = (e) => {
+  const handleSearchKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
     if (e.key.toLowerCase() === "escape") {
-      searchRef?.current?.blur()
+      searchRef.current?.blur()
     }
   }
 
-  const handleOpenNote = (n: NoteResponseData) => {
-    void navigate({
-      search: (prev) => ({
-        ...prev,
-        id: n.id
-      })
+  const handleOpenNote =
+    (note: NoteResponseData): MouseEventHandler<HTMLDivElement> =>
+      () => {
+        void navigate({
+          search: (prev) => ({
+            ...prev,
+            id: note.id
+          })
+        })
+      }
+
+  const toggleGroup = (groupID: string) => {
+    setCollapsedGroupIDs((current) => {
+      const next = new Set(current)
+      if (next.has(groupID)) {
+        next.delete(groupID)
+      } else {
+        next.add(groupID)
+      }
+      return next
     })
   }
-
-  const throttledLoadNotes = useMemo(
-    () => throttle(reloadNotes, 5000, { leading: true, trailing: false }),
-    [reloadNotes]
-  )
-
-  useEffect(() => {
-    const handleGlobalKeydown = (e: KeyboardEvent) => {
-      const key = e.key?.toLowerCase()
-      // CTRL + SPACE = Focus the search bar
-      if (e.ctrlKey && key === " ") {
-        searchRef?.current?.focus()
-        e.preventDefault()
-      }
-
-      // CTRL + R = Reloads the notes on the sidebar
-      if (e.ctrlKey && key === "r") {
-        e.preventDefault()
-        throttledLoadNotes()
-      }
-    }
-    window.addEventListener("keydown", handleGlobalKeydown)
-    return () => window.removeEventListener("keydown", handleGlobalKeydown)
-  })
 
   return (
     <nav className={styles.sidebarLayout}>
       <SidebarRail />
 
       <div className={styles.leftMenu}>
-        <div className={styles.menuUpperControls}>
-          <input
-            className={styles.searchInput}
-            disabled={isLoading}
-            type="text"
-            name="noteSearch" // Just to remove browser warnings
-            placeholder={t("sidebar.notes.search")}
-            autoComplete="off"
-            ref={searchRef}
-            onKeyDown={handleKeyboard}
-            onChange={handleSearch}
-            value={search}
-          />
-          <div className={styles.menuDivider} />
-          <span className={styles.noteListHeader}>
-            <span className={styles.noteListTitle}>
-              {t("sidebar.notes.title")}
-            </span>
-            <span className={styles.noteListCount}>
-              {resultCount === 1
-                ? t("sidebar.notes.oneFound")
-                : t("sidebar.notes.manyFound", { val: resultCount })}
-            </span>
-          </span>
-        </div>
+        <SidebarHeader
+          disabled={isLoading}
+          resultCount={resultCount}
+          search={search}
+          searchRef={searchRef}
+          onSearch={handleSearch}
+          onSearchKeyDown={handleSearchKeyDown}
+        />
+
         <div className={styles.menuLowerItems}>
           <div className={styles.sidebarLoaderContainer}>
             {isLoading && <div className="loader" />}
           </div>
 
-          {resultCount === 0 && !isLoading && (
-            <div className={styles.noResultsContainer}>
-              <PiListMagnifyingGlass size={"3em"} color="#61586b67" />
-              <span className={styles.noResultsText}>
-                {t("sidebar.notes.noResults")}
-              </span>
-            </div>
-          )}
+          {resultCount === 0 && !isLoading && <SidebarEmptyState />}
 
           {!isLoading &&
             departmentGroups.map((group) => (
-              <div className={styles.departmentGroup} key={group.id}>
-                <div className={styles.departmentHeader}>
-                  {group.department ? (
-                    <DepartmentIcon
-                      className={styles.departmentIcon}
-                      department={group.department}
-                    />
-                  ) : (
-                    <MdOutlineTag className={styles.departmentIcon} />
-                  )}
-                  <span className={styles.departmentName}>{group.name}</span>
-                  <span className={styles.departmentCount}>
-                    {group.notes.length}
-                  </span>
-                </div>
-
-                {group.notes.map((n) => (
-                  <SidebarNote
-                    onClick={() => handleOpenNote(n)}
-                    key={n.id}
-                    note={n}
-                  />
-                ))}
-              </div>
+              <SidebarCategoryGroup
+                canEditNotes={canEditNotes}
+                draggedNoteID={sidebarInteractions.draggedNoteID}
+                group={group}
+                isCtrlPressed={sidebarInteractions.isCtrlPressed}
+                isDropTarget={sidebarInteractions.dropTargetID === group.id}
+                isExpanded={!collapsedGroupIDs.has(group.id)}
+                key={group.id}
+                onCategoryDragLeave={sidebarInteractions.handleCategoryDragLeave(
+                  group.id
+                )}
+                onCategoryDragOver={sidebarInteractions.handleCategoryDragOver(
+                  group
+                )}
+                onCategoryDrop={sidebarInteractions.handleCategoryDrop(group)}
+                onNoteDragEnd={sidebarInteractions.handleNoteDragEnd}
+                onNoteDragStart={sidebarInteractions.handleNoteDragStart}
+                onOpenNote={handleOpenNote}
+                onToggle={() => toggleGroup(group.id)}
+              />
             ))}
         </div>
       </div>
     </nav>
   )
-}
-
-type DepartmentGroup = {
-  id: string
-  name: string
-  department: DepartmentData | null
-  notes: NoteResponseData[]
-}
-
-function toDepartmentGroups(
-  search: string,
-  notes: NoteResponseData[],
-  departments: DepartmentData[],
-  t: (key: string) => string
-): DepartmentGroup[] {
-  const departmentMap = new Map(
-    departments.map((department) => [department.id, department])
-  )
-  const groups = new Map<string, DepartmentGroup>()
-
-  groups.set("general", {
-    id: "general",
-    name: t("departments.general"),
-    department: null,
-    notes: []
-  })
-
-  for (const department of [...departments].sort((a, b) =>
-    a.name.localeCompare(b.name)
-  )) {
-    groups.set(department.id, {
-      id: department.id,
-      name: department.name,
-      department,
-      notes: []
-    })
-  }
-
-  const visibleNotes = toFilteredNotes(search, notes)
-  for (const note of visibleNotes) {
-    const groupID = note.department_id || "general"
-    const group =
-      groups.get(groupID) ||
-      groups
-        .set(groupID, {
-          id: groupID,
-          name: t("departments.unknown"),
-          department: departmentMap.get(groupID) ?? null,
-          notes: []
-        })
-        .get(groupID)
-
-    group?.notes.push(note)
-  }
-
-  const isSearching = search.trim().length > 0
-  return [...groups.values()]
-    .map((group) => ({
-      ...group,
-      notes: [...group.notes].sort((a, b) => a.name.localeCompare(b.name))
-    }))
-    .filter((group) =>
-      isSearching
-        ? group.notes.length > 0
-        : group.department !== null || group.notes.length > 0
-    )
-}
-
-function toFilteredNotes(
-  search: string,
-  notes: NoteResponseData[]
-): NoteResponseData[] {
-  if (!search.trim()) return notes
-  return matchSorter(notes, search, {
-    keys: ["name", "tags"],
-    // Just a tie-breaker
-    baseSort: (a, b) => a.item.name.localeCompare(b.item.name)
-  })
 }

@@ -1,0 +1,15 @@
+.noResultsContainer {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  inset: 0;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.noResultsText {
+  color: #61586b67;
+  font-size: 1em;
+}

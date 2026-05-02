@@ -1,0 +1,67 @@
+.menuUpperControls {
+  display: flex;
+  flex-direction: column;
+}
+
+.searchInput {
+  height: 30px;
+  background-color: rgba(0, 0, 0, 0.2);
+  outline: none;
+  border: 0.3em solid rgba(0, 0, 0, 0.2);
+  padding: 2px 0 2px 8px;
+  color: rgb(158, 158, 158);
+  border-radius: 0.6em;
+  transition: border-color 0.3s;
+  user-select: none;
+}
+
+.searchInput:hover {
+  border-color: rgb(45, 39, 61);
+}
+
+.searchInput:focus {
+  border-color: rgb(107, 64, 156);
+}
+
+.searchInput::placeholder {
+  font-size: 1.05em;
+  color: rgb(69, 65, 73);
+}
+
+.menuDivider {
+  margin: 15px 0;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.noteListHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5px;
+}
+
+.noteListTitle {
+  color: rgb(160, 157, 167);
+  font-weight: 500;
+  font-size: 1.4em;
+  user-select: none;
+}
+
+.noteListCount {
+  font-size: 0.9em;
+  color: rgb(90, 84, 97);
+  padding: 5px 8px;
+  margin-right: -8px;
+  border-radius: 9999px;
+  cursor: default;
+  user-select: none;
+  transition:
+    background-color 150ms,
+    color 150ms;
+}
+
+.noteListCount:hover {
+  background-color: rgb(50, 44, 65);
+  color: rgb(127, 116, 139);
+}

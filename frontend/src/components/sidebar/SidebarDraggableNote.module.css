@@ -1,0 +1,17 @@
+.noteDragSurface {
+  border-radius: 12px;
+}
+
+.noteDragSurfaceReady,
+.noteDragSurfaceReady * {
+  cursor: grab !important;
+}
+
+.noteDragSurfaceDragging {
+  opacity: 0.55;
+}
+
+.noteDragSurfaceDragging,
+.noteDragSurfaceDragging * {
+  cursor: grabbing !important;
+}

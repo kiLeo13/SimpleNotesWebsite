@@ -1,0 +1,94 @@
+.departmentGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.departmentHeader {
+  display: grid;
+  appearance: none;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  padding: 8px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: rgb(124, 116, 137);
+  font: inherit;
+  font-size: 0.78em;
+  font-weight: 700;
+  text-align: left;
+  text-transform: uppercase;
+  user-select: none;
+  cursor: pointer;
+  transition:
+    background-color 180ms,
+    border-color 180ms,
+    color 180ms;
+}
+
+.departmentHeader:hover,
+.departmentHeader:focus-visible {
+  background-color: rgba(136, 116, 167, 0.105);
+  color: rgb(151, 140, 166);
+}
+
+.departmentHeader:focus-visible {
+  outline: 1px solid rgb(107, 64, 156);
+  outline-offset: 1px;
+}
+
+.departmentHeaderDropTarget {
+  border-color: rgba(154, 131, 180, 0.75);
+  background-color: rgba(136, 116, 167, 0.18);
+  color: rgb(178, 164, 196);
+}
+
+.departmentLeading {
+  display: grid;
+  grid-template-columns: auto minmax(0, auto) auto;
+  align-items: center;
+  justify-content: start;
+  gap: 7px;
+  min-width: 0;
+}
+
+.departmentIcon {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  color: rgb(122, 108, 147);
+  object-fit: cover;
+  line-height: 18px;
+}
+
+.departmentName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.departmentChevron {
+  width: 13px;
+  height: 13px;
+  color: rgb(95, 86, 110);
+  flex-shrink: 0;
+  transform: rotate(0deg);
+  transition: transform 100ms ease-out;
+}
+
+.departmentChevronExpanded {
+  transform: rotate(90deg);
+}
+
+.departmentCount {
+  min-width: 18px;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background-color: rgb(42, 37, 54);
+  color: rgb(118, 108, 132);
+  text-align: center;
+}
