@@ -4,13 +4,13 @@
   flex-shrink: 0;
   align-items: center;
   justify-content: space-between;
-  padding: 8px;
+  padding: 4px 4px 4px 8px;
   gap: 8px;
   font-size: 15px;
   font-weight: 450;
   overflow: hidden;
   box-sizing: border-box;
-  border-radius: 14px;
+  border-radius: 12px;
   width: 100%;
   color: #908c97;
   user-select: none;
