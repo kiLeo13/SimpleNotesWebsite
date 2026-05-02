@@ -1195,8 +1195,8 @@ export const apiResources: ApiResource[] = [
       },
       {
         name: "action_type",
-        type: "string",
-        description: ["Action discriminator."]
+        type: "NOTE_CREATE | NOTE_UPDATE | NOTE_DELETE | USER_UPDATE | USER_SUSPEND | USER_UNSUSPEND | USER_DELETE | COMPANY_LOOKUP | DEPARTMENT_CREATE | DEPARTMENT_UPDATE | DEPARTMENT_DELETE | DEPARTMENT_MEMBERSHIP_ADD | DEPARTMENT_MEMBERSHIP_REMOVE | DEPARTMENT_NOTES_BULK_MOVE | DEPARTMENT_NOTES_BULK_DELETE",
+        description: ["Action discriminator, including department management and department note bulk actions."]
       },
       {
         name: "subject_type",
