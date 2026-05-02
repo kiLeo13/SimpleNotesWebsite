@@ -24,6 +24,14 @@ vi.mock("react-i18next", () => ({
         return "Sem valor"
       }
 
+      if (key === "departments.general") {
+        return "Geral"
+      }
+
+      if (key === "modals.audit.fields.department_id") {
+        return "departamento"
+      }
+
       return key
     }
   })
@@ -36,6 +44,7 @@ describe("AuditLogChangeRow", () => {
         change={makeChange()}
         displayCode={3}
         event={AuditLogEvent.NoteUpdate}
+        resolveDepartmentLabel={(id) => `#${id}`}
       />
     )
 
@@ -48,6 +57,28 @@ describe("AuditLogChangeRow", () => {
     expect(code).toHaveStyle(`color: ${COLOR_UPDATE}`)
     expect(
       screen.getByText("Alterou title de Before para After")
+    ).toBeInTheDocument()
+  })
+
+  it("formats department references as names and General instead of raw IDs", () => {
+    render(
+      <AuditLogChangeRow
+        change={{
+          fieldName: "department_id",
+          oldValue: "70184547911740105",
+          newValue: "",
+          valueType: "STRING"
+        }}
+        displayCode={1}
+        event={AuditLogEvent.NoteUpdate}
+        resolveDepartmentLabel={(id) =>
+          id === "70184547911740105" ? "Financeiro" : `#${id}`
+        }
+      />
+    )
+
+    expect(
+      screen.getByText("Alterou departamento de Financeiro para Geral")
     ).toBeInTheDocument()
   })
 })

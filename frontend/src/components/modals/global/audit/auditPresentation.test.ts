@@ -20,8 +20,20 @@ const mockT = (
     return `${options?.actor} consultou a empresa ${options?.subjectId}`
   }
 
+  if (key === "modals.audit.summary.noteCreate") {
+    return `${options?.actor} criou a nota ${options?.note}`
+  }
+
+  if (key === "modals.audit.summary.noteUpdate") {
+    return `${options?.actor} atualizou a nota ${options?.note}`
+  }
+
+  if (key === "modals.audit.summary.departmentUpdate") {
+    return `${options?.actor} atualizou o departamento ${options?.department}`
+  }
+
   if (key === "modals.audit.summary.departmentMembershipAdd") {
-    return `${options?.actor} adicionou ${options?.username} ao departamento ${options?.subjectId}`
+    return `${options?.actor} adicionou um usuario ao departamento ${options?.department}`
   }
 
   return key
@@ -70,29 +82,117 @@ describe("auditPresentation", () => {
     })
   })
 
-  it("resolves department membership user labels from the change payload", () => {
+  it("uses note names from create and update change rows", () => {
+    expect(
+      getAuditEntryPresentation(
+        makeEntry({
+          actionType: "NOTE_CREATE",
+          subjectType: "NOTE",
+          subjectId: "10",
+          changes: [
+            {
+              fieldName: "name",
+              oldValue: undefined,
+              newValue: "Guia de Reembolso",
+              valueType: "STRING"
+            }
+          ]
+        }),
+        "Leonardo",
+        () => "unused",
+        mockT
+      ).summary
+    ).toBe("Leonardo criou a nota Guia de Reembolso")
+
+    expect(
+      getAuditEntryPresentation(
+        makeEntry({
+          actionType: "NOTE_UPDATE",
+          subjectType: "NOTE",
+          subjectId: "10",
+          changes: [
+            {
+              fieldName: "name",
+              oldValue: "Guia",
+              newValue: "Guia de Reembolso",
+              valueType: "STRING"
+            }
+          ]
+        }),
+        "Leonardo",
+        () => "unused",
+        mockT
+      ).summary
+    ).toBe("Leonardo atualizou a nota Guia de Reembolso")
+  })
+
+  it("falls back to cached note names when updates do not rename the note", () => {
+    expect(
+      getAuditEntryPresentation(
+        makeEntry({
+          actionType: "NOTE_UPDATE",
+          subjectType: "NOTE",
+          subjectId: "10",
+          changes: [
+            {
+              fieldName: "tags",
+              oldValue: "[\"old\"]",
+              newValue: "[\"new\"]",
+              valueType: "STRING_ARRAY"
+            }
+          ]
+        }),
+        "Leonardo",
+        () => "unused",
+        mockT,
+        () => "Guia de Reembolso"
+      ).summary
+    ).toBe("Leonardo atualizou a nota Guia de Reembolso")
+  })
+
+  it("uses department names from cache or change rows", () => {
+    expect(
+      getAuditEntryPresentation(
+        makeEntry({
+          actionType: "DEPARTMENT_UPDATE",
+          subjectType: "DEPARTMENT",
+          subjectId: "10",
+          changes: [
+            {
+              fieldName: "icon_value",
+              oldValue: "paperclip",
+              newValue: "card",
+              valueType: "STRING"
+            }
+          ]
+        }),
+        "Leonardo",
+        () => "unused",
+        mockT,
+        undefined,
+        () => "Financeiro"
+      ).summary
+    ).toBe("Leonardo atualizou o departamento Financeiro")
+  })
+
+  it("keeps department membership events compact without fake change details", () => {
     expect(
       getAuditEntryPresentation(
         makeEntry({
           actionType: "DEPARTMENT_MEMBERSHIP_ADD",
           subjectType: "DEPARTMENT",
           subjectId: "10",
-          changes: [
-            {
-              fieldName: "user_id",
-              oldValue: undefined,
-              newValue: "88",
-              valueType: "STRING"
-            }
-          ]
+          changes: []
         }),
         "Leonardo",
-        (userId) => `Maria #${userId}`,
-        mockT
+        () => "unused",
+        mockT,
+        undefined,
+        () => "Financeiro"
       )
     ).toEqual({
-      summary: "Leonardo adicionou Maria #88 ao departamento 10",
-      expands: true
+      summary: "Leonardo adicionou um usuario ao departamento Financeiro",
+      expands: false
     })
   })
 })

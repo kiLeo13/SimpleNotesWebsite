@@ -3,6 +3,8 @@ import type { AuditActionType, AuditLogEntryData } from "@/types/api/audit"
 
 import { AuditLogsModal } from "./AuditLogsModal"
 import { auditService } from "@/services/auditService"
+import { useDepartmentsStore } from "@/stores/useDepartmentsStore"
+import { useNoteStore } from "@/stores/useNotesStore"
 import { userService } from "@/services/userService"
 import { useUsersStore } from "@/stores/useUsersStore"
 import { beforeEach, describe, expect, it, vi } from "vitest"
@@ -70,11 +72,11 @@ const mockT = (
   }
 
   if (key === "modals.audit.summary.noteCreate") {
-    return `${options?.actor} criou a nota #${options?.subjectId}`
+    return `${options?.actor} criou a nota ${options?.note}`
   }
 
   if (key === "modals.audit.summary.noteUpdate") {
-    return `${options?.actor} alterou a nota #${options?.subjectId}`
+    return `${options?.actor} alterou a nota ${options?.note}`
   }
 
   if (key === "modals.audit.summary.noteDelete") {
@@ -102,7 +104,11 @@ const mockT = (
   }
 
   if (key === "modals.audit.summary.departmentMembershipAdd") {
-    return `${options?.actor} adicionou ${options?.username} ao departamento #${options?.subjectId}`
+    return `${options?.actor} adicionou um usuario ao departamento ${options?.department}`
+  }
+
+  if (key === "modals.audit.summary.departmentUpdate") {
+    return `${options?.actor} atualizou o departamento ${options?.department}`
   }
 
   if (key === "modals.audit.summary.fallback") {
@@ -187,6 +193,19 @@ describe("AuditLogsModal", () => {
       state: "READY",
       _fetchPromise: null
     })
+    useNoteStore.setState({
+      notes: [],
+      state: "READY",
+      _fetchPromise: null
+    })
+    useDepartmentsStore.setState({
+      departments: [],
+      memberships: [],
+      state: "READY",
+      membershipState: "READY",
+      _fetchPromise: null,
+      _membershipFetchPromise: null
+    })
   })
 
   it("renders a compact i18n summary row and expands change details", async () => {
@@ -206,7 +225,7 @@ describe("AuditLogsModal", () => {
     render(<AuditLogsModal setShowAuditLogs={vi.fn()} />)
 
     const rowButton = await screen.findByRole("button", {
-      name: /Leonardo alterou a nota #101/i
+      name: /Leonardo alterou a nota Nova 101/i
     })
 
     expect(rowButton).toBeInTheDocument()
@@ -214,7 +233,7 @@ describe("AuditLogsModal", () => {
     fireEvent.click(rowButton)
 
     expect(
-      await screen.findByText("Alterou name de Antigo para Novo")
+      await screen.findByText("Alterou name de Antigo 101 para Nova 101")
     ).toBeInTheDocument()
   })
 
@@ -235,7 +254,7 @@ describe("AuditLogsModal", () => {
 
     render(<AuditLogsModal setShowAuditLogs={vi.fn()} />)
 
-    expect(await screen.findByText("Maria criou a nota #202")).toBeInTheDocument()
+    expect(await screen.findByText("Maria criou a nota Nova 202")).toBeInTheDocument()
     expect(mockedUserService.getUserById).toHaveBeenCalledWith("88")
   })
 
@@ -271,9 +290,12 @@ describe("AuditLogsModal", () => {
     expect(mockedUserService.getUserById).toHaveBeenCalledWith("88")
   })
 
-  it("resolves department membership users from change payloads", async () => {
+  it("renders department membership entries without fake change details", async () => {
     useUsersStore.setState({
       users: [makeUser("7", "Leonardo")]
+    })
+    useDepartmentsStore.setState({
+      departments: [makeDepartment("10", "Financeiro")]
     })
 
     mockedAuditService.listAuditLogs.mockResolvedValueOnce({
@@ -283,11 +305,62 @@ describe("AuditLogsModal", () => {
         entries: [
           makeAuditEntry("evt-6", "10", "DEPARTMENT_MEMBERSHIP_ADD", "7", {
             subjectType: "DEPARTMENT",
+            changes: []
+          })
+        ],
+        nextBeforeId: undefined
+      }
+    })
+
+    render(<AuditLogsModal setShowAuditLogs={vi.fn()} />)
+
+    expect(
+      await screen.findByText(
+        "Leonardo adicionou um usuario ao departamento Financeiro"
+      )
+    ).toBeInTheDocument()
+    expect(mockedUserService.getUserById).not.toHaveBeenCalledWith("88")
+    expect(screen.getByRole("option", { name: "Departamento" })).toHaveValue(
+      "DEPARTMENT"
+    )
+    expect(
+      screen.getByRole("option", { name: "Usuario adicionado" })
+    ).toHaveValue("DEPARTMENT_MEMBERSHIP_ADD")
+  })
+
+  it("uses cached department and note names in audit summaries", async () => {
+    useUsersStore.setState({
+      users: [makeUser("7", "Leonardo")]
+    })
+    useNoteStore.setState({
+      notes: [makeNote("202", "Procedimento Interno")]
+    })
+    useDepartmentsStore.setState({
+      departments: [makeDepartment("10", "Financeiro")]
+    })
+
+    mockedAuditService.listAuditLogs.mockResolvedValueOnce({
+      success: true,
+      statusCode: 200,
+      data: {
+        entries: [
+          makeAuditEntry("evt-7", "202", "NOTE_UPDATE", "7", {
             changes: [
               {
-                fieldName: "user_id",
-                oldValue: undefined,
-                newValue: "88",
+                fieldName: "tags",
+                oldValue: "[\"old\"]",
+                newValue: "[\"new\"]",
+                valueType: "STRING_ARRAY"
+              }
+            ]
+          }),
+          makeAuditEntry("evt-8", "10", "DEPARTMENT_UPDATE", "7", {
+            subjectType: "DEPARTMENT",
+            changes: [
+              {
+                fieldName: "icon_value",
+                oldValue: "old",
+                newValue: "new",
                 valueType: "STRING"
               }
             ]
@@ -296,26 +369,15 @@ describe("AuditLogsModal", () => {
         nextBeforeId: undefined
       }
     })
-    mockedUserService.getUserById.mockResolvedValueOnce({
-      success: true,
-      statusCode: 200,
-      data: makeUser("88", "Maria")
-    })
 
     render(<AuditLogsModal setShowAuditLogs={vi.fn()} />)
 
     expect(
-      await screen.findByText(
-        "Leonardo adicionou Maria ao departamento #10"
-      )
+      await screen.findByText("Leonardo alterou a nota Procedimento Interno")
     ).toBeInTheDocument()
-    expect(mockedUserService.getUserById).toHaveBeenCalledWith("88")
-    expect(screen.getByRole("option", { name: "Departamento" })).toHaveValue(
-      "DEPARTMENT"
-    )
     expect(
-      screen.getByRole("option", { name: "Usuario adicionado" })
-    ).toHaveValue("DEPARTMENT_MEMBERSHIP_ADD")
+      await screen.findByText("Leonardo atualizou o departamento Financeiro")
+    ).toBeInTheDocument()
   })
 
   it("auto-applies filters and keeps them while loading more entries", async () => {
@@ -367,7 +429,7 @@ describe("AuditLogsModal", () => {
 
     render(<AuditLogsModal setShowAuditLogs={vi.fn()} />)
 
-    await screen.findByText("Leonardo criou a nota #101")
+    await screen.findByText("Leonardo criou a nota Nova 101")
 
     fireEvent.change(screen.getByLabelText("Ator"), {
       target: { value: "7" }
@@ -389,7 +451,7 @@ describe("AuditLogsModal", () => {
       })
     })
 
-    expect(await screen.findByText("Leonardo alterou a nota #202")).toBeInTheDocument()
+    expect(await screen.findByText("Leonardo alterou a nota Nova 202")).toBeInTheDocument()
 
     const list = screen.getByTestId("audit-log-list")
     Object.defineProperty(list, "scrollHeight", {
@@ -418,7 +480,7 @@ describe("AuditLogsModal", () => {
       })
     })
 
-    expect(await screen.findByText("Leonardo alterou a nota #203")).toBeInTheDocument()
+    expect(await screen.findByText("Leonardo alterou a nota Nova 203")).toBeInTheDocument()
   })
 })
 
@@ -440,12 +502,38 @@ function makeAuditEntry(
     changes: [
       {
         fieldName: "name",
-        oldValue: actionType === "NOTE_CREATE" ? undefined : "Antigo",
-        newValue: "Novo",
+        oldValue: actionType === "NOTE_CREATE" ? undefined : `Antigo ${subjectId}`,
+        newValue: `Nova ${subjectId}`,
         valueType: "STRING"
       }
     ],
     ...overrides
+  }
+}
+
+function makeNote(id: string, name: string) {
+  return {
+    id,
+    name,
+    content: "",
+    tags: [],
+    department_id: null,
+    note_type: "MARKDOWN" as const,
+    content_size: 0,
+    created_by_id: "7",
+    created_at: "2026-04-19T00:00:00Z",
+    updated_at: "2026-04-19T00:00:00Z"
+  }
+}
+
+function makeDepartment(id: string, name: string) {
+  return {
+    id,
+    name,
+    icon_type: "EMOJI" as const,
+    icon_value: "F",
+    created_at: "2026-04-19T00:00:00Z",
+    updated_at: "2026-04-19T00:00:00Z"
   }
 }
 
