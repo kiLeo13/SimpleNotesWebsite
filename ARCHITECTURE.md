@@ -235,6 +235,11 @@ Current audit coverage includes:
 - user update, suspend/unsuspend, and delete
 - company lookup by CNPJ, including not-found lookups with outcome metadata
 
+Department membership add/remove audit events intentionally carry no child
+change rows. The membership mutation itself is the meaningful event; adding a
+synthetic `user_id` field change only exposes an internal ID without useful
+review context.
+
 Company lookup misses are negatively cached in the `companies` table with `found=false`.
 The application sets `found=true` for successful Minha Receita responses and `found=false` for not-found responses explicitly; the column must not rely on a database default, because repeated not-found lookups must keep returning `404` from the cached miss instead of an empty company response.
 

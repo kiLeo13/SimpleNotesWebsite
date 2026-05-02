@@ -477,6 +477,74 @@ func TestAuditServiceGetAuditLogsPaginatesByBeforeID(t *testing.T) {
 	}
 }
 
+func TestDepartmentMembershipAuditDoesNotRecordSyntheticUserChange(t *testing.T) {
+	db := newTestDB(t)
+	validate := newTestValidator()
+
+	auditRepo := repository.NewAuditRepository(db)
+	auditSvc := newTestAuditService(t, db, 6000)
+	userRepo := repository.NewUserRepository(db)
+	noteRepo := repository.NewNoteRepository(db)
+	departmentRepo := repository.NewDepartmentRepository(db)
+	connRepo := repository.NewConnectionRepository(db)
+	wsSvc := NewWebSocketService(connRepo, repository.NewSocketDeliveryRepository(db), noopGateway{})
+	departmentSvc := NewDepartmentService(db, departmentRepo, noteRepo, userRepo, wsSvc, noopS3{}, validate, auditSvc, &sequenceAuditIDGenerator{next: 7000})
+
+	actor := &entity.User{
+		ID:          1,
+		Username:    "manager",
+		Email:       "manager@example.com",
+		Permissions: entity.PermissionManageDepartments | entity.PermissionManageUsers,
+		Active:      true,
+		CreatedAt:   utils.NowUTC(),
+		UpdatedAt:   utils.NowUTC(),
+	}
+	target := &entity.User{
+		ID:          2,
+		Username:    "member",
+		Email:       "member@example.com",
+		Permissions: 0,
+		Active:      true,
+		CreatedAt:   utils.NowUTC(),
+		UpdatedAt:   utils.NowUTC(),
+	}
+	department := &entity.Department{
+		ID:        3,
+		Name:      "Financeiro",
+		IconType:  entity.DepartmentIconEmoji,
+		IconValue: "F",
+		CreatedAt: utils.NowUTC(),
+		UpdatedAt: utils.NowUTC(),
+	}
+
+	for _, user := range []*entity.User{actor, target} {
+		if err := userRepo.Save(user); err != nil {
+			t.Fatalf("save user: %v", err)
+		}
+	}
+	if err := departmentRepo.SaveWithDB(db, department); err != nil {
+		t.Fatalf("save department: %v", err)
+	}
+
+	if apierr := departmentSvc.AddDepartmentUser(actor, department.ID, target.ID); apierr != nil {
+		t.Fatalf("add department user returned api error: %#v", apierr)
+	}
+
+	events, err := auditRepo.List(&repository.AuditLogFilter{
+		Limit:      10,
+		ActionType: auditActionPtr(entity.AuditActionDepartmentMembershipAdd),
+	})
+	if err != nil {
+		t.Fatalf("list audit logs: %v", err)
+	}
+	if len(events) != 1 {
+		t.Fatalf("expected 1 membership audit event, got %d", len(events))
+	}
+	if len(events[0].Changes) != 0 {
+		t.Fatalf("expected membership audit event to have no change rows, got %+v", events[0].Changes)
+	}
+}
+
 func TestAuditServiceGetAuditLogsRequiresReadAuditLogsPermission(t *testing.T) {
 	db := newTestDB(t)
 	auditSvc := newTestAuditService(t, db, 5000)

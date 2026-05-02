@@ -437,16 +437,10 @@ func (s *DepartmentService) mutateDepartmentUser(actor *entity.User, departmentI
 	}
 
 	action := entity.AuditActionDepartmentMembershipRemove
-	changes := []*entity.AuditLogChange{
-		newAuditDeleteValue("user_id", entity.AuditValueTypeString, idgen.Format(target.ID)),
-	}
 
 	err = s.DB.Transaction(func(tx *gorm.DB) error {
 		if add {
 			action = entity.AuditActionDepartmentMembershipAdd
-			changes = []*entity.AuditLogChange{
-				newAuditCreateValue("user_id", entity.AuditValueTypeString, idgen.Format(target.ID)),
-			}
 			if err := s.DepartmentRepo.AddMemberWithDB(tx, &entity.DepartmentMembership{
 				DepartmentID: department.ID,
 				UserID:       target.ID,
@@ -464,7 +458,6 @@ func (s *DepartmentService) mutateDepartmentUser(actor *entity.User, departmentI
 			SubjectType: entity.AuditSubjectDepartment,
 			SubjectID:   idgen.Format(department.ID),
 			Source:      entity.AuditSourceHTTPAPI,
-			Changes:     changes,
 		})
 	})
 	if err != nil {
