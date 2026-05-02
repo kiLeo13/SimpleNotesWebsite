@@ -4,6 +4,8 @@ import type { AuditTranslate } from "./AuditLogEvent"
 import { type AuditFilters, toAuditLogQuery } from "./auditFilters"
 
 import { useCallback, useEffect, useRef, useState } from "react"
+import { useDepartmentsStore } from "@/stores/useDepartmentsStore"
+import { useNoteStore } from "@/stores/useNotesStore"
 import { useUsersStore } from "@/stores/useUsersStore"
 import { auditService } from "@/services/auditService"
 import { userService } from "@/services/userService"
@@ -24,6 +26,8 @@ type UseAuditLogsDataResult = {
   loadMoreLogs: () => Promise<void>
   resolveUserLabel: (userId: string | undefined) => string
   resolveActorLabel: (actorUserId: string | undefined) => string
+  resolveNoteLabel: (noteId: string) => string
+  resolveDepartmentLabel: (departmentId: string) => string
 }
 
 export function useAuditLogsData({
@@ -32,6 +36,8 @@ export function useAuditLogsData({
 }: UseAuditLogsDataArgs): UseAuditLogsDataResult {
   const users = useUsersStore((state) => state.users)
   const ensureUsersLoaded = useUsersStore((state) => state.ensureLoaded)
+  const notes = useNoteStore((state) => state.notes)
+  const departments = useDepartmentsStore((state) => state.departments)
 
   const [entries, setEntries] = useState<AuditLogEntryData[]>([])
   const [nextBeforeId, setNextBeforeId] = useState<string | null>(null)
@@ -71,6 +77,23 @@ export function useAuditLogsData({
   const resolveActorLabel = useCallback(
     (actorUserId: string | undefined): string => resolveUserLabel(actorUserId),
     [resolveUserLabel]
+  )
+
+  const resolveNoteLabel = useCallback(
+    (noteId: string): string => {
+      return notes.find((note) => note.id === noteId)?.name ?? `#${noteId}`
+    },
+    [notes]
+  )
+
+  const resolveDepartmentLabel = useCallback(
+    (departmentId: string): string => {
+      return (
+        departments.find((department) => department.id === departmentId)?.name ??
+        `#${departmentId}`
+      )
+    },
+    [departments]
   )
 
   const loadLogs = useCallback(
@@ -161,18 +184,6 @@ export function useAuditLogsData({
         ids.push(entry.subjectId)
       }
 
-      if (
-        entry.actionType === "DEPARTMENT_MEMBERSHIP_ADD" ||
-        entry.actionType === "DEPARTMENT_MEMBERSHIP_REMOVE"
-      ) {
-        for (const change of entry.changes) {
-          if (change.fieldName === "user_id") {
-            if (change.oldValue != null) ids.push(change.oldValue)
-            if (change.newValue != null) ids.push(change.newValue)
-          }
-        }
-      }
-
       return ids
     })
 
@@ -217,6 +228,8 @@ export function useAuditLogsData({
     loadInitialLogs,
     loadMoreLogs,
     resolveUserLabel,
-    resolveActorLabel
+    resolveActorLabel,
+    resolveNoteLabel,
+    resolveDepartmentLabel
   }
 }

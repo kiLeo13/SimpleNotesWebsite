@@ -46,7 +46,9 @@ export function AuditLogsModal({
     loadInitialLogs,
     loadMoreLogs,
     resolveUserLabel,
-    resolveActorLabel
+    resolveActorLabel,
+    resolveNoteLabel,
+    resolveDepartmentLabel
   } = useAuditLogsData({
     appliedFilters: filters,
     t
@@ -145,6 +147,8 @@ export function AuditLogsModal({
                 entry={entry}
                 actorLabel={resolveActorLabel(entry.actorUserId)}
                 resolveUserLabel={resolveUserLabel}
+                resolveNoteLabel={resolveNoteLabel}
+                resolveDepartmentLabel={resolveDepartmentLabel}
                 isExpanded={expandedEntryId === entry.id}
                 onToggle={() =>
                   setExpandedEntryId((current) =>

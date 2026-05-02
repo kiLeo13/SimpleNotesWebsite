@@ -7,6 +7,7 @@ import type {
 import {
   AuditLogEvent,
   type AuditEntryPresentation,
+  type AuditResourceLabelResolver,
   type AuditTranslate,
   type AuditUserLabelResolver
 } from "./AuditLogEvent"
@@ -14,6 +15,11 @@ import {
 export type AuditSelectOption = {
   value: string
   label: string
+}
+
+export type AuditValueFormatContext = {
+  fieldName: string
+  resolveDepartmentLabel?: AuditResourceLabelResolver
 }
 
 const AUDIT_ACTION_LABEL_KEYS: Record<AuditActionType, string> = {
@@ -68,8 +74,13 @@ export function getAuditSubjectOptions(t: AuditTranslate): AuditSelectOption[] {
 export function formatAuditValue(
   value: string | undefined,
   dataType: string,
-  t: AuditTranslate
+  t: AuditTranslate,
+  context?: AuditValueFormatContext
 ): string {
+  if (context && isDepartmentReferenceField(context.fieldName)) {
+    return formatDepartmentReference(value, t, context.resolveDepartmentLabel)
+  }
+
   if (value == null || value === "") {
     return t("modals.audit.emptyValue")
   }
@@ -79,6 +90,22 @@ export function formatAuditValue(
   }
 
   return value
+}
+
+function isDepartmentReferenceField(fieldName: string): boolean {
+  return fieldName === "department_id" || fieldName === "target_department_id"
+}
+
+function formatDepartmentReference(
+  value: string | undefined,
+  t: AuditTranslate,
+  resolveDepartmentLabel?: AuditResourceLabelResolver
+): string {
+  if (value == null || value === "") {
+    return t("departments.general")
+  }
+
+  return resolveDepartmentLabel?.(value) ?? fallbackResourceLabel(value)
 }
 
 function formatStringArray(t: AuditTranslate, value: string): string {
@@ -93,16 +120,24 @@ function formatStringArray(t: AuditTranslate, value: string): string {
   return value
 }
 
+function fallbackResourceLabel(resourceId: string): string {
+  return `#${resourceId}`
+}
+
 export function getAuditEntryPresentation(
   entry: AuditLogEntryData,
   actorLabel: string,
   resolveUserLabel: AuditUserLabelResolver,
-  t: AuditTranslate
+  t: AuditTranslate,
+  resolveNoteLabel: AuditResourceLabelResolver = fallbackResourceLabel,
+  resolveDepartmentLabel: AuditResourceLabelResolver = fallbackResourceLabel
 ): AuditEntryPresentation {
   return AuditLogEvent.getByActionType(entry.actionType).toPresentation({
     entry,
     actorLabel,
     resolveUserLabel,
+    resolveNoteLabel,
+    resolveDepartmentLabel,
     t
   })
 }
@@ -111,34 +146,49 @@ export function getAuditSummary(
   entry: AuditLogEntryData,
   actorLabel: string,
   resolveUserLabel: AuditUserLabelResolver,
-  t: AuditTranslate
+  t: AuditTranslate,
+  resolveNoteLabel: AuditResourceLabelResolver = fallbackResourceLabel,
+  resolveDepartmentLabel: AuditResourceLabelResolver = fallbackResourceLabel
 ): string {
-  return getAuditEntryPresentation(entry, actorLabel, resolveUserLabel, t)
-    .summary
+  return getAuditEntryPresentation(
+    entry,
+    actorLabel,
+    resolveUserLabel,
+    t,
+    resolveNoteLabel,
+    resolveDepartmentLabel
+  ).summary
 }
 
 export function getChangeSummary(
   change: AuditLogChangeData,
-  t: AuditTranslate
+  t: AuditTranslate,
+  resolveDepartmentLabel?: AuditResourceLabelResolver
 ): string {
+  const formatValue = (value: string | undefined) =>
+    formatAuditValue(value, change.valueType, t, {
+      fieldName: change.fieldName,
+      resolveDepartmentLabel
+    })
+
   if (change.oldValue == null && change.newValue != null) {
     return t("modals.audit.change.created", {
       field: getFieldNamePretty(t, change.fieldName),
-      newValue: formatAuditValue(change.newValue, change.valueType, t)
+      newValue: formatValue(change.newValue)
     })
   }
 
   if (change.oldValue != null && change.newValue == null) {
     return t("modals.audit.change.deleted", {
       field: getFieldNamePretty(t, change.fieldName),
-      oldValue: formatAuditValue(change.oldValue, change.valueType, t)
+      oldValue: formatValue(change.oldValue)
     })
   }
 
   return t("modals.audit.change.updated", {
     field: getFieldNamePretty(t, change.fieldName),
-    oldValue: formatAuditValue(change.oldValue, change.valueType, t),
-    newValue: formatAuditValue(change.newValue, change.valueType, t)
+    oldValue: formatValue(change.oldValue),
+    newValue: formatValue(change.newValue)
   })
 }
 

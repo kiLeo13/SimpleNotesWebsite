@@ -6,7 +6,11 @@ import { FiChevronDown } from "react-icons/fi"
 import { useTranslation } from "react-i18next"
 import { formatLocalTimestamp } from "@/utils/utils"
 
-import { AuditLogEvent, type AuditUserLabelResolver } from "./AuditLogEvent"
+import {
+  AuditLogEvent,
+  type AuditResourceLabelResolver,
+  type AuditUserLabelResolver
+} from "./AuditLogEvent"
 import { AuditLogChangeRow } from "./AuditLogChangeRow"
 import { getAuditSummary } from "./auditPresentation"
 
@@ -18,6 +22,8 @@ type AuditLogEntryProps = {
   entry: AuditLogEntryData
   actorLabel: string
   resolveUserLabel: AuditUserLabelResolver
+  resolveNoteLabel: AuditResourceLabelResolver
+  resolveDepartmentLabel: AuditResourceLabelResolver
   isExpanded: boolean
   onToggle: () => void
 }
@@ -26,13 +32,22 @@ export function AuditLogEntry({
   entry,
   actorLabel,
   resolveUserLabel,
+  resolveNoteLabel,
+  resolveDepartmentLabel,
   isExpanded,
   onToggle
 }: AuditLogEntryProps): JSX.Element {
   const { t } = useTranslation()
   const detailsId = `audit-log-details-${entry.id}`
   const event = AuditLogEvent.getByActionType(entry.actionType)
-  const summary = getAuditSummary(entry, actorLabel, resolveUserLabel, t)
+  const summary = getAuditSummary(
+    entry,
+    actorLabel,
+    resolveUserLabel,
+    t,
+    resolveNoteLabel,
+    resolveDepartmentLabel
+  )
   const canExpand = event.expands
 
   const entryContent = (
@@ -93,6 +108,7 @@ export function AuditLogEntry({
                   change={change}
                   displayCode={index + 1}
                   event={event}
+                  resolveDepartmentLabel={resolveDepartmentLabel}
                 />
               ))}
             </div>

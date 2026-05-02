@@ -14,6 +14,7 @@ export type AuditTranslate = (
 ) => string
 
 export type AuditUserLabelResolver = (userId: string | undefined) => string
+export type AuditResourceLabelResolver = (resourceId: string) => string
 
 export type AuditEntryPresentation = {
   summary: string
@@ -24,6 +25,8 @@ type AuditSummaryContext = {
   entry: AuditLogEntryData
   actorLabel: string
   resolveUserLabel: AuditUserLabelResolver
+  resolveNoteLabel: AuditResourceLabelResolver
+  resolveDepartmentLabel: AuditResourceLabelResolver
   t: AuditTranslate
 }
 
@@ -62,6 +65,24 @@ function getChangeValue(
   return entry.changes.find((change) => change.fieldName === fieldName)?.[side]
 }
 
+function getNoteLabel(
+  entry: AuditLogEntryData,
+  resolveNoteLabel: AuditResourceLabelResolver
+): string {
+  return getChangeValue(entry, "name", "newValue") ?? resolveNoteLabel(entry.subjectId)
+}
+
+function getDepartmentLabel(
+  entry: AuditLogEntryData,
+  resolveDepartmentLabel: AuditResourceLabelResolver
+): string {
+  return (
+    getChangeValue(entry, "name", "newValue") ??
+    getChangeValue(entry, "name", "oldValue") ??
+    resolveDepartmentLabel(entry.subjectId)
+  )
+}
+
 export class AuditLogEvent {
   public readonly actionType: AuditActionType
   public readonly subjectType: AuditSubjectType
@@ -83,10 +104,10 @@ export class AuditLogEvent {
     subjectType: "NOTE",
     expands: true,
     codeColor: COLOR_OK,
-    summary: ({ actorLabel, entry, t }) =>
+    summary: ({ actorLabel, entry, resolveNoteLabel, t }) =>
       t("modals.audit.summary.noteCreate", {
         actor: actorLabel,
-        subjectId: entry.subjectId
+        note: getNoteLabel(entry, resolveNoteLabel)
       })
   })
 
@@ -95,10 +116,10 @@ export class AuditLogEvent {
     subjectType: "NOTE",
     expands: true,
     codeColor: COLOR_UPDATE,
-    summary: ({ actorLabel, entry, t }) =>
+    summary: ({ actorLabel, entry, resolveNoteLabel, t }) =>
       t("modals.audit.summary.noteUpdate", {
         actor: actorLabel,
-        subjectId: entry.subjectId
+        note: getNoteLabel(entry, resolveNoteLabel)
       })
   })
 
@@ -186,10 +207,10 @@ export class AuditLogEvent {
     subjectType: "DEPARTMENT",
     expands: true,
     codeColor: COLOR_OK,
-    summary: ({ actorLabel, entry, t }) =>
+    summary: ({ actorLabel, entry, resolveDepartmentLabel, t }) =>
       t("modals.audit.summary.departmentCreate", {
         actor: actorLabel,
-        subjectId: entry.subjectId
+        department: getDepartmentLabel(entry, resolveDepartmentLabel)
       })
   })
 
@@ -198,10 +219,10 @@ export class AuditLogEvent {
     subjectType: "DEPARTMENT",
     expands: true,
     codeColor: COLOR_UPDATE,
-    summary: ({ actorLabel, entry, t }) =>
+    summary: ({ actorLabel, entry, resolveDepartmentLabel, t }) =>
       t("modals.audit.summary.departmentUpdate", {
         actor: actorLabel,
-        subjectId: entry.subjectId
+        department: getDepartmentLabel(entry, resolveDepartmentLabel)
       })
   })
 
@@ -209,42 +230,32 @@ export class AuditLogEvent {
     actionType: "DEPARTMENT_DELETE",
     subjectType: "DEPARTMENT",
     expands: false,
-    summary: ({ actorLabel, entry, t }) =>
+    summary: ({ actorLabel, entry, resolveDepartmentLabel, t }) =>
       t("modals.audit.summary.departmentDelete", {
         actor: actorLabel,
-        subjectId: entry.subjectId
+        department: getDepartmentLabel(entry, resolveDepartmentLabel)
       })
   })
 
   static readonly DepartmentMembershipAdd = new AuditLogEvent({
     actionType: "DEPARTMENT_MEMBERSHIP_ADD",
     subjectType: "DEPARTMENT",
-    expands: true,
-    codeColor: COLOR_OK,
-    summary: ({ actorLabel, entry, resolveUserLabel, t }) =>
+    expands: false,
+    summary: ({ actorLabel, entry, resolveDepartmentLabel, t }) =>
       t("modals.audit.summary.departmentMembershipAdd", {
         actor: actorLabel,
-        username: resolveAuditUserSubjectLabel(
-          getChangeValue(entry, "user_id", "newValue") ?? "",
-          resolveUserLabel
-        ),
-        subjectId: entry.subjectId
+        department: getDepartmentLabel(entry, resolveDepartmentLabel)
       })
   })
 
   static readonly DepartmentMembershipRemove = new AuditLogEvent({
     actionType: "DEPARTMENT_MEMBERSHIP_REMOVE",
     subjectType: "DEPARTMENT",
-    expands: true,
-    codeColor: COLOR_DANGER,
-    summary: ({ actorLabel, entry, resolveUserLabel, t }) =>
+    expands: false,
+    summary: ({ actorLabel, entry, resolveDepartmentLabel, t }) =>
       t("modals.audit.summary.departmentMembershipRemove", {
         actor: actorLabel,
-        username: resolveAuditUserSubjectLabel(
-          getChangeValue(entry, "user_id", "oldValue") ?? "",
-          resolveUserLabel
-        ),
-        subjectId: entry.subjectId
+        department: getDepartmentLabel(entry, resolveDepartmentLabel)
       })
   })
 
@@ -253,10 +264,10 @@ export class AuditLogEvent {
     subjectType: "DEPARTMENT",
     expands: true,
     codeColor: COLOR_UPDATE,
-    summary: ({ actorLabel, entry, t }) =>
+    summary: ({ actorLabel, entry, resolveDepartmentLabel, t }) =>
       t("modals.audit.summary.departmentNotesBulkMove", {
         actor: actorLabel,
-        subjectId: entry.subjectId
+        department: getDepartmentLabel(entry, resolveDepartmentLabel)
       })
   })
 
@@ -265,10 +276,10 @@ export class AuditLogEvent {
     subjectType: "DEPARTMENT",
     expands: true,
     codeColor: COLOR_DANGER,
-    summary: ({ actorLabel, entry, t }) =>
+    summary: ({ actorLabel, entry, resolveDepartmentLabel, t }) =>
       t("modals.audit.summary.departmentNotesBulkDelete", {
         actor: actorLabel,
-        subjectId: entry.subjectId
+        department: getDepartmentLabel(entry, resolveDepartmentLabel)
       })
   })
 
