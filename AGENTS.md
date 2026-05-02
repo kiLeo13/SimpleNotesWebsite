@@ -99,7 +99,7 @@ That sequence usually gives enough context without spelunking the whole repo lik
   - Loads current user.
   - Renders the resizable notes sidebar + content board layout.
 - `frontend/src/components/DarkWrapper.tsx`: shared Radix dialog wrapper for modal overlay, focus trap, and modal open/close animation presets.
-- `frontend/src/components/sidebar/Sidebar.tsx`: note search, note list, sidebar reload shortcuts.
+- `frontend/src/components/sidebar/Sidebar.tsx`: note search, note list, and sidebar data wiring. Local sidebar child components own their matching CSS modules; shared grouping/move helpers live in `Sidebar.helpers.ts`, and keyboard/drag state lives in `useSidebarInteractions.ts`.
 - `frontend/src/components/sidebar/SidebarRail.tsx`: fixed left utility rail for note creation, utility modals, user management, and settings. Heavy modal bodies are loaded on demand.
 - `frontend/src/components/board/ContentBoard.tsx`: dispatches note rendering by note type/file extension. Renderer frames are loaded on demand.
 - `frontend/src/utils/createAsyncComponent.tsx`: shared `import()`-based async component helper for modal and renderer boundaries without `React.lazy`.
@@ -338,7 +338,7 @@ Do not copy environment values into docs or comments unless explicitly needed.
 - `frontend/src/pages/mainpage/MainPage.tsx` drives note opening via typed `?id=` search params on the `/` route.
 - Notes are scoped by nullable `department_id`: `null` means General, and a non-null value points to exactly one department. Users may belong to multiple departments through membership edges.
 - Department membership state is ID-only and separate from user objects. Keep `useUsersStore` as the source of truth for user data and `useDepartmentsStore` as the source of truth for department metadata plus memberships.
-- The sidebar preserves department grouping while searching: it filters notes inside each department and hides only empty groups.
+- The sidebar preserves department grouping while searching: it filters notes inside each department and hides only empty groups. Category headers are expandable with a short chevron rotation, and users with `Edit Notes` can hold Ctrl and drag a note onto a category header to move it through the standard note update endpoint.
 - Department deletion is intentionally guarded. Departments with notes must have those notes bulk-moved or bulk-deleted before the department can be removed.
 - Audit logs are opened from `SidebarRail`, auto-apply frontend filters on change, and page through `/audit-logs` in chunks of `50` using `next_before_id`.
 - The audit modal resolves actor names from `useUsersStore` first and falls back to `userService.getUserById` for users that are no longer present in the active list.
