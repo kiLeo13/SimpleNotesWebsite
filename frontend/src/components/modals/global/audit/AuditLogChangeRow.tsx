@@ -1,6 +1,9 @@
 import type { CSSProperties, JSX } from "react"
 import type { AuditLogChangeData } from "@/types/api/audit"
-import type { AuditLogEvent } from "./AuditLogEvent"
+import type {
+  AuditLogEvent,
+  AuditResourceLabelResolver
+} from "./AuditLogEvent"
 
 import { getChangeSummary } from "./auditPresentation"
 import { useTranslation } from "react-i18next"
@@ -11,12 +14,14 @@ type AuditLogChangeRowProps = {
   change: AuditLogChangeData
   displayCode: number
   event: AuditLogEvent
+  resolveDepartmentLabel: AuditResourceLabelResolver
 }
 
 export function AuditLogChangeRow({
   change,
   displayCode,
-  event
+  event,
+  resolveDepartmentLabel
 }: AuditLogChangeRowProps): JSX.Element {
   const { t } = useTranslation()
   const codeColor = event.codeColor ?? "inherit"
@@ -32,7 +37,9 @@ export function AuditLogChangeRow({
         <span className={styles.dash}> - </span>
       </div>
       <div className={styles.change}>
-        <p className={styles.summary}>{getChangeSummary(change, t)}</p>
+        <p className={styles.summary}>
+          {getChangeSummary(change, t, resolveDepartmentLabel)}
+        </p>
       </div>
     </div>
   )
