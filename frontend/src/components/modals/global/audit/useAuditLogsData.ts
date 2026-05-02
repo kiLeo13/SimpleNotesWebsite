@@ -161,6 +161,18 @@ export function useAuditLogsData({
         ids.push(entry.subjectId)
       }
 
+      if (
+        entry.actionType === "DEPARTMENT_MEMBERSHIP_ADD" ||
+        entry.actionType === "DEPARTMENT_MEMBERSHIP_REMOVE"
+      ) {
+        for (const change of entry.changes) {
+          if (change.fieldName === "user_id") {
+            if (change.oldValue != null) ids.push(change.oldValue)
+            if (change.newValue != null) ids.push(change.newValue)
+          }
+        }
+      }
+
       return ids
     })
 

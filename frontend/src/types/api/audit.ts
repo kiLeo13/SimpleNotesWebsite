@@ -8,10 +8,22 @@ export const auditActionTypeSchema = z.enum([
   "USER_SUSPEND",
   "USER_UNSUSPEND",
   "USER_DELETE",
-  "COMPANY_LOOKUP"
+  "COMPANY_LOOKUP",
+  "DEPARTMENT_CREATE",
+  "DEPARTMENT_UPDATE",
+  "DEPARTMENT_DELETE",
+  "DEPARTMENT_MEMBERSHIP_ADD",
+  "DEPARTMENT_MEMBERSHIP_REMOVE",
+  "DEPARTMENT_NOTES_BULK_MOVE",
+  "DEPARTMENT_NOTES_BULK_DELETE"
 ])
 
-export const auditSubjectTypeSchema = z.enum(["NOTE", "USER", "COMPANY"])
+export const auditSubjectTypeSchema = z.enum([
+  "NOTE",
+  "USER",
+  "COMPANY",
+  "DEPARTMENT"
+])
 
 export type AuditActionType = z.infer<typeof auditActionTypeSchema>
 export type AuditSubjectType = z.infer<typeof auditSubjectTypeSchema>

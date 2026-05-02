@@ -54,6 +54,14 @@ function resolveAuditUserSubjectLabel(
   return resolveUserLabel(subjectId)
 }
 
+function getChangeValue(
+  entry: AuditLogEntryData,
+  fieldName: string,
+  side: "oldValue" | "newValue"
+): string | undefined {
+  return entry.changes.find((change) => change.fieldName === fieldName)?.[side]
+}
+
 export class AuditLogEvent {
   public readonly actionType: AuditActionType
   public readonly subjectType: AuditSubjectType
@@ -173,6 +181,97 @@ export class AuditLogEvent {
       })
   })
 
+  static readonly DepartmentCreate = new AuditLogEvent({
+    actionType: "DEPARTMENT_CREATE",
+    subjectType: "DEPARTMENT",
+    expands: true,
+    codeColor: COLOR_OK,
+    summary: ({ actorLabel, entry, t }) =>
+      t("modals.audit.summary.departmentCreate", {
+        actor: actorLabel,
+        subjectId: entry.subjectId
+      })
+  })
+
+  static readonly DepartmentUpdate = new AuditLogEvent({
+    actionType: "DEPARTMENT_UPDATE",
+    subjectType: "DEPARTMENT",
+    expands: true,
+    codeColor: COLOR_UPDATE,
+    summary: ({ actorLabel, entry, t }) =>
+      t("modals.audit.summary.departmentUpdate", {
+        actor: actorLabel,
+        subjectId: entry.subjectId
+      })
+  })
+
+  static readonly DepartmentDelete = new AuditLogEvent({
+    actionType: "DEPARTMENT_DELETE",
+    subjectType: "DEPARTMENT",
+    expands: false,
+    summary: ({ actorLabel, entry, t }) =>
+      t("modals.audit.summary.departmentDelete", {
+        actor: actorLabel,
+        subjectId: entry.subjectId
+      })
+  })
+
+  static readonly DepartmentMembershipAdd = new AuditLogEvent({
+    actionType: "DEPARTMENT_MEMBERSHIP_ADD",
+    subjectType: "DEPARTMENT",
+    expands: true,
+    codeColor: COLOR_OK,
+    summary: ({ actorLabel, entry, resolveUserLabel, t }) =>
+      t("modals.audit.summary.departmentMembershipAdd", {
+        actor: actorLabel,
+        username: resolveAuditUserSubjectLabel(
+          getChangeValue(entry, "user_id", "newValue") ?? "",
+          resolveUserLabel
+        ),
+        subjectId: entry.subjectId
+      })
+  })
+
+  static readonly DepartmentMembershipRemove = new AuditLogEvent({
+    actionType: "DEPARTMENT_MEMBERSHIP_REMOVE",
+    subjectType: "DEPARTMENT",
+    expands: true,
+    codeColor: COLOR_DANGER,
+    summary: ({ actorLabel, entry, resolveUserLabel, t }) =>
+      t("modals.audit.summary.departmentMembershipRemove", {
+        actor: actorLabel,
+        username: resolveAuditUserSubjectLabel(
+          getChangeValue(entry, "user_id", "oldValue") ?? "",
+          resolveUserLabel
+        ),
+        subjectId: entry.subjectId
+      })
+  })
+
+  static readonly DepartmentNotesBulkMove = new AuditLogEvent({
+    actionType: "DEPARTMENT_NOTES_BULK_MOVE",
+    subjectType: "DEPARTMENT",
+    expands: true,
+    codeColor: COLOR_UPDATE,
+    summary: ({ actorLabel, entry, t }) =>
+      t("modals.audit.summary.departmentNotesBulkMove", {
+        actor: actorLabel,
+        subjectId: entry.subjectId
+      })
+  })
+
+  static readonly DepartmentNotesBulkDelete = new AuditLogEvent({
+    actionType: "DEPARTMENT_NOTES_BULK_DELETE",
+    subjectType: "DEPARTMENT",
+    expands: true,
+    codeColor: COLOR_DANGER,
+    summary: ({ actorLabel, entry, t }) =>
+      t("modals.audit.summary.departmentNotesBulkDelete", {
+        actor: actorLabel,
+        subjectId: entry.subjectId
+      })
+  })
+
   static get all(): AuditLogEvent[] {
     return [
       AuditLogEvent.NoteCreate,
@@ -182,7 +281,14 @@ export class AuditLogEvent {
       AuditLogEvent.UserSuspend,
       AuditLogEvent.UserUnsuspend,
       AuditLogEvent.UserDelete,
-      AuditLogEvent.CompanyLookup
+      AuditLogEvent.CompanyLookup,
+      AuditLogEvent.DepartmentCreate,
+      AuditLogEvent.DepartmentUpdate,
+      AuditLogEvent.DepartmentDelete,
+      AuditLogEvent.DepartmentMembershipAdd,
+      AuditLogEvent.DepartmentMembershipRemove,
+      AuditLogEvent.DepartmentNotesBulkMove,
+      AuditLogEvent.DepartmentNotesBulkDelete
     ]
   }
 

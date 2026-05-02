@@ -197,12 +197,20 @@
         "userSuspend": "Usuário suspenso",
         "userUnsuspend": "Suspensão removida",
         "userDelete": "Usuário excluído",
-        "companyLookup": "Consulta de empresa"
+        "companyLookup": "Consulta de empresa",
+        "departmentCreate": "Departamento criado",
+        "departmentUpdate": "Departamento atualizado",
+        "departmentDelete": "Departamento excluido",
+        "departmentMembershipAdd": "Usuario adicionado ao departamento",
+        "departmentMembershipRemove": "Usuario removido do departamento",
+        "departmentNotesBulkMove": "Notas movidas de departamento",
+        "departmentNotesBulkDelete": "Notas excluidas do departamento"
       },
       "subjects": {
         "note": "Nota",
         "user": "Usuário",
-        "company": "Empresa"
+        "company": "Empresa",
+        "department": "Departamento"
       },
       "summary": {
         "noteCreate": "{{actor}} criou a nota #{{subjectId}}",
@@ -213,6 +221,13 @@
         "userUnsuspend": "{{actor}} removeu a suspensão do usuário {{username}}",
         "userDelete": "{{actor}} excluiu o usuário {{username}}",
         "companyLookup": "{{actor}} consultou a empresa {{subjectId}}",
+        "departmentCreate": "{{actor}} criou o departamento #{{subjectId}}",
+        "departmentUpdate": "{{actor}} atualizou o departamento #{{subjectId}}",
+        "departmentDelete": "{{actor}} excluiu o departamento #{{subjectId}}",
+        "departmentMembershipAdd": "{{actor}} adicionou {{username}} ao departamento #{{subjectId}}",
+        "departmentMembershipRemove": "{{actor}} removeu {{username}} do departamento #{{subjectId}}",
+        "departmentNotesBulkMove": "{{actor}} moveu notas do departamento #{{subjectId}}",
+        "departmentNotesBulkDelete": "{{actor}} excluiu notas do departamento #{{subjectId}}",
         "fallback": "{{actor}} executou {{action}} em {{subjectType}} #{{subjectId}}"
       },
       "fields": {
@@ -221,6 +236,12 @@
         "created_by_id": "autor",
         "note_type": "tipo de nota",
         "content_size": "tamanho do conteúdo",
+        "department_id": "departamento",
+        "target_department_id": "departamento de destino",
+        "note_count": "quantidade de notas",
+        "icon_type": "tipo de icone",
+        "icon_value": "icone",
+        "user_id": "usuario",
         "tags": "palavras-chave",
         "email": "e-mail",
         "permissions": "permissões"

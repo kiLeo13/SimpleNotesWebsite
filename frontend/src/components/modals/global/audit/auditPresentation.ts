@@ -24,13 +24,23 @@ const AUDIT_ACTION_LABEL_KEYS: Record<AuditActionType, string> = {
   USER_SUSPEND: "modals.audit.actions.userSuspend",
   USER_UNSUSPEND: "modals.audit.actions.userUnsuspend",
   USER_DELETE: "modals.audit.actions.userDelete",
-  COMPANY_LOOKUP: "modals.audit.actions.companyLookup"
+  COMPANY_LOOKUP: "modals.audit.actions.companyLookup",
+  DEPARTMENT_CREATE: "modals.audit.actions.departmentCreate",
+  DEPARTMENT_UPDATE: "modals.audit.actions.departmentUpdate",
+  DEPARTMENT_DELETE: "modals.audit.actions.departmentDelete",
+  DEPARTMENT_MEMBERSHIP_ADD: "modals.audit.actions.departmentMembershipAdd",
+  DEPARTMENT_MEMBERSHIP_REMOVE:
+    "modals.audit.actions.departmentMembershipRemove",
+  DEPARTMENT_NOTES_BULK_MOVE: "modals.audit.actions.departmentNotesBulkMove",
+  DEPARTMENT_NOTES_BULK_DELETE:
+    "modals.audit.actions.departmentNotesBulkDelete"
 }
 
 const AUDIT_SUBJECT_LABEL_KEYS: Record<AuditSubjectType, string> = {
   NOTE: "modals.audit.subjects.note",
   USER: "modals.audit.subjects.user",
-  COMPANY: "modals.audit.subjects.company"
+  COMPANY: "modals.audit.subjects.company",
+  DEPARTMENT: "modals.audit.subjects.department"
 }
 
 export function getAuditActionOptions(t: AuditTranslate): AuditSelectOption[] {
