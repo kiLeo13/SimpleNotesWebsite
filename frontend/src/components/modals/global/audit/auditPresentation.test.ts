@@ -20,6 +20,10 @@ const mockT = (
     return `${options?.actor} consultou a empresa ${options?.subjectId}`
   }
 
+  if (key === "modals.audit.summary.departmentMembershipAdd") {
+    return `${options?.actor} adicionou ${options?.username} ao departamento ${options?.subjectId}`
+  }
+
   return key
 }
 
@@ -63,6 +67,32 @@ describe("auditPresentation", () => {
     ).toEqual({
       summary: "Leonardo consultou a empresa 12345678000195",
       expands: false
+    })
+  })
+
+  it("resolves department membership user labels from the change payload", () => {
+    expect(
+      getAuditEntryPresentation(
+        makeEntry({
+          actionType: "DEPARTMENT_MEMBERSHIP_ADD",
+          subjectType: "DEPARTMENT",
+          subjectId: "10",
+          changes: [
+            {
+              fieldName: "user_id",
+              oldValue: undefined,
+              newValue: "88",
+              valueType: "STRING"
+            }
+          ]
+        }),
+        "Leonardo",
+        (userId) => `Maria #${userId}`,
+        mockT
+      )
+    ).toEqual({
+      summary: "Leonardo adicionou Maria #88 ao departamento 10",
+      expands: true
     })
   })
 })

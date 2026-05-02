@@ -50,9 +50,17 @@ const mockT = (
     "modals.audit.actions.userUnsuspend": "Suspensão removida",
     "modals.audit.actions.userDelete": "Usuário excluído",
     "modals.audit.actions.companyLookup": "Consulta de empresa",
+    "modals.audit.actions.departmentCreate": "Departamento criado",
+    "modals.audit.actions.departmentUpdate": "Departamento atualizado",
+    "modals.audit.actions.departmentDelete": "Departamento excluido",
+    "modals.audit.actions.departmentMembershipAdd": "Usuario adicionado",
+    "modals.audit.actions.departmentMembershipRemove": "Usuario removido",
+    "modals.audit.actions.departmentNotesBulkMove": "Notas movidas",
+    "modals.audit.actions.departmentNotesBulkDelete": "Notas excluidas",
     "modals.audit.subjects.note": "Nota",
     "modals.audit.subjects.user": "Usuário",
     "modals.audit.subjects.company": "Empresa",
+    "modals.audit.subjects.department": "Departamento",
     "modals.audit.sources.httpApi": "HTTP API",
     "errors.auditLogs": "Erro ao carregar logs de auditoria"
   }
@@ -91,6 +99,10 @@ const mockT = (
 
   if (key === "modals.audit.summary.companyLookup") {
     return `${options?.actor} consultou a empresa ${options?.subjectId}`
+  }
+
+  if (key === "modals.audit.summary.departmentMembershipAdd") {
+    return `${options?.actor} adicionou ${options?.username} ao departamento #${options?.subjectId}`
   }
 
   if (key === "modals.audit.summary.fallback") {
@@ -257,6 +269,53 @@ describe("AuditLogsModal", () => {
       await screen.findByText("Leonardo excluiu o usuário Maria")
     ).toBeInTheDocument()
     expect(mockedUserService.getUserById).toHaveBeenCalledWith("88")
+  })
+
+  it("resolves department membership users from change payloads", async () => {
+    useUsersStore.setState({
+      users: [makeUser("7", "Leonardo")]
+    })
+
+    mockedAuditService.listAuditLogs.mockResolvedValueOnce({
+      success: true,
+      statusCode: 200,
+      data: {
+        entries: [
+          makeAuditEntry("evt-6", "10", "DEPARTMENT_MEMBERSHIP_ADD", "7", {
+            subjectType: "DEPARTMENT",
+            changes: [
+              {
+                fieldName: "user_id",
+                oldValue: undefined,
+                newValue: "88",
+                valueType: "STRING"
+              }
+            ]
+          })
+        ],
+        nextBeforeId: undefined
+      }
+    })
+    mockedUserService.getUserById.mockResolvedValueOnce({
+      success: true,
+      statusCode: 200,
+      data: makeUser("88", "Maria")
+    })
+
+    render(<AuditLogsModal setShowAuditLogs={vi.fn()} />)
+
+    expect(
+      await screen.findByText(
+        "Leonardo adicionou Maria ao departamento #10"
+      )
+    ).toBeInTheDocument()
+    expect(mockedUserService.getUserById).toHaveBeenCalledWith("88")
+    expect(screen.getByRole("option", { name: "Departamento" })).toHaveValue(
+      "DEPARTMENT"
+    )
+    expect(
+      screen.getByRole("option", { name: "Usuario adicionado" })
+    ).toHaveValue("DEPARTMENT_MEMBERSHIP_ADD")
   })
 
   it("auto-applies filters and keeps them while loading more entries", async () => {
