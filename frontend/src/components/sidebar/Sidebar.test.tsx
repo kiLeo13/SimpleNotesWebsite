@@ -18,7 +18,6 @@ vi.mock("react-i18next", () => ({
         "departments.unknown": "Unknown department",
         "sidebar.notes.manyFound": `${options?.val ?? 0} notes`,
         "sidebar.notes.toasts.moveError": "Move failed",
-        "sidebar.notes.toasts.moveSuccess": "Note moved",
         "sidebar.notes.noResults": "No notes",
         "sidebar.notes.oneFound": "1 note",
         "sidebar.notes.search": "Search notes",

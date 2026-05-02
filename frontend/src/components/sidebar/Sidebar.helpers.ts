@@ -29,7 +29,6 @@ export async function moveNoteToGroup(
 
   if (resp.success) {
     updateNote(resp.data)
-    toasts.success(t("sidebar.notes.toasts.moveSuccess"))
     return
   }
 
