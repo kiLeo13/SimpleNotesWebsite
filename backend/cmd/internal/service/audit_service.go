@@ -163,7 +163,10 @@ func (a *AuditService) toAuditFilter(req *contract.AuditLogListRequest) (*reposi
 
 func isAuditSubjectTypeValid(subjectType entity.AuditSubjectType) bool {
 	switch subjectType {
-	case entity.AuditSubjectNote, entity.AuditSubjectUser, entity.AuditSubjectCompany:
+	case entity.AuditSubjectNote,
+		entity.AuditSubjectUser,
+		entity.AuditSubjectCompany,
+		entity.AuditSubjectDepartment:
 		return true
 	default:
 		return false
@@ -179,7 +182,14 @@ func isAuditActionTypeValid(actionType entity.AuditActionType) bool {
 		entity.AuditActionUserSuspend,
 		entity.AuditActionUserUnsuspend,
 		entity.AuditActionUserDelete,
-		entity.AuditActionCompanyLookup:
+		entity.AuditActionCompanyLookup,
+		entity.AuditActionDepartmentCreate,
+		entity.AuditActionDepartmentUpdate,
+		entity.AuditActionDepartmentDelete,
+		entity.AuditActionDepartmentMembershipAdd,
+		entity.AuditActionDepartmentMembershipRemove,
+		entity.AuditActionDepartmentNotesBulkMove,
+		entity.AuditActionDepartmentNotesBulkDelete:
 		return true
 	default:
 		return false
