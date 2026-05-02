@@ -1,25 +1,23 @@
 import { useMemo, useState, type JSX, type UIEvent } from "react"
-
-import { AiOutlineAudit } from "react-icons/ai"
-import { IoMdClose } from "react-icons/io"
-import { MdOutlineHistory } from "react-icons/md"
-import { LoaderContainer } from "@/components/LoaderContainer"
-import { Button } from "@/components/ui/buttons/Button"
-import { useUsersStore } from "@/stores/useUsersStore"
-import { useTranslation } from "react-i18next"
-
-import { AuditLogEntry } from "./AuditLogEntry"
-import { AuditLogFilters } from "./AuditLogFilters"
 import {
   AUDIT_LOAD_MORE_OFFSET_PX,
   EMPTY_AUDIT_FILTERS,
   type AuditFilters
 } from "./auditFilters"
+
+import { AiOutlineAudit } from "react-icons/ai"
+import { IoMdClose } from "react-icons/io"
+import { MdOutlineHistory } from "react-icons/md"
+import { Button } from "@/components/ui/buttons/Button"
+import { AuditLogEntry } from "./AuditLogEntry"
+import { AuditLogFilters } from "./AuditLogFilters"
+import { useUsersStore } from "@/stores/useUsersStore"
+import { useAuditLogsData } from "./useAuditLogsData"
+import { useTranslation } from "react-i18next"
 import {
   getAuditActionOptions,
   getAuditSubjectOptions
 } from "./auditPresentation"
-import { useAuditLogsData } from "./useAuditLogsData"
 
 import styles from "./AuditLogsModal.module.css"
 
@@ -119,7 +117,13 @@ export function AuditLogsModal({
       <section className={styles.content}>
         {isLoadingInitial ? (
           <div className={styles.state}>
-            <LoaderContainer className={styles.loader} loaderColor="#c0a9eb" />
+            <div
+              className="loader"
+              style={{
+                borderTopColor: "#c0a9eb",
+                borderLeftColor: "#c0a9eb"
+              }}
+            />
             <p className={styles.stateText}>{t("modals.audit.loading")}</p>
           </div>
         ) : hasLoadError ? (
@@ -160,9 +164,13 @@ export function AuditLogsModal({
 
             <div className={styles.footerState}>
               {isLoadingMore ? (
-                <LoaderContainer
-                  className={styles.loader}
-                  loaderColor="#c0a9eb"
+                <div
+                  className="loader"
+                  style={{
+                    borderTopColor: "#c0a9eb",
+                    borderLeftColor: "#c0a9eb",
+                    margin: "12px 0"
+                  }}
                 />
               ) : (
                 <p className={styles.footerText}>
