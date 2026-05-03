@@ -1,9 +1,11 @@
-import { useRef, useState, type ChangeEvent, type JSX } from "react"
+import { useEffect, useRef, useState, type ChangeEvent, type JSX } from "react"
 import type { EmojiClickData } from "emoji-picker-react"
+import type { DepartmentIconType } from "@/types/api/departments"
 
 import * as Popover from "@radix-ui/react-popover"
 
-import { FiImage, FiSmile } from "react-icons/fi"
+import { FiImage, FiSmile, FiX } from "react-icons/fi"
+import { AppTooltip } from "@/components/ui/AppTooltip"
 import { LoaderContainer } from "@/components/LoaderContainer"
 import { useTranslation } from "react-i18next"
 import { createAsyncComponent } from "@/utils/createAsyncComponent"
@@ -20,28 +22,50 @@ const LazyEmojiPanel = createAsyncComponent(
 const emojiPanelFallback = <LoaderContainer scale={0.7} loaderColor="#b79ed8" />
 
 type IconPickerProps = {
+  iconType: DepartmentIconType
   emoji: string
+  selectedFile: File | null
+  currentImageSrc?: string
   onEmojiChange: (emoji: string) => void
   onFileChange: (file: File | null) => void
-  currentFileName?: string
+  onRemoveIcon: () => void
   disabled?: boolean
 }
 
 export function IconPicker({
+  iconType,
   emoji,
+  selectedFile,
+  currentImageSrc,
   onEmojiChange,
   onFileChange,
-  currentFileName,
+  onRemoveIcon,
   disabled = false
 }: IconPickerProps): JSX.Element {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<IconPickerTab>("upload")
+  const [selectedFilePreviewSrc, setSelectedFilePreviewSrc] = useState("")
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const imagePreviewSrc =
+    iconType === "IMAGE" ? selectedFilePreviewSrc || currentImageSrc : undefined
+  const hasImagePreview = Boolean(imagePreviewSrc)
+  const hasEmojiPreview = iconType === "EMOJI" && emoji.trim().length > 0
+
+  useEffect(() => {
+    if (!selectedFile) {
+      setSelectedFilePreviewSrc("")
+      return
+    }
+
+    const url = URL.createObjectURL(selectedFile)
+    setSelectedFilePreviewSrc(url)
+
+    return () => URL.revokeObjectURL(url)
+  }, [selectedFile])
 
   const handleEmojiClick = (emojiData: EmojiClickData) => {
     onEmojiChange(emojiData.emoji)
-    onFileChange(null)
     setOpen(false)
   }
 
@@ -50,6 +74,7 @@ export function IconPicker({
     if (file) {
       onFileChange(file)
       setOpen(false)
+      event.target.value = ""
     }
   }
 
@@ -57,17 +82,52 @@ export function IconPicker({
     fileInputRef.current?.click()
   }
 
+  const handleRemoveIcon = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""
+    }
+    onRemoveIcon()
+    setOpen(false)
+  }
+
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>
-      <Popover.Trigger asChild disabled={disabled}>
-        <button
-          type="button"
-          className={styles.trigger}
-          aria-label={t("departments.fields.pickIcon")}
-        >
-          <span className={styles.triggerEmoji}>{emoji}</span>
-        </button>
-      </Popover.Trigger>
+      <div className={styles.triggerWrapper}>
+        <Popover.Trigger asChild disabled={disabled}>
+          <button
+            type="button"
+            className={styles.trigger}
+            data-empty={!hasImagePreview && !hasEmojiPreview}
+            aria-label={t("departments.fields.pickIcon")}
+          >
+            {hasImagePreview && imagePreviewSrc ? (
+              <img
+                className={styles.triggerImage}
+                src={imagePreviewSrc}
+                alt=""
+                draggable={false}
+              />
+            ) : hasEmojiPreview ? (
+              <span className={styles.triggerEmoji}>{emoji}</span>
+            ) : (
+              <FiImage className={styles.triggerPlaceholder} size={18} />
+            )}
+          </button>
+        </Popover.Trigger>
+
+        {hasImagePreview && !disabled && (
+          <AppTooltip label={t("departments.iconPicker.removeIcon")}>
+            <button
+              type="button"
+              className={styles.removeButton}
+              aria-label={t("departments.iconPicker.removeIcon")}
+              onClick={handleRemoveIcon}
+            >
+              <FiX size={12} />
+            </button>
+          </AppTooltip>
+        )}
+      </div>
 
       <Popover.Portal>
         <Popover.Content
@@ -105,9 +165,10 @@ export function IconPicker({
                   <FiImage size={32} />
                 </div>
                 <span className={styles.uploadHint}>
-                  {currentFileName
-                    ? currentFileName
-                    : t("departments.iconPicker.uploadHint")}
+                  {selectedFile?.name ??
+                    (hasImagePreview
+                      ? t("departments.iconPicker.currentImage")
+                      : t("departments.iconPicker.uploadHint"))}
                 </span>
                 <button
                   type="button"
@@ -147,4 +208,3 @@ export function IconPicker({
     </Popover.Root>
   )
 }
-

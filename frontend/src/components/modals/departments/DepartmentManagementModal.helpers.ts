@@ -4,11 +4,13 @@ import type {
   BulkMoveDepartmentNotesPayload,
   CreateDepartmentPayload,
   DepartmentData,
+  DepartmentIconType,
   DepartmentMembershipData,
   UpdateDepartmentPayload
 } from "@/types/api/departments"
 
-export const DEFAULT_DEPARTMENT_EMOJI = "🏷️"
+export const DEFAULT_DEPARTMENT_ICON_TYPE: DepartmentIconType = "NONE"
+export const DEFAULT_DEPARTMENT_EMOJI = ""
 
 export function sortDepartments(
   departments: DepartmentData[]
@@ -43,29 +45,47 @@ export function getDepartmentUserPartitions(
 
 export function buildCreateDepartmentPayload(
   name: string,
+  iconType: DepartmentIconType,
   emoji: string,
-  iconFile: File | null
+  iconFile: File | null,
+  colorRGBA: number | null
 ): CreateDepartmentPayload {
+  const normalizedIconType = normalizeDepartmentIconType(iconType, emoji, iconFile)
+
   return {
     name: name.trim(),
-    icon_type: iconFile ? "IMAGE" : "EMOJI",
-    icon_value: iconFile ? undefined : emoji.trim()
+    icon_type: normalizedIconType,
+    icon_value: normalizedIconType === "EMOJI" ? emoji.trim() : undefined,
+    color_rgba: colorRGBA
   }
 }
 
 export function buildUpdateDepartmentPayload(
   name: string,
+  iconType: DepartmentIconType,
   emoji: string,
-  iconFile: File | null
+  iconFile: File | null,
+  colorRGBA: number | null
 ): UpdateDepartmentPayload {
+  const normalizedIconType = normalizeDepartmentIconType(iconType, emoji, iconFile)
+
   return {
     name: name.trim(),
-    ...(iconFile
-      ? { icon_type: "IMAGE" as const }
-      : emoji.trim()
-        ? { icon_type: "EMOJI" as const, icon_value: emoji.trim() }
-        : {})
+    icon_type: normalizedIconType,
+    ...(normalizedIconType === "EMOJI" ? { icon_value: emoji.trim() } : {}),
+    color_rgba: colorRGBA
   }
+}
+
+function normalizeDepartmentIconType(
+  iconType: DepartmentIconType,
+  emoji: string,
+  iconFile: File | null
+): DepartmentIconType {
+  if (iconFile) return "IMAGE"
+  if (iconType === "EMOJI" && emoji.trim()) return "EMOJI"
+  if (iconType === "IMAGE") return "IMAGE"
+  return "NONE"
 }
 
 export function buildBulkMovePayload(

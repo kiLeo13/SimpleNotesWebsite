@@ -29,16 +29,6 @@
   font-weight: 600;
 }
 
-.sectionIcon {
-  width: 20px;
-  height: 20px;
-  border-radius: 4px;
-  object-fit: cover;
-  font-size: 14px;
-  line-height: 20px;
-  text-align: center;
-}
-
 .form {
   display: flex;
   flex-direction: column;

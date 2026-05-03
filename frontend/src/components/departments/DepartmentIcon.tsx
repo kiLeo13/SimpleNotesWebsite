@@ -14,17 +14,21 @@ type DepartmentIconProps = {
 export function DepartmentIcon({
   department,
   className
-}: DepartmentIconProps): JSX.Element {
+}: DepartmentIconProps): JSX.Element | null {
   const emojiRef = useRef<HTMLSpanElement>(null)
 
   useEffect(() => {
-    if (department.icon_type === "EMOJI" && emojiRef.current) {
+    if (department.icon_type === "EMOJI" && department.icon_value.trim() && emojiRef.current) {
       twemoji.parse(emojiRef.current, {
         folder: "svg",
         ext: ".svg"
       })
     }
   }, [department.icon_type, department.icon_value])
+
+  if (department.icon_type === "NONE" || !department.icon_value.trim()) {
+    return null
+  }
 
   if (department.icon_type === "IMAGE") {
     return (
@@ -44,4 +48,3 @@ export function DepartmentIcon({
     </span>
   )
 }
-

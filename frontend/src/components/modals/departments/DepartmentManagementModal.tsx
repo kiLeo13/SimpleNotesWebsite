@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState, type JSX } from "react"
-import type { DepartmentData } from "@/types/api/departments"
+import type { DepartmentData, DepartmentIconType } from "@/types/api/departments"
 import type { UserResponseData } from "@/types/api/users"
 import type { BulkMoveTarget } from "./DepartmentActionsMenu"
 
@@ -19,6 +19,7 @@ import { DepartmentMembersPanel } from "./DepartmentMembersPanel"
 import { DepartmentSidebar } from "./DepartmentSidebar"
 import {
   DEFAULT_DEPARTMENT_EMOJI,
+  DEFAULT_DEPARTMENT_ICON_TYPE,
   buildBulkMovePayload,
   buildCreateDepartmentPayload,
   buildUpdateDepartmentPayload,
@@ -80,12 +81,20 @@ export function DepartmentManagementModal({
 
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [newName, setNewName] = useState("")
+  const [newIconType, setNewIconType] = useState<DepartmentIconType>(
+    DEFAULT_DEPARTMENT_ICON_TYPE
+  )
   const [newEmoji, setNewEmoji] = useState(DEFAULT_DEPARTMENT_EMOJI)
   const [newIconFile, setNewIconFile] = useState<File | null>(null)
+  const [newColorRGBA, setNewColorRGBA] = useState<number | null>(null)
 
   const [editName, setEditName] = useState("")
+  const [editIconType, setEditIconType] = useState<DepartmentIconType>(
+    DEFAULT_DEPARTMENT_ICON_TYPE
+  )
   const [editEmoji, setEditEmoji] = useState("")
   const [editIconFile, setEditIconFile] = useState<File | null>(null)
+  const [editColorRGBA, setEditColorRGBA] = useState<number | null>(null)
   const [isSaving, setIsSaving] = useState(false)
 
   const [showAddUserMenu, setShowAddUserMenu] = useState(false)
@@ -113,7 +122,9 @@ export function DepartmentManagementModal({
     setEditEmoji(
       selectedDepartment.icon_type === "EMOJI" ? selectedDepartment.icon_value : ""
     )
+    setEditIconType(selectedDepartment.icon_type)
     setEditIconFile(null)
+    setEditColorRGBA(selectedDepartment.color_rgba)
   }, [selectedDepartment])
 
   const { members: departmentMembers, nonMembers: nonMemberUsers } = useMemo(() => {
@@ -125,7 +136,13 @@ export function DepartmentManagementModal({
 
     setIsSaving(true)
     const resp = await departmentService.createDepartment(
-      buildCreateDepartmentPayload(newName, newEmoji, newIconFile),
+      buildCreateDepartmentPayload(
+        newName,
+        newIconType,
+        newEmoji,
+        newIconFile,
+        newColorRGBA
+      ),
       newIconFile
     )
     setIsSaving(false)
@@ -138,8 +155,10 @@ export function DepartmentManagementModal({
     addDepartment(resp.data)
     setSelectedDepartmentId(resp.data.id)
     setNewName("")
+    setNewIconType(DEFAULT_DEPARTMENT_ICON_TYPE)
     setNewEmoji(DEFAULT_DEPARTMENT_EMOJI)
     setNewIconFile(null)
+    setNewColorRGBA(null)
     setShowCreateForm(false)
     toasts.success(t("departments.toasts.createSuccess"))
   }
@@ -150,7 +169,13 @@ export function DepartmentManagementModal({
     setIsSaving(true)
     const resp = await departmentService.updateDepartment(
       selectedDepartment.id,
-      buildUpdateDepartmentPayload(editName, editEmoji, editIconFile),
+      buildUpdateDepartmentPayload(
+        editName,
+        editIconType,
+        editEmoji,
+        editIconFile,
+        editColorRGBA
+      ),
       editIconFile
     )
     setIsSaving(false)
@@ -267,6 +292,42 @@ export function DepartmentManagementModal({
     return buildBulkMoveTargets(dept, sortedDepartments, t("departments.general"))
   }
 
+  const handleNewEmojiChange = (emoji: string) => {
+    setNewIconType("EMOJI")
+    setNewEmoji(emoji)
+    setNewIconFile(null)
+  }
+
+  const handleNewFileChange = (file: File | null) => {
+    setNewIconType(file ? "IMAGE" : DEFAULT_DEPARTMENT_ICON_TYPE)
+    setNewEmoji(DEFAULT_DEPARTMENT_EMOJI)
+    setNewIconFile(file)
+  }
+
+  const handleNewRemoveIcon = () => {
+    setNewIconType(DEFAULT_DEPARTMENT_ICON_TYPE)
+    setNewEmoji(DEFAULT_DEPARTMENT_EMOJI)
+    setNewIconFile(null)
+  }
+
+  const handleEditEmojiChange = (emoji: string) => {
+    setEditIconType("EMOJI")
+    setEditEmoji(emoji)
+    setEditIconFile(null)
+  }
+
+  const handleEditFileChange = (file: File | null) => {
+    setEditIconType(file ? "IMAGE" : DEFAULT_DEPARTMENT_ICON_TYPE)
+    setEditEmoji("")
+    setEditIconFile(file)
+  }
+
+  const handleEditRemoveIcon = () => {
+    setEditIconType(DEFAULT_DEPARTMENT_ICON_TYPE)
+    setEditEmoji("")
+    setEditIconFile(null)
+  }
+
   return (
     <div className={styles.container}>
       <button type="button" className={styles.close} onClick={onClose}>
@@ -293,12 +354,16 @@ export function DepartmentManagementModal({
           <DepartmentDetailsForm
             mode="create"
             name={newName}
+            iconType={newIconType}
             emoji={newEmoji}
+            iconFile={newIconFile}
+            colorRGBA={newColorRGBA}
             isSaving={isSaving}
-            iconFileName={newIconFile?.name}
             onNameChange={setNewName}
-            onEmojiChange={setNewEmoji}
-            onFileChange={setNewIconFile}
+            onEmojiChange={handleNewEmojiChange}
+            onFileChange={handleNewFileChange}
+            onRemoveIcon={handleNewRemoveIcon}
+            onColorChange={setNewColorRGBA}
             onSubmit={handleCreate}
             onCancel={() => setShowCreateForm(false)}
           />
@@ -308,12 +373,16 @@ export function DepartmentManagementModal({
               mode="edit"
               department={selectedDepartment}
               name={editName}
+              iconType={editIconType}
               emoji={editEmoji}
+              iconFile={editIconFile}
+              colorRGBA={editColorRGBA}
               isSaving={isSaving}
-              iconFileName={editIconFile?.name}
               onNameChange={setEditName}
-              onEmojiChange={setEditEmoji}
-              onFileChange={setEditIconFile}
+              onEmojiChange={handleEditEmojiChange}
+              onFileChange={handleEditFileChange}
+              onRemoveIcon={handleEditRemoveIcon}
+              onColorChange={setEditColorRGBA}
               onSubmit={handleUpdate}
               onDelete={requestDeleteDepartment}
             />

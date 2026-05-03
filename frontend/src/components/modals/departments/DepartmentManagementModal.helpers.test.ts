@@ -47,30 +47,41 @@ describe("DepartmentManagementModal helpers", () => {
   })
 
   it("builds department payloads from icon state", () => {
-    expect(buildCreateDepartmentPayload(" Support ", " 🧭 ", null)).toEqual({
+    expect(buildCreateDepartmentPayload(" Support ", "EMOJI", " 🧭 ", null, 0x6db9ffff)).toEqual({
       name: "Support",
       icon_type: "EMOJI",
-      icon_value: "🧭"
+      icon_value: "🧭",
+      color_rgba: 0x6db9ffff
     })
 
-    expect(buildUpdateDepartmentPayload(" Support ", " 🧭 ", null)).toEqual({
+    expect(buildUpdateDepartmentPayload(" Support ", "EMOJI", " 🧭 ", null, null)).toEqual({
       name: "Support",
       icon_type: "EMOJI",
-      icon_value: "🧭"
+      icon_value: "🧭",
+      color_rgba: null
+    })
+
+    expect(buildCreateDepartmentPayload(" Support ", "NONE", "", null, null)).toEqual({
+      name: "Support",
+      icon_type: "NONE",
+      icon_value: undefined,
+      color_rgba: null
     })
   })
 
   it("builds image and bulk move payloads", () => {
     const file = new File(["icon"], "icon.png", { type: "image/png" })
 
-    expect(buildCreateDepartmentPayload("Support", "🧭", file)).toEqual({
+    expect(buildCreateDepartmentPayload("Support", "NONE", "🧭", file, null)).toEqual({
       name: "Support",
       icon_type: "IMAGE",
-      icon_value: undefined
+      icon_value: undefined,
+      color_rgba: null
     })
-    expect(buildUpdateDepartmentPayload("Support", "🧭", file)).toEqual({
+    expect(buildUpdateDepartmentPayload("Support", "NONE", "🧭", file, 0x9b59b6cc)).toEqual({
       name: "Support",
-      icon_type: "IMAGE"
+      icon_type: "IMAGE",
+      color_rgba: 0x9b59b6cc
     })
     expect(buildBulkMovePayload(null)).toEqual({ target_department_id: null })
   })
@@ -96,6 +107,7 @@ function makeDepartment(id: string, name: string): DepartmentData {
     name,
     icon_type: "EMOJI",
     icon_value: "🏷️",
+    color_rgba: null,
     created_at: "2026-01-01T00:00:00Z",
     updated_at: "2026-01-01T00:00:00Z"
   }
