@@ -135,6 +135,7 @@ func (s *DepartmentService) CreateDepartment(actor *entity.User, req *contract.C
 		Name:      req.Name,
 		IconType:  entity.DepartmentIconType(req.IconType),
 		IconValue: iconValue,
+		ColorRGBA: req.ColorRGBA,
 		CreatedAt: now,
 		UpdatedAt: now,
 	}
@@ -185,6 +186,9 @@ func (s *DepartmentService) UpdateDepartment(actor *entity.User, departmentID in
 
 	if req.Name != nil {
 		department.Name = *req.Name
+	}
+	if req.ColorRGBA.Set {
+		department.ColorRGBA = req.ColorRGBA.Value
 	}
 
 	if req.IconType != nil || req.IconValue != nil || iconFile != nil {
@@ -485,6 +489,8 @@ func (s *DepartmentService) prepareDepartmentIcon(iconType string, iconValue str
 	cleanup := func() {}
 
 	switch entity.DepartmentIconType(iconType) {
+	case entity.DepartmentIconNone:
+		return "", cleanup, nil
 	case entity.DepartmentIconEmoji:
 		if strings.TrimSpace(iconValue) == "" {
 			return "", cleanup, apierror.InvalidDepartmentIconError
@@ -600,6 +606,7 @@ func toDepartmentResponse(department *entity.Department) *contract.DepartmentRes
 		Name:      department.Name,
 		IconType:  string(department.IconType),
 		IconValue: department.IconValue,
+		ColorRGBA: department.ColorRGBA,
 		CreatedAt: utils.FormatEpoch(department.CreatedAt),
 		UpdatedAt: utils.FormatEpoch(department.UpdatedAt),
 	}
@@ -617,6 +624,7 @@ func buildDepartmentCreateAuditChanges(department *entity.Department) []*entity.
 		newAuditCreateValue("name", entity.AuditValueTypeString, department.Name),
 		newAuditCreateValue("icon_type", entity.AuditValueTypeEnum, string(department.IconType)),
 		newAuditCreateValue("icon_value", entity.AuditValueTypeString, department.IconValue),
+		newAuditCreateValue("color_rgba", entity.AuditValueTypeInt, auditOptionalUint32(department.ColorRGBA)),
 	}
 }
 
@@ -625,7 +633,29 @@ func buildDepartmentUpdateAuditChanges(before, after *entity.Department) []*enti
 	appendAuditStringChange(&changes, "name", before.Name, after.Name)
 	appendAuditEnumChange(&changes, "icon_type", string(before.IconType), string(after.IconType))
 	appendAuditStringChange(&changes, "icon_value", before.IconValue, after.IconValue)
+	appendAuditUint32PtrChange(&changes, "color_rgba", before.ColorRGBA, after.ColorRGBA)
 	return changes
+}
+
+func appendAuditUint32PtrChange(changes *[]*entity.AuditLogChange, field string, oldValue, newValue *uint32) {
+	oldAuditValue := auditOptionalUint32(oldValue)
+	newAuditValue := auditOptionalUint32(newValue)
+	if oldAuditValue == newAuditValue {
+		return
+	}
+	*changes = append(*changes, &entity.AuditLogChange{
+		FieldName: field,
+		OldValue:  auditValuePtr(oldAuditValue),
+		NewValue:  auditValuePtr(newAuditValue),
+		ValueType: entity.AuditValueTypeInt,
+	})
+}
+
+func auditOptionalUint32(value *uint32) string {
+	if value == nil {
+		return ""
+	}
+	return strconv.FormatUint(uint64(*value), 10)
 }
 
 func requireAllPermissions(actor *entity.User, permissions ...entity.Permission) apierror.ErrorResponse {

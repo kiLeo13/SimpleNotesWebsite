@@ -45,6 +45,82 @@ func TestDepartmentMembershipMutationRequiresManageDepartmentsAndManageUsers(t *
 	}
 }
 
+func TestCreateDepartmentAllowsTextOnlyIconAndStoresColor(t *testing.T) {
+	db := newTestDB(t)
+	departmentSvc, repos := newDepartmentTestService(t, db)
+	actor := mustSaveDepartmentUser(t, repos.userRepo, 1, entity.PermissionManageDepartments)
+	color := uint32(0x6DB9FFFF)
+
+	resp, apierr := departmentSvc.CreateDepartment(actor, &contract.CreateDepartmentRequest{
+		Name:      "Atendimento",
+		IconType:  string(entity.DepartmentIconNone),
+		ColorRGBA: &color,
+	}, nil)
+	if apierr != nil {
+		t.Fatalf("create department: %#v", apierr)
+	}
+	if resp.IconType != string(entity.DepartmentIconNone) {
+		t.Fatalf("expected NONE icon type, got %s", resp.IconType)
+	}
+	if resp.IconValue != "" {
+		t.Fatalf("expected empty icon value, got %q", resp.IconValue)
+	}
+	if resp.ColorRGBA == nil || *resp.ColorRGBA != color {
+		t.Fatalf("expected response color %d, got %v", color, resp.ColorRGBA)
+	}
+
+	persisted, err := repos.departmentRepo.FindByID(9001)
+	if err != nil {
+		t.Fatalf("find department: %v", err)
+	}
+	if persisted == nil {
+		t.Fatal("expected persisted department")
+	}
+	if persisted.ColorRGBA == nil || *persisted.ColorRGBA != color {
+		t.Fatalf("expected persisted color %d, got %v", color, persisted.ColorRGBA)
+	}
+}
+
+func TestUpdateDepartmentCanClearImageIconAndColor(t *testing.T) {
+	db := newTestDB(t)
+	departmentSvc, repos := newDepartmentTestService(t, db)
+	actor := mustSaveDepartmentUser(t, repos.userRepo, 1, entity.PermissionManageDepartments)
+	color := uint32(0x9B59B6CC)
+	department := mustSaveDepartment(t, repos.departmentRepo, 10, "Backoffice")
+	department.IconType = entity.DepartmentIconImage
+	department.IconValue = "existing.png"
+	department.ColorRGBA = &color
+	if err := repos.departmentRepo.SaveWithDB(nil, department); err != nil {
+		t.Fatalf("save image department: %v", err)
+	}
+
+	iconType := string(entity.DepartmentIconNone)
+	resp, apierr := departmentSvc.UpdateDepartment(actor, department.ID, &contract.UpdateDepartmentRequest{
+		IconType:  &iconType,
+		ColorRGBA: contract.NullableUint32{Set: true, Value: nil},
+	}, nil)
+	if apierr != nil {
+		t.Fatalf("update department: %#v", apierr)
+	}
+	if resp.IconType != string(entity.DepartmentIconNone) || resp.IconValue != "" {
+		t.Fatalf("expected cleared icon, got %s %q", resp.IconType, resp.IconValue)
+	}
+	if resp.ColorRGBA != nil {
+		t.Fatalf("expected nil response color, got %v", resp.ColorRGBA)
+	}
+
+	persisted, err := repos.departmentRepo.FindByID(department.ID)
+	if err != nil {
+		t.Fatalf("find department: %v", err)
+	}
+	if persisted.ColorRGBA != nil {
+		t.Fatalf("expected nil persisted color, got %v", persisted.ColorRGBA)
+	}
+	if persisted.IconType != entity.DepartmentIconNone || persisted.IconValue != "" {
+		t.Fatalf("expected persisted icon cleared, got %s %q", persisted.IconType, persisted.IconValue)
+	}
+}
+
 func TestDepartmentUpdateImageToEmojiRequiresEmojiValue(t *testing.T) {
 	db := newTestDB(t)
 	departmentSvc, repos := newDepartmentTestService(t, db)

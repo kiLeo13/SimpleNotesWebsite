@@ -3,6 +3,7 @@ package entity
 type DepartmentIconType string
 
 const (
+	DepartmentIconNone  DepartmentIconType = "NONE"
 	DepartmentIconEmoji DepartmentIconType = "EMOJI"
 	DepartmentIconImage DepartmentIconType = "IMAGE"
 )
@@ -12,8 +13,9 @@ type Department struct {
 	Name      string             `gorm:"not null;uniqueIndex"`
 	IconType  DepartmentIconType `gorm:"not null"`
 	IconValue string             `gorm:"not null"`
-	CreatedAt int64              `gorm:"not null"`
-	UpdatedAt int64              `gorm:"not null;autoUpdateTime:false"`
+	ColorRGBA *uint32
+	CreatedAt int64 `gorm:"not null"`
+	UpdatedAt int64 `gorm:"not null;autoUpdateTime:false"`
 }
 
 type DepartmentMembership struct {
