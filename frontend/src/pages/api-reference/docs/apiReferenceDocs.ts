@@ -556,7 +556,16 @@ export const apiResources: ApiResource[] = [
           { label: "EMOJI" },
           " icons, or stored image filename for ",
           { label: "IMAGE" },
-          " icons."
+          " icons. Empty when icon_type is ",
+          { label: "NONE" },
+          "."
+        ]
+      },
+      {
+        name: "color_rgba",
+        type: "integer | null",
+        description: [
+          "Optional department text color as a 32-bit RGBA integer in 0xRRGGBBAA order. Null means the client should use its default sidebar text color."
         ]
       },
       { name: "created_at", type: "string", description: ["Creation time."] },
@@ -568,6 +577,11 @@ export const apiResources: ApiResource[] = [
         title: "Department Icon Type",
         description: ["Determines how the department icon value is interpreted."],
         fields: [
+          {
+            name: "NONE",
+            type: "string",
+            description: ["Render the department as text only, with no icon."]
+          },
           {
             name: "EMOJI",
             type: "string",
@@ -646,7 +660,7 @@ export const apiResources: ApiResource[] = [
               { label: "json_payload" },
               " and the file in ",
               { label: "icon" },
-              ". Emoji icons can use JSON."
+              ". Text-only and emoji departments can use JSON."
             ]
           }
         ],
@@ -659,12 +673,17 @@ export const apiResources: ApiResource[] = [
           {
             name: "icon_type",
             type: "Department Icon Type",
-            description: ["Either EMOJI or IMAGE."]
+            description: ["Either NONE, EMOJI, or IMAGE."]
           },
           {
             name: "icon_value?",
             type: "string",
             description: ["Emoji value for emoji icons."]
+          },
+          {
+            name: "color_rgba?",
+            type: "integer | null",
+            description: ["Optional 32-bit RGBA text color in 0xRRGGBBAA order."]
           },
           {
             name: "json_payload?",
@@ -714,7 +733,7 @@ export const apiResources: ApiResource[] = [
         auth: "Bearer JWT",
         description: [
           [
-            "Updates department name or icon. Requires ",
+            "Updates department name, icon, or sidebar text color. Requires ",
             { label: "Manage Departments" },
             " permission."
           ]
@@ -737,6 +756,11 @@ export const apiResources: ApiResource[] = [
             name: "icon_value?",
             type: "string",
             description: ["Replacement emoji value for emoji icons."]
+          },
+          {
+            name: "color_rgba?",
+            type: "integer | null",
+            description: ["Replacement 32-bit RGBA text color. Send null to clear the custom color."]
           },
           {
             name: "json_payload?",
@@ -1474,7 +1498,12 @@ export const gatewayEvents: GatewayEvent[] = [
       {
         name: "icon_value",
         type: "string",
-        description: ["Emoji value or uploaded image filename."]
+        description: ["Emoji value, uploaded image filename, or empty string for text-only departments."]
+      },
+      {
+        name: "color_rgba",
+        type: "integer | null",
+        description: ["Optional sidebar text color in 0xRRGGBBAA order."]
       },
       { name: "created_at", type: "string", description: ["Creation time."] },
       { name: "updated_at", type: "string", description: ["Last update time."] }
@@ -1510,7 +1539,12 @@ export const gatewayEvents: GatewayEvent[] = [
       {
         name: "icon_value",
         type: "string",
-        description: ["Emoji value or uploaded image filename."]
+        description: ["Emoji value, uploaded image filename, or empty string for text-only departments."]
+      },
+      {
+        name: "color_rgba",
+        type: "integer | null",
+        description: ["Optional sidebar text color in 0xRRGGBBAA order."]
       },
       { name: "created_at", type: "string", description: ["Creation time."] },
       { name: "updated_at", type: "string", description: ["Last update time."] }

@@ -54,7 +54,7 @@ Important frontend behavior:
 - Users with `Edit Notes` can hold Ctrl and drag a sidebar note onto a category header to move the note to that department. The interaction uses the same note update API path as the edit modal and keeps frontend note state reconciled from the API response.
 - Sidebar list structure is split under `frontend/src/components/sidebar/`: `Sidebar.tsx` owns data wiring, `Sidebar.helpers.ts` owns grouping/move helpers, `useSidebarInteractions.ts` owns keyboard and drag state, and the header, empty state, category group, and draggable note wrappers each keep their own CSS module.
 - Department metadata and department membership edges are owned by `frontend/src/stores/useDepartmentsStore.ts`; user records stay owned by `frontend/src/stores/useUsersStore.ts`.
-- The department management modal is split into local department-specific components: `DepartmentSidebar`, `DepartmentActionsMenu`, `DepartmentDetailsForm`, `DepartmentMembersPanel`, and `IconPicker`. Each component keeps its styles in a matching CSS module so modal orchestration stays separate from list, form, menu, member, and picker layout concerns.
+- The department management modal is split into local department-specific components: `DepartmentSidebar`, `DepartmentActionsMenu`, `DepartmentDetailsForm`, `DepartmentMembersPanel`, `IconPicker`, and `DepartmentColorPicker`. Each component keeps its styles in a matching CSS module so modal orchestration stays separate from list, form, menu, member, icon picker, and color picker concerns.
 - Sidebar note rows expose menu actions for all users to copy the note ID and download the note without opening a new tab. Markdown notes download as `.md`, reference notes download the stored attachment file, and Mermaid flowcharts export through the shared Mermaid SVG renderer as `.svg`.
 - Heavy optional UI is loaded on demand instead of from the permanent shell:
   - Sidebar utility modals are imported only when opened.
@@ -193,7 +193,11 @@ department. Users can belong to many departments through `department_memberships
 The note entity stores only the nullable department ID rather than a hydrated
 department association. Department deletion is blocked in the service layer while
 notes still reference it, so callers must bulk-move or bulk-delete those notes
-before deleting the department.
+before deleting the department. Department icons support `NONE`, `EMOJI`, and
+`IMAGE`; `NONE` is the text-only mode and stores an empty icon value. Departments
+can also store a nullable `color_rgba` value as a 32-bit integer in 0xRRGGBBAA
+order. The frontend applies that value only to the sidebar department name text
+through the CSS `color` property.
 
 The `connections` table now models logical websocket sessions, not only raw API Gateway transport IDs. Each row stores:
 
@@ -253,7 +257,7 @@ That creates a few important cross-project seams:
 
 - authentication tokens issued by the backend auth stack are stored and consumed by the frontend session store
 - note contracts must stay aligned between frontend `types/` and backend `contract/` plus service behavior
-- department contracts must stay aligned between frontend `types/` and backend `contract/`; this includes department objects, membership edge lists, note `department_id`, and department websocket event payloads
+- department contracts must stay aligned between frontend `types/` and backend `contract/`; this includes department objects, `icon_type`, nullable `color_rgba`, membership edge lists, note `department_id`, and department websocket event payloads
 - audit log contracts and permission bit offsets must stay aligned between frontend `types/models` and backend `contract/entity` layers
 - websocket event shapes must stay aligned between backend event emitters and frontend event schemas
 - file and reference note handling depends on both backend storage behavior and frontend renderer support
