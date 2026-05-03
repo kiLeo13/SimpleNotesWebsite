@@ -26,6 +26,7 @@
     "fields": {
       "name": "Nome",
       "namePlaceholder": "Nome do departamento",
+      "color": "Cor",
       "emoji": "Emoji",
       "pickIcon": "Escolher icone",
       "iconImage": "Icone (imagem)",
@@ -38,8 +39,17 @@
       "uploadTab": "Enviar Imagem",
       "emojiTab": "Emoji",
       "uploadHint": "Escolha um PNG ou JPG para enviar",
+      "currentImage": "Icone atual",
       "browse": "Procurar Arquivos",
-      "searchEmoji": "Buscar emoji..."
+      "searchEmoji": "Buscar emoji...",
+      "removeIcon": "Remover Icone"
+    },
+    "colorPicker": {
+      "presets": "Cores do departamento",
+      "none": "Sem cor",
+      "custom": "Cor personalizada",
+      "preset": "Cor {{index}}",
+      "alpha": "Opacidade"
     },
     "actions": {
       "create": "Criar",
@@ -241,6 +251,7 @@
         "note_count": "quantidade de notas",
         "icon_type": "tipo de icone",
         "icon_value": "icone",
+        "color_rgba": "cor RGBA",
         "user_id": "usuario",
         "tags": "palavras-chave",
         "email": "e-mail",
