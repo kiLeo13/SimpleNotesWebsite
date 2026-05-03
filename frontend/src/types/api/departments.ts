@@ -1,18 +1,20 @@
 import { z } from "zod"
 
-export const departmentIconTypeSchema = z.enum(["EMOJI", "IMAGE"])
+export const departmentIconTypeSchema = z.enum(["NONE", "EMOJI", "IMAGE"])
 export type DepartmentIconType = z.infer<typeof departmentIconTypeSchema>
 
 export interface CreateDepartmentPayload {
   name: string
   icon_type: DepartmentIconType
   icon_value?: string
+  color_rgba?: number | null
 }
 
 export interface UpdateDepartmentPayload {
   name?: string
   icon_type?: DepartmentIconType
   icon_value?: string
+  color_rgba?: number | null
 }
 
 export interface BulkMoveDepartmentNotesPayload {
@@ -24,6 +26,7 @@ export const departmentSchema = z.object({
   name: z.string(),
   icon_type: departmentIconTypeSchema,
   icon_value: z.string(),
+  color_rgba: z.number().int().min(0).max(0xffffffff).nullable(),
   created_at: z.string(),
   updated_at: z.string()
 })
