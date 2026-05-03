@@ -7,6 +7,7 @@ import { DepartmentIcon } from "../departments/DepartmentIcon"
 import { IoChevronForward } from "react-icons/io5"
 import { MdOutlineTag } from "react-icons/md"
 import { SidebarDraggableNote } from "./SidebarDraggableNote"
+import { rgbaIntToCss } from "@/utils/departmentColors"
 
 import styles from "./SidebarCategoryGroup.module.css"
 
@@ -42,6 +43,10 @@ export function SidebarCategoryGroup({
   onToggle
 }: SidebarCategoryGroupProps): JSX.Element {
   const canDragNotes = canEditNotes && isCtrlPressed
+  const departmentNameStyle =
+    group.department?.color_rgba == null
+      ? undefined
+      : { color: rgbaIntToCss(group.department.color_rgba) }
 
   return (
     <div className={styles.departmentGroup}>
@@ -67,7 +72,9 @@ export function SidebarCategoryGroup({
           ) : (
             <MdOutlineTag className={styles.departmentIcon} />
           )}
-          <span className={styles.departmentName}>{group.name}</span>
+          <span className={styles.departmentName} style={departmentNameStyle}>
+            {group.name}
+          </span>
           <IoChevronForward
             className={clsx(
               styles.departmentChevron,

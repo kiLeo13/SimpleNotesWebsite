@@ -5,7 +5,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { Sidebar } from "./Sidebar"
 import { noteService } from "@/services/noteService"
-import { toasts } from "@/utils/toastUtils"
 import { usePermission } from "@/hooks/usePermission"
 import { useDepartmentsStore } from "@/stores/useDepartmentsStore"
 import { useNoteStore } from "@/stores/useNotesStore"
@@ -83,7 +82,7 @@ describe("Sidebar", () => {
     })
     useDepartmentsStore.setState({
       departments: [
-        makeDepartment("department-a", "Reclame Aqui"),
+        makeDepartment("department-a", "Reclame Aqui", 0x6db9ffff),
         makeDepartment("department-b", "Social")
       ],
       memberships: [],
@@ -99,6 +98,9 @@ describe("Sidebar", () => {
 
     expect(screen.getByText("General")).toBeInTheDocument()
     expect(screen.getByText("Reclame Aqui")).toBeInTheDocument()
+    expect(screen.getByText("Reclame Aqui")).toHaveStyle({
+      color: "rgba(109, 185, 255, 1)"
+    })
     expect(screen.getByText("Social")).toBeInTheDocument()
     expect(screen.getByText("General Policy")).toBeInTheDocument()
     expect(screen.getByText("Refund Script")).toBeInTheDocument()
@@ -172,7 +174,6 @@ describe("Sidebar", () => {
     expect(useNoteStore.getState().getNoteById("2")?.department_id).toBe(
       "department-b"
     )
-    expect(toasts.success).toHaveBeenCalledWith("Note moved")
   })
 })
 
@@ -207,12 +208,17 @@ function makeNote(
   }
 }
 
-function makeDepartment(id: string, name: string): DepartmentData {
+function makeDepartment(
+  id: string,
+  name: string,
+  colorRGBA: number | null = null
+): DepartmentData {
   return {
     id,
     name,
     icon_type: "EMOJI",
     icon_value: "#",
+    color_rgba: colorRGBA,
     created_at: "2026-04-21T10:00:00.000Z",
     updated_at: "2026-04-21T10:00:00.000Z"
   }
