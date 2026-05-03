@@ -317,6 +317,8 @@ Read:
 - `frontend/eslint.config.js`
   - lint rules
   - ignores generated `frontend/src/routeTree.gen.ts`
+- `frontend/package.json`
+  - uses npm `overrides` to force `uuid@14.0.0` while `mermaid@10.9.5` still declares the vulnerable `uuid@^9.0.0` range.
 
 ### Backend
 
