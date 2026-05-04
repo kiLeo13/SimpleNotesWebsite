@@ -81,14 +81,14 @@ export function Sidebar(): JSX.Element {
 
   const handleOpenNote =
     (note: NoteResponseData): MouseEventHandler<HTMLDivElement> =>
-      () => {
-        void navigate({
-          search: (prev) => ({
-            ...prev,
-            id: note.id
-          })
+    () => {
+      void navigate({
+        search: (prev) => ({
+          ...prev,
+          id: note.id
         })
-      }
+      })
+    }
 
   const toggleGroup = (groupID: string) => {
     setCollapsedGroupIDs((current) => {

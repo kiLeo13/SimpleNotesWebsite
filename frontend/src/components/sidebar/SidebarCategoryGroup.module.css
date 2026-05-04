@@ -5,6 +5,10 @@
   min-width: 0;
 }
 
+.departmentGroup + .departmentGroup {
+  margin-top: 4px;
+}
+
 .departmentHeader {
   display: grid;
   appearance: none;
@@ -24,13 +28,13 @@
   text-transform: uppercase;
   user-select: none;
   cursor: pointer;
+  margin-bottom: -6px;
   transition:
     background-color 180ms,
     border-color 180ms,
     color 180ms;
 }
 
-.departmentHeader:hover,
 .departmentHeader:focus-visible {
   background-color: rgba(136, 116, 167, 0.105);
   color: rgb(151, 140, 166);
@@ -54,6 +58,11 @@
   justify-content: start;
   gap: 7px;
   min-width: 0;
+  transition: color 180ms;
+}
+
+.departmentLeading:hover {
+  color: rgb(158, 146, 175);
 }
 
 .departmentIcon {
@@ -77,7 +86,7 @@
   color: rgb(95, 86, 110);
   flex-shrink: 0;
   transform: rotate(0deg);
-  transition: transform 100ms ease-out;
+  transition: transform 200ms ease-in-out;
 }
 
 .departmentChevronExpanded {
