@@ -51,11 +51,11 @@ Important frontend behavior:
 - Notes can render as markdown, Mermaid flowcharts, or reference/file views.
 - The update-note modal keeps its primary actions in a slim left-side rail so save and future note actions do not bloat the bottom edge of the form as the editor grows.
 - The notes sidebar keeps its utility actions in a fixed non-resizable left rail inside the sidebar panel, while note search and the note list occupy the remaining resizable sidebar width.
-- The notes sidebar groups notes by department, with General notes shown separately and department groups ordered alphabetically. Category headers are expandable with a short chevron rotation, search filters notes inside each group and hides only groups without matches, so the sidebar keeps its category shape while searching.
+- The notes sidebar groups notes by department, with General notes shown separately and department groups ordered alphabetically. Category headers are expandable with a short chevron rotation, search filters notes inside each group and hides only groups without matches, so the sidebar keeps its category shape while searching. Adjacent department groups keep a small visual gap while note rows inside each group remain dense.
 - Users with `Edit Notes` can hold Ctrl and drag a sidebar note onto a category header to move the note to that department. The interaction uses the same note update API path as the edit modal and keeps frontend note state reconciled from the API response.
 - Sidebar list structure is split under `frontend/src/components/sidebar/`: `Sidebar.tsx` owns data wiring, `Sidebar.helpers.ts` owns grouping/move helpers, `useSidebarInteractions.ts` owns keyboard and drag state, and the header, empty state, category group, and draggable note wrappers each keep their own CSS module.
 - Department metadata and department membership edges are owned by `frontend/src/stores/useDepartmentsStore.ts`; user records stay owned by `frontend/src/stores/useUsersStore.ts`.
-- The department management modal is split into local department-specific components: `DepartmentSidebar`, `DepartmentActionsMenu`, `DepartmentDetailsForm`, `DepartmentMembersPanel`, `IconPicker`, and `DepartmentColorPicker`. Each component keeps its styles in a matching CSS module so modal orchestration stays separate from list, form, menu, member, icon picker, and color picker concerns.
+- The department management modal is split into local department-specific components: `DepartmentSidebar`, `DepartmentActionsMenu`, `DepartmentDetailsForm`, `DepartmentMembersPanel`, `IconPicker`, and `DepartmentColorPicker`. Each component keeps its styles in a matching CSS module so modal orchestration stays separate from list, form, menu, member, icon picker, and color picker concerns. Main form field guidance is modeled through `ModalLabel` subtitles so labels and helper copy stay structurally consistent. The modal uses `note_count` to avoid rendering note bulk actions for empty departments and disables department deletion while notes still reference the department. The color picker presents reset and custom color as swatch-like boxes, with corner action icons and a centered checkmark only on the active choice.
 - Sidebar note rows expose menu actions for all users to copy the note ID and download the note without opening a new tab. Markdown notes download as `.md`, reference notes download the stored attachment file, and Mermaid flowcharts export through the shared Mermaid SVG renderer as `.svg`.
 - Heavy optional UI is loaded on demand instead of from the permanent shell:
   - Sidebar utility modals are imported only when opened.
@@ -195,12 +195,14 @@ The note entity stores only the nullable department ID rather than a hydrated
 department association. Department deletion is blocked in the service layer while
 notes still reference it, so callers must bulk-move or bulk-delete those notes
 before deleting the department. Department icons support `NONE`, `EMOJI`, and
-`IMAGE`; `NONE` is the text-only mode and stores an empty icon value. Departments
-can also store a nullable `color_rgba` value as a 32-bit integer in 0xRRGGBBAA
-order. The frontend applies that value only to the sidebar department name text
-through the CSS `color` property. Department API and websocket department
-objects include `note_count`, which is the current number of notes assigned to
-that department.
+`IMAGE`; `NONE` is the text-only mode and stores an empty icon value. The
+frontend recommends department icon images up to 256 KiB for responsive sidebar
+rendering, while the backend rejects uploaded department icons over 512 KiB as a
+hard safety limit. Departments can also store a nullable `color_rgba` value as a
+32-bit integer in 0xRRGGBBAA order. The frontend applies that value only to the
+sidebar department name text through the CSS `color` property. Department API and
+websocket department objects include `note_count`, which is the current number of
+notes assigned to that department.
 
 The `connections` table now models logical websocket sessions, not only raw API Gateway transport IDs. Each row stores:
 

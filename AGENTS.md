@@ -339,7 +339,7 @@ Do not copy environment values into docs or comments unless explicitly needed.
 - Route protection is handled in TanStack Router route guards instead of a dedicated `ProtectedRoute` wrapper.
 - `frontend/src/pages/mainpage/MainPage.tsx` drives note opening via typed `?id=` search params on the `/` route.
 - Notes are scoped by nullable `department_id`: `null` means General, and a non-null value points to exactly one department. Users may belong to multiple departments through membership edges.
-- Department icons support `NONE`, `EMOJI`, and `IMAGE`. `NONE` means text-only; department `color_rgba` is a nullable integer in 0xRRGGBBAA order and should only color the sidebar department name text via CSS `color`.
+- Department icons support `NONE`, `EMOJI`, and `IMAGE`. `NONE` means text-only; the frontend recommends image icons up to 256 KiB, and the backend rejects uploaded department icons over 512 KiB. Department `color_rgba` is a nullable integer in 0xRRGGBBAA order and should only color the sidebar department name text via CSS `color`.
 - Department membership state is ID-only and separate from user objects. Keep `useUsersStore` as the source of truth for user data and `useDepartmentsStore` as the source of truth for department metadata plus memberships.
 - The sidebar preserves department grouping while searching: it filters notes inside each department and hides only empty groups. Category headers are expandable with a short chevron rotation, and users with `Edit Notes` can hold Ctrl and drag a note onto a category header to move it through the standard note update endpoint.
 - Department deletion is intentionally guarded. Departments with notes must have those notes bulk-moved or bulk-deleted before the department can be removed.
