@@ -1,15 +1,21 @@
-import type { DepartmentData, DepartmentIconType } from "@/types/api/departments"
+import {
+  DEPARTMENT_ICON_MAX_SIZE_BYTES,
+  type DepartmentData,
+  type DepartmentIconType
+} from "@/types/api/departments"
 
 import type { JSX } from "react"
 import { FiPlus } from "react-icons/fi"
 import { MdDelete, MdSave } from "react-icons/md"
 import { useTranslation } from "react-i18next"
 
+import { AppTooltip } from "@/components/ui/AppTooltip"
 import { BaseModalTextInput } from "@/components/modals/notes/shared/inputs/BaseModalTextInput"
 import { ModalLabel } from "@/components/modals/notes/shared/sections/ModalLabel"
 import { ModalSection } from "@/components/modals/notes/shared/sections/ModalSection"
 import { Button } from "@/components/ui/buttons/Button"
 import { getDepartmentIconUrl } from "@/utils/departmentIcons"
+import { prettySize } from "@/utils/utils"
 
 import { DepartmentColorPicker } from "./DepartmentColorPicker"
 import { IconPicker } from "./IconPicker"
@@ -55,7 +61,23 @@ export function DepartmentDetailsForm({
   const { t } = useTranslation()
   const isCreate = mode === "create"
   const currentImageSrc =
-    department?.icon_type === "IMAGE" ? getDepartmentIconUrl(department.icon_value) : undefined
+    department?.icon_type === "IMAGE"
+      ? getDepartmentIconUrl(department.icon_value)
+      : undefined
+  const hasDepartmentNotes = (department?.note_count ?? 0) > 0
+  const iconHint = t("departments.fields.iconHint", {
+    max: prettySize(DEPARTMENT_ICON_MAX_SIZE_BYTES)
+  })
+  const deleteButton = (
+    <Button
+      className={styles.dangerButton}
+      disabled={hasDepartmentNotes || !onDelete}
+      onClick={onDelete}
+    >
+      <MdDelete size={16} />
+      {t("commons.delete")}
+    </Button>
+  )
 
   return (
     <main className={styles.panel}>
@@ -86,7 +108,12 @@ export function DepartmentDetailsForm({
           />
 
           <ModalSection
-            label={<ModalLabel title={t("departments.fields.icon")} />}
+            label={
+              <ModalLabel
+                title={t("departments.fields.icon")}
+                subtitle={iconHint}
+              />
+            }
             input={
               <IconPicker
                 iconType={iconType}
@@ -101,17 +128,17 @@ export function DepartmentDetailsForm({
           />
 
           <ModalSection
-            label={<ModalLabel title={t("departments.fields.color")} />}
+            label={
+              <ModalLabel
+                title={t("departments.fields.color")}
+                subtitle={t("departments.fields.colorHint")}
+              />
+            }
             input={
-              <>
-                <span className={styles.colorHint}>
-                  {t("departments.fields.colorHint")}
-                </span>
-                <DepartmentColorPicker
-                  value={colorRGBA}
-                  onChange={onColorChange}
-                />
-              </>
+              <DepartmentColorPicker
+                value={colorRGBA}
+                onChange={onColorChange}
+              />
             }
           />
 
@@ -120,6 +147,7 @@ export function DepartmentDetailsForm({
               className={styles.primaryButton}
               disabled={isSaving || !name.trim()}
               isLoading={isSaving}
+              loaderProps={{ scale: 0.7 }}
               onClick={onSubmit}
             >
               {isCreate ? <FiPlus size={16} /> : <MdSave size={16} />}
@@ -130,11 +158,12 @@ export function DepartmentDetailsForm({
               <Button className={styles.secondaryButton} onClick={onCancel}>
                 {t("commons.cancel")}
               </Button>
+            ) : hasDepartmentNotes ? (
+              <AppTooltip label={t("departments.management.deleteDisabled")}>
+                <span className={styles.tooltipTrigger}>{deleteButton}</span>
+              </AppTooltip>
             ) : (
-              <Button className={styles.dangerButton} onClick={onDelete}>
-                <MdDelete size={16} />
-                {t("commons.delete")}
-              </Button>
+              deleteButton
             )}
           </div>
         </div>

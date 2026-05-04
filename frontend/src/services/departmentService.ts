@@ -16,7 +16,7 @@ import apiClient from "./apiClient"
 import { safeApiCall } from "./safeApiCall"
 
 export const DEPARTMENT_ICON_EXTENSIONS = ["png", "jpg", "jpeg", "webp", "gif"]
-export const DEPARTMENT_ICON_MAX_SIZE_BYTES = 1024 * 1024
+export { DEPARTMENT_ICON_MAX_SIZE_BYTES } from "@/types/api/departments"
 
 function toDepartmentFormData(
   payload: CreateDepartmentPayload | UpdateDepartmentPayload,

@@ -131,6 +131,10 @@ export function getPrettySize(size: number): string {
   return `${formatSizeValue(size / GB)} GiB`
 }
 
+export function prettySize(size: number): string {
+  return getPrettySize(size)
+}
+
 export function isOnlyDigit(s: string): boolean {
   return /^\d+$/.test(s)
 }

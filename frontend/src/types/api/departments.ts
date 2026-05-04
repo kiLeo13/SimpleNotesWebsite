@@ -1,5 +1,7 @@
 import { z } from "zod"
 
+export const DEPARTMENT_ICON_MAX_SIZE_BYTES = 256 * 1024
+
 export const departmentIconTypeSchema = z.enum(["NONE", "EMOJI", "IMAGE"])
 export type DepartmentIconType = z.infer<typeof departmentIconTypeSchema>
 

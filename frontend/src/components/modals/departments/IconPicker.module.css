@@ -1,81 +1,63 @@
-.triggerWrapper {
-  position: relative;
-  width: 38px;
-  height: 38px;
-  flex-shrink: 0;
+.pickerRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex-wrap: wrap;
 }
 
-.trigger {
+.preview {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  width: 45px;
+  height: 45px;
+  flex-shrink: 0;
+  padding: 5px;
+  box-sizing: border-box;
   border: 1px solid rgb(53, 47, 66);
   border-radius: 8px;
   background-color: rgba(18, 17, 22, 0.78);
-  cursor: pointer;
-  transition:
-    border-color 0.25s,
-    background-color 0.25s,
-    transform 0.15s;
 }
 
-.trigger:hover:not(:disabled) {
-  border-color: rgb(92, 71, 145);
-  background-color: rgba(92, 71, 145, 0.12);
-  transform: scale(1.06);
-}
-
-.trigger:active:not(:disabled) {
-  transform: scale(0.96);
-}
-
-.triggerEmoji {
+.previewEmoji {
   font-size: 20px;
   line-height: 1;
   pointer-events: none;
 }
 
-.triggerEmoji :global(img.emoji) {
+.previewEmoji :global(img.emoji) {
   width: 1em;
   height: 1em;
   vertical-align: middle;
 }
 
-.triggerImage {
+.previewImage {
   width: 100%;
   height: 100%;
   border-radius: 7px;
   object-fit: contain;
 }
 
-.triggerPlaceholder {
+.previewPlaceholder {
   color: rgb(137, 124, 156);
 }
 
-.trigger[data-empty="true"] {
+.preview[data-empty="true"] {
   border-style: dashed;
 }
 
-.trigger[data-empty="true"]:hover:not(:disabled) .triggerPlaceholder {
-  color: rgb(190, 175, 210);
-}
-
+.chooseButton,
 .removeButton {
-  position: absolute;
-  top: -6px;
-  right: -6px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
-  padding: 0;
-  border: 1px solid rgb(58, 48, 73);
-  border-radius: 999px;
-  background-color: rgb(30, 27, 38);
-  color: rgb(214, 204, 226);
+  gap: 6px;
+  min-height: 34px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  font-weight: 500;
   cursor: pointer;
   transition:
     background-color 0.18s,
@@ -83,10 +65,34 @@
     color 0.18s;
 }
 
+.chooseButton {
+  border: 1px solid rgb(53, 47, 66);
+  background-color: rgb(38, 34, 50);
+  color: rgb(200, 194, 214);
+}
+
+.chooseButton:hover:not(:disabled),
+.chooseButton[data-state="open"] {
+  border-color: rgb(76, 63, 102);
+  background-color: rgb(48, 43, 62);
+  color: rgb(226, 221, 238);
+}
+
+.chooseButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.removeButton {
+  border: 1px solid rgba(200, 60, 60, 0.25);
+  background-color: rgba(180, 50, 50, 0.12);
+  color: rgb(255, 170, 170);
+}
+
 .removeButton:hover {
-  border-color: rgba(220, 72, 95, 0.72);
-  background-color: rgb(86, 35, 52);
-  color: rgb(247, 217, 224);
+  border: 1px solid rgba(255, 79, 79, 0.25);
+  background-color: rgba(207, 62, 62, 0.212);
+  color: rgb(255, 194, 194);
 }
 
 .content {
@@ -219,8 +225,7 @@
 }
 
 /*
- * Override emoji-picker-react dark theme colors to match
- * the app's purple-tinted dark palette.
+ * Override emoji-picker-react dark theme colors.
  */
 .emojiPanel :global(.EmojiPickerReact.epr-dark-theme) {
   --epr-bg-color: rgb(24, 23, 29);

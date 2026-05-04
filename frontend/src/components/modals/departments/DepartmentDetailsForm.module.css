@@ -35,13 +35,6 @@
   gap: 14px;
 }
 
-.colorHint {
-  margin-bottom: 5px;
-  color: rgb(122, 113, 138);
-  font-size: 0.78rem;
-  line-height: 1.35;
-}
-
 .actions {
   display: flex;
   flex-wrap: wrap;
@@ -60,7 +53,7 @@
 
 .primaryButton {
   background-color: rgb(78, 56, 120);
-  color: rgb(230, 225, 240);
+  color: rgb(184, 177, 197);
 }
 
 .primaryButton:hover:not(:disabled) {
@@ -87,4 +80,8 @@
 .dangerButton:hover:not(:disabled) {
   border-color: rgba(220, 70, 70, 0.35);
   background-color: rgba(180, 50, 50, 0.25);
+}
+
+.tooltipTrigger {
+  display: inline-flex;
 }

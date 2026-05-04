@@ -3,13 +3,12 @@ import type { EmojiClickData } from "emoji-picker-react"
 import type { DepartmentIconType } from "@/types/api/departments"
 
 import * as Popover from "@radix-ui/react-popover"
+import twemoji from "twemoji"
 
 import { FiImage, FiSmile, FiX } from "react-icons/fi"
-import { AppTooltip } from "@/components/ui/AppTooltip"
 import { LoaderContainer } from "@/components/LoaderContainer"
 import { useTranslation } from "react-i18next"
 import { createAsyncComponent } from "@/utils/createAsyncComponent"
-import twemoji from "twemoji"
 
 import styles from "./IconPicker.module.css"
 
@@ -53,6 +52,7 @@ export function IconPicker({
     iconType === "IMAGE" ? selectedFilePreviewSrc || currentImageSrc : undefined
   const hasImagePreview = Boolean(imagePreviewSrc)
   const hasEmojiPreview = iconType === "EMOJI" && emoji.trim().length > 0
+  const hasIcon = hasImagePreview || hasEmojiPreview
 
   useEffect(() => {
     if (!selectedFile) {
@@ -93,6 +93,10 @@ export function IconPicker({
     fileInputRef.current?.click()
   }
 
+  const handleChooseClick = () => {
+    setActiveTab("upload")
+  }
+
   const handleRemoveIcon = () => {
     if (fileInputRef.current) {
       fileInputRef.current.value = ""
@@ -103,46 +107,46 @@ export function IconPicker({
 
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>
-      <div className={styles.triggerWrapper}>
+      <div className={styles.pickerRow}>
+        <div className={styles.preview} data-empty={!hasIcon}>
+          {hasImagePreview && imagePreviewSrc ? (
+            <img
+              className={styles.previewImage}
+              src={imagePreviewSrc}
+              draggable={false}
+            />
+          ) : hasEmojiPreview ? (
+            <span ref={emojiPreviewRef} className={styles.previewEmoji}>
+              {emoji}
+            </span>
+          ) : (
+            <FiImage className={styles.previewPlaceholder} size={18} />
+          )}
+        </div>
+
         <Popover.Trigger asChild disabled={disabled}>
           <button
             type="button"
-            className={styles.trigger}
-            data-empty={!hasImagePreview && !hasEmojiPreview}
+            className={styles.chooseButton}
             aria-label={t("departments.fields.pickIcon")}
+            disabled={disabled}
+            onClick={handleChooseClick}
           >
-            {hasImagePreview && imagePreviewSrc ? (
-              <img
-                className={styles.triggerImage}
-                src={imagePreviewSrc}
-                alt=""
-                draggable={false}
-              />
-            ) : hasEmojiPreview ? (
-              <span
-                ref={emojiPreviewRef}
-                className={styles.triggerEmoji}
-                aria-hidden="true"
-              >
-                {emoji}
-              </span>
-            ) : (
-              <FiImage className={styles.triggerPlaceholder} size={18} />
-            )}
+            <FiImage size={14} />
+            {t("departments.iconPicker.chooseImage")}
           </button>
         </Popover.Trigger>
 
-        {hasImagePreview && !disabled && (
-          <AppTooltip label={t("departments.iconPicker.removeIcon")}>
-            <button
-              type="button"
-              className={styles.removeButton}
-              aria-label={t("departments.iconPicker.removeIcon")}
-              onClick={handleRemoveIcon}
-            >
-              <FiX size={12} />
-            </button>
-          </AppTooltip>
+        {hasIcon && !disabled && (
+          <button
+            type="button"
+            className={styles.removeButton}
+            aria-label={t("departments.iconPicker.removeIcon")}
+            onClick={handleRemoveIcon}
+          >
+            <FiX size={14} />
+            {t("departments.iconPicker.removeIcon")}
+          </button>
         )}
       </div>
 

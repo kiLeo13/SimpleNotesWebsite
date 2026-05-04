@@ -26,13 +26,14 @@
     "fields": {
       "name": "Nome",
       "namePlaceholder": "Nome do departamento",
-      "icon": "Icone",
+      "icon": "Ícone",
+      "iconHint": "Imagem até {{max}}. É recomendado pelo menos 64x64 pixels. Será mostrado ao lado do nome na barra de notas.",
       "color": "Cor",
       "colorHint": "A cor aparece apenas na barra lateral de notas.",
       "emoji": "Emoji",
-      "pickIcon": "Escolher icone",
-      "iconImage": "Icone (imagem)",
-      "iconImageHint": "Envia uma imagem como icone ao inves do emoji.",
+      "pickIcon": "Escolher ícone",
+      "iconImage": "Ícone (imagem)",
+      "iconImageHint": "Envia uma imagem como ícone ao invés do emoji.",
       "selectIcon": "Selecione uma imagem",
       "bulkTarget": "Destino",
       "bulkTargetHint": "Escolha o departamento para onde mover as notas."
@@ -41,15 +42,16 @@
       "uploadTab": "Enviar Imagem",
       "emojiTab": "Emoji",
       "uploadHint": "Escolha um PNG ou JPG para enviar",
-      "currentImage": "Icone atual",
+      "currentImage": "Ícone atual",
+      "chooseImage": "Escolher imagem",
       "browse": "Procurar Arquivos",
       "searchEmoji": "Buscar emoji...",
-      "removeIcon": "Remover Icone"
+      "removeIcon": "Remover Ícone"
     },
     "colorPicker": {
       "presets": "Cores do departamento",
       "none": "Sem cor",
-      "reset": "Resetar cor",
+      "reset": "Redefinir",
       "custom": "Cor personalizada",
       "preset": "Cor {{index}}",
       "alpha": "Opacidade"
@@ -73,7 +75,8 @@
       "addMember": "Adicionar usuário",
       "removeMember": "Remover usuário",
       "noMembers": "Nenhum usuário neste departamento.",
-      "allUsersAdded": "Todos os usuarios ja foram adicionados."
+      "allUsersAdded": "Todos os usuarios ja foram adicionados.",
+      "deleteDisabled": "Somente departamentos vazios podem ser excluídos."
     },
     "confirm": {
       "deleteTitle": "Excluir Departamento",
@@ -252,8 +255,8 @@
         "department_id": "departamento",
         "target_department_id": "departamento de destino",
         "note_count": "quantidade de notas",
-        "icon_type": "tipo de icone",
-        "icon_value": "icone",
+        "icon_type": "tipo de ícone",
+        "icon_value": "ícone",
         "color_rgba": "cor RGBA",
         "user_id": "usuario",
         "tags": "palavras-chave",
