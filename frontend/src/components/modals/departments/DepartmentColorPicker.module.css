@@ -43,27 +43,44 @@
 }
 
 .resetButton {
-  width: 34px;
-  height: 34px;
+  position: relative;
+  width: 55px;
+  height: 38px;
   border-color: rgb(58, 51, 72);
   border-radius: 7px;
-  background-color: rgb(37, 33, 47);
+  background-color: transparent;
   color: rgb(164, 154, 181);
 }
 
 .resetButton[data-active="true"] {
-  border-color: rgb(135, 156, 168);
-  background-color: rgb(92, 111, 123);
+  background-color: rgba(92, 111, 123, 0.2);
   color: rgb(239, 242, 244);
 }
 
 .customButton {
-  width: 42px;
-  height: 34px;
+  position: relative;
+  width: 55px;
+  height: 38px;
   border-color: rgb(58, 51, 72);
   border-radius: 7px;
-  color: rgb(247, 244, 252);
+  background-color: transparent;
+  color: rgb(164, 154, 181);
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.65);
+}
+
+.customButton[data-active="true"] {
+  color: rgb(247, 244, 252);
+}
+
+.cornerIcon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  opacity: 0.78;
+}
+
+.centerIcon {
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.55));
 }
 
 .popoverContent {
@@ -124,11 +141,6 @@
   height: 20px;
   border-color: rgba(232, 228, 238, 0.14);
   border-radius: 5px;
-}
-
-.swatch[data-active="true"],
-.resetButton[data-active="true"] {
-  box-shadow: 0 0 0 2px rgba(229, 221, 240, 0.24);
 }
 
 @media (max-width: 620px) {
