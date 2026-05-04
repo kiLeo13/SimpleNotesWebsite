@@ -35,15 +35,11 @@
   gap: 14px;
 }
 
-.iconAndName {
-  display: flex;
-  align-items: flex-end;
-  gap: 12px;
-}
-
-.nameField {
-  flex: 1;
-  min-width: 0;
+.colorHint {
+  margin-bottom: 5px;
+  color: rgb(122, 113, 138);
+  font-size: 0.78rem;
+  line-height: 1.35;
 }
 
 .actions {
@@ -91,11 +87,4 @@
 .dangerButton:hover:not(:disabled) {
   border-color: rgba(220, 70, 70, 0.35);
   background-color: rgba(180, 50, 50, 0.25);
-}
-
-@media (max-width: 860px) {
-  .iconAndName {
-    flex-direction: column;
-    align-items: stretch;
-  }
 }

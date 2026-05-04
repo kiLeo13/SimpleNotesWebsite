@@ -1,17 +1,17 @@
 .colorPicker {
   display: flex;
-  flex-direction: column;
+  align-items: stretch;
   gap: 10px;
+  min-width: 0;
 }
 
-.swatches {
+.controlGroup {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 8px 9px;
+  gap: 8px;
 }
 
-.noneButton,
+.resetButton,
 .customButton,
 .swatch {
   display: inline-flex;
@@ -24,24 +24,26 @@
   transition:
     border-color 0.18s,
     box-shadow 0.18s,
-    transform 0.15s;
+    transform 0.15s,
+    background-color 0.18s,
+    color 0.18s;
 }
 
-.noneButton:hover,
+.resetButton:hover,
 .customButton:hover,
 .swatch:hover {
   transform: translateY(-1px);
 }
 
-.noneButton:focus-visible,
-.customButton:focus-within,
+.resetButton:focus-visible,
+.customButton:focus-visible,
 .swatch:focus-visible {
   outline: 1px solid rgb(126, 91, 183);
   outline-offset: 2px;
 }
 
-.noneButton {
-  width: 56px;
+.resetButton {
+  width: 34px;
   height: 34px;
   border-color: rgb(58, 51, 72);
   border-radius: 7px;
@@ -49,29 +51,72 @@
   color: rgb(164, 154, 181);
 }
 
-.noneButton[data-active="true"] {
+.resetButton[data-active="true"] {
   border-color: rgb(135, 156, 168);
   background-color: rgb(92, 111, 123);
   color: rgb(239, 242, 244);
 }
 
 .customButton {
-  position: relative;
-  width: 34px;
+  width: 42px;
   height: 34px;
-  overflow: hidden;
-  border-color: rgba(232, 228, 238, 0.16);
+  border-color: rgb(58, 51, 72);
   border-radius: 7px;
+  color: rgb(247, 244, 252);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.65);
 }
 
-.customButton input {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
-  opacity: 0;
-  cursor: pointer;
+.popoverContent {
+  z-index: 100;
+  padding: 12px;
+  border: 1px solid rgb(48, 42, 60);
+  border-radius: 10px;
+  background-color: rgb(24, 23, 29);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
+  animation: popoverSlideIn 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.popoverContent:focus {
+  outline: none;
+}
+
+.popoverContent :global(.react-colorful) {
+  width: 210px;
+  height: 178px;
+}
+
+.popoverContent :global(.react-colorful__saturation) {
+  border-radius: 7px 7px 0 0;
+}
+
+.popoverContent :global(.react-colorful__hue),
+.popoverContent :global(.react-colorful__alpha) {
+  height: 13px;
+  border-radius: 999px;
+}
+
+.popoverContent :global(.react-colorful__last-control) {
+  border-radius: 999px;
+}
+
+.popoverContent :global(.react-colorful__pointer) {
+  width: 18px;
+  height: 18px;
+  border-width: 2px;
+}
+
+.divider {
+  width: 1px;
+  align-self: stretch;
+  background-color: rgb(58, 51, 72);
+}
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(10, 20px);
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
 }
 
 .swatch {
@@ -82,26 +127,31 @@
 }
 
 .swatch[data-active="true"],
-.noneButton[data-active="true"] {
+.resetButton[data-active="true"] {
   box-shadow: 0 0 0 2px rgba(229, 221, 240, 0.24);
 }
 
-.alphaControl {
-  display: grid;
-  grid-template-columns: auto minmax(120px, 1fr) 42px;
-  align-items: center;
-  gap: 10px;
-  color: rgb(144, 134, 160);
-  font-size: 0.82rem;
+@media (max-width: 620px) {
+  .colorPicker {
+    flex-wrap: wrap;
+  }
+
+  .divider {
+    display: none;
+  }
+
+  .swatches {
+    grid-template-columns: repeat(6, 20px);
+  }
 }
 
-.alphaControl input {
-  accent-color: rgb(126, 91, 183);
-}
-
-.alphaControl strong {
-  color: rgb(194, 187, 207);
-  font-size: 0.78rem;
-  font-weight: 600;
-  text-align: right;
+@keyframes popoverSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }

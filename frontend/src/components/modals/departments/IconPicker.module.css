@@ -37,11 +37,17 @@
   pointer-events: none;
 }
 
+.triggerEmoji :global(img.emoji) {
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+}
+
 .triggerImage {
   width: 100%;
   height: 100%;
   border-radius: 7px;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .triggerPlaceholder {

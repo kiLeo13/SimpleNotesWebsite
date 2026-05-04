@@ -70,40 +70,48 @@ export function DepartmentDetailsForm({
         </div>
 
         <div className={styles.form}>
-          <div className={styles.iconAndName}>
-            <IconPicker
-              iconType={iconType}
-              emoji={emoji}
-              selectedFile={iconFile}
-              currentImageSrc={currentImageSrc}
-              onEmojiChange={onEmojiChange}
-              onFileChange={onFileChange}
-              onRemoveIcon={onRemoveIcon}
-            />
-            <ModalSection
-              className={styles.nameField}
-              label={<ModalLabel title={t("departments.fields.name")} required />}
-              input={
-                <BaseModalTextInput
-                  value={name}
-                  onChange={(event) => onNameChange(event.target.value)}
-                  placeholder={
-                    isCreate
-                      ? t("departments.fields.namePlaceholder")
-                      : t("departments.fields.name")
-                  }
-                />
-              }
-            />
-          </div>
+          <ModalSection
+            label={<ModalLabel title={t("departments.fields.name")} required />}
+            input={
+              <BaseModalTextInput
+                value={name}
+                onChange={(event) => onNameChange(event.target.value)}
+                placeholder={
+                  isCreate
+                    ? t("departments.fields.namePlaceholder")
+                    : t("departments.fields.name")
+                }
+              />
+            }
+          />
+
+          <ModalSection
+            label={<ModalLabel title={t("departments.fields.icon")} />}
+            input={
+              <IconPicker
+                iconType={iconType}
+                emoji={emoji}
+                selectedFile={iconFile}
+                currentImageSrc={currentImageSrc}
+                onEmojiChange={onEmojiChange}
+                onFileChange={onFileChange}
+                onRemoveIcon={onRemoveIcon}
+              />
+            }
+          />
 
           <ModalSection
             label={<ModalLabel title={t("departments.fields.color")} />}
             input={
-              <DepartmentColorPicker
-                value={colorRGBA}
-                onChange={onColorChange}
-              />
+              <>
+                <span className={styles.colorHint}>
+                  {t("departments.fields.colorHint")}
+                </span>
+                <DepartmentColorPicker
+                  value={colorRGBA}
+                  onChange={onColorChange}
+                />
+              </>
             }
           />
 

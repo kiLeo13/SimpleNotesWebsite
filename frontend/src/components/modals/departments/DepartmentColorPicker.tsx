@@ -1,19 +1,21 @@
-import type { ChangeEvent, JSX } from "react"
+import { useCallback, useMemo, type JSX } from "react"
 
-import { FiCheck, FiEdit3, FiSlash } from "react-icons/fi"
+import * as Popover from "@radix-ui/react-popover"
+
+import { FiCheck, FiEdit3, FiRotateCcw } from "react-icons/fi"
+import { AppTooltip } from "@/components/ui/AppTooltip"
+import { RgbaColorPicker, type RgbaColor } from "react-colorful"
 import { useTranslation } from "react-i18next"
 import {
-  hexColorAndAlphaToRgbaInt,
   rgbaIntToCss,
-  rgbaIntToHexColor,
-  rgbaIntToParts
+  rgbaIntToParts,
+  rgbaPartsToInt
 } from "@/utils/departmentColors"
 
 import styles from "./DepartmentColorPicker.module.css"
 
 const FALLBACK_COLOR = 0x7856b0ff
 const DEPARTMENT_COLOR_PRESETS = [
-  0xa6b7c1ff,
   0x2db39dff,
   0x35c76fff,
   0x3e9fe6ff,
@@ -31,7 +33,9 @@ const DEPARTMENT_COLOR_PRESETS = [
   0xad1457ff,
   0xb9770eff,
   0xba4a00ff,
-  0xa93226ff
+  0xa93226ff,
+  0x7f8c8dff,
+  0x546e7aff
 ]
 
 type DepartmentColorPickerProps = {
@@ -45,45 +49,80 @@ export function DepartmentColorPicker({
 }: DepartmentColorPickerProps): JSX.Element {
   const { t } = useTranslation()
   const activeColor = value ?? FALLBACK_COLOR
-  const activeParts = rgbaIntToParts(activeColor)
-  const activeHex = rgbaIntToHexColor(activeColor)
-  const alpha = value == null ? 255 : activeParts.a
+  const activeParts = useMemo(() => rgbaIntToParts(activeColor), [activeColor])
 
-  const handleCustomColorChange = (nextHex: string) => {
-    onChange(hexColorAndAlphaToRgbaInt(nextHex, alpha))
-  }
+  const pickerColor: RgbaColor = useMemo(
+    () => ({
+      r: activeParts.r,
+      g: activeParts.g,
+      b: activeParts.b,
+      a: activeParts.a / 255
+    }),
+    [activeParts]
+  )
 
-  const handleAlphaChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onChange(hexColorAndAlphaToRgbaInt(activeHex, Number(event.target.value)))
-  }
+  const handlePickerChange = useCallback(
+    (nextColor: RgbaColor) => {
+      const nextValue = rgbaPartsToInt({
+        r: nextColor.r,
+        g: nextColor.g,
+        b: nextColor.b,
+        a: Math.round(nextColor.a * 255)
+      })
+      if (nextValue !== activeColor) {
+        onChange(nextValue)
+      }
+    },
+    [activeColor, onChange]
+  )
 
   return (
     <div className={styles.colorPicker}>
-      <div className={styles.swatches} aria-label={t("departments.colorPicker.presets")}>
-        <button
-          type="button"
-          className={styles.noneButton}
-          data-active={value == null}
-          onClick={() => onChange(null)}
-          aria-label={t("departments.colorPicker.none")}
-        >
-          {value == null ? <FiCheck size={15} /> : <FiSlash size={14} />}
-        </button>
+      <div className={styles.controlGroup}>
+        <AppTooltip label={t("departments.colorPicker.reset")}>
+          <button
+            type="button"
+            className={styles.resetButton}
+            data-active={value == null}
+            onClick={() => onChange(null)}
+            aria-label={t("departments.colorPicker.reset")}
+          >
+            <FiRotateCcw size={14} />
+          </button>
+        </AppTooltip>
 
-        <label
-          className={styles.customButton}
-          style={{ backgroundColor: rgbaIntToCss(activeColor) }}
-          aria-label={t("departments.colorPicker.custom")}
-        >
-          <FiEdit3 size={13} />
-          <input
-            type="color"
-            value={activeHex}
-            onChange={(event) => handleCustomColorChange(event.target.value)}
-            aria-label={t("departments.colorPicker.custom")}
-          />
-        </label>
+        <Popover.Root>
+          <Popover.Trigger asChild>
+            <button
+              type="button"
+              className={styles.customButton}
+              style={{ backgroundColor: rgbaIntToCss(activeColor) }}
+              aria-label={t("departments.colorPicker.custom")}
+            >
+              <FiEdit3 size={14} />
+            </button>
+          </Popover.Trigger>
 
+          <Popover.Portal>
+            <Popover.Content
+              className={styles.popoverContent}
+              side="bottom"
+              align="start"
+              sideOffset={8}
+              onOpenAutoFocus={(event) => event.preventDefault()}
+            >
+              <RgbaColorPicker color={pickerColor} onChange={handlePickerChange} />
+            </Popover.Content>
+          </Popover.Portal>
+        </Popover.Root>
+      </div>
+
+      <div className={styles.divider} aria-hidden="true" />
+
+      <div
+        className={styles.swatches}
+        aria-label={t("departments.colorPicker.presets")}
+      >
         {DEPARTMENT_COLOR_PRESETS.map((preset, index) => (
           <button
             key={preset}
@@ -98,18 +137,6 @@ export function DepartmentColorPicker({
           </button>
         ))}
       </div>
-
-      <label className={styles.alphaControl}>
-        <span>{t("departments.colorPicker.alpha")}</span>
-        <input
-          type="range"
-          min={0}
-          max={255}
-          value={alpha}
-          onChange={handleAlphaChange}
-        />
-        <strong>{Math.round((alpha / 255) * 100)}%</strong>
-      </label>
     </div>
   )
 }

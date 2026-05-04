@@ -61,7 +61,7 @@
   height: 18px;
   border-radius: 4px;
   color: rgb(122, 108, 147);
-  object-fit: cover;
+  object-fit: contain;
   line-height: 18px;
 }
 

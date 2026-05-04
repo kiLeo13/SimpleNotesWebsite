@@ -9,6 +9,7 @@ import { AppTooltip } from "@/components/ui/AppTooltip"
 import { LoaderContainer } from "@/components/LoaderContainer"
 import { useTranslation } from "react-i18next"
 import { createAsyncComponent } from "@/utils/createAsyncComponent"
+import twemoji from "twemoji"
 
 import styles from "./IconPicker.module.css"
 
@@ -47,6 +48,7 @@ export function IconPicker({
   const [activeTab, setActiveTab] = useState<IconPickerTab>("upload")
   const [selectedFilePreviewSrc, setSelectedFilePreviewSrc] = useState("")
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const emojiPreviewRef = useRef<HTMLSpanElement>(null)
   const imagePreviewSrc =
     iconType === "IMAGE" ? selectedFilePreviewSrc || currentImageSrc : undefined
   const hasImagePreview = Boolean(imagePreviewSrc)
@@ -63,6 +65,15 @@ export function IconPicker({
 
     return () => URL.revokeObjectURL(url)
   }, [selectedFile])
+
+  useEffect(() => {
+    if (hasEmojiPreview && emojiPreviewRef.current) {
+      twemoji.parse(emojiPreviewRef.current, {
+        folder: "svg",
+        ext: ".svg"
+      })
+    }
+  }, [emoji, hasEmojiPreview])
 
   const handleEmojiClick = (emojiData: EmojiClickData) => {
     onEmojiChange(emojiData.emoji)
@@ -108,7 +119,13 @@ export function IconPicker({
                 draggable={false}
               />
             ) : hasEmojiPreview ? (
-              <span className={styles.triggerEmoji}>{emoji}</span>
+              <span
+                ref={emojiPreviewRef}
+                className={styles.triggerEmoji}
+                aria-hidden="true"
+              >
+                {emoji}
+              </span>
             ) : (
               <FiImage className={styles.triggerPlaceholder} size={18} />
             )}

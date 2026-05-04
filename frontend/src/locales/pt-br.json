@@ -26,7 +26,9 @@
     "fields": {
       "name": "Nome",
       "namePlaceholder": "Nome do departamento",
+      "icon": "Icone",
       "color": "Cor",
+      "colorHint": "A cor aparece apenas na barra lateral de notas.",
       "emoji": "Emoji",
       "pickIcon": "Escolher icone",
       "iconImage": "Icone (imagem)",
@@ -47,6 +49,7 @@
     "colorPicker": {
       "presets": "Cores do departamento",
       "none": "Sem cor",
+      "reset": "Resetar cor",
       "custom": "Cor personalizada",
       "preset": "Cor {{index}}",
       "alpha": "Opacidade"
