@@ -232,9 +232,12 @@
   --epr-category-label-bg-color: rgb(24, 23, 29);
   --epr-text-color: rgb(190, 184, 201);
   --epr-hover-bg-color: rgb(42, 37, 54);
-  --epr-search-input-bg-color: rgb(18, 17, 22);
+  --epr-search-input-bg-color: rgb(43, 38, 49);
+  --epr-search-input-bg-color-active: rgb(37, 33, 43);
   --epr-search-input-text-color: rgb(207, 202, 218);
-  --epr-search-border-color: rgb(53, 47, 66);
+  --epr-search-input-placeholder-color: rgb(166, 159, 179);
+  --epr-search-border-color: rgb(56, 50, 70);
+  --epr-search-border-color-active: rgb(64, 57, 80);
   --epr-picker-border-color: transparent;
   --epr-header-padding: 10px 10px 6px;
   border: 0;
