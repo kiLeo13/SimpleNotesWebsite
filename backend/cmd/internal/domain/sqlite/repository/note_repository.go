@@ -76,6 +76,30 @@ func (d *DefaultNoteRepository) CountByDepartmentID(departmentID int64) (int64, 
 	return count, err
 }
 
+func (d *DefaultNoteRepository) CountByDepartmentIDs(departmentIDs []int64) (map[int64]int64, error) {
+	counts := make(map[int64]int64, len(departmentIDs))
+	if len(departmentIDs) == 0 {
+		return counts, nil
+	}
+
+	var rows []struct {
+		DepartmentID int64 `gorm:"column:department_id"`
+		NoteCount    int64 `gorm:"column:note_count"`
+	}
+	err := d.db.Model(&entity.Note{}).
+		Select("department_id, COUNT(*) AS note_count").
+		Where("department_id IN ?", departmentIDs).
+		Group("department_id").
+		Scan(&rows).Error
+	if err != nil {
+		return nil, err
+	}
+	for _, row := range rows {
+		counts[row.DepartmentID] = row.NoteCount
+	}
+	return counts, nil
+}
+
 func (d *DefaultNoteRepository) FindByDepartmentID(departmentID int64) ([]*entity.Note, error) {
 	var notes []*entity.Note
 	err := d.db.

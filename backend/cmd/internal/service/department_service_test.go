@@ -68,6 +68,9 @@ func TestCreateDepartmentAllowsTextOnlyIconAndStoresColor(t *testing.T) {
 	if resp.ColorRGBA == nil || *resp.ColorRGBA != color {
 		t.Fatalf("expected response color %d, got %v", color, resp.ColorRGBA)
 	}
+	if resp.NoteCount != 0 {
+		t.Fatalf("expected new department note count 0, got %d", resp.NoteCount)
+	}
 
 	persisted, err := repos.departmentRepo.FindByID(9001)
 	if err != nil {
@@ -93,6 +96,7 @@ func TestUpdateDepartmentCanClearImageIconAndColor(t *testing.T) {
 	if err := repos.departmentRepo.SaveWithDB(nil, department); err != nil {
 		t.Fatalf("save image department: %v", err)
 	}
+	mustSaveDepartmentNote(t, repos.noteRepo, 20, actor.ID, &department.ID)
 
 	iconType := string(entity.DepartmentIconNone)
 	resp, apierr := departmentSvc.UpdateDepartment(actor, department.ID, &contract.UpdateDepartmentRequest{
@@ -108,6 +112,9 @@ func TestUpdateDepartmentCanClearImageIconAndColor(t *testing.T) {
 	if resp.ColorRGBA != nil {
 		t.Fatalf("expected nil response color, got %v", resp.ColorRGBA)
 	}
+	if resp.NoteCount != 1 {
+		t.Fatalf("expected department note count 1, got %d", resp.NoteCount)
+	}
 
 	persisted, err := repos.departmentRepo.FindByID(department.ID)
 	if err != nil {
@@ -118,6 +125,41 @@ func TestUpdateDepartmentCanClearImageIconAndColor(t *testing.T) {
 	}
 	if persisted.IconType != entity.DepartmentIconNone || persisted.IconValue != "" {
 		t.Fatalf("expected persisted icon cleared, got %s %q", persisted.IconType, persisted.IconValue)
+	}
+}
+
+func TestGetDepartmentsReturnsNoteCountForEveryVisibleDepartment(t *testing.T) {
+	db := newTestDB(t)
+	departmentSvc, repos := newDepartmentTestService(t, db)
+	actor := mustSaveDepartmentUser(t, repos.userRepo, 1, entity.PermissionManageDepartments)
+	departmentA := mustSaveDepartment(t, repos.departmentRepo, 10, "Chat")
+	departmentB := mustSaveDepartment(t, repos.departmentRepo, 11, "Email")
+	departmentC := mustSaveDepartment(t, repos.departmentRepo, 12, "Voice")
+
+	mustSaveDepartmentNote(t, repos.noteRepo, 20, actor.ID, &departmentA.ID)
+	mustSaveDepartmentNote(t, repos.noteRepo, 21, actor.ID, &departmentA.ID)
+	mustSaveDepartmentNote(t, repos.noteRepo, 22, actor.ID, &departmentB.ID)
+	mustSaveDepartmentNote(t, repos.noteRepo, 23, actor.ID, nil)
+
+	departments, apierr := departmentSvc.GetDepartments(actor)
+	if apierr != nil {
+		t.Fatalf("list departments: %#v", apierr)
+	}
+
+	counts := make(map[string]int64, len(departments))
+	for _, department := range departments {
+		counts[department.ID] = department.NoteCount
+	}
+
+	expected := map[string]int64{
+		idgen.Format(departmentA.ID): 2,
+		idgen.Format(departmentB.ID): 1,
+		idgen.Format(departmentC.ID): 0,
+	}
+	for id, noteCount := range expected {
+		if counts[id] != noteCount {
+			t.Fatalf("expected department %s note count %d, got %d", id, noteCount, counts[id])
+		}
 	}
 }
 

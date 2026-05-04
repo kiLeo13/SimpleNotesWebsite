@@ -10,6 +10,7 @@ type DepartmentResponse struct {
 	IconType  string  `json:"icon_type"`
 	IconValue string  `json:"icon_value"`
 	ColorRGBA *uint32 `json:"color_rgba"`
+	NoteCount int64   `json:"note_count"`
 	CreatedAt string  `json:"created_at"`
 	UpdatedAt string  `json:"updated_at"`
 }

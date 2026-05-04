@@ -33,6 +33,7 @@ type NoteRepository interface {
 	Delete(note *entity.Note) error
 	DeleteWithDB(db *gorm.DB, note *entity.Note) error
 	CountByDepartmentID(departmentID int64) (int64, error)
+	CountByDepartmentIDs(departmentIDs []int64) (map[int64]int64, error)
 	FindByDepartmentID(departmentID int64) ([]*entity.Note, error)
 	BulkMoveDepartmentWithDB(db *gorm.DB, sourceDepartmentID int64, targetDepartmentID *int64) (int64, error)
 	BulkDeleteDepartmentWithDB(db *gorm.DB, departmentID int64) (int64, error)

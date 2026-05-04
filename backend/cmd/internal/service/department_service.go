@@ -82,9 +82,15 @@ func (s *DepartmentService) GetDepartments(actor *entity.User) ([]*contract.Depa
 		return nil, apierror.InternalServerError
 	}
 
+	noteCounts, err := s.NoteRepo.CountByDepartmentIDs(departmentIDs(departments))
+	if err != nil {
+		log.Errorf("failed to count department notes: %v", err)
+		return nil, apierror.InternalServerError
+	}
+
 	resp := make([]*contract.DepartmentResponse, len(departments))
 	for i, department := range departments {
-		resp[i] = toDepartmentResponse(department)
+		resp[i] = toDepartmentResponse(department, noteCounts[department.ID])
 	}
 	return resp, nil
 }
@@ -158,8 +164,9 @@ func (s *DepartmentService) CreateDepartment(actor *entity.User, req *contract.C
 		return nil, apierror.InternalServerError
 	}
 
-	go s.dispatchDepartmentCreated(department)
-	return toDepartmentResponse(department), nil
+	resp := toDepartmentResponse(department, 0)
+	go s.dispatchDepartmentCreated(department, resp)
+	return resp, nil
 }
 
 func (s *DepartmentService) UpdateDepartment(actor *entity.User, departmentID int64, req *contract.UpdateDepartmentRequest, iconFile *multipart.FileHeader) (*contract.DepartmentResponse, apierror.ErrorResponse) {
@@ -178,6 +185,11 @@ func (s *DepartmentService) UpdateDepartment(actor *entity.User, departmentID in
 	department, apierr := s.fetchDepartment(departmentID)
 	if apierr != nil {
 		return nil, apierr
+	}
+	noteCount, err := s.NoteRepo.CountByDepartmentID(department.ID)
+	if err != nil {
+		log.Errorf("failed to count department notes: %v", err)
+		return nil, apierror.InternalServerError
 	}
 
 	before := *department
@@ -254,8 +266,9 @@ func (s *DepartmentService) UpdateDepartment(actor *entity.User, departmentID in
 	}
 
 	deleteOldIcon()
-	go s.dispatchDepartmentUpdated(department)
-	return toDepartmentResponse(department), nil
+	resp := toDepartmentResponse(department, noteCount)
+	go s.dispatchDepartmentUpdated(department, resp)
+	return resp, nil
 }
 
 func (s *DepartmentService) DeleteDepartment(actor *entity.User, departmentID int64) apierror.ErrorResponse {
@@ -540,8 +553,7 @@ func uploadDepartmentIcon(s3 storage.S3Client, fileHeader *multipart.FileHeader)
 	return filename, nil
 }
 
-func (s *DepartmentService) dispatchDepartmentCreated(department *entity.Department) {
-	resp := toDepartmentResponse(department)
+func (s *DepartmentService) dispatchDepartmentCreated(department *entity.Department, resp *contract.DepartmentResponse) {
 	s.WSService.BroadcastSupplier(context.Background(), func(userID int64) events.SocketEvent {
 		if !s.canReceiveDepartment(userID, department.ID) {
 			return nil
@@ -550,8 +562,7 @@ func (s *DepartmentService) dispatchDepartmentCreated(department *entity.Departm
 	})
 }
 
-func (s *DepartmentService) dispatchDepartmentUpdated(department *entity.Department) {
-	resp := toDepartmentResponse(department)
+func (s *DepartmentService) dispatchDepartmentUpdated(department *entity.Department, resp *contract.DepartmentResponse) {
 	s.WSService.BroadcastSupplier(context.Background(), func(userID int64) events.SocketEvent {
 		if !s.canReceiveDepartment(userID, department.ID) {
 			return nil
@@ -600,16 +611,25 @@ func (s *DepartmentService) canReceiveDepartment(userID int64, departmentID int6
 	return err == nil && isMember
 }
 
-func toDepartmentResponse(department *entity.Department) *contract.DepartmentResponse {
+func toDepartmentResponse(department *entity.Department, noteCount int64) *contract.DepartmentResponse {
 	return &contract.DepartmentResponse{
 		ID:        idgen.Format(department.ID),
 		Name:      department.Name,
 		IconType:  string(department.IconType),
 		IconValue: department.IconValue,
 		ColorRGBA: department.ColorRGBA,
+		NoteCount: noteCount,
 		CreatedAt: utils.FormatEpoch(department.CreatedAt),
 		UpdatedAt: utils.FormatEpoch(department.UpdatedAt),
 	}
+}
+
+func departmentIDs(departments []*entity.Department) []int64 {
+	ids := make([]int64, len(departments))
+	for i, department := range departments {
+		ids[i] = department.ID
+	}
+	return ids
 }
 
 func toDepartmentMembershipResponse(membership *entity.DepartmentMembership) *contract.DepartmentMembershipResponse {
