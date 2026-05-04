@@ -53,29 +53,35 @@ export function DepartmentSidebar({
       </div>
 
       <div className={styles.list}>
-        {departments.map((department) => (
-          <div
-            key={department.id}
-            className={styles.row}
-            data-active={department.id === selectedDepartmentId}
-          >
-            <button
-              type="button"
-              className={styles.departmentButton}
-              onClick={() => onSelectDepartment(department.id)}
-            >
-              <DepartmentIcon department={department} className={styles.icon} />
-              <span className={styles.name}>{department.name}</span>
-            </button>
+        {departments.map((department) => {
+          const hasNotes = department.note_count > 0
 
-            <DepartmentActionsMenu
-              department={department}
-              moveTargets={getMoveTargets(department)}
-              onBulkMove={onBulkMove}
-              onBulkDelete={onBulkDelete}
-            />
-          </div>
-        ))}
+          return (
+            <div
+              key={department.id}
+              className={styles.row}
+              data-active={department.id === selectedDepartmentId}
+            >
+              <button
+                type="button"
+                className={styles.departmentButton}
+                onClick={() => onSelectDepartment(department.id)}
+              >
+                <DepartmentIcon department={department} className={styles.icon} />
+                <span className={styles.name}>{department.name}</span>
+              </button>
+
+              {hasNotes && (
+                <DepartmentActionsMenu
+                  department={department}
+                  moveTargets={getMoveTargets(department)}
+                  onBulkMove={onBulkMove}
+                  onBulkDelete={onBulkDelete}
+                />
+              )}
+            </div>
+          )
+        })}
 
         {departments.length === 0 && (
           <span className={styles.empty}>{t("departments.management.empty")}</span>

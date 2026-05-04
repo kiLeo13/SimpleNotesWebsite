@@ -58,16 +58,35 @@ describe("DepartmentSidebar", () => {
     fireEvent.click(screen.getByText("Billing"))
     expect(onSelectDepartment).toHaveBeenCalledWith("department-b")
   })
+
+  it("only exposes bulk note actions for departments that have notes", () => {
+    render(
+      <DepartmentSidebar
+        departments={[
+          makeDepartment("department-a", "Empty", 0),
+          makeDepartment("department-b", "Has notes", 2)
+        ]}
+        selectedDepartmentId="department-a"
+        getMoveTargets={() => [{ id: null, name: "General" }]}
+        onCreateClick={vi.fn()}
+        onSelectDepartment={vi.fn()}
+        onBulkMove={vi.fn()}
+        onBulkDelete={vi.fn()}
+      />
+    )
+
+    expect(screen.getAllByLabelText("Options")).toHaveLength(1)
+  })
 })
 
-function makeDepartment(id: string, name: string): DepartmentData {
+function makeDepartment(id: string, name: string, noteCount = 0): DepartmentData {
   return {
     id,
     name,
     icon_type: "EMOJI",
     icon_value: "🏷️",
     color_rgba: null,
-    note_count: 0,
+    note_count: noteCount,
     created_at: "2026-01-01T00:00:00Z",
     updated_at: "2026-01-01T00:00:00Z"
   }
