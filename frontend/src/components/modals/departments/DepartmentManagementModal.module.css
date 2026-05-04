@@ -64,7 +64,7 @@
 
 .panelWithMembers {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 200px;
+  grid-template-columns: minmax(0, 1fr) 230px;
   min-height: 0;
 }
 

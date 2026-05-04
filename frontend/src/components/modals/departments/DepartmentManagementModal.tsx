@@ -6,6 +6,9 @@ import type { BulkMoveTarget } from "./DepartmentActionsMenu"
 import { IoMdClose } from "react-icons/io"
 import { DarkWrapper } from "@/components/DarkWrapper"
 import { ConfirmModal } from "@/components/modals/shared/ConfirmModal"
+import { DepartmentDetailsForm } from "./DepartmentDetailsForm"
+import { DepartmentMembersPanel } from "./DepartmentMembersPanel"
+import { DepartmentSidebar } from "./DepartmentSidebar"
 import { Permission } from "@/models/Permission"
 import { departmentService } from "@/services/departmentService"
 import { useDepartmentsStore } from "@/stores/useDepartmentsStore"
@@ -13,10 +16,6 @@ import { usePermission } from "@/hooks/usePermission"
 import { useTranslation } from "react-i18next"
 import { useUsersStore } from "@/stores/useUsersStore"
 import { toasts } from "@/utils/toastUtils"
-
-import { DepartmentDetailsForm } from "./DepartmentDetailsForm"
-import { DepartmentMembersPanel } from "./DepartmentMembersPanel"
-import { DepartmentSidebar } from "./DepartmentSidebar"
 import {
   DEFAULT_DEPARTMENT_EMOJI,
   DEFAULT_DEPARTMENT_ICON_TYPE,
