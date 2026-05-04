@@ -108,6 +108,7 @@ function makeDepartment(id: string, name: string): DepartmentData {
     icon_type: "EMOJI",
     icon_value: "🏷️",
     color_rgba: null,
+    note_count: 0,
     created_at: "2026-01-01T00:00:00Z",
     updated_at: "2026-01-01T00:00:00Z"
   }

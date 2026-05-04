@@ -27,6 +27,7 @@ export const departmentSchema = z.object({
   icon_type: departmentIconTypeSchema,
   icon_value: z.string(),
   color_rgba: z.number().int().min(0).max(0xffffffff).nullable(),
+  note_count: z.number().int().min(0),
   created_at: z.string(),
   updated_at: z.string()
 })

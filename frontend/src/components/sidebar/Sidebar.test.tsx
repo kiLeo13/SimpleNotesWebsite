@@ -219,6 +219,7 @@ function makeDepartment(
     icon_type: "EMOJI",
     icon_value: "#",
     color_rgba: colorRGBA,
+    note_count: 0,
     created_at: "2026-04-21T10:00:00.000Z",
     updated_at: "2026-04-21T10:00:00.000Z"
   }
