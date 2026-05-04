@@ -1,6 +1,7 @@
 package service
 
 import (
+	"mime/multipart"
 	"testing"
 
 	"gorm.io/gorm"
@@ -180,6 +181,19 @@ func TestDepartmentUpdateImageToEmojiRequiresEmojiValue(t *testing.T) {
 	}, nil)
 	if apierr == nil {
 		t.Fatal("expected missing emoji value to be rejected")
+	}
+	if apierr.Code() != 400 {
+		t.Fatalf("expected 400, got %d", apierr.Code())
+	}
+}
+
+func TestDepartmentIconUploadRejectsFilesOverSafetyLimit(t *testing.T) {
+	_, apierr := uploadDepartmentIcon(noopS3{}, &multipart.FileHeader{
+		Filename: "department.png",
+		Size:     contract.MaxDepartmentIconSizeBytes + 1,
+	})
+	if apierr == nil {
+		t.Fatal("expected oversized department icon to be rejected")
 	}
 	if apierr.Code() != 400 {
 		t.Fatalf("expected 400, got %d", apierr.Code())

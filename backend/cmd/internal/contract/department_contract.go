@@ -1,6 +1,6 @@
 package contract
 
-const MaxDepartmentIconSizeBytes = 1024 * 1024
+const MaxDepartmentIconSizeBytes = 512 * 1024
 
 var ValidDepartmentIconFileTypes = []string{"png", "jpg", "jpeg", "webp", "gif"}
 

@@ -665,7 +665,7 @@ export const apiResources: ApiResource[] = [
               { label: "json_payload" },
               " and the file in ",
               { label: "icon" },
-              ". Text-only and emoji departments can use JSON."
+              ". Text-only and emoji departments can use JSON. Uploaded image icons must be at most 512 KiB."
             ]
           }
         ],
@@ -698,7 +698,7 @@ export const apiResources: ApiResource[] = [
           {
             name: "icon?",
             type: "file",
-            description: ["Raster image file for IMAGE icons. Accepted types: png, jpg, jpeg, webp, gif."]
+            description: ["Raster image file for IMAGE icons. Accepted types: png, jpg, jpeg, webp, gif. Maximum size: 512 KiB."]
           }
         ],
         responses: [
@@ -775,7 +775,7 @@ export const apiResources: ApiResource[] = [
           {
             name: "icon?",
             type: "file",
-            description: ["Replacement raster image file for IMAGE icons."]
+            description: ["Replacement raster image file for IMAGE icons. Maximum size: 512 KiB."]
           }
         ],
         responses: [
