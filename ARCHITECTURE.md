@@ -198,7 +198,9 @@ before deleting the department. Department icons support `NONE`, `EMOJI`, and
 `IMAGE`; `NONE` is the text-only mode and stores an empty icon value. Departments
 can also store a nullable `color_rgba` value as a 32-bit integer in 0xRRGGBBAA
 order. The frontend applies that value only to the sidebar department name text
-through the CSS `color` property.
+through the CSS `color` property. Department API and websocket department
+objects include `note_count`, which is the current number of notes assigned to
+that department.
 
 The `connections` table now models logical websocket sessions, not only raw API Gateway transport IDs. Each row stores:
 
@@ -258,7 +260,7 @@ That creates a few important cross-project seams:
 
 - authentication tokens issued by the backend auth stack are stored and consumed by the frontend session store
 - note contracts must stay aligned between frontend `types/` and backend `contract/` plus service behavior
-- department contracts must stay aligned between frontend `types/` and backend `contract/`; this includes department objects, `icon_type`, nullable `color_rgba`, membership edge lists, note `department_id`, and department websocket event payloads
+- department contracts must stay aligned between frontend `types/` and backend `contract/`; this includes department objects, `icon_type`, nullable `color_rgba`, `note_count`, membership edge lists, note `department_id`, and department websocket event payloads
 - audit log contracts and permission bit offsets must stay aligned between frontend `types/models` and backend `contract/entity` layers
 - websocket event shapes must stay aligned between backend event emitters and frontend event schemas
 - file and reference note handling depends on both backend storage behavior and frontend renderer support

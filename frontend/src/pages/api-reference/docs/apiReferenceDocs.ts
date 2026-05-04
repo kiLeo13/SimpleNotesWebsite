@@ -568,6 +568,11 @@ export const apiResources: ApiResource[] = [
           "Optional department text color as a 32-bit RGBA integer in 0xRRGGBBAA order. Null means the client should use its default sidebar text color."
         ]
       },
+      {
+        name: "note_count",
+        type: "integer",
+        description: ["Number of notes currently assigned to this department."]
+      },
       { name: "created_at", type: "string", description: ["Creation time."] },
       { name: "updated_at", type: "string", description: ["Last update time."] }
     ],
@@ -1505,6 +1510,11 @@ export const gatewayEvents: GatewayEvent[] = [
         type: "integer | null",
         description: ["Optional sidebar text color in 0xRRGGBBAA order."]
       },
+      {
+        name: "note_count",
+        type: "integer",
+        description: ["Number of notes currently assigned to this department."]
+      },
       { name: "created_at", type: "string", description: ["Creation time."] },
       { name: "updated_at", type: "string", description: ["Last update time."] }
     ],
@@ -1545,6 +1555,11 @@ export const gatewayEvents: GatewayEvent[] = [
         name: "color_rgba",
         type: "integer | null",
         description: ["Optional sidebar text color in 0xRRGGBBAA order."]
+      },
+      {
+        name: "note_count",
+        type: "integer",
+        description: ["Number of notes currently assigned to this department."]
       },
       { name: "created_at", type: "string", description: ["Creation time."] },
       { name: "updated_at", type: "string", description: ["Last update time."] }
