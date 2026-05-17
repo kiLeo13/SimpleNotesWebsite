@@ -1,7 +1,7 @@
 .modalWrapper {
   display: flex;
   flex-direction: column;
-  background-color: rgb(24, 22, 27);
+  background-color: var(--surface-lowest);
   width: 300px;
   padding: 25px;
   border-radius: 15px;

@@ -6,7 +6,7 @@
   width: 500px;
   box-sizing: border-box;
   user-select: text;
-  background-color: rgb(24, 22, 27);
+  background-color: var(--surface-lowest);
   border-radius: 12px;
   border: 1px solid rgb(42, 35, 46);
 }

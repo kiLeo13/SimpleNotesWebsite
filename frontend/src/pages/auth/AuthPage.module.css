@@ -4,7 +4,7 @@
   grid-template-columns: 1fr 1fr;
   inset: 0;
   user-select: none;
-  background-color: rgb(20, 18, 22);
+  background-color: var(--auth-bg);
   transition: grid-template-columns 600ms ease-in-out;
 }
 

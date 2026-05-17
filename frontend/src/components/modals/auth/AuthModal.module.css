@@ -1,5 +1,5 @@
 .authModalContainer {
-  background-color: rgb(35, 32, 39);
+  background-color: var(--modal-bg-color);
   border-radius: 15px;
   min-width: 450px;
   max-width: 500px;
@@ -19,7 +19,7 @@
 .authFormControl {
   display: flex;
   flex-direction: column;
-  color: rgb(155, 155, 155);
+  color: var(--text-secondary);
   font-size: 1.2em;
   gap: 5px;
 }
@@ -51,25 +51,25 @@
 .authFormInput {
   padding: 10px 8px;
   font-size: 0.85em;
-  color: rgb(140, 140, 140);
-  background-color: rgba(0, 0, 0, 0.2);
-  outline: 1px solid rgb(46, 38, 54);
+  color: var(--text-secondary);
+  background-color: var(--surface-sunken);
+  outline: 1px solid var(--border-default);
   border-radius: 8px;
   border: none;
   transition: outline 100ms;
 }
 
 .authFormInput:focus {
-  outline-color: rgb(117, 89, 148);
+  outline-color: var(--accent-deep);
 }
 
 .authFormInput::placeholder {
-  color: rgb(69, 62, 77);
+  color: var(--text-faint);
 }
 
 .authInputError {
   font-size: 0.7em;
-  color: rgb(255, 60, 60);
+  color: var(--semantic-danger);
   user-select: text;
 }
 
@@ -94,11 +94,11 @@
   justify-content: center;
   border-radius: 100px;
   padding: 12px 30px;
-  color: rgb(51, 27, 90);
+  color: var(--surface-lowest);
   font-size: 1em;
   font-weight: 500;
   border: none;
-  background-color: rgb(144, 92, 192);
+  background-color: var(--accent-deep);
   cursor: pointer;
   transition: background-color 300ms;
 }
@@ -112,8 +112,8 @@
   align-items: center;
   font-size: 0.9em;
   font-weight: 500;
-  background-color: rgb(42, 38, 49);
-  color: rgb(98, 86, 121);
+  background-color: var(--border-default);
+  color: var(--text-muted);
   border-radius: 8px;
   padding: 8px;
   gap: 8px;
@@ -125,8 +125,8 @@
 }
 
 .modalSwitcher:hover {
-  background-color: rgb(56, 49, 70);
-  color: rgb(130, 114, 160);
+  background-color: var(--interactive-active-bg);
+  color: var(--text-secondary);
 }
 
 .loaderContainer {
