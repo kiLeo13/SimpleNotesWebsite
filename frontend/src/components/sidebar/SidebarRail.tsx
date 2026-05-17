@@ -1,4 +1,5 @@
 import { useState, type JSX } from "react"
+import { useThemeStore, type ThemePreference } from "@/stores/useThemeStore"
 import { useNavigate } from "@tanstack/react-router"
 import { ActionMenu, type MenuActionItem } from "../ui/ActionMenu"
 import type { EditorMode } from "../modals/notes/creations/editors/CreateEditorModal"
@@ -12,8 +13,7 @@ import { RiFlowChart } from "react-icons/ri"
 import { FaUsers } from "react-icons/fa"
 import { FaGear } from "react-icons/fa6"
 import { DarkWrapper } from "../DarkWrapper"
-import { MdOutlineLogout } from "react-icons/md"
-import { MdOutlineHistory } from "react-icons/md"
+import { MdOutlineLogout, MdOutlineHistory, MdOutlinePalette } from "react-icons/md"
 import { MdOutlineAccountTree } from "react-icons/md"
 import { UserManagementPopover } from "../modals/users/management/UserManagementPopover"
 import { CgController } from "react-icons/cg"
@@ -63,7 +63,7 @@ const CompanyLookupModal = createAsyncComponent(
 )
 
 const modalLoaderFallback = (
-  <LoaderContainer scale={0.9} loaderColor="#b79ed8" />
+  <LoaderContainer scale={0.9} loaderColor="var(--accent-loader-modal)" />
 )
 
 export function SidebarRail(): JSX.Element {
@@ -106,7 +106,9 @@ export function SidebarRail(): JSX.Element {
     void navigate({ to: "/login" })
   }
 
-  const settingsOptions = getSettingsOptions(t, handleSignout)
+  const preference = useThemeStore((s) => s.preference)
+  const setPreference = useThemeStore((s) => s.setPreference)
+  const settingsOptions = getSettingsOptions(t, handleSignout, preference, setPreference)
   const createNoteOptions = getCreateNoteOptions(
     t,
     setEditorMode,
@@ -292,12 +294,35 @@ export function SidebarRail(): JSX.Element {
 
 function getSettingsOptions(
   t: (s: string) => string,
-  signout: () => void
+  signout: () => void,
+  preference: ThemePreference,
+  setPreference: (p: ThemePreference) => void
 ): MenuActionItem[] {
   return [
     {
+      label: t("menus.settings.appearance"),
+      icon: <MdOutlinePalette size={"1.4em"} color="var(--accent)" />,
+      subItems: [
+        {
+          label: t("menus.settings.themeLight"),
+          onClick: () => setPreference("light"),
+          checked: preference === "light"
+        },
+        {
+          label: t("menus.settings.themeDark"),
+          onClick: () => setPreference("dark"),
+          checked: preference === "dark"
+        },
+        {
+          label: t("menus.settings.themeSystem"),
+          onClick: () => setPreference("system"),
+          checked: preference === "system"
+        }
+      ]
+    },
+    {
       label: t("menus.settings.signout"),
-      icon: <MdOutlineLogout size={"1.4em"} color="#a285d1" />,
+      icon: <MdOutlineLogout size={"1.4em"} color="var(--accent)" />,
       onClick: signout
     }
   ]
@@ -311,17 +336,17 @@ function getCreateNoteOptions(
   return [
     {
       label: t("menus.notes.optText"),
-      icon: <MdTextFields size={"1.5em"} color="#a285d1" />,
+      icon: <MdTextFields size={"1.5em"} color="var(--accent)" />,
       onClick: () => setEditorMode("MARKDOWN")
     },
     {
       label: t("menus.notes.optFlowchart"),
-      icon: <RiFlowChart size={"1.4em"} color="#a285d1" />,
+      icon: <RiFlowChart size={"1.4em"} color="var(--accent)" />,
       onClick: () => setEditorMode("FLOWCHART")
     },
     {
       label: t("menus.notes.optFile"),
-      icon: <MdInsertDriveFile size={"1.4em"} color="#a285d1" />,
+      icon: <MdInsertDriveFile size={"1.4em"} color="var(--accent)" />,
       onClick: () => setShowUploadModal(true)
     }
   ]

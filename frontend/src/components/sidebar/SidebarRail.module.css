@@ -8,9 +8,9 @@
   padding: 12px 10px;
   box-sizing: border-box;
   background:
-    linear-gradient(180deg, rgba(15, 14, 19, 0.96), rgba(21, 19, 27, 0.98));
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: inset -1px 0 0 rgba(120, 105, 133, 0.08);
+    linear-gradient(180deg, var(--rail-bg-from), var(--rail-bg-to));
+  border-right: 1px solid var(--rail-border);
+  box-shadow: inset -1px 0 0 var(--rail-shadow);
 }
 
 .topActions,
@@ -35,7 +35,7 @@
   border: 1px solid transparent;
   border-radius: 14px;
   font-size: 28px;
-  color: rgba(194, 156, 238, 0.72);
+  color: var(--rail-btn-color);
   overflow: hidden;
   cursor: pointer;
   transition:
@@ -46,15 +46,15 @@
 }
 
 .button:hover:not(:disabled) {
-  background-color: rgba(119, 102, 161, 0.14);
-  border-color: rgba(138, 116, 179, 0.22);
-  color: rgba(215, 192, 245, 0.95);
+  background-color: var(--rail-btn-hover-bg);
+  border-color: var(--rail-btn-hover-border);
+  color: var(--rail-btn-hover-color);
 }
 
 .button:focus-visible {
   outline: none;
-  border-color: rgba(153, 126, 214, 0.65);
-  background-color: rgba(119, 102, 161, 0.18);
+  border-color: var(--rail-btn-focus-border);
+  background-color: var(--rail-btn-focus-bg);
 }
 
 .button:active:not(:disabled) {

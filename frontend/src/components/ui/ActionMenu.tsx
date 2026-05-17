@@ -4,15 +4,18 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import clsx from "clsx"
 
 import { Ripple } from "./effects/Ripple"
+import { MdChevronRight, MdCheck } from "react-icons/md"
 
 import styles from "./ActionMenu.module.css"
 
 export interface MenuActionItem {
   label: string
   icon?: React.ReactNode
-  onClick: () => void
+  onClick?: () => void
   className?: string
   style?: React.CSSProperties
+  subItems?: MenuActionItem[]
+  checked?: boolean
 }
 
 type ActionMenuProps = {
@@ -56,22 +59,69 @@ export function ActionMenu({
             </>
           )}
 
-          {items.map((item, index) => (
-            <DropdownMenu.Item
-              key={`${item.label}-${index}`}
-              className={clsx(styles.menuItem, item.className)}
-              onSelect={item.onClick}
-              onClick={isolateEvents ? (e) => e.stopPropagation() : undefined}
-              style={item.style}
-            >
-              <div className={styles.iconWrapper}>{item.icon}</div>
-              <span className={styles.itemLabel}>{item.label}</span>
-              <Ripple />
-            </DropdownMenu.Item>
-          ))}
+          {items.map((item, index) =>
+            item.subItems ? (
+              <SubMenu key={`${item.label}-${index}`} item={item} isolateEvents={isolateEvents} />
+            ) : (
+              <DropdownMenu.Item
+                key={`${item.label}-${index}`}
+                className={clsx(styles.menuItem, item.className)}
+                onSelect={item.onClick}
+                onClick={isolateEvents ? (e) => e.stopPropagation() : undefined}
+                style={item.style}
+              >
+                <div className={styles.iconWrapper}>{item.icon}</div>
+                <span className={styles.itemLabel}>{item.label}</span>
+                <Ripple />
+              </DropdownMenu.Item>
+            )
+          )}
           <DropdownMenu.Arrow className={styles.menuArrow} />
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
     </DropdownMenu.Root>
+  )
+}
+
+function SubMenu({
+  item,
+  isolateEvents
+}: {
+  item: MenuActionItem
+  isolateEvents: boolean
+}): JSX.Element {
+  return (
+    <DropdownMenu.Sub>
+      <DropdownMenu.SubTrigger className={clsx(styles.menuItem, styles.subTrigger, item.className)} style={item.style}>
+        <div className={styles.iconWrapper}>{item.icon}</div>
+        <span className={styles.itemLabel}>{item.label}</span>
+        <MdChevronRight className={styles.subChevron} />
+      </DropdownMenu.SubTrigger>
+
+      <DropdownMenu.Portal>
+        <DropdownMenu.SubContent
+          className={styles.menuContent}
+          sideOffset={6}
+          alignOffset={-4}
+          collisionPadding={10}
+        >
+          {item.subItems!.map((sub, i) => (
+            <DropdownMenu.Item
+              key={`${sub.label}-${i}`}
+              className={clsx(styles.menuItem, styles.subItem, sub.className)}
+              onSelect={sub.onClick}
+              onClick={isolateEvents ? (e) => e.stopPropagation() : undefined}
+              style={sub.style}
+            >
+              <div className={styles.checkSlot}>
+                {sub.checked && <MdCheck size="1.1em" />}
+              </div>
+              <span className={styles.itemLabel}>{sub.label}</span>
+              <Ripple />
+            </DropdownMenu.Item>
+          ))}
+        </DropdownMenu.SubContent>
+      </DropdownMenu.Portal>
+    </DropdownMenu.Sub>
   )
 }

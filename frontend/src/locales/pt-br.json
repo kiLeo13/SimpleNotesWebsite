@@ -464,7 +464,11 @@
       "noResults": "Nenhum resultado."
     },
     "settings": {
-      "signout": "Sair"
+      "signout": "Sair",
+      "appearance": "Aparência",
+      "themeLight": "Claro",
+      "themeDark": "Escuro",
+      "themeSystem": "Sistema"
     },
     "notes": {
       "opts": {
