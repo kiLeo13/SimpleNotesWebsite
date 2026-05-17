@@ -10,6 +10,7 @@ import { toasts } from "@/utils/toastUtils"
 
 const navigateMock = vi.fn()
 const grantedPermissions = new Set<Permission>()
+const darkWrapperMock = vi.hoisted(() => vi.fn())
 
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({
@@ -65,7 +66,14 @@ vi.mock("../ui/AppTooltip", () => ({
 }))
 
 vi.mock("../DarkWrapper", () => ({
-  DarkWrapper: ({ children }: { children: ReactNode }) => <>{children}</>
+  DarkWrapper: (props: {
+    children: ReactNode
+    open?: boolean
+    isolateMouseDownEvents?: boolean
+  }) => {
+    darkWrapperMock(props)
+    return <>{props.children}</>
+  }
 }))
 
 vi.mock("../modals/users/management/UserManagementPopover", () => ({
@@ -113,6 +121,7 @@ vi.mock("@/utils/toastUtils", () => ({
 describe("SidebarRail", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    darkWrapperMock.mockClear()
     grantedPermissions.clear()
     localStorage.clear()
   })
@@ -214,5 +223,22 @@ describe("SidebarRail", () => {
     expect(usePermission).toHaveBeenCalledWith(Permission.PerformLookup)
     expect(usePermission).toHaveBeenCalledWith(Permission.ReadAuditLogs)
     expect(usePermission).toHaveBeenCalledWith(Permission.ManageDepartments)
+  })
+
+  it("lets editor modal mouse down events reach native drag listeners", () => {
+    grantedPermissions.add(Permission.CreateNotes)
+
+    render(<SidebarRail />)
+
+    fireEvent.click(screen.getByRole("button", { name: "Fluxograma" }))
+
+    const editorWrapperCall = darkWrapperMock.mock.calls
+      .map(([props]) => props)
+      .find(
+        (props) =>
+          props.open === true && props.isolateMouseDownEvents === false
+      )
+
+    expect(editorWrapperCall).toBeDefined()
   })
 })

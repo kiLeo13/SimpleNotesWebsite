@@ -130,6 +130,7 @@ export function SidebarRail(): JSX.Element {
         open={!!editorMode}
         onOpenChange={(open) => !open && closeEditor()}
         animationPreset="slide-up"
+        isolateMouseDownEvents={false}
       >
         {renderedEditorMode && (
           <CreateEditorModal
