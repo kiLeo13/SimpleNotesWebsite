@@ -16,7 +16,7 @@
 }
 
 .resizeHandle[data-separator="hover"] {
-  background-color: rgb(68, 53, 83);
+  background-color: var(--resize-handle-hover);
   transition: background-color 200ms ease-in-out 300ms;
 }
 
@@ -26,7 +26,7 @@
  * a pending hover transition, so this tiny change triggers an instant update.
  */
 .resizeHandle[data-separator="active"] {
-  background-color: rgb(68, 53, 84);
+  background-color: var(--resize-handle-active);
   transition: background-color 200ms ease-in-out;
 }
 
