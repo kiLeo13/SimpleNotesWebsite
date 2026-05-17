@@ -352,6 +352,7 @@ Do not copy environment values into docs or comments unless explicitly needed.
 - `frontend/src/stores/useNotesStore.ts` treats `REFERENCE` notes differently from text notes.
 - Sidebar utility modals and board renderer frames are lazy-loaded with plain `import()` helpers so the app shell does not eagerly pull the whole circus into the entry bundle.
 - Shared modal opening and closing animations belong in `frontend/src/components/DarkWrapper.module.css`; modal CSS modules should not duplicate `smoothToggleModal` keyframes.
+- The editor creation modal opts out of `DarkWrapper` mouse-down isolation while keeping click isolation, because Mermaid preview panning starts from a native window `mousedown` listener in `react-zoom-pan-pinch`.
 - Backend startup loads config, initializes SQLite, wires AWS-backed dependencies, starts background jobs, and serves Echo on port `7070`.
 - Backend audit log reads are protected by `PermissionReadAuditLogs`; admins still inherit access through effective permission checks.
 - Backend websocket events can mutate frontend-visible state through the websocket pipeline, so frontend and backend changes around realtime need to be checked together.

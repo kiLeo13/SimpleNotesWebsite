@@ -62,6 +62,7 @@ Important frontend behavior:
   - Board renderers are imported only when the active note needs them.
   - Markdown syntax highlighting styles now load from the markdown renderer path instead of the app root.
 - Modal entrance and exit motion is centralized in `frontend/src/components/DarkWrapper.tsx` and `DarkWrapper.module.css`.
+- The editor creation modal keeps `DarkWrapper` click isolation but lets mouse-down events reach native listeners so the Mermaid preview can use `react-zoom-pan-pinch` mouse dragging inside the dialog.
   Modal bodies should keep layout and visual styling only, while callers choose the shared `pop` or `slide-up` animation preset on the wrapper.
 - Realtime updates come through the websocket manager and fan into stores.
 - Department create, update, and delete events update the department store. Membership changes are treated as a scope change and trigger a full departments/users/notes resync for the affected client.
