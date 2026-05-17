@@ -1,0 +1,328 @@
+/*
+ * ─── ZenKeep Theme Tokens ──────────────────────────────────────────────
+ *
+ * All theme-aware colors live here, scoped to [data-theme].
+ * CSS modules reference these via var(--token-name).
+ *
+ * Token naming:
+ *   --surface-*     Backgrounds at different elevation levels
+ *   --text-*        Foreground / text colors
+ *   --accent-*      Brand purple in various intensities
+ *   --border-*      Borders and separators
+ *   --interactive-* Hover / focus / active state helpers
+ *   --menu-*        Dropdown menus (Radix)
+ *   --sidebar-*     Sidebar-specific (kept for backward compat)
+ *   --modal-*       Modal/dialog chrome
+ *   --rail-*        Sidebar rail
+ *   --note-*        Note list items
+ *   --dept-*        Department groups
+ *   --search-*      Search input
+ *   --scrollbar-*   Scrollbar thumb
+ *   --loader-*      Spinners
+ *   --semantic-*    Success / warning / danger
+ * ────────────────────────────────────────────────────────────────────────
+ */
+
+/* ══════════════════════════════════════════════════════════════════════ */
+/*  DARK THEME                                                          */
+/* ══════════════════════════════════════════════════════════════════════ */
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* ── Surfaces ─────────────────────────────────────────────────────── */
+  --surface-base: rgb(19, 17, 24);
+  --surface-raised: rgb(33, 29, 43);
+  --surface-overlay: rgb(30, 25, 37);
+  --surface-sunken: rgba(0, 0, 0, 0.2);
+  --surface-lowest: rgb(12, 11, 15);
+  --surface-inset: rgba(20, 22, 25, 0.45);
+  --surface-inset-strong: rgba(20, 22, 25, 0.65);
+
+  /* ── Rail ─────────────────────────────────────────────────────────── */
+  --rail-bg-from: rgba(15, 14, 19, 0.96);
+  --rail-bg-to: rgba(21, 19, 27, 0.98);
+  --rail-border: rgba(255, 255, 255, 0.05);
+  --rail-shadow: rgba(120, 105, 133, 0.08);
+  --rail-btn-color: rgba(194, 156, 238, 0.72);
+  --rail-btn-hover-bg: rgba(119, 102, 161, 0.14);
+  --rail-btn-hover-border: rgba(138, 116, 179, 0.22);
+  --rail-btn-hover-color: rgba(215, 192, 245, 0.95);
+  --rail-btn-focus-bg: rgba(119, 102, 161, 0.18);
+  --rail-btn-focus-border: rgba(153, 126, 214, 0.65);
+
+  /* ── Text ─────────────────────────────────────────────────────────── */
+  --text-primary: #dbdee1;
+  --text-secondary: rgb(160, 157, 167);
+  --text-muted: rgb(90, 84, 97);
+  --text-heading: rgb(176, 173, 184);
+  --text-note: #908c97;
+  --text-faint: #524d5a;
+  --text-bright: #c6ccd6;
+  --text-pill: #d8dee9;
+  --text-label: #949ba4;
+  --text-body: #a19ca5;
+
+  /* ── Accent ───────────────────────────────────────────────────────── */
+  --accent: #a285d1;
+  --accent-deep: rgb(107, 64, 156);
+  --accent-strong: #58457c;
+  --accent-muted: rgba(136, 116, 167, 0.14);
+  --accent-subtle: rgba(136, 116, 167, 0.08);
+  --accent-loader: #8472a1;
+  --accent-loader-modal: #b79ed8;
+
+  /* ── Borders ──────────────────────────────────────────────────────── */
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-default: rgb(42, 36, 51);
+  --border-strong: rgb(107, 64, 156);
+  --border-hover: rgb(45, 39, 61);
+  --border-divider: rgba(255, 255, 255, 0.1);
+  --border-divider-strong: rgb(76, 68, 87);
+
+  /* ── Interactive ──────────────────────────────────────────────────── */
+  --interactive-hover: rgba(119, 102, 161, 0.14);
+  --interactive-hover-border: rgba(138, 116, 179, 0.22);
+  --interactive-focus-bg: rgba(119, 102, 161, 0.18);
+  --interactive-focus-border: rgba(153, 126, 214, 0.65);
+  --interactive-active-bg: rgb(36, 33, 48);
+
+  /* ── Menu ──────────────────────────────────────────────────────────── */
+  --menu-bg: #24202b;
+  --menu-item-hover: #58457c;
+  --menu-separator: #35363c;
+  --menu-text: #dbdee1;
+  --menu-label: #949ba4;
+  --menu-shadow: 0px 10px 38px -10px rgba(22, 23, 24, 0.35),
+    0px 10px 20px -15px rgba(22, 23, 24, 0.2);
+
+  /* ── Sidebar ──────────────────────────────────────────────────────── */
+  --sidebar-background-color: rgb(33, 29, 43);
+  --main-background-color: rgb(19, 17, 24);
+  --sidebar-item-background-color: rgb(19, 17, 25);
+  --sidebar-item-open-background-color: rgba(19, 17, 25, 0.7);
+  --sidebar-item-hover-border-color: rgb(64, 58, 86);
+  --sidebar-item-hover-background-color: rgb(36, 33, 48);
+  --sidebar-bottom-background-color: rgb(12, 11, 15);
+
+  /* ── Note Items ────────────────────────────────────────────────────── */
+  --note-hover-bg: rgba(136, 116, 167, 0.125);
+  --note-patch-hover: rgb(35, 32, 46);
+  --note-patch-open-hover: rgb(51, 45, 65);
+
+  /* ── Department ────────────────────────────────────────────────────── */
+  --dept-header-text: rgb(124, 116, 137);
+  --dept-header-hover-bg: rgba(136, 116, 167, 0.105);
+  --dept-header-hover-text: rgb(151, 140, 166);
+  --dept-drop-border: rgba(154, 131, 180, 0.75);
+  --dept-drop-bg: rgba(136, 116, 167, 0.18);
+  --dept-drop-text: rgb(178, 164, 196);
+  --dept-leading-hover: rgb(158, 146, 175);
+  --dept-icon-color: rgb(122, 108, 147);
+  --dept-chevron: rgb(95, 86, 110);
+  --dept-count-bg: rgb(42, 37, 54);
+  --dept-count-text: rgb(118, 108, 132);
+
+  /* ── Search ────────────────────────────────────────────────────────── */
+  --search-bg: rgba(0, 0, 0, 0.2);
+  --search-border: rgba(0, 0, 0, 0.2);
+  --search-text: rgb(158, 158, 158);
+  --search-border-hover: rgb(45, 39, 61);
+  --search-border-focus: rgb(107, 64, 156);
+  --search-placeholder: rgb(69, 65, 73);
+
+  /* ── Note List Header ──────────────────────────────────────────────── */
+  --note-list-title: rgb(160, 157, 167);
+  --note-list-count: rgb(90, 84, 97);
+  --note-list-count-hover-bg: rgb(50, 44, 65);
+  --note-list-count-hover-text: rgb(127, 116, 139);
+
+  /* ── Modal ─────────────────────────────────────────────────────────── */
+  --modal-bg-color: rgb(30, 25, 37);
+  --modal-border-color: rgb(42, 36, 51);
+  --modal-close-hover: rgb(51, 42, 63);
+  --modal-shadow: 0 20px 56px rgba(0, 0, 0, 0.35);
+  --modal-pill-border: rgba(255, 255, 255, 0.08);
+  --modal-pill-bg: rgba(255, 255, 255, 0.04);
+  --modal-dashed-border: rgba(255, 255, 255, 0.08);
+  --algo-calc-modal-background-color: rgb(33, 29, 43);
+
+  /* ── Resize Handle ─────────────────────────────────────────────────── */
+  --resize-handle-hover: rgb(68, 53, 83);
+  --resize-handle-active: rgb(68, 53, 84);
+
+  /* ── Overlay ───────────────────────────────────────────────────────── */
+  --overlay-bg: rgba(0, 0, 0, 0.7);
+
+  /* ── Scrollbar ─────────────────────────────────────────────────────── */
+  --scrollbar-thumb: rgba(120, 105, 133, 0.5);
+  --scrollbar-thumb-hover: rgba(93, 81, 104, 0.5);
+
+  /* ── Auth ──────────────────────────────────────────────────────────── */
+  --auth-bg: rgb(20, 18, 22);
+
+  /* ── Semantic ──────────────────────────────────────────────────────── */
+  --semantic-danger: rgb(238, 54, 54);
+  --semantic-danger-muted: rgba(180, 50, 50, 0.15);
+  --semantic-danger-text: #f58587;
+  --semantic-success: #57f287;
+  --semantic-success-muted: rgba(26, 99, 52, 1);
+  --semantic-warning: rgb(207, 177, 44);
+  --semantic-warning-muted: rgba(150, 132, 31, 0.28);
+}
+
+/* ══════════════════════════════════════════════════════════════════════ */
+/*  LIGHT THEME                                                         */
+/*  Soft purple-tinted palette. Avoids stark white/black.               */
+/* ══════════════════════════════════════════════════════════════════════ */
+
+[data-theme="light"] {
+  color-scheme: light;
+
+  /* ── Surfaces ─────────────────────────────────────────────────────── */
+  --surface-base: hsl(260 20% 95%);
+  --surface-raised: hsl(260 18% 92%);
+  --surface-overlay: hsl(260 22% 97%);
+  --surface-sunken: hsl(260 14% 89%);
+  --surface-lowest: hsl(260 16% 87%);
+  --surface-inset: hsl(260 12% 92%);
+  --surface-inset-strong: hsl(260 12% 88%);
+
+  /* ── Rail ─────────────────────────────────────────────────────────── */
+  --rail-bg-from: hsl(260 18% 91%);
+  --rail-bg-to: hsl(260 16% 89%);
+  --rail-border: hsl(260 12% 84%);
+  --rail-shadow: rgba(120, 105, 133, 0.06);
+  --rail-btn-color: hsl(270 36% 48%);
+  --rail-btn-hover-bg: hsl(270 30% 88%);
+  --rail-btn-hover-border: hsl(270 28% 78%);
+  --rail-btn-hover-color: hsl(270 44% 38%);
+  --rail-btn-focus-bg: hsl(270 30% 86%);
+  --rail-btn-focus-border: hsl(270 40% 60%);
+
+  /* ── Text ─────────────────────────────────────────────────────────── */
+  --text-primary: hsl(260 16% 22%);
+  --text-secondary: hsl(260 10% 40%);
+  --text-muted: hsl(260 8% 56%);
+  --text-heading: hsl(260 14% 28%);
+  --text-note: hsl(260 8% 46%);
+  --text-faint: hsl(260 6% 62%);
+  --text-bright: hsl(260 14% 24%);
+  --text-pill: hsl(260 12% 26%);
+  --text-label: hsl(260 8% 48%);
+  --text-body: hsl(260 8% 42%);
+
+  /* ── Accent ───────────────────────────────────────────────────────── */
+  --accent: hsl(270 48% 50%);
+  --accent-deep: hsl(270 52% 44%);
+  --accent-strong: hsl(270 36% 60%);
+  --accent-muted: hsla(270 40% 50% / 0.12);
+  --accent-subtle: hsla(270 40% 50% / 0.06);
+  --accent-loader: hsl(270 28% 56%);
+  --accent-loader-modal: hsl(270 40% 54%);
+
+  /* ── Borders ──────────────────────────────────────────────────────── */
+  --border-subtle: hsl(260 12% 86%);
+  --border-default: hsl(260 14% 82%);
+  --border-strong: hsl(270 40% 56%);
+  --border-hover: hsl(260 16% 76%);
+  --border-divider: hsl(260 10% 84%);
+  --border-divider-strong: hsl(260 10% 74%);
+
+  /* ── Interactive ──────────────────────────────────────────────────── */
+  --interactive-hover: hsla(270 30% 50% / 0.1);
+  --interactive-hover-border: hsla(270 30% 50% / 0.2);
+  --interactive-focus-bg: hsla(270 30% 50% / 0.12);
+  --interactive-focus-border: hsl(270 40% 56%);
+  --interactive-active-bg: hsl(260 16% 88%);
+
+  /* ── Menu ──────────────────────────────────────────────────────────── */
+  --menu-bg: hsl(260 20% 97%);
+  --menu-item-hover: hsl(270 30% 88%);
+  --menu-separator: hsl(260 10% 88%);
+  --menu-text: hsl(260 14% 24%);
+  --menu-label: hsl(260 8% 50%);
+  --menu-shadow: 0px 10px 38px -10px rgba(80, 60, 100, 0.14),
+    0px 10px 20px -15px rgba(80, 60, 100, 0.08);
+
+  /* ── Sidebar ──────────────────────────────────────────────────────── */
+  --sidebar-background-color: hsl(260 18% 92%);
+  --main-background-color: hsl(260 20% 95%);
+  --sidebar-item-background-color: hsl(260 16% 94%);
+  --sidebar-item-open-background-color: hsla(260 18% 88% / 0.7);
+  --sidebar-item-hover-border-color: hsl(260 14% 78%);
+  --sidebar-item-hover-background-color: hsl(260 16% 88%);
+  --sidebar-bottom-background-color: hsl(260 16% 87%);
+
+  /* ── Note Items ────────────────────────────────────────────────────── */
+  --note-hover-bg: hsla(270 30% 50% / 0.08);
+  --note-patch-hover: hsl(260 14% 88%);
+  --note-patch-open-hover: hsl(260 14% 82%);
+
+  /* ── Department ────────────────────────────────────────────────────── */
+  --dept-header-text: hsl(260 10% 48%);
+  --dept-header-hover-bg: hsla(270 30% 50% / 0.07);
+  --dept-header-hover-text: hsl(260 10% 38%);
+  --dept-drop-border: hsl(270 30% 66%);
+  --dept-drop-bg: hsla(270 30% 50% / 0.1);
+  --dept-drop-text: hsl(270 18% 38%);
+  --dept-leading-hover: hsl(270 14% 42%);
+  --dept-icon-color: hsl(270 16% 52%);
+  --dept-chevron: hsl(260 10% 60%);
+  --dept-count-bg: hsl(260 14% 86%);
+  --dept-count-text: hsl(260 10% 48%);
+
+  /* ── Search ────────────────────────────────────────────────────────── */
+  --search-bg: hsl(260 14% 89%);
+  --search-border: hsl(260 12% 85%);
+  --search-text: hsl(260 10% 36%);
+  --search-border-hover: hsl(260 16% 76%);
+  --search-border-focus: hsl(270 44% 52%);
+  --search-placeholder: hsl(260 6% 62%);
+
+  /* ── Note List Header ──────────────────────────────────────────────── */
+  --note-list-title: hsl(260 10% 36%);
+  --note-list-count: hsl(260 8% 56%);
+  --note-list-count-hover-bg: hsl(260 14% 86%);
+  --note-list-count-hover-text: hsl(260 12% 42%);
+
+  /* ── Modal ─────────────────────────────────────────────────────────── */
+  --modal-bg-color: hsl(260 22% 97%);
+  --modal-border-color: hsl(260 14% 84%);
+  --modal-close-hover: hsl(260 14% 90%);
+  --modal-shadow: 0 20px 56px rgba(80, 60, 100, 0.12);
+  --modal-pill-border: hsl(260 10% 82%);
+  --modal-pill-bg: hsl(260 12% 93%);
+  --modal-dashed-border: hsl(260 10% 82%);
+  --algo-calc-modal-background-color: hsl(260 18% 94%);
+
+  /* ── Resize Handle ─────────────────────────────────────────────────── */
+  --resize-handle-hover: hsl(270 20% 76%);
+  --resize-handle-active: hsl(270 22% 72%);
+
+  /* ── Overlay ───────────────────────────────────────────────────────── */
+  --overlay-bg: rgba(40, 30, 50, 0.4);
+
+  /* ── Scrollbar ─────────────────────────────────────────────────────── */
+  --scrollbar-thumb: hsla(260 12% 50% / 0.3);
+  --scrollbar-thumb-hover: hsla(260 12% 40% / 0.4);
+
+  /* ── Auth ──────────────────────────────────────────────────────────── */
+  --auth-bg: hsl(260 18% 93%);
+
+  /* ── Semantic ──────────────────────────────────────────────────────── */
+  --semantic-danger: hsl(0 72% 50%);
+  --semantic-danger-muted: hsla(0 60% 50% / 0.1);
+  --semantic-danger-text: hsl(0 60% 42%);
+  --semantic-success: hsl(145 62% 36%);
+  --semantic-success-muted: hsla(145 50% 40% / 0.12);
+  --semantic-warning: hsl(45 70% 44%);
+  --semantic-warning-muted: hsla(45 60% 44% / 0.14);
+}
+
+/* ── Smooth transitions on theme change ─────────────────────────────── */
+html[data-theme] {
+  transition:
+    background-color 250ms ease,
+    color 250ms ease;
+}

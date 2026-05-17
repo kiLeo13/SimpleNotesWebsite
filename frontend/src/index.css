@@ -1,21 +1,10 @@
 :root {
-  --sidebar-background-color: rgb(33, 29, 43);
-  --main-background-color: rgb(19, 17, 24);
   --scrollbar-width: 4px;
-  --sidebar-item-background-color: rgb(19, 17, 25);
-  --sidebar-item-open-background-color: rgba(19, 17, 25, 0.7);
-  --sidebar-item-hover-border-color: rgb(64, 58, 86);
-  --sidebar-item-hover-background-color: rgb(36, 33, 48);
-  --sidebar-bottom-background-color: rgb(12, 11, 15);
   --sidebar-padding: 13px;
   --black-background-container-zindex: 10;
-  --algo-calc-modal-background-color: rgb(33, 29, 43);
 
   --font-code: "JetBrains Mono", monospace;
   --font-code-size: 85%;
-
-  --modal-bg-color: rgb(30, 25, 37);
-  --modal-border-color: rgb(42, 36, 51);
 }
 
 *:disabled {
@@ -62,20 +51,20 @@ select {
 
 ::-webkit-scrollbar-thumb {
   cursor: default !important;
-  background-color: rgba(120, 105, 133, 0.5);
+  background-color: var(--scrollbar-thumb);
   border-radius: 4px;
   transition: background-color 300ms;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(93, 81, 104, 0.5);
+  background-color: var(--scrollbar-thumb-hover);
 }
 
 .loader {
   width: 24px;
   height: 24px;
   border: 2px solid var(--sidebar-item-hover-border-color);
-  border-top-color: #8472a1;
+  border-top-color: var(--accent-loader);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -84,4 +73,4 @@ select {
   to {
     transform: rotate(360deg);
   }
-}
+}
