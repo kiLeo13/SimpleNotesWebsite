@@ -15,7 +15,7 @@
   flex-shrink: 0;
   padding: 5px;
   box-sizing: border-box;
-  border: 1px solid rgb(53, 47, 66);
+  border: 1px solid var(--border-default);
   border-radius: 8px;
   background-color: rgba(18, 17, 22, 0.78);
 }
@@ -66,8 +66,8 @@
 }
 
 .chooseButton {
-  border: 1px solid rgb(53, 47, 66);
-  background-color: rgb(38, 34, 50);
+  border: 1px solid var(--border-default);
+  background-color: var(--border-default);
   color: rgb(200, 194, 214);
 }
 
@@ -99,8 +99,8 @@
   z-index: 100;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid rgb(48, 42, 60);
-  background-color: rgb(24, 23, 29);
+  border: 1px solid var(--border-default);
+  background-color: var(--surface-base);
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
   animation: popoverSlideIn 200ms cubic-bezier(0.16, 1, 0.3, 1);
   width: 340px;
@@ -112,7 +112,7 @@
 
 .tabs {
   display: flex;
-  border-bottom: 1px solid rgb(43, 38, 53);
+  border-bottom: 1px solid var(--border-default);
 }
 
 .tab {
@@ -124,7 +124,7 @@
   padding: 10px 12px;
   border: 0;
   background: transparent;
-  color: rgb(130, 118, 150);
+  color: var(--text-muted);
   font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
@@ -151,7 +151,7 @@
   right: 16px;
   height: 2px;
   border-radius: 2px 2px 0 0;
-  background-color: rgb(120, 86, 176);
+  background-color: var(--accent);
 }
 
 .uploadPanel {
@@ -165,9 +165,9 @@
   justify-content: center;
   gap: 14px;
   padding: 28px 20px;
-  border: 2px dashed rgb(53, 47, 66);
+  border: 2px dashed var(--border-default);
   border-radius: 10px;
-  background-color: rgb(18, 17, 22);
+  background-color: var(--surface-lowest);
   cursor: pointer;
   transition:
     border-color 0.25s,
@@ -186,8 +186,8 @@
   width: 56px;
   height: 56px;
   border-radius: 12px;
-  background-color: rgb(38, 34, 50);
-  color: rgb(130, 118, 150);
+  background-color: var(--border-default);
+  color: var(--text-muted);
 }
 
 .uploadHint {
@@ -204,7 +204,7 @@
   padding: 7px 22px;
   border: 0;
   border-radius: 8px;
-  background-color: rgb(78, 56, 120);
+  background-color: var(--accent-deep);
   color: rgb(230, 225, 240);
   font-size: 0.85rem;
   font-weight: 500;
@@ -213,7 +213,7 @@
 }
 
 .browseButton:hover {
-  background-color: rgb(92, 68, 140);
+  background-color: var(--accent-deep-hover);
 }
 
 .emojiPanel {
@@ -228,11 +228,11 @@
  * Override emoji-picker-react dark theme colors.
  */
 .emojiPanel :global(.EmojiPickerReact.epr-dark-theme) {
-  --epr-bg-color: rgb(24, 23, 29);
-  --epr-category-label-bg-color: rgb(24, 23, 29);
-  --epr-text-color: rgb(190, 184, 201);
+  --epr-bg-color: var(--surface-base);
+  --epr-category-label-bg-color: var(--surface-base);
+  --epr-text-color: var(--text-secondary);
   --epr-hover-bg-color: rgb(42, 37, 54);
-  --epr-search-input-bg-color: rgb(43, 38, 49);
+  --epr-search-input-bg-color: var(--border-default);
   --epr-search-input-bg-color-active: rgb(37, 33, 43);
   --epr-search-input-text-color: rgb(207, 202, 218);
   --epr-search-input-placeholder-color: rgb(166, 159, 179);

@@ -16,7 +16,7 @@
   align-items: center;
   gap: 8px;
   margin-bottom: 14px;
-  color: rgb(130, 118, 150);
+  color: var(--text-muted);
 }
 
 .sectionHeader h3 {
@@ -24,7 +24,7 @@
   align-items: center;
   gap: 8px;
   margin: 0;
-  color: rgb(215, 210, 225);
+  color: var(--text-heading);
   font-size: 0.95rem;
   font-weight: 600;
 }
@@ -52,18 +52,18 @@
 }
 
 .primaryButton {
-  background-color: rgb(78, 56, 120);
-  color: rgb(184, 177, 197);
+  background-color: var(--accent-deep);
+  color: var(--text-secondary);
 }
 
 .primaryButton:hover:not(:disabled) {
-  background-color: rgb(92, 68, 140);
+  background-color: var(--accent-deep-hover);
 }
 
 .secondaryButton {
-  border: 1px solid rgb(53, 47, 66);
-  background-color: rgb(38, 34, 50);
-  color: rgb(190, 184, 201);
+  border: 1px solid var(--border-default);
+  background-color: var(--border-default);
+  color: var(--text-secondary);
 }
 
 .secondaryButton:hover:not(:disabled) {

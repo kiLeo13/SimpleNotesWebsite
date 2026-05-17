@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
-  border-right: 1px solid rgb(43, 38, 53);
+  border-right: 1px solid var(--border-default);
   user-select: none;
 }
 
@@ -11,11 +11,11 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 12px 8px;
-  border-bottom: 1px solid rgb(38, 34, 48);
+  border-bottom: 1px solid var(--border-default);
 }
 
 .title {
-  color: rgb(110, 100, 126);
+  color: var(--text-muted);
   font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.06em;
@@ -30,8 +30,8 @@
   height: 26px;
   border: 0;
   border-radius: 6px;
-  background-color: rgb(78, 56, 120);
-  color: rgb(220, 215, 235);
+  background-color: var(--accent-deep);
+  color: var(--text-heading);
   cursor: pointer;
   transition:
     background-color 0.2s,
@@ -39,7 +39,7 @@
 }
 
 .addButton:hover {
-  background-color: rgb(92, 68, 140);
+  background-color: var(--accent-deep-hover);
   transform: scale(1.08);
 }
 
@@ -66,11 +66,11 @@
 }
 
 .row:hover {
-  background-color: rgb(38, 34, 48);
+  background-color: var(--border-default);
 }
 
 .row[data-active="true"] {
-  background-color: rgb(45, 38, 60);
+  background-color: var(--interactive-active-bg);
 }
 
 .row[data-active="true"]::before {
@@ -80,7 +80,7 @@
   width: 3px;
   height: 22px;
   border-radius: 0 3px 3px 0;
-  background: rgb(120, 86, 176);
+  background: var(--accent);
   content: "";
   transform: translateY(-50%);
 }
@@ -94,7 +94,7 @@
   padding: 7px 4px 7px 10px;
   border: 0;
   background-color: transparent;
-  color: rgb(175, 168, 188);
+  color: var(--text-secondary);
   font-size: 0.9rem;
   text-align: left;
   cursor: pointer;
@@ -102,7 +102,7 @@
 
 .row:hover .departmentButton,
 .row[data-active="true"] .departmentButton {
-  color: rgb(220, 215, 235);
+  color: var(--text-heading);
 }
 
 .icon {
@@ -124,7 +124,7 @@
 .empty {
   display: block;
   padding: 14px 10px;
-  color: rgb(110, 100, 126);
+  color: var(--text-muted);
   font-size: 0.85rem;
   font-style: italic;
 }
@@ -133,6 +133,6 @@
   .sidebar {
     max-height: 140px;
     border-right: 0;
-    border-bottom: 1px solid rgb(43, 38, 53);
+    border-bottom: 1px solid var(--border-default);
   }
 }
