@@ -17,6 +17,7 @@ type DarkWrapperProps = {
   onOpenChange?: (open: boolean) => void
   zIndex?: number
   isolateEvents?: boolean
+  isolateMouseDownEvents?: boolean
   animationPreset?: ModalAnimationPreset
 }
 
@@ -27,6 +28,7 @@ export function DarkWrapper({
   onOpenChange,
   zIndex = 40,
   isolateEvents = true,
+  isolateMouseDownEvents = true,
   animationPreset = "none"
 }: DarkWrapperProps) {
   const isOpen = open ?? true
@@ -35,6 +37,12 @@ export function DarkWrapper({
 
   const handleEventBubbling = (e: React.SyntheticEvent) => {
     if (isolateEvents) {
+      e.stopPropagation()
+    }
+  }
+
+  const handleMouseDownBubbling = (e: React.SyntheticEvent) => {
+    if (isolateEvents && isolateMouseDownEvents) {
       e.stopPropagation()
     }
   }
@@ -52,7 +60,7 @@ export function DarkWrapper({
           className={styles.overlay}
           style={{ zIndex: zIndex }}
           onClick={handleEventBubbling}
-          onMouseDown={handleEventBubbling}
+          onMouseDown={handleMouseDownBubbling}
         />
 
         <Dialog.Content
@@ -61,7 +69,7 @@ export function DarkWrapper({
           className={clsx(styles.content, className)}
           style={{ zIndex: zIndex + 1 }}
           onClick={handleEventBubbling}
-          onMouseDown={handleEventBubbling}
+          onMouseDown={handleMouseDownBubbling}
         >
           <VisuallyHidden>
             {/* I know exactly what I am doing */}
