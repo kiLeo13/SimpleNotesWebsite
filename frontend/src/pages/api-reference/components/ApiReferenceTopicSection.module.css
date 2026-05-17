@@ -25,12 +25,12 @@
 }
 
 .linkIcon {
-  color: #514a5c;
+  color: var(--accent-strong);
   font-size: 0.9rem;
 }
 
 .linkIcon:hover {
-  color: #6d6577;
+  color: var(--text-muted);
 }
 
 .titleHead:hover .linkIcon {
@@ -39,7 +39,7 @@
 
 .description {
   margin: 0.65rem 0 0;
-  color: #b5bac1;
+  color: var(--text-primary);
   font-size: 0.9rem;
   line-height: 1.78;
 }

@@ -27,7 +27,7 @@
 
 .brandName {
   display: block;
-  color: #b2a9c7;
+  color: var(--text-heading);
   font-size: 1rem;
 }
 

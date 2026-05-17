@@ -18,7 +18,7 @@
 
 .resourceDescription {
   margin: 0.65rem 0 0;
-  color: #b5bac1;
+  color: var(--text-primary);
   font-size: 0.9rem;
   line-height: 1.78;
 }

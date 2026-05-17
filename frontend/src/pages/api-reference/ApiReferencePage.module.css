@@ -39,7 +39,7 @@
   display: block;
   max-width: 42rem;
   margin-top: 0.8rem;
-  color: #b5bac1;
+  color: var(--text-primary);
   font-size: 0.94rem;
   line-height: 1.75;
 }

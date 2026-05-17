@@ -28,7 +28,7 @@
 
 .tocIcon {
   flex: 0 0 auto;
-  color: #b5bac1;
+  color: var(--text-primary);
   font-size: 0.82rem;
 }
 
