@@ -5,33 +5,33 @@
 
 .searchInput {
   height: 30px;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: var(--search-bg);
   outline: none;
-  border: 0.3em solid rgba(0, 0, 0, 0.2);
+  border: 0.3em solid var(--search-border);
   padding: 2px 0 2px 8px;
-  color: rgb(158, 158, 158);
+  color: var(--search-text);
   border-radius: 0.6em;
   transition: border-color 0.3s;
   user-select: none;
 }
 
 .searchInput:hover {
-  border-color: rgb(45, 39, 61);
+  border-color: var(--search-border-hover);
 }
 
 .searchInput:focus {
-  border-color: rgb(107, 64, 156);
+  border-color: var(--search-border-focus);
 }
 
 .searchInput::placeholder {
   font-size: 1.05em;
-  color: rgb(69, 65, 73);
+  color: var(--search-placeholder);
 }
 
 .menuDivider {
   margin: 15px 0;
   height: 1px;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--border-divider);
 }
 
 .noteListHeader {
@@ -42,7 +42,7 @@
 }
 
 .noteListTitle {
-  color: rgb(160, 157, 167);
+  color: var(--note-list-title);
   font-weight: 500;
   font-size: 1.4em;
   user-select: none;
@@ -50,7 +50,7 @@
 
 .noteListCount {
   font-size: 0.9em;
-  color: rgb(90, 84, 97);
+  color: var(--note-list-count);
   padding: 5px 8px;
   margin-right: -8px;
   border-radius: 9999px;
@@ -62,6 +62,6 @@
 }
 
 .noteListCount:hover {
-  background-color: rgb(50, 44, 65);
-  color: rgb(127, 116, 139);
+  background-color: var(--note-list-count-hover-bg);
+  color: var(--note-list-count-hover-text);
 }

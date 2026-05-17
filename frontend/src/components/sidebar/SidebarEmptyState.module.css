@@ -10,6 +10,6 @@
 }
 
 .noResultsText {
-  color: #61586b67;
+  color: var(--text-muted);
   font-size: 1em;
 }

@@ -43,7 +43,7 @@ export function DepartmentActionsMenu({
           onClick={(event) => event.stopPropagation()}
           aria-label={t("departments.management.options")}
         >
-          <SlOptions size={12} color="#9a83b4ff" />
+          <SlOptions size={12} color="var(--accent)" />
         </button>
       </DropdownMenu.Trigger>
 

@@ -12,7 +12,7 @@
   box-sizing: border-box;
   border-radius: 12px;
   width: 100%;
-  color: #908c97;
+  color: var(--text-note);
   user-select: none;
   line-height: 140%;
   z-index: 2;
@@ -23,7 +23,7 @@
 .noteItem:hover:not(.open) {
   cursor: pointer;
   height: max-content;
-  background-color: rgba(136, 116, 167, 0.125);
+  background-color: var(--note-hover-bg);
 }
 
 .open {
@@ -69,11 +69,11 @@
 }
 
 .patch:hover {
-  background-color: rgb(35, 32, 46);
+  background-color: var(--note-patch-hover);
 }
 
 .open .patch:hover {
-  background-color: rgb(51, 45, 65);
+  background-color: var(--note-patch-open-hover);
 }
 
 @keyframes smoothToggleIcon {

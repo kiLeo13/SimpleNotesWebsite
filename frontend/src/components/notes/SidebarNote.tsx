@@ -119,7 +119,7 @@ export function SidebarNote({ note, onClick }: SidebarNoteProps): JSX.Element {
             className={styles.patch}
             aria-label={t("sidebar.notes.options")}
           >
-            <SlOptions size={"1.2em"} color="#9a83b4ff" />
+            <SlOptions size={"1.2em"} color="var(--accent)" />
           </button>
         </AppTooltip>
       </ActionMenu>
@@ -167,14 +167,14 @@ function getMenuOptions(
   if (canEdit) {
     menuOptions.push({
       label: t("menus.notes.opts.edit"),
-      icon: <FaPenToSquare size={"1.3em"} color="#a285d1" />,
+      icon: <FaPenToSquare size={"1.3em"} color="var(--accent)" />,
       onClick: () => setIsPatching(true)
     })
   }
   if (canDelete) {
     menuOptions.push({
       label: t("menus.notes.opts.delete"),
-      icon: <FaTrashAlt size={"1.3em"} color="#a285d1" />,
+      icon: <FaTrashAlt size={"1.3em"} color="var(--accent)" />,
       onClick: () => setIsDeleting(true)
     })
   }
@@ -182,12 +182,12 @@ function getMenuOptions(
   menuOptions.push(
     {
       label: t("menus.notes.opts.download"),
-      icon: <MdDownload size={"1.3em"} color="#a285d1" />,
+      icon: <MdDownload size={"1.3em"} color="var(--accent)" />,
       onClick: onDownload
     },
     {
       label: t("menus.notes.opts.copyId", { id: noteId }),
-      icon: <IdentificationIcon size={"1.3em"} color="#a285d1" />,
+      icon: <IdentificationIcon size={"1.3em"} color="var(--accent)" />,
       onClick: onCopyId
     }
   )

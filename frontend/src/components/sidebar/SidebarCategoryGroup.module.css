@@ -20,7 +20,7 @@
   border: 1px solid transparent;
   border-radius: 8px;
   background: transparent;
-  color: rgb(124, 116, 137);
+  color: var(--dept-header-text);
   font: inherit;
   font-size: 0.78em;
   font-weight: 700;
@@ -36,19 +36,19 @@
 }
 
 .departmentHeader:focus-visible {
-  background-color: rgba(136, 116, 167, 0.105);
-  color: rgb(151, 140, 166);
+  background-color: var(--dept-header-hover-bg);
+  color: var(--dept-header-hover-text);
 }
 
 .departmentHeader:focus-visible {
-  outline: 1px solid rgb(107, 64, 156);
+  outline: 1px solid var(--border-strong);
   outline-offset: 1px;
 }
 
 .departmentHeaderDropTarget {
-  border-color: rgba(154, 131, 180, 0.75);
-  background-color: rgba(136, 116, 167, 0.18);
-  color: rgb(178, 164, 196);
+  border-color: var(--dept-drop-border);
+  background-color: var(--dept-drop-bg);
+  color: var(--dept-drop-text);
 }
 
 .departmentLeading {
@@ -62,14 +62,14 @@
 }
 
 .departmentLeading:hover {
-  color: rgb(158, 146, 175);
+  color: var(--dept-leading-hover);
 }
 
 .departmentIcon {
   width: 18px;
   height: 18px;
   border-radius: 4px;
-  color: rgb(122, 108, 147);
+  color: var(--dept-icon-color);
   object-fit: contain;
   line-height: 18px;
 }
@@ -83,7 +83,7 @@
 .departmentChevron {
   width: 13px;
   height: 13px;
-  color: rgb(95, 86, 110);
+  color: var(--dept-chevron);
   flex-shrink: 0;
   transform: rotate(0deg);
   transition: transform 200ms ease-in-out;
@@ -97,7 +97,7 @@
   min-width: 18px;
   padding: 1px 5px;
   border-radius: 999px;
-  background-color: rgb(42, 37, 54);
-  color: rgb(118, 108, 132);
+  background-color: var(--dept-count-bg);
+  color: var(--dept-count-text);
   text-align: center;
 }
