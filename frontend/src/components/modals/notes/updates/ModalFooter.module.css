@@ -21,7 +21,7 @@
 }
 
 .saveButton {
-  background-color: rgb(144, 92, 192);
+  background-color: var(--accent-deep);
   color: rgb(52, 27, 75);
 }
 

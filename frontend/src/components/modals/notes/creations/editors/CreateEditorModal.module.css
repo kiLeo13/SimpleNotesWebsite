@@ -4,9 +4,9 @@
   flex-direction: column;
   width: 95vw;
   height: 90vh;
-  background-color: rgb(30, 25, 37);
+  background-color: var(--modal-bg-color);
   border-radius: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
 }
 
 .header {
@@ -14,7 +14,7 @@
   align-items: center;
   gap: 10px;
   padding: 1rem 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .headerIconWrapper {
@@ -22,13 +22,13 @@
   align-items: center;
   border-radius: 6px;
   padding: 5px 6px;
-  background-color: rgb(65, 52, 82);
+  background-color: var(--accent-strong);
 }
 
 .title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #a69db9;
+  color: var(--text-heading);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -46,7 +46,7 @@
 }
 
 .close:hover {
-  background-color: rgb(51, 42, 63);
+  background-color: var(--modal-close-hover);
 }
 
 .contentGrid {
@@ -81,13 +81,13 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  border-right: 1px solid var(--border-subtle);
   overflow-y: auto;
 }
 
 .codeEditorWrapper {
   flex: 1;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-divider);
   border-radius: 8px;
   overflow: hidden;
   min-height: 400px;
@@ -97,8 +97,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgb(144, 92, 192);
-  color: #11111b;
+  background-color: var(--accent-deep);
+  color: var(--surface-lowest);
   border: none;
   width: 100%;
   border-radius: 9999px;

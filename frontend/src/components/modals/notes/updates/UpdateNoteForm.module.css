@@ -13,5 +13,5 @@
 
 .division {
   width: 100%;
-  border-top: 2px solid rgb(63, 52, 80);
+  border-top: 2px solid var(--border-default);
 }

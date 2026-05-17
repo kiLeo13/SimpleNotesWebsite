@@ -11,10 +11,10 @@
   gap: 10px;
   align-items: center;
   justify-content: center;
-  background-color: rgb(35, 30, 44);
+  background-color: var(--surface-raised);
   border-radius: 10px;
-  color: rgb(150, 150, 150);
-  border: 2px dashed rgb(102, 74, 146);
+  color: var(--text-muted);
+  border: 2px dashed var(--accent-deep);
   height: 100px;
   cursor: pointer;
   outline: none !important;
@@ -23,12 +23,12 @@
 
 .fileInputWrapper.invalid {
   outline: none;
-  border: 2px dashed rgb(238, 54, 54);
+  border: 2px dashed var(--semantic-danger);
 }
 
 .fileInputWrapper.dragging {
   background-color: rgba(102, 74, 146, 0.2);
-  border-color: rgb(144, 130, 155);
+  border-color: var(--text-secondary);
   box-shadow: 0 0 40px rgba(137, 96, 204, 0.7);
   transform: scale(1.02);
 }
@@ -44,7 +44,7 @@
 }
 
 .label {
-  color: rgb(144, 130, 155);
+  color: var(--text-secondary);
 }
 
 .chosenFile {
@@ -52,7 +52,7 @@
   grid-template-columns: 1fr auto;
   align-items: center;
   gap: 6px;
-  background-color: rgb(38, 36, 49);
+  background-color: var(--interactive-active-bg);
   border-radius: 8px;
   box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
   /* Doesn't change much here, but better safe than sorry? */
@@ -79,15 +79,15 @@
   display: flex;
   align-items: center;
   height: 100%;
-  background-color: rgb(84, 57, 102);
+  background-color: var(--accent-strong);
 }
 
 .input {
-  color: rgb(180, 180, 180);
+  color: var(--text-primary);
   padding: 10px 8px;
   font-size: 14px;
-  background-color: rgba(0, 0, 0, 0.2);
-  border: solid 1px rgb(50, 42, 70);
+  background-color: var(--surface-sunken);
+  border: solid 1px var(--border-default);
   border-radius: 8px;
   outline: none;
   transition: border-color 0.3s;
@@ -95,7 +95,7 @@
 
 .input:focus:not(.invalid),
 .input:has(.arrayInput:focus):not(.invalid) {
-  border-color: #5c4791;
+  border-color: var(--accent-deep);
 }
 
 .input:disabled {
@@ -115,8 +115,8 @@
   border: none;
   outline: none;
   padding: 3px 6px 5px 2px;
-  color: rgb(150, 150, 150);
-  border-bottom: solid 2px rgb(88, 70, 107);
+  color: var(--text-muted);
+  border-bottom: solid 2px var(--accent-strong);
 }
 
 .select:hover:not(:focus) {
@@ -124,7 +124,7 @@
 }
 
 .selectOption {
-  background-color: rgb(29, 27, 37);
+  background-color: var(--surface-overlay);
   outline: none;
   padding: 50px;
 }
@@ -134,12 +134,12 @@
    * Using outline here, since borders cause wonky behavior by shifting the
    * view of a component a bit, as it grows in size.
    */
-  outline: 2px solid rgb(238, 54, 54);
-  background-color: rgba(238, 54, 54, 0.05);
+  outline: 2px solid var(--semantic-danger);
+  background-color: var(--semantic-danger-muted);
 }
 
 .errorMessage {
-  color: rgb(238, 54, 54);
+  color: var(--semantic-danger);
   font-size: 11px;
   margin-left: 5px;
 }

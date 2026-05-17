@@ -1,5 +1,5 @@
 .previewPanel {
-  background-color: rgb(19, 17, 24);
+  background-color: var(--surface-base);
   display: flex;
   flex-direction: column;
   position: relative;
@@ -24,7 +24,7 @@
 
 .topItem {
   display: flex;
-  color: #a6adc8;
+  color: var(--text-secondary);
   text-decoration: none;
   align-items: center;
   background: rgba(0, 0, 0, 0.4);

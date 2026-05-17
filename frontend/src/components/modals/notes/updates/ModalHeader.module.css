@@ -6,7 +6,7 @@
 }
 
 .title {
-  color: rgb(147, 142, 153);
+  color: var(--text-secondary);
   font-size: 1.8em;
   margin: 0px;
 }
@@ -16,7 +16,7 @@
   display: flex;
   align-items: center;
   padding-left: 10px;
-  color: rgb(122, 117, 128);
+  color: var(--text-muted);
   font-weight: 450;
   margin: 0;
 }
@@ -28,7 +28,7 @@
   top: 0;
   bottom: 0;
   width: 4px;
-  background-color: rgb(72, 56, 92);
+  background-color: var(--accent-strong);
   border-radius: 9999px;
 }
 
@@ -36,7 +36,7 @@
   display: flex;
   align-items: center;
   gap: 3px;
-  color: rgb(122, 117, 128);
+  color: var(--text-muted);
   font-size: 0.9em;
   font-weight: 400;
 }

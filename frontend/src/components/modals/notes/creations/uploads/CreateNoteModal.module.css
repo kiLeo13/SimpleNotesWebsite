@@ -11,8 +11,8 @@
   height: max-content;
   max-height: 98vh;
   width: 430px;
-  border: 1px solid rgb(42, 36, 51);
-  background-color: rgb(30, 25, 37);
+  border: 1px solid var(--modal-border-color);
+  background-color: var(--modal-bg-color);
   overflow-y: auto;
   border-radius: 10px;
   box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
@@ -30,7 +30,7 @@
 }
 
 .close:hover {
-  background-color: rgb(51, 42, 63);
+  background-color: var(--modal-close-hover);
 }
 
 .form {
@@ -46,7 +46,7 @@
   font-weight: bold;
   margin: 0;
   margin-top: 10px;
-  color: rgb(147, 142, 153);
+  color: var(--text-secondary);
 }
 
 .bottomContainer {
@@ -68,7 +68,7 @@
   border-radius: 9999px;
   border: none;
   cursor: pointer;
-  background-color: rgb(144, 92, 192);
+  background-color: var(--accent-deep);
   user-select: none;
   overflow: hidden;
   transition: background-color 300ms;
