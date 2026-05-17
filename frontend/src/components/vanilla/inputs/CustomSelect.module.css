@@ -6,9 +6,9 @@
   width: 100%;
   padding: 10px 12px;
   font-size: 14px;
-  color: rgb(180, 180, 180);
+  color: var(--text-primary);
   background-color: rgba(0, 0, 0, 0.2);
-  border: solid 1px rgb(50, 42, 70);
+  border: solid 1px var(--border-default);
   border-radius: 8px;
   outline: none;
   transition:
@@ -19,7 +19,7 @@
 
 .trigger:focus,
 .trigger[data-state="open"] {
-  border-color: #5c4791;
+  border-color: var(--accent-deep);
   color: #e4e4e7;
 }
 
@@ -29,7 +29,7 @@
 }
 
 .invalid {
-  border-color: rgb(238, 54, 54) !important;
+  border-color: var(--semantic-danger) !important;
   background-color: rgba(238, 54, 54, 0.05) !important;
   border-width: 2px !important;
 }
@@ -56,8 +56,8 @@
 }
 
 .content {
-  background-color: #1b1720;
-  border: 1px solid #30293a;
+  background-color: var(--surface-lowest);
+  border: 1px solid var(--surface-raised);
   border-radius: 8px;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
   padding: 6px;
@@ -76,7 +76,7 @@
   align-items: center;
   gap: 8px;
   padding: 8px;
-  border-bottom: 1px solid rgb(50, 42, 70);
+  border-bottom: 1px solid var(--border-default);
   margin-bottom: 4px;
 }
 
@@ -115,7 +115,7 @@
 }
 
 .viewport::-webkit-scrollbar-thumb {
-  background: rgb(50, 42, 70);
+  background: var(--border-default);
   border-radius: 2px;
 }
 
@@ -126,7 +126,7 @@
   gap: 12px;
   padding: 8px 12px;
   font-size: 14px;
-  color: rgb(180, 180, 180);
+  color: var(--text-primary);
   border-radius: 4px;
   cursor: pointer;
   outline: none;
@@ -136,7 +136,7 @@
 
 .item:hover,
 .item[data-highlighted] {
-  background-color: #5c4791;
+  background-color: var(--accent-deep);
   color: white;
 }
 

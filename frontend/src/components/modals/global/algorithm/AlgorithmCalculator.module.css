@@ -5,7 +5,7 @@
   max-height: 90vh;
   max-width: 90vw;
   border-radius: 12px;
-  border: 1px solid rgb(53, 47, 66);
+  border: 1px solid var(--border-default);
   background-color: var(--algo-calc-modal-background-color);
   display: flex;
   flex-direction: column;
@@ -61,6 +61,6 @@
 }
 
 .close:hover {
-  background-color: rgb(51, 42, 63);
+  background-color: var(--modal-close-hover);
   color: white;
 }

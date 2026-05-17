@@ -1,6 +1,6 @@
 .tooltipContent {
-  background-color: #3f354d;
-  color: #ac9fb4;
+  background-color: var(--surface-raised);
+  color: var(--text-secondary);
   font-size: 0.85em;
   padding: 6px 10px;
   border-radius: 5px;
@@ -12,7 +12,7 @@
 }
 
 .tooltipArrow {
-  fill: #3f354d;
+  fill: var(--surface-raised);
 }
 
 @keyframes scaleIn {

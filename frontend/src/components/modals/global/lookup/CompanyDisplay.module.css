@@ -37,7 +37,7 @@
 }
 
 .searchIcon {
-  color: rgb(168, 155, 189);
+  color: var(--text-heading);
   padding: 5px;
   width: 1.1em;
   height: 1.1em;
@@ -52,20 +52,20 @@
 .partnerSearchInput {
   background-color: transparent;
   font-size: 0.9em;
-  color: rgb(167, 162, 180);
+  color: var(--text-secondary);
   outline: none;
   border: none;
   padding: 2px;
-  border-bottom: 1px solid rgb(147, 130, 168);
+  border-bottom: 1px solid var(--search-border-focus);
 }
 
 .partnerSearchInput::placeholder {
-  color: rgb(109, 104, 121);
+  color: var(--text-muted);
   font-size: 0.9em;
 }
 
 .partnerSearchInput:focus {
-  border-bottom: 2px solid rgb(147, 130, 168);
+  border-bottom: 2px solid var(--search-border-focus);
 }
 
 .partnersTitle {

@@ -9,7 +9,7 @@
 }
 
 .popoverContent {
-  background-color: #342c3f;
+  background-color: var(--surface-raised);
   border: 1px solid #423850;
   border-radius: 8px;
   padding: 12px;
@@ -32,7 +32,7 @@
 }
 
 .popoverArrow {
-  fill: #342c3f;
+  fill: var(--surface-raised);
 }
 
 .markdownWrapper {

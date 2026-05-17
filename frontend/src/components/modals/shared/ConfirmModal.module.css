@@ -2,16 +2,16 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  background-color: #1e1924;
-  border: 1px solid #2a2433;
+  background-color: var(--modal-bg-color);
+  border: 1px solid var(--modal-border-color);
   border-radius: 12px;
   padding: 25px;
   width: 500px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--modal-shadow);
 
   --intent-bg: rgba(120, 120, 120, 0.1);
   --intent-border: rgb(120, 120, 120);
-  --intent-text: rgb(200, 200, 200);
+  --intent-text: var(--text-primary);
   --btn-bg: rgb(120, 120, 120);
   --btn-hover: rgb(100, 100, 100);
   --btn-text: rgb(20, 20, 20);
@@ -66,7 +66,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  color: #928c9c;
+  color: var(--text-body);
   font-size: 0.95rem;
   line-height: 1.5;
 }
@@ -74,7 +74,7 @@
 .prompt {
   font-size: 1em;
   font-weight: 450;
-  color: #a9a2b4;
+  color: var(--text-secondary);
 }
 
 .footer {
@@ -82,12 +82,12 @@
   justify-content: end;
   gap: 5px;
   padding-top: 1rem;
-  border-top: 1px solid #2a2433;
+  border-top: 1px solid var(--modal-border-color);
 }
 
 .cancel {
   background-color: transparent;
-  color: rgb(150, 145, 160);
+  color: var(--text-secondary);
   font-weight: 500;
   padding: 10px 18px;
   border-radius: 9999px;
@@ -97,8 +97,8 @@
 }
 
 .cancel:hover:not(:disabled) {
-  background-color: rgba(189, 161, 255, 0.05);
-  color: #cfcfd8;
+  background-color: var(--accent-subtle);
+  color: var(--text-primary);
 }
 
 .confirm {

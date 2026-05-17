@@ -2,8 +2,8 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  background-color: rgb(30, 25, 37);
-  border: 1px solid rgb(42, 36, 51);
+  background-color: var(--modal-bg-color);
+  border: 1px solid var(--modal-border-color);
   border-radius: 12px;
   height: 250px;
   width: 500px;
@@ -35,7 +35,7 @@
 }
 
 .close:hover {
-  background-color: rgb(51, 42, 63);
+  background-color: var(--modal-close-hover);
 }
 
 .top {
@@ -92,5 +92,5 @@
 }
 
 .sendIcon {
-  color: rgb(168, 155, 189);
+  color: var(--text-heading);
 }
