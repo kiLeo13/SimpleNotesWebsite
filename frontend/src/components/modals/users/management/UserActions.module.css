@@ -21,19 +21,19 @@
 }
 
 .actionButton:hover {
-  background-color: rgba(165, 142, 192, 0.1);
+  background-color: var(--accent-subtle);
 }
 
 .actionIcon {
-  color: #908899;
+  color: var(--text-muted);
   transition: color 300ms;
 }
 
 .content {
   display: flex;
   flex-direction: column;
-  background-color: #16131b;
-  border: 1px solid #26202e;
+  background-color: var(--surface-lowest);
+  border: 1px solid var(--border-default);
   border-radius: 8px;
   padding: 6px;
   min-width: 200px;
@@ -51,7 +51,7 @@
   border-radius: 5px;
   cursor: pointer;
   outline: none;
-  color: #b4acc0;
+  color: var(--text-secondary);
   font-size: 14px;
   user-select: none;
   transition: background-color 0.1s;
@@ -59,7 +59,7 @@
 
 .item:focus,
 .item:hover {
-  background-color: #3b3347;
+  background-color: var(--interactive-active-bg);
 }
 
 .dangerItem:focus,
@@ -88,7 +88,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #957fb6;
+  color: var(--accent);
 }
 
 .itemLabel {

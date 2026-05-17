@@ -12,7 +12,7 @@
 }
 
 .userRow:hover {
-  background-color: rgba(106, 89, 119, 0.2);
+  background-color: var(--interactive-hover);
 }
 
 .left {
@@ -25,7 +25,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  background-color: rgba(204, 174, 228, 0.2);
+  background-color: var(--accent-muted);
   padding: 5px;
   aspect-ratio: 1;
   border-radius: 9999px;
@@ -38,13 +38,13 @@
   bottom: -1px;
   right: -1px;
   border-radius: 9999px;
-  border: 3px solid rgb(29, 25, 34);
-  background-color: rgb(83, 83, 83);
+  border: 3px solid var(--surface-overlay);
+  background-color: var(--presence-offline);
   transition: background-color 300ms;
 }
 
 .presence.online {
-  background-color: rgb(65, 156, 65);
+  background-color: var(--semantic-success);
 }
 
 .userData {
@@ -60,7 +60,7 @@
   gap: 5px;
   font-size: 1em;
   font-weight: 500;
-  color: rgb(152, 143, 163);
+  color: var(--text-secondary);
 }
 
 .loader {
@@ -83,16 +83,16 @@
 
 .editable:hover,
 .editable:focus {
-  border: 1px solid rgb(95, 72, 126);
+  border: 1px solid var(--accent-deep);
 }
 
 .editable:focus {
-  border-color: rgb(101, 66, 146);
-  outline: 1px solid rgb(101, 66, 146);
+  border-color: var(--accent-deep);
+  outline: 1px solid var(--accent-deep);
 }
 
 .you {
-  background-color: rgb(63, 53, 73);
+  background-color: var(--accent-strong);
   text-transform: uppercase;
   padding: 3px 5px;
   font-size: 0.8em;
@@ -104,7 +104,7 @@
 .timestamp {
   font-size: 0.8em;
   font-weight: 450;
-  color: rgb(104, 95, 116);
+  color: var(--text-muted);
 }
 
 @keyframes insideoutUsers {
