@@ -61,10 +61,6 @@
   transition: color 180ms;
 }
 
-.departmentLeading:hover {
-  color: rgb(158, 146, 175);
-}
-
 .departmentIcon {
   width: 18px;
   height: 18px;
@@ -78,6 +74,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  transition: filter 180ms;
+}
+
+.departmentLeading:hover .departmentName {
+  filter: brightness(130%);
 }
 
 .departmentChevron {
