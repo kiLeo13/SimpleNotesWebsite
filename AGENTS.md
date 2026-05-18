@@ -87,6 +87,7 @@ That sequence usually gives enough context without spelunking the whole repo lik
 - `frontend/src/routes/index.tsx`: authenticated home route with typed search params and auth redirect.
 - `frontend/src/routes/login.tsx`: login screen route.
 - `frontend/src/routes/register.tsx`: signup screen route.
+- `frontend/src/components/modals/auth/`: login, signup, verification, and auth-scoped form helpers. Keep auth text fields on top of the shared modal input primitives, and keep signup password requirements inside the local `PasswordCreationInput` Radix Popover.
 - `frontend/src/routes/api.reference.tsx`: public API reference route at `/api/reference`.
 - `frontend/src/routeTree.gen.ts`: generated TanStack route tree. Do not hand-edit it unless you enjoy arguing with the generator.
 
@@ -205,10 +206,11 @@ client-side transformed models.
 Read:
 
 1. `frontend/src/pages/auth/`
-2. `frontend/src/stores/useSessionStore.ts`
-3. `frontend/src/services/userService.ts`
-4. `frontend/src/utils/authutils.ts`
-5. `frontend/src/types/api/users.ts`
+2. `frontend/src/components/modals/auth/`
+3. `frontend/src/stores/useSessionStore.ts`
+4. `frontend/src/services/userService.ts`
+5. `frontend/src/utils/authutils.ts`
+6. `frontend/src/types/api/users.ts`
 
 ### If The Task Is About Frontend Notes CRUD
 
@@ -336,6 +338,7 @@ Do not copy environment values into docs or comments unless explicitly needed.
 ## Important Behavior Notes
 
 - The frontend currently sends `id_token` in API requests even though auth data also includes `access_token`.
+- Auth login and signup fields should use the auth wrappers over `BaseModalTextInput`, `ModalLabel`, and `ModalSection` so authentication forms stay visually aligned with the rest of the modal system.
 - Route protection is handled in TanStack Router route guards instead of a dedicated `ProtectedRoute` wrapper.
 - `frontend/src/pages/mainpage/MainPage.tsx` drives note opening via typed `?id=` search params on the `/` route.
 - Notes are scoped by nullable `department_id`: `null` means General, and a non-null value points to exactly one department. Users may belong to multiple departments through membership edges.

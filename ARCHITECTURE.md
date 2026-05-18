@@ -45,6 +45,7 @@ High-level flow:
 Important frontend behavior:
 
 - Auth state is stored locally and route protection is enforced in TanStack Router `beforeLoad` checks.
+- Login and signup modals use auth-scoped wrappers around the shared modal input primitives from `frontend/src/components/modals/notes/shared/`. Signup password creation keeps its requirements in a focused Radix Popover component instead of parent-owned absolute-positioned markup. The password popover owns its shaded panel styling and uses layered Radix arrows so the border and arrow read as one connected surface.
 - `frontend/package.json` pins transitive `uuid` resolution to `14.0.0` through npm `overrides` because `mermaid@10.9.5` still declares `uuid@^9.0.0`, which cannot satisfy the patched advisory range on its own.
 - The currently opened note is driven by the typed `?id=` search parameter on the `/` route.
 - Search-enabled custom selects move focus directly into their filter input when opened, and that autofocus is managed in the component after the menu opens instead of relying on undocumented Radix props.
