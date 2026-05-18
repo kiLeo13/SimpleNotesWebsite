@@ -301,6 +301,13 @@
       "newAcc": "Criar conta",
       "verify": "Verificar",
       "hasAcc": "Já tenho conta",
+      "passwordRules": {
+        "length": "Contém ao menos {{count}} caracteres",
+        "lower": "Contém letras minúsculas",
+        "upper": "Contém letras maiúsculas",
+        "special": "Contém caracteres especiais",
+        "digits": "Contém dígitos"
+      },
       "errors": {
         "usedEmail": "Já existe um usuário cadastrado com este e-mail"
       }

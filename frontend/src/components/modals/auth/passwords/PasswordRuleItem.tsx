@@ -11,7 +11,9 @@ type PasswordRuleItemProps = {
 export function PasswordRuleItem({ text }: PasswordRuleItemProps): JSX.Element {
   return (
     <span className={styles.rule}>
-      <div className={styles.icon}><TbXboxXFilled color="rgba(216, 102, 102, 1)" /></div>
+      <span className={styles.icon}>
+        <TbXboxXFilled aria-hidden="true" size={16} />
+      </span>
       <span>{text}</span>
     </span>
   )
