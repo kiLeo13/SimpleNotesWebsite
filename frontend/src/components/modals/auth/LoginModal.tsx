@@ -1,20 +1,18 @@
 import { useState, type JSX } from "react"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { loginFormSchema, type LoginFormFields } from "@/types/forms/users"
-import { Link, useNavigate } from "@tanstack/react-router"
-
-import RequiredHint from "@/components/hints/RequiredHint"
+import { useNavigate } from "@tanstack/react-router"
 
 import { AlreadyAuthWarn } from "@/components/warns/AlreadyAuthWarn"
-import { FaArrowRight } from "react-icons/fa"
 import { DarkWrapper } from "@/components/DarkWrapper"
-import { LoaderWrapper } from "@/components/loader/LoaderWrapper"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { hasSession } from "@/utils/authutils"
 import { displayFormsErrors } from "@/utils/errorHandlerUtils"
 import { useSessionStore } from "@/stores/useSessionStore"
 import { useTranslation } from "react-i18next"
 
+import { AuthFormFooter } from "./AuthFormFooter"
+import { AuthTextField } from "./AuthTextField"
 import styles from "./AuthModal.module.css"
 
 export function LoginModal(): JSX.Element {
@@ -57,71 +55,31 @@ export function LoginModal(): JSX.Element {
 
       <div className={styles.authModalContainer}>
         <form className={styles.authForm} onSubmit={handleSubmit(onSubmit)}>
-          {/* Email address */}
-          <div className={styles.authFormControl}>
-            <label className={styles.authFormLabel}>
-              {t("modals.auth.email")}
-              <RequiredHint />
-            </label>
-            <input
-              autoFocus={!showWarn}
-              className={styles.authFormInput}
-              {...register("email")}
-              type="email"
-              placeholder={t("modals.auth.emailPlh")}
-            />
-            {!!errors.email && (
-              <span className={styles.authInputError}>
-                {errors.email?.message}
-              </span>
-            )}
-          </div>
+          <AuthTextField
+            id="login-email"
+            autoFocus={!showWarn}
+            errorMessage={errors.email?.message}
+            label={t("modals.auth.email")}
+            placeholder={t("modals.auth.emailPlh")}
+            type="email"
+            {...register("email")}
+          />
 
-          {/* Password input */}
-          <div className={styles.authFormControl}>
-            <label className={styles.authFormLabel}>
-              {t("modals.auth.pwd")}
-              <RequiredHint />
-            </label>
-            <input
-              className={styles.authFormInput}
-              {...register("password")}
-              type="password"
-            />
-            {!!errors.password && (
-              <span className={styles.authInputError}>
-                {errors.password?.message}
-              </span>
-            )}
-          </div>
+          <AuthTextField
+            id="login-password"
+            errorMessage={errors.password?.message}
+            label={t("modals.auth.pwd")}
+            type="password"
+            {...register("password")}
+          />
 
-          {/* Bottom/Submit */}
-          <div className={styles.authFormFooterContainer}>
-            <div className={styles.authFooterContents}>
-              <LoaderWrapper isLoading={isLoading} loaderProps={{ scale: 0.8 }}>
-                <button
-                  disabled={isLoading}
-                  className={styles.submitButton}
-                  type="submit"
-                >
-                  {t("modals.auth.login")}
-                </button>
-              </LoaderWrapper>
-              <Link
-                draggable="false"
-                className={styles.modalSwitcher}
-                to="/register"
-              >
-                <span>{t("modals.auth.newAcc")}</span>
-                <FaArrowRight />
-              </Link>
-            </div>
-            {!!errors.root && (
-              <span className={styles.authInputError}>
-                {errors.root.message}
-              </span>
-            )}
-          </div>
+          <AuthFormFooter
+            errorMessage={errors.root?.message}
+            isLoading={isLoading}
+            submitLabel={t("modals.auth.login")}
+            switchLabel={t("modals.auth.newAcc")}
+            switchTo="/register"
+          />
         </form>
       </div>
     </>

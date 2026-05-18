@@ -16,57 +16,6 @@
   gap: 20px;
 }
 
-.authFormControl {
-  display: flex;
-  flex-direction: column;
-  color: rgb(155, 155, 155);
-  font-size: 1.2em;
-  gap: 5px;
-}
-
-.passwordContainer {
-  position: relative;
-  display: flex;
-}
-
-.passwordConstraintsWrapper {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  pointer-events: none;
-  inset: 0 auto 0 400px;
-}
-
-.passwordContainer > input {
-  width: 100%;
-}
-
-.authFormLabel {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-}
-
-.authFormInput {
-  padding: 10px 8px;
-  font-size: 0.85em;
-  color: rgb(140, 140, 140);
-  background-color: rgba(0, 0, 0, 0.2);
-  outline: 1px solid rgb(46, 38, 54);
-  border-radius: 8px;
-  border: none;
-  transition: outline 100ms;
-}
-
-.authFormInput:focus {
-  outline-color: rgb(117, 89, 148);
-}
-
-.authFormInput::placeholder {
-  color: rgb(69, 62, 77);
-}
-
 .authInputError {
   font-size: 0.7em;
   color: rgb(255, 60, 60);

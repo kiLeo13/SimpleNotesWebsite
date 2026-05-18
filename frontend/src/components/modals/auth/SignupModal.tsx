@@ -1,19 +1,13 @@
 import { signupFormSchema, type SignupFormFields } from "@/types/forms/users"
-import { useCallback, useMemo, useState, type JSX } from "react"
-import { Link } from "@tanstack/react-router"
+import { useCallback, useEffect, useMemo, useState, type JSX } from "react"
 import {
   useForm,
   type SubmitHandler,
   type UseFormSetError
 } from "react-hook-form"
 
-import RequiredHint from "@/components/hints/RequiredHint"
-
 import { VerificationModal } from "./steps/verification/VerificationModal"
-import { FaArrowRight } from "react-icons/fa"
 import { DarkWrapper } from "@/components/DarkWrapper"
-import { PasswordRules } from "./passwords/PasswordRules"
-import { LoaderWrapper } from "@/components/loader/LoaderWrapper"
 import { displayFormsErrors } from "@/utils/errorHandlerUtils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useAsync } from "@/hooks/useAsync"
@@ -21,12 +15,16 @@ import { userService } from "@/services/userService"
 import { useTranslation } from "react-i18next"
 import { debounce } from "lodash-es"
 
+import { AuthFormFooter } from "./AuthFormFooter"
+import { AuthTextField } from "./AuthTextField"
+import { ModalLabel } from "@/components/modals/notes/shared/sections/ModalLabel"
+import { ModalSection } from "@/components/modals/notes/shared/sections/ModalSection"
+import { PasswordCreationInput } from "./passwords/PasswordCreationInput"
 import styles from "./AuthModal.module.css"
 
 export function SignupModal(): JSX.Element {
   const { t } = useTranslation()
   const [isEmailVerifying, setIsEmailVerifying] = useState(false)
-  const [showPwdChecks, setShowPwdChecks] = useState(false)
   const [signup, signupLoading] = useAsync(userService.signup)
   const [status, statusLoading] = useAsync(userService.getUserStatus)
   const isLoading = signupLoading || statusLoading
@@ -42,8 +40,8 @@ export function SignupModal(): JSX.Element {
     mode: "onChange",
     resolver: zodResolver(signupFormSchema)
   })
-  const { onBlur, ...passwordRest } = register("password")
-  const { onChange, ...emailRest } = register("email")
+  const emailField = register("email")
+  const passwordField = register("password")
 
   const handleEmailCheck = useCallback(async () => {
     const val = getValues("email")
@@ -62,6 +60,10 @@ export function SignupModal(): JSX.Element {
     () => debounce(handleEmailCheck, 500),
     [handleEmailCheck]
   )
+
+  useEffect(() => {
+    return () => debouncedEmailCheck.cancel()
+  }, [debouncedEmailCheck])
 
   const onSubmit: SubmitHandler<SignupFormFields> = async (data) => {
     const statusResp = await status(data)
@@ -96,103 +98,54 @@ export function SignupModal(): JSX.Element {
 
       <div className={styles.authModalContainer}>
         <form className={styles.authForm} onSubmit={handleSubmit(onSubmit)}>
-          <div className={styles.authFormControl}>
-            <label className={styles.authFormLabel}>
-              {t("modals.auth.name")}
-              <RequiredHint />
-            </label>
-            <input
-              className={styles.authFormInput}
-              {...register("username")}
-              type="text"
-              autoComplete="name"
-            />
-            {!!errors.username && (
-              <span className={styles.authInputError}>
-                {errors.username.message}
-              </span>
-            )}
-          </div>
+          <AuthTextField
+            id="signup-username"
+            autoComplete="name"
+            errorMessage={errors.username?.message}
+            label={t("modals.auth.name")}
+            type="text"
+            {...register("username")}
+          />
 
-          <div className={styles.authFormControl}>
-            <label className={styles.authFormLabel}>
-              {t("modals.auth.email")}
-              <RequiredHint />
-            </label>
-            <input
-              className={styles.authFormInput}
-              {...emailRest}
-              onChange={(e) => {
-                onChange(e)
-                debouncedEmailCheck()
-              }}
-              type="email"
-              autoComplete="email"
-              placeholder={t("modals.auth.emailPlh")}
-            />
-            {!!errors.email && (
-              <span className={styles.authInputError}>
-                {errors.email.message}
-              </span>
-            )}
-          </div>
+          <AuthTextField
+            id="signup-email"
+            autoComplete="email"
+            errorMessage={errors.email?.message}
+            label={t("modals.auth.email")}
+            placeholder={t("modals.auth.emailPlh")}
+            type="email"
+            {...emailField}
+            onChange={(event) => {
+              emailField.onChange(event)
+              debouncedEmailCheck()
+            }}
+          />
 
-          {/* Password input */}
-          <div className={styles.authFormControl}>
-            <label className={styles.authFormLabel}>
-              {t("modals.auth.newPwd")}
-              <RequiredHint />
-            </label>
-            <div className={styles.passwordContainer}>
-              <input
-                className={styles.authFormInput}
-                {...passwordRest}
-                onFocus={() => setShowPwdChecks(true)}
-                onBlur={(e) => {
-                  onBlur(e) // Let RHF do its validations
-                  setShowPwdChecks(false)
-                }}
-                type="password"
+          <ModalSection
+            label={
+              <ModalLabel
+                htmlFor="signup-password"
+                title={t("modals.auth.newPwd")}
+                required
               />
-              {showPwdChecks && (
-                <div className={styles.passwordConstraintsWrapper}>
-                  <PasswordRules control={control} />
-                </div>
-              )}
-            </div>
-            {!!errors.password && (
-              <span className={styles.authInputError}>
-                {errors.password.message}
-              </span>
-            )}
-          </div>
+            }
+            input={
+              <PasswordCreationInput
+                id="signup-password"
+                control={control}
+                errorMessage={errors.password?.message}
+                {...passwordField}
+              />
+            }
+          />
 
-          <div className={styles.authFormFooterContainer}>
-            <div className={styles.authFooterContents}>
-              <LoaderWrapper isLoading={isLoading} loaderProps={{ scale: 0.8 }}>
-                <button
-                  disabled={isLoading}
-                  className={styles.submitButton}
-                  type="submit"
-                >
-                  {t("modals.auth.verify")}
-                </button>
-              </LoaderWrapper>
-              <Link
-                draggable="false"
-                className={styles.modalSwitcher}
-                to="/login"
-              >
-                <span>{t("modals.auth.hasAcc")}</span>
-                <FaArrowRight />
-              </Link>
-            </div>
-            {!!errors.root && (
-              <span className={styles.authInputError}>
-                {errors.root.message}
-              </span>
-            )}
-          </div>
+          <AuthFormFooter
+            errorMessage={errors.root?.message}
+            isLoading={isLoading}
+            submitLabel={t("modals.auth.verify")}
+            switchLabel={t("modals.auth.hasAcc")}
+            switchTo="/login"
+          />
         </form>
       </div>
     </>
